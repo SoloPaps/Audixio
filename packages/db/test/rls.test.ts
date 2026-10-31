@@ -410,7 +410,7 @@ describe('RLS Supabase local', () => {
     );
   });
 
-  it('refuse toute création directe d\'audit (seule request_audit le permet)', async () => {
+  it("refuse toute création directe d'audit (seule request_audit le permet)", async () => {
     for (const mode of ['passive', 'active']) {
       await expectDenied(
         A,
