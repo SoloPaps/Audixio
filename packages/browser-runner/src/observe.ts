@@ -9,7 +9,7 @@ import type {
 import { cookieIsThirdParty } from './site.js';
 
 const MIXED =
-  /^Mixed Content: .*?requested an insecure ([\w ]+?) '([^']+)'\. ([\s\S]*)$/;
+  /^Mixed Content: .{0,1000}?requested an insecure ([\w ]+?) '([^']+)'\. ([\s\S]*)$/;
 
 /** Lit un message « Mixed Content » de Chromium. `null` si ce n'en est pas un. */
 export function parseMixedContent(text: string): MixedContent | null {

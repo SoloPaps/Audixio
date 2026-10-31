@@ -63,9 +63,15 @@ export type SafeFetch = (
   init?: SafeFetchInit,
 ) => Promise<SafeResponse>;
 
+function stripTrailingSlashes(value: string): string {
+  let end = value.length;
+  while (end > 0 && value.charCodeAt(end - 1) === 47) end -= 1;
+  return value.slice(0, end);
+}
+
 export function userAgent(botUrl?: string): string {
   return botUrl
-    ? `${BOT_NAME} (+${botUrl.replace(/\/+$/, '')}/robot)`
+    ? `${BOT_NAME} (+${stripTrailingSlashes(botUrl)}/robot)`
     : BOT_NAME;
 }
 

@@ -155,7 +155,7 @@ function textOf(
   links: readonly string[],
 ): string {
   const lines = [...paragraphs];
-  for (const link of links) lines.push(link.replace('\n', '\n'));
+  for (const link of links) lines.push(link);
   return lines.join('\n\n');
 }
 
