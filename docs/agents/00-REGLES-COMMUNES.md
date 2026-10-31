@@ -1,7 +1,7 @@
 # 00 — Règles communes à TOUS les agents Audixio
 
 > À joindre (`@00-REGLES-COMMUNES.md`) dans **chaque** conversation Cursor, avec le fichier de l'agent concerné.
-> Chaque règle cite sa source dans le dépôt `C:\Projets\Audigy-Web`. En cas de doute : la source citée fait foi, pas ce résumé.
+> Chaque règle cite sa source dans le dépôt `C:\Projets\Audixio-propre`. En cas de doute : la source citée fait foi, pas ce résumé.
 
 ## 0. Décisions owner 2026-10-29 (canon, priment sur TOUS les docs du dépôt)
 
