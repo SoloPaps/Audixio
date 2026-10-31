@@ -10,7 +10,7 @@
  *   durée de l'instance (anti DNS rebinding) ; revalidation à chaque redirection (max 5) ;
  *   réponse plafonnée (5 Mo HTML, 20 Mo sinon, 20 Mo au total via le budget) ;
  *   délai 10 s par requête ; aucun cookie ni identifiant envoyé ;
- *   `User-Agent: AudigyBot/1.0 (+<botUrl>/robot)`. Renvoie un `SafeResponse` (corps lu).
+ *   `User-Agent: AudixioBot/1.0 (+<botUrl>/robot)`. Renvoie un `SafeResponse` (corps lu).
  * - `createRequestBudget(options?)` : ≤ 50 requêtes, 1 req/s par hôte, 20 Mo au total.
  * - `createDohResolver(options?)` : DNS sur HTTPS (JSON), `query(nom, type)` et `addresses(nom)`.
  * - `createTlsProbe(options?) → probeTls(hôte)` : connexion TLS au port 443 (IP publique

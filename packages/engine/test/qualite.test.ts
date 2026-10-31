@@ -243,18 +243,18 @@ describe('portée, robots et extraction', () => {
     });
   });
 
-  it('applique le groupe AudigyBot, pas celui d’un autre robot', () => {
+  it('applique le groupe AudixioBot, pas celui d’un autre robot', () => {
     const blocked = parseRobots(
-      'User-agent: AudigyBot\nDisallow: /prive\n\nUser-agent: *\nAllow: /\n',
+      'User-agent: AudixioBot\nDisallow: /prive\n\nUser-agent: *\nAllow: /\n',
     );
     expect(
-      crawlerAllowed(blocked, new URL(`${ORIGIN}/prive`), 'audigybot'),
+      crawlerAllowed(blocked, new URL(`${ORIGIN}/prive`), 'audixiobot'),
     ).toBe(false);
-    expect(crawlerAllowed(blocked, new URL(`${ORIGIN}/ok`), 'audigybot')).toBe(
+    expect(crawlerAllowed(blocked, new URL(`${ORIGIN}/ok`), 'audixiobot')).toBe(
       true,
     );
     const google = parseRobots('User-agent: Googlebot\nDisallow: /\n');
-    expect(crawlerAllowed(google, new URL(`${ORIGIN}/`), 'audigybot')).toBe(
+    expect(crawlerAllowed(google, new URL(`${ORIGIN}/`), 'audixiobot')).toBe(
       true,
     );
   });
@@ -310,7 +310,7 @@ describe('parcours', () => {
         [`${ORIGIN}/robots.txt`]: response({
           url: `${ORIGIN}/robots.txt`,
           headers: { 'content-type': 'text/plain' },
-          body: 'User-agent: AudigyBot\nDisallow: /projet/prive\n\nUser-agent: *\nDisallow:\n',
+          body: 'User-agent: AudixioBot\nDisallow: /projet/prive\n\nUser-agent: *\nDisallow:\n',
         }),
         'https://autre.test/ext': response({
           url: 'https://autre.test/ext',

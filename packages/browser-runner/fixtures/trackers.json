@@ -5,7 +5,7 @@
     "name": "audigy-browser",
     "browser": "chromium",
     "axe": "4.14.0",
-    "fetchUserAgent": "AudigyBot/1.0"
+    "fetchUserAgent": "AudixioBot/1.0"
   },
   "target": {
     "url": "https://exemple.test/",

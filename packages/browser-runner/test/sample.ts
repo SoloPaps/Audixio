@@ -51,7 +51,7 @@ export function sampleResult(): BrowserAuditResult {
       name: 'audigy-browser',
       browser: 'chromium 156.0.8078.4',
       axe: '4.14.0',
-      fetchUserAgent: 'AudigyBot/1.0',
+      fetchUserAgent: 'AudixioBot/1.0',
     },
     target: {
       url: 'https://www.exemple.fr/',

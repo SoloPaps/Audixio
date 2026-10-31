@@ -1066,7 +1066,7 @@
   "vie_privee.elements.pass": "The legal pages name the publisher, the host, and a contact.",
   "vie_privee.elements.warn": "{missing} is missing on the legal pages.",
   "vie_privee.elements.fail": "The legal pages name neither the publisher, nor the host, nor a contact.",
-  "legal.email": "AudigyWeb@outlook.fr",
+  "legal.email": "Audixio@outlook.fr",
   "legal.site": "https://audigyweb.fr",
   "legal.review": "The owner still has to reread this text before opening.",
   "meta.terms.title": "Terms of use — Audigy",

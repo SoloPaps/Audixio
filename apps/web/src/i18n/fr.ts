@@ -1530,7 +1530,7 @@ export const fr = {
   'vie_privee.elements.warn': 'Il manque {missing} sur les pages légales.',
   'vie_privee.elements.fail':
     'Les pages légales n’indiquent ni l’éditeur, ni l’hébergeur, ni un contact.',
-  'legal.email': 'AudigyWeb@outlook.fr',
+  'legal.email': 'Audixio@outlook.fr',
   'legal.site': 'https://audigyweb.fr',
   'legal.review':
     'Le propriétaire doit encore relire ce texte avant l’ouverture.',

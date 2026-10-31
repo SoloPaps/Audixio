@@ -785,7 +785,7 @@ describe('pages légales', () => {
       pages: {
         [`${ORIGIN}/robots.txt`]: response({
           url: `${ORIGIN}/robots.txt`,
-          body: 'User-agent: audigybot\nDisallow: /mentions-legales\n',
+          body: 'User-agent: audixiobot\nDisallow: /mentions-legales\n',
           headers: { 'content-type': 'text/plain' },
         }),
         [`${ORIGIN}/`]: html(`${ORIGIN}/`, home()),
