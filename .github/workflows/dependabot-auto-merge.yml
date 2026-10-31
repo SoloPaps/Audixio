@@ -1,0 +1,31 @@
+name: dependabot-auto-merge
+
+# Active la fusion automatique des mises à jour Dependabot mineures et correctifs.
+# La PR ne fusionne que si le ruleset est satisfait (CI et CodeQL verts).
+# Les versions majeures restent à valider à la main.
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Fusion automatique (mineures et correctifs)
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Métadonnées Dependabot
+        id: meta
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fusion automatique
+        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        # Sans effet tant que « Allow auto-merge » n'est pas activé dans les réglages du dépôt.
+        continue-on-error: true
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --squash "$PR_URL"

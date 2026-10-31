@@ -1,0 +1,26 @@
+name: Bug
+description: Quelque chose ne fonctionne pas comme prévu
+labels: [bug]
+body:
+  - type: textarea
+    id: quoi
+    attributes:
+      label: Ce qui se passe
+      description: Décris le problème et ce que tu attendais.
+    validations:
+      required: true
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Comment le reproduire
+      placeholder: "1. Aller sur…\n2. Cliquer sur…"
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environnement
+      description: Navigateur, système, version de Node si pertinent.
+  - type: markdown
+    attributes:
+      value: "Ne colle ici aucune clé, aucun jeton ni donnée personnelle."
