@@ -248,13 +248,13 @@ describe('portée, robots et extraction', () => {
       'User-agent: AudixioBot\nDisallow: /prive\n\nUser-agent: *\nAllow: /\n',
     );
     expect(
-      crawlerAllowed(blocked, new URL(`${ORIGIN}/prive`), 'audigybot'),
+      crawlerAllowed(blocked, new URL(`${ORIGIN}/prive`), 'audixiobot'),
     ).toBe(false);
-    expect(crawlerAllowed(blocked, new URL(`${ORIGIN}/ok`), 'audigybot')).toBe(
+    expect(crawlerAllowed(blocked, new URL(`${ORIGIN}/ok`), 'audixiobot')).toBe(
       true,
     );
     const google = parseRobots('User-agent: Googlebot\nDisallow: /\n');
-    expect(crawlerAllowed(google, new URL(`${ORIGIN}/`), 'audigybot')).toBe(
+    expect(crawlerAllowed(google, new URL(`${ORIGIN}/`), 'audixiobot')).toBe(
       true,
     );
   });
