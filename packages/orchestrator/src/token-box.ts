@@ -30,7 +30,9 @@ export function createOauthCrypto(key: Buffer): OauthCrypto {
   return {
     encrypt(plaintext) {
       const iv = randomBytes(IV_LEN);
-      const cipher = createCipheriv('aes-256-gcm', key, iv, { authTagLength: TAG_LEN });
+      const cipher = createCipheriv('aes-256-gcm', key, iv, {
+        authTagLength: TAG_LEN,
+      });
       cipher.setAAD(AAD);
       const ciphertext = Buffer.concat([
         cipher.update(plaintext, 'utf8'),
