@@ -17,7 +17,7 @@ const RESULTATS: Resultats = {
   cible: 'https://exemple.fr/',
   ip: '203.0.113.10',
   certificatEmpreinte: 'cd'.repeat(32),
-  ua: 'AudixioBot/1.0',
+  ua: 'AudigyBot/1.0',
   viewport: { largeur: 390, hauteur: 844 },
   versions: { moteur: '0.15.0', methode: '2026.1', lighthouse: '13.5.0' },
   findings: [],
