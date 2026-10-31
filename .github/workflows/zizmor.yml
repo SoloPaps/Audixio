@@ -1,0 +1,39 @@
+name: zizmor
+
+# Cherche les failles de sécurité dans les fichiers de workflow GitHub Actions.
+# Les alertes vont dans l'onglet Security (catégorie « zizmor »), sans bloquer le CI.
+on:
+  push:
+    branches: [main]
+    paths: ['.github/**']
+  pull_request:
+    branches: [main]
+    paths: ['.github/**']
+  schedule:
+    - cron: '15 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  zizmor:
+    name: Workflows (zizmor)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write # publier dans l'onglet Security
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: zizmor
+        run: pipx run zizmor --format sarif .github/workflows > zizmor.sarif || true
+      - name: Publier dans l'onglet Security
+        if: hashFiles('zizmor.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: zizmor.sarif
+          category: zizmor

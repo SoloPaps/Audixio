@@ -1,0 +1,15 @@
+name: Amélioration
+description: Proposer une idée ou une évolution
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idee
+    attributes:
+      label: L'idée
+      description: Qu'est-ce qui serait utile, et pour qui ?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives envisagées
