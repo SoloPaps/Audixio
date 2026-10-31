@@ -18,3 +18,5 @@ supabase/.temp/
 /solo-audit*.jsonl
 # Journal de sécurité local : jamais commité (détail des failles).
 securite-local/
+
+.aider*
