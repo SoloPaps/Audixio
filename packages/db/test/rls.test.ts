@@ -389,6 +389,12 @@ describe('RLS Supabase local', () => {
       update public.sites set owner_id = ${B}::uuid where id = ${A_SITE}::uuid
     `,
     );
+    await expectDenied(
+      A,
+      (tx) => tx`
+      update public.sites set host = 'victime.exemple' where id = ${A_SITE}::uuid
+    `,
+    );
 
     await expectDenied(
       A,
@@ -404,65 +410,16 @@ describe('RLS Supabase local', () => {
     );
   });
 
-  it('refuse un audit actif sans vérification fraîche', async () => {
-    await expectDenied(
-      A,
-      (tx) => tx`
+  it('refuse toute création directe d\'audit (seule request_audit le permet)', async () => {
+    for (const mode of ['passive', 'active']) {
+      await expectDenied(
+        A,
+        (tx) => tx`
       insert into public.audits (site_id, trigger, mode, status, method_version, engine_version)
-      values (${A_SITE}::uuid, 'manual', 'active', 'queued', '2026.1', 'test')
+      values (${A_SITE}::uuid, 'manual', ${mode}, 'queued', '2026.1', 'test')
     `,
-    );
-
-    const passive = await asUser(
-      A,
-      (tx) => tx`
-      insert into public.audits (site_id, trigger, mode, status, method_version, engine_version)
-      values (${A_SITE}::uuid, 'manual', 'passive', 'queued', '2026.1', 'test')
-      returning id
-    `,
-    );
-    expect(passive).toHaveLength(1);
-
-    await expectDenied(
-      A,
-      (tx) => tx`
-      insert into public.audits (
-        site_id, trigger, mode, status, method_version, engine_version, global_score
-      ) values (
-        ${A_SITE}::uuid, 'manual', 'passive', 'queued', '2026.1', 'test', 100
-      )
-    `,
-    );
-
-    await admin`
-      insert into public.site_verifications (
-        site_id, method, token, status, verified_at, last_checked_at
-      ) values (
-        ${A_SITE}::uuid, 'meta', ${'d'.repeat(32)}, 'verified', now(), now()
-      )
-    `;
-    const active = await asUser(
-      A,
-      (tx) => tx`
-      insert into public.audits (site_id, trigger, mode, status, method_version, engine_version)
-      values (${A_SITE}::uuid, 'manual', 'active', 'queued', '2026.1', 'test')
-      returning id
-    `,
-    );
-    expect(active).toHaveLength(1);
-
-    await admin`
-      update public.site_verifications
-      set last_checked_at = now() - interval '11 minutes'
-      where site_id = ${A_SITE}::uuid and status = 'verified'
-    `;
-    await expectDenied(
-      A,
-      (tx) => tx`
-      insert into public.audits (site_id, trigger, mode, status, method_version, engine_version)
-      values (${A_SITE}::uuid, 'manual', 'active', 'queued', '2026.1', 'test')
-    `,
-    );
+      );
+    }
 
     const pending = await asUser(
       A,
