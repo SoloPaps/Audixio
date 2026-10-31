@@ -26,14 +26,14 @@ jobs:
       security-events: write # publier dans l'onglet Security
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
       - name: zizmor
         run: pipx run zizmor --format sarif .github/workflows > zizmor.sarif || true
       - name: Publier dans l'onglet Security
         if: hashFiles('zizmor.sarif') != ''
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4
         with:
           sarif_file: zizmor.sarif
           category: zizmor
