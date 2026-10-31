@@ -81,7 +81,7 @@ Remplace : « GSC ≠ vérification » (27/10) et les vagues de preuves du 28/10
 ## Décisions du 28 octobre 2026 soir (post-Claude)
 
 **Statut :** figé le 28/10 au soir ; complété et en partie remplacé par les décisions du 29/10 ci-dessus.  
-**Projet :** Audixio — `C:\Projets\Audigy-Web` (OrdiBibi, local).  
+**Projet :** Audixio — `C:\Projets\Audixio-propre` (OrdiBibi, local).  
 **Pas de commit GitHub** pour cette session.
 
 Voir aussi : `docs/etapes/00-LISEZ-MOI.md`, `docs/archive/journal/journal-corrections-docs-2026-10-28.md`.

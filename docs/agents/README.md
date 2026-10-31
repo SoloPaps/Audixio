@@ -1,6 +1,6 @@
 # Agents Audixio — index
 
-Pack de règles par agent, construit à partir des docs de `C:\Projets\Audigy-Web` (lecture seule, 29 oct. 2026).
+Pack de règles par agent, construit à partir des docs de `C:\Projets\Audixio-propre` (lecture seule, 29 oct. 2026).
 À placer par exemple dans `docs/agents/` du dépôt.
 
 ## Comment l'utiliser dans Cursor

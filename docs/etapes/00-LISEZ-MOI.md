@@ -98,6 +98,7 @@ La priorité maintenant : **finir le cœur** en local (droits serveur, hub, soft
 
 ### Fichiers utiles
 
+- Prochaines étapes : `docs/dev/PROCHAINES-ETAPES.md`
 - Décisions figées : `docs/00-DECISIONS.md`
 - Produit : `docs/produit/FONCTIONNEMENT.md`
 - Droits : `docs/produit/MATRICE-STATUT-DROITS-CANON.md`
@@ -113,7 +114,7 @@ Ordre global pour modifier le site **comme décidé** le 26 octobre 2026. Une é
 
 ### Prérequis
 
-- Repo local : `SoloPaps/Audigy-Web` déjà cloné chez l’owner (ce pack ne clone pas).
+- Repo local : `SoloPaps/Audixio` déjà cloné chez l’owner (ce pack ne clone pas).
 - Pack design sur `main` : `docs/design/`.
 - Quota Cursor faible (~1 % au 26 oct. ; renouvellement ~**20 novembre 2026**) → privilégier Gemini / Gemini AI Studio pour la rédaction longue si besoin ; Cursor pour le code ciblé quand le quota revient.
 - Lire `docs/produit/FONCTIONNEMENT.md` + `docs/produit/SOFT-GATE-PARTIEL-CANON.md` + `docs/produit/MATRICE-STATUT-DROITS-CANON.md` (après étape 01) avant toute feature produit. Soft-gate = **PARTIEL** + **lock-components** + matrice droits (28 oct 2026 soir), plus soft-gate total.
