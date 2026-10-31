@@ -57,7 +57,7 @@ export interface JobOptions {
   botUrl?: string;
   /** WARC de la page d’accueil, seulement si le rapport probant est demandé. */
   warc?: boolean;
-  /** Origine publique d’Audigy, pour l’adresse de vérification du PDF. */
+  /** Origine publique d’Audixio, pour l’adresse de vérification du PDF. */
   verifyOrigin?: string;
   /** `page.pdf()` de la vue à imprimer. Absent : pas de PDF. */
   renderPdf?: (html: string) => Promise<Buffer>;

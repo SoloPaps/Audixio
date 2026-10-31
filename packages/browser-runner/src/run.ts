@@ -88,7 +88,7 @@ export interface BrowserAuditOptions {
   url: string | URL;
   /** Par défaut : `safeFetch` avec `BROWSER_BUDGET`. Les tests injectent un résolveur local. */
   fetch?: SafeFetch;
-  /** URL publique d'Audigy (`APP_BASE_URL`), pour le User-Agent. */
+  /** URL publique d'Audixio (`APP_BASE_URL`), pour le User-Agent. */
   botUrl?: string;
   /** Navigateur fourni (lancé avec `LAUNCH_ARGS`), sinon lancé puis fermé ici. */
   browser?: Browser;

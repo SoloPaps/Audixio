@@ -33,7 +33,7 @@ describe('textes légaux', () => {
     expect(texte).toContain('eIDAS');
     expect(texte).toContain('41.1');
     expect(texte).toContain('41.2');
-    expect(texte).toContain('AudigyWeb@outlook.fr');
+    expect(texte).toContain('Audixio@outlook.fr');
     expect(texte).toContain('https://audigyweb.fr');
     expect(texte).toContain('particulier non professionnel');
     expect(texte).toContain('hébergeur');

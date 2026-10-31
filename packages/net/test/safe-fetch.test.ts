@@ -246,7 +246,7 @@ describe('safeFetch — requêtes', () => {
     const last = seen.at(-1);
     expect(last?.path).toBe('/ok');
     expect(last?.headers['user-agent']).toBe(
-      'AudigyBot/1.0 (+https://audigy.example/robot)',
+      'AudixioBot/1.0 (+https://audigy.example/robot)',
     );
     expect(last?.headers.host).toBe('public.test');
     expect(last?.headers.cookie).toBeUndefined();

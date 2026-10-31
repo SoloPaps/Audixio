@@ -118,7 +118,7 @@ describe('createExternalApi', () => {
     });
     expect(got.status).toBe(200);
     expect(seen[0]?.headers.apikey).toBe(SECRET);
-    expect(seen[0]?.headers['user-agent']).toContain('AudigyBot');
+    expect(seen[0]?.headers['user-agent']).toContain('AudixioBot');
     for (const headers of [
       { 'User-Agent': 'autre' },
       { Host: 'evil.example' },
@@ -227,7 +227,7 @@ describe('createExternalApi', () => {
     expect(resolve).toHaveBeenCalledTimes(1);
     expect(seen.map((item) => item.method)).toEqual(['GET', 'POST']);
     expect(seen[1]?.body).toBe('{"url":"https://exemple.test/"}');
-    expect(seen[0]?.headers['user-agent']).toContain('AudigyBot');
+    expect(seen[0]?.headers['user-agent']).toContain('AudixioBot');
     expect(seen[0]?.headers.cookie).toBeUndefined();
     expect(seen[0]?.headers.accept).toBe('application/json');
     expect(seen[1]?.headers['content-type']).toContain('application/json');

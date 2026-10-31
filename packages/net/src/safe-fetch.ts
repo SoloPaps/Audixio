@@ -18,7 +18,7 @@ export const DEFAULT_TIMEOUT_MS = 10_000;
 export const DEFAULT_MAX_REDIRECTS = 5;
 export const DEFAULT_MAX_HTML_BYTES = 5 * 1024 * 1024;
 export const DEFAULT_MAX_BYTES = 20 * 1024 * 1024;
-export const BOT_NAME = 'AudigyBot/1.0';
+export const BOT_NAME = 'AudixioBot/1.0';
 
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 
@@ -29,7 +29,7 @@ export interface SafeFetchOptions {
   maxRedirects?: number;
   maxHtmlBytes?: number;
   maxBytes?: number;
-  /** URL publique d'Audigy (`APP_BASE_URL`), ajoutée au User-Agent : `AudigyBot/1.0 (+<url>/robot)`. */
+  /** URL publique d'Audixio (`APP_BASE_URL`), ajoutée au User-Agent : `AudixioBot/1.0 (+<url>/robot)`. */
   botUrl?: string;
   /** Réservé aux tests. */
   dial?: Dial;

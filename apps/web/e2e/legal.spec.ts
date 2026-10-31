@@ -58,7 +58,7 @@ test('le pied de page ouvre les pages légales', async ({ page }) => {
 
   await page.goto('/mentions-legales?theme=dark');
   await waitForIslands(page);
-  await expect(page.getByText('AudigyWeb@outlook.fr')).toBeVisible();
+  await expect(page.getByText('Audixio@outlook.fr')).toBeVisible();
   await expect(page.getByText('audigyweb.fr')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Hébergeur' })).toBeVisible();
   await expectNoViolations(page);

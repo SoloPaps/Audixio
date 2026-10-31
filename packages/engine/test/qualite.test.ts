@@ -243,9 +243,9 @@ describe('portée, robots et extraction', () => {
     });
   });
 
-  it('applique le groupe AudigyBot, pas celui d’un autre robot', () => {
+  it('applique le groupe AudixioBot, pas celui d’un autre robot', () => {
     const blocked = parseRobots(
-      'User-agent: AudigyBot\nDisallow: /prive\n\nUser-agent: *\nAllow: /\n',
+      'User-agent: AudixioBot\nDisallow: /prive\n\nUser-agent: *\nAllow: /\n',
     );
     expect(
       crawlerAllowed(blocked, new URL(`${ORIGIN}/prive`), 'audigybot'),
@@ -310,7 +310,7 @@ describe('parcours', () => {
         [`${ORIGIN}/robots.txt`]: response({
           url: `${ORIGIN}/robots.txt`,
           headers: { 'content-type': 'text/plain' },
-          body: 'User-agent: AudigyBot\nDisallow: /projet/prive\n\nUser-agent: *\nDisallow:\n',
+          body: 'User-agent: AudixioBot\nDisallow: /projet/prive\n\nUser-agent: *\nDisallow:\n',
         }),
         'https://autre.test/ext': response({
           url: 'https://autre.test/ext',

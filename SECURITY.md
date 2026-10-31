@@ -23,6 +23,6 @@ Le projet est maintenu par une seule personne : les délais de réponse ne sont 
 
 ## Périmètre
 
-Ce dépôt contient le code d'Audigy (site, fonctions, moteur d'audit, schéma de base). Les services tiers (Supabase, Netlify, Google) ont leurs propres politiques de signalement.
+Ce dépôt contient le code d'Audixio (site, fonctions, moteur d'audit, schéma de base). Les services tiers (Supabase, Netlify, Google) ont leurs propres politiques de signalement.
 
 Merci de ne pas tester sur des données ou des sites qui ne t'appartiennent pas.
