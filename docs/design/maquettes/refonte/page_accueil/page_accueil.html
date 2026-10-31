@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Audixio – Audit gratuit de la santé de votre site web</title>
+<meta name="description" content="Auditez gratuitement votre site : performance, SEO, sécurité, écologie, accessibilité, vie privée, e-mail. Aperçu et priorités immédiates sans inscription.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="canonical" href="https://www.audixio.fr/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Audixio">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Audixio – Vérifiez la santé de votre site, gratuitement">
+<meta property="og:description" content="Diagnostic gratuit : aperçu et priorités immédiates, sans inscription.">
+<style>
+/* Refonte sobre — voir docs/design/REFONTE-DESIGN-SOBRE.md
+   Polices : à héberger dans /fonts (Source Serif 4, Inter, JetBrains Mono).
+   Tant qu'elles ne sont pas installées, les polices système ci-dessous prennent le relais. */
+:root{
+  --fond:#FFFFFF;
+  --fond-doux:#FAF8FD;
+  --trait:#D9DEEC;
+  --trait-fort:#8A94B8;
+  --texte:#1E2A55;
+  --texte-2:#4A5585;
+  --accent:#3D52A0;
+  --accent-fonce:#2C3C7E;
+  --serif:"Source Serif 4","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --sans:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --r:4px;--r-bloc:8px;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fond);color:var(--texte);font:400 1.0625rem/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--serif);font-weight:600;color:var(--texte);margin:0}
+h1{font-size:2.25rem;line-height:1.15}
+h2{font-size:1.5rem;line-height:1.25}
+h3{font-size:1.125rem;line-height:1.35}
+p{margin:0 0 var(--s4);max-width:68ch}
+a{color:var(--accent);text-underline-offset:3px}
+a:hover{color:var(--accent-fonce)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:var(--r)}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.evitement{position:absolute;left:var(--s4);top:-80px;background:var(--accent);color:#fff;padding:var(--s3) var(--s4);border-radius:var(--r);z-index:10}
+.evitement:focus{top:var(--s3)}
+.page{max-width:1120px;margin:0 auto;padding:0 var(--s5)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.petit{font-size:.875rem;line-height:1.5;color:var(--texte-2)}
+
+/* En-tête */
+.entete{border-bottom:1px solid var(--trait);background:var(--fond)}
+.entete .page{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s2) var(--s6);min-height:64px;padding-top:var(--s2);padding-bottom:var(--s2)}
+.logo{display:inline-flex;align-items:center;min-height:44px}
+.logo img{display:block;height:32px;width:auto}
+.nav{display:flex;flex-wrap:wrap;gap:0 var(--s5);margin:0 auto 0 0;padding:0;list-style:none}
+.nav a{display:inline-flex;align-items:center;min-height:44px;color:var(--texte);text-decoration:none;font-weight:500}
+.nav a:hover{text-decoration:underline}
+.nav a[aria-current="page"]{font-weight:600;box-shadow:inset 0 -2px 0 var(--accent)}
+.entete .compte{display:inline-flex;align-items:center;min-height:44px;padding:0 var(--s4);border:1px solid var(--accent);border-radius:var(--r);color:var(--accent);font-weight:600;text-decoration:none}
+.entete .compte:hover{background:var(--fond-doux)}
+
+/* Boutons et champs */
+.bouton{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 var(--s5);border-radius:var(--r);border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 1rem var(--sans);text-decoration:none;cursor:pointer;transition:background-color 150ms ease-out}
+.bouton:hover{background:var(--accent-fonce);color:#fff}
+.bouton-2{background:transparent;color:var(--accent)}
+.bouton-2:hover{background:var(--fond-doux);color:var(--accent-fonce)}
+label{display:block;font-weight:600;margin-bottom:var(--s2)}
+.champ{display:flex;flex-wrap:wrap;gap:var(--s3)}
+input[type=text]{flex:1 1 280px;min-height:44px;padding:0 var(--s3);border:1px solid var(--trait-fort);border-radius:var(--r);font:400 1rem var(--mono);color:var(--texte);background:#fff}
+input[type=text][aria-invalid="true"]{border-color:#B42318}
+.erreur{margin:var(--s2) 0 0;color:#B42318;font-size:.9375rem}
+
+/* Sections */
+section{padding:var(--s8) 0;border-top:1px solid var(--trait)}
+.hero{padding:var(--s7) 0 var(--s8);border-top:0}
+.rubrique{display:block;margin-bottom:var(--s3);font:600 .8125rem var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--texte-2)}
+.intro{color:var(--texte-2);margin-top:var(--s3)}
+.hero .intro{font-size:1.1875rem;margin:var(--s4) 0 var(--s6)}
+.hero-grille{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s7);align-items:start}
+.garanties{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s5);margin:var(--s4) 0 0;padding:0;list-style:none}
+.garanties li::before{content:"✓ ";color:var(--accent);font-weight:700}
+
+/* Extrait de rapport */
+.extrait{border:1px solid var(--trait);border-radius:var(--r-bloc);background:var(--fond-doux)}
+.extrait-tete{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s2);padding:var(--s4) var(--s5);border-bottom:1px solid var(--trait)}
+.extrait-tete b{font-weight:600}
+.etiquette{display:inline-block;padding:1px var(--s2);border:1px solid var(--trait-fort);border-radius:var(--r);font:600 .75rem var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--texte-2);background:#fff}
+.note-globale{display:flex;align-items:baseline;gap:var(--s4);padding:var(--s5) var(--s5) var(--s3)}
+.note-globale .lettre{font:600 3rem/1 var(--mono);color:var(--texte)}
+.note-globale p{margin:0}
+.extrait table{margin:0 var(--s5) var(--s4);width:calc(100% - 48px)}
+
+/* Tableaux */
+table{border-collapse:collapse;width:100%}
+caption{text-align:left;font-weight:600;padding-bottom:var(--s3)}
+th,td{text-align:left;vertical-align:top;padding:var(--s3) var(--s3) var(--s3) 0;border-bottom:1px solid var(--trait)}
+thead th{font-size:.8125rem;font-weight:600;color:var(--texte-2);border-bottom:1px solid var(--trait-fort)}
+tbody th{font-weight:600}
+td.note,th.note{text-align:right;padding-right:0;white-space:nowrap}
+.grade{display:inline-block;min-width:2ch;font:600 1rem var(--mono);text-align:center;border:1px solid var(--trait-fort);border-radius:var(--r);padding:0 var(--s2);background:#fff}
+.tableau-large{overflow-x:auto}
+.tableau-large table{min-width:640px}
+
+/* Étapes */
+.etapes{counter-reset:e;margin:var(--s6) 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s6)}
+.etapes li{border-top:2px solid var(--accent);padding-top:var(--s4)}
+.etapes li::before{counter-increment:e;content:"0" counter(e);display:block;margin-bottom:var(--s2);font:600 .875rem var(--mono);color:var(--texte-2)}
+.etapes h3{margin-bottom:var(--s2)}
+.etapes p{margin:0;color:var(--texte-2)}
+
+/* Engagements */
+.engagements{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 var(--s7);margin:var(--s6) 0 0}
+.engagements div{padding:var(--s4) 0;border-top:1px solid var(--trait)}
+.engagements dt{font-weight:600}
+.engagements dd{margin:var(--s1) 0 0;color:var(--texte-2)}
+
+/* Questions */
+details{border-top:1px solid var(--trait);padding:var(--s4) 0}
+details:last-of-type{border-bottom:1px solid var(--trait)}
+summary{cursor:pointer;font-weight:600;min-height:28px}
+details p{margin:var(--s3) 0 0;color:var(--texte-2)}
+
+/* Liens */
+.explorer{margin:var(--s5) 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 var(--s7)}
+.explorer li{padding:var(--s3) 0;border-top:1px solid var(--trait)}
+.explorer a{font-weight:600}
+.explorer span{display:block;color:var(--texte-2);font-size:.9375rem}
+
+/* Appel final */
+.final{background:var(--fond-doux)}
+.final .page{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s5)}
+.final p{margin:var(--s2) 0 0}
+
+/* Pied de page */
+.pied{border-top:1px solid var(--trait);padding:var(--s6) 0 var(--s7)}
+.pied ul{display:flex;flex-wrap:wrap;gap:var(--s1) var(--s5);margin:0 0 var(--s4);padding:0;list-style:none}
+.pied a{display:inline-flex;align-items:center;min-height:44px}
+.pied p{margin:0;max-width:none}
+
+@media (max-width:860px){
+  h1{font-size:1.875rem}
+  .hero-grille,.etapes,.engagements,.explorer{grid-template-columns:1fr}
+  .hero-grille{gap:var(--s6)}
+  section{padding:var(--s7) 0}
+  .hero{padding:var(--s6) 0 var(--s7)}
+}
+@media (max-width:480px){.page{padding:0 var(--s4)}.extrait table{margin:0 var(--s4) var(--s3);width:calc(100% - 32px)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.entete .nav,.entete .compte,.evitement{display:none}}
+</style>
+</head>
+<body>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+
+<header class="entete">
+  <div class="page">
+    <a class="logo" href="../page_accueil/page_accueil.html" aria-label="Audixio — accueil"><img src="../../../logos/audixio-logo-pc-clair.svg" alt="" width="107" height="34"></a>
+    <nav aria-label="Navigation principale">
+      <ul class="nav">
+        <li><a href="../page_accueil/page_accueil.html" aria-current="page">Accueil</a></li>
+        <li><a href="../page_methode_bareme/page_methode_bareme.html">Méthode</a></li>
+        <li><a href="../page_site_suivi/page_site_suivi.html">Sites suivis</a></li>
+        <li><a href="../page_pro/page_pro.html">Tarifs</a></li>
+      </ul>
+    </nav>
+    <a class="compte" href="../interface_connexion/interface_connexion.html">Connexion</a>
+  </div>
+</header>
+
+<main id="contenu" tabindex="-1">
+
+  <section class="hero" aria-labelledby="titre-hero">
+    <div class="page hero-grille">
+      <div>
+        <span class="rubrique">Observatoire de l'hygiène web</span>
+        <h1 id="titre-hero">Vérifiez la santé de votre site, gratuitement.</h1>
+        <p class="intro">Diagnostic rapide de robustesse technique, d'empreinte environnementale, de respect de la vie privée et de conformité réglementaire.</p>
+
+        <form id="formulaire-audit" action="#" method="get" novalidate>
+          <label for="adresse">Adresse du site web à analyser</label>
+          <div class="champ">
+            <input type="text" id="adresse" name="url" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" placeholder="https://monsite-exemple.fr" aria-describedby="aide-adresse">
+            <button class="bouton" type="submit">Lancer l'audit gratuit</button>
+          </div>
+          <p class="petit" id="aide-adresse" style="margin-top:8px">Format attendu : https://domaine.fr</p>
+          <p class="erreur" id="erreur-adresse" role="alert" hidden></p>
+        </form>
+
+        <ul class="garanties petit">
+          <li>Gratuit sans compte</li>
+          <li>Passif par défaut</li>
+          <li>Méthode publique</li>
+        </ul>
+      </div>
+
+      <figure class="extrait" style="margin:0" aria-labelledby="legende-extrait">
+        <div class="extrait-tete">
+          <span><b>monsite-exemple.fr</b> · Boutique &amp; portfolio</span>
+          <span class="etiquette">Exemple</span>
+        </div>
+        <div class="note-globale">
+          <span class="lettre" aria-hidden="true">C</span>
+          <p><b>Note globale C.</b><br><span class="petit">Des bases correctes, des priorités à traiter.</span></p>
+        </div>
+        <table>
+          <caption class="sr-only">Notes d'exemple par domaine</caption>
+          <thead><tr><th scope="col">Domaine</th><th scope="col" class="note">Note</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Performance</th><td class="note"><span class="grade">C</span></td></tr>
+            <tr><th scope="row">SEO</th><td class="note"><span class="grade">B</span></td></tr>
+            <tr><th scope="row">Sécurité</th><td class="note"><span class="grade">D</span></td></tr>
+            <tr><th scope="row">Écologie</th><td class="note"><span class="grade">C</span></td></tr>
+            <tr><th scope="row">Accessibilité</th><td class="note"><span class="grade">D</span></td></tr>
+            <tr><th scope="row">Qualité technique</th><td class="note"><span class="grade">C</span></td></tr>
+            <tr><th scope="row">Vie privée</th><td class="note"><span class="grade">D</span></td></tr>
+            <tr><th scope="row">DNS / e-mail</th><td class="note"><span class="grade">C</span></td></tr>
+          </tbody>
+        </table>
+        <figcaption id="legende-extrait" class="petit" style="padding:0 24px 16px">
+          Exemple indicatif, horodaté AUD-2026-8492. La moyenne de ce profil donne la note C.
+          <a href="../page_exemple_rapport/page_exemple_rapport.html">Voir un exemple de rapport complet</a>.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="methode" aria-labelledby="titre-domaines">
+    <div class="page">
+      <span class="rubrique">01 · Méthode</span>
+      <h2 id="titre-domaines">Les 8 domaines Audixio</h2>
+      <p class="intro">Une évaluation fondée sur les standards ouverts du web et sur les réglementations européennes. Les notes ci-dessous sont des exemples.</p>
+      <div class="tableau-large">
+        <table>
+          <caption class="sr-only">Les huit domaines, ce qui est vérifié et le référentiel utilisé</caption>
+          <thead><tr><th scope="col">Domaine</th><th scope="col">Points vérifiés</th><th scope="col">Référentiel</th><th scope="col" class="note">Exemple</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Performance</th><td>LCP, INP, CLS, TTFB serveur, compression Brotli / Gzip</td><td>W3C Web Vitals</td><td class="note"><span class="grade">C</span></td></tr>
+            <tr><th scope="row">SEO</th><td>Indexabilité, balises meta, canonicals, sitemap, robots.txt, données structurées</td><td>Open Web Standards</td><td class="note"><span class="grade">B</span></td></tr>
+            <tr><th scope="row">Sécurité</th><td>TLS, HSTS, politique CSP, injections, failles XSS</td><td>Bonnes pratiques TLS / CSP</td><td class="note"><span class="grade">D</span></td></tr>
+            <tr><th scope="row">Écologie</th><td>Empreinte gCO₂e, poids de page, complexité DOM, questionnaire RGESN</td><td>EcoIndex A à G</td><td class="note"><span class="grade">C</span></td></tr>
+            <tr><th scope="row">Accessibilité</th><td>Contraste, repères ARIA, navigation au clavier, structure sémantique</td><td>WCAG 2.2 / RGAA 4.1</td><td class="note"><span class="grade">D</span></td></tr>
+            <tr><th scope="row">Qualité technique</th><td>Validité HTML / CSS, bibliothèques obsolètes, bases de failles OSV / NVD</td><td>OSV / NIST NVD</td><td class="note"><span class="grade">C</span></td></tr>
+            <tr><th scope="row">Vie privée</th><td>Traceurs tiers avant consentement, politiques de cookies, ePrivacy / RGPD</td><td>RGPD / ePrivacy UE</td><td class="note"><span class="grade">D</span></td></tr>
+            <tr><th scope="row">DNS / e-mail</th><td>Enregistrements MX, SPF, DKIM, DMARC</td><td>Standards SPF / DMARC</td><td class="note"><span class="grade">C</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="petit" style="margin-top:16px">Référentiels ouverts : MDN Observatory, Lighthouse, EcoIndex, WCAG 2.2 / RGAA 4.1, RGPD / ePrivacy, OSV, NIST NVD. <a href="../page_methode_bareme/page_methode_bareme.html">Voir la méthode et le barème</a>.</p>
+    </div>
+  </section>
+
+  <section id="comment-ca-marche" aria-labelledby="titre-etapes">
+    <div class="page">
+      <span class="rubrique">02 · En pratique</span>
+      <h2 id="titre-etapes">Trois étapes, aucune inscription</h2>
+      <ol class="etapes">
+        <li><h3>Indiquez l'adresse de votre site</h3><p>Saisissez l'adresse à analyser, par exemple https://domaine.fr. Aucun compte n'est nécessaire.</p></li>
+        <li><h3>Audixio examine les 8 domaines</h3><p>L'analyse est passive par défaut. Les tests actifs ne partent que sur un site dont vous prouvez la propriété.</p></li>
+        <li><h3>Lisez l'aperçu et les priorités</h3><p>Vous obtenez un aperçu horodaté et les priorités à traiter en premier.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section aria-labelledby="titre-engagements">
+    <div class="page">
+      <span class="rubrique">03 · Confiance</span>
+      <h2 id="titre-engagements">Conçu pour se vérifier</h2>
+      <p class="intro">Quatre engagements, que vous pouvez contrôler dans la méthode publique.</p>
+      <dl class="engagements">
+        <div><dt>Passif par défaut</dt><dd>Les tests actifs ne partent que sur un site dont vous prouvez la propriété.</dd></div>
+        <div><dt>Zéro traceur tiers</dt><dd>Aucun cookie traceur, et des polices hébergées par Audixio lui-même.</dd></div>
+        <div><dt>Méthode publique</dt><dd>Des critères documentés et vérifiables, fondés sur des référentiels ouverts.</dd></div>
+        <div><dt>Rapports horodatés</dt><dd>Chaque rapport porte sa date : vous savez toujours de quand datent les constats.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section aria-labelledby="titre-formules">
+    <div class="page">
+      <span class="rubrique">04 · Formules</span>
+      <h2 id="titre-formules">Ce que vous obtenez</h2>
+      <p class="intro">Les particuliers repartent avec l'essentiel sans rien créer. Un compte gratuit ouvre le détail.</p>
+      <div class="tableau-large">
+        <table>
+          <caption class="sr-only">Comparaison des trois formules</caption>
+          <thead>
+            <tr><th scope="col">Fonction</th><th scope="col">Sans compte</th><th scope="col">Compte gratuit</th><th scope="col">Audixio Pro</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Prix</th><td>Gratuit</td><td>Gratuit</td><td>Bientôt disponible</td></tr>
+            <tr><th scope="row">Aperçu et priorités immédiates</th><td>Oui</td><td>Oui</td><td>Oui</td></tr>
+            <tr><th scope="row">Détail des domaines</th><td>Domaines sensibles verrouillés sans preuve de propriété</td><td>Selon votre statut ; domaines sensibles après preuve</td><td>Oui</td></tr>
+            <tr><th scope="row">Plan d'action</th><td>Non</td><td>Oui</td><td>Oui</td></tr>
+            <tr><th scope="row">Brief pour votre assistant IA</th><td>Non</td><td>Oui</td><td>Oui</td></tr>
+            <tr><th scope="row">Suivi continu multi-sites, alertes de régression</th><td>Non</td><td>Non</td><td>Oui</td></tr>
+            <tr><th scope="row">Historique</th><td>Non</td><td>Non</td><td>10 audits ou plus</td></tr>
+            <tr><th scope="row">Exports</th><td>Non</td><td>Non</td><td>PDF client, Excel, CSV, Word, JSON, XML</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:24px;display:flex;flex-wrap:wrap;gap:12px;max-width:none">
+        <a class="bouton" href="#formulaire-audit">Tester mon site</a>
+        <a class="bouton bouton-2" href="../interface_connexion/interface_connexion.html">Se connecter</a>
+        <a class="bouton bouton-2" href="../page_pro/page_pro.html">Être prévenu du lancement de Pro</a>
+      </p>
+    </div>
+  </section>
+
+  <section id="faq" aria-labelledby="titre-faq">
+    <div class="page">
+      <span class="rubrique">05 · Questions</span>
+      <h2 id="titre-faq" style="margin-bottom:24px">Questions fréquentes</h2>
+      <details><summary>L'audit est-il vraiment gratuit ?</summary><p>Oui. Le diagnostic est gratuit, sans inscription et sans cookies traceurs. Sans compte, vous obtenez un aperçu et les priorités immédiates. Le détail des domaines, le plan d'action et le brief pour votre assistant IA nécessitent un compte (le brief uniquement avec compte).</p></details>
+      <details><summary>Que signifie « passif par défaut » ?</summary><p>Les tests actifs ne partent que sur un site dont vous prouvez la propriété.</p></details>
+      <details><summary>Quels domaines sont évalués ?</summary><p>Huit domaines : performance, SEO, sécurité, écologie, accessibilité, qualité technique, vie privée, DNS / e-mail.</p></details>
+      <details><summary>Sur quels référentiels repose la note ?</summary><p>Sur des référentiels ouverts : MDN Observatory, Lighthouse, EcoIndex, WCAG 2.2 / RGAA 4.1, RGPD / ePrivacy, OSV et NIST NVD. La méthode est publique, les critères sont documentés et vérifiables.</p></details>
+      <details><summary>Audixio utilise-t-il des traceurs ?</summary><p>Non. Audixio n'utilise aucun traceur tiers, héberge ses polices lui-même et horodate chaque rapport.</p></details>
+      <details><summary>Qu'est-ce qu'Audixio Pro ?</summary><p>Audixio Pro, bientôt disponible, s'adresse aux agences et équipes web : suivi continu multi-sites, historique long (au moins 10 audits), alertes de régression et plafonds d'équipe étendus, avec exports PDF client, Excel, CSV, Word, JSON et XML.</p></details>
+    </div>
+  </section>
+
+  <section aria-labelledby="titre-explorer">
+    <div class="page">
+      <span class="rubrique">06 · Explorer</span>
+      <h2 id="titre-explorer">Explorer Audixio</h2>
+      <ul class="explorer">
+        <li><a href="../page_exemple_rapport/page_exemple_rapport.html">Exemple de rapport</a><span>Voir un rapport complet, note et priorités.</span></li>
+        <li><a href="../page_methode_bareme/page_methode_bareme.html">Méthode et barème</a><span>Comment chaque note A–F est calculée.</span></li>
+        <li><a href="../page_pro/page_pro.html">Audixio Pro</a><span>Gratuit ou Pro : ce qui change. Liste d'attente.</span></li>
+        <li><a href="../page_robot_audixio/page_robot_audixio.html">Le robot Audixio</a><span>Ce que notre robot visite, et comment le bloquer.</span></li>
+        <li><a href="../page_ecologie/page_ecologie.html">Écoconception</a><span>Poids, requêtes, sobriété : notre approche.</span></li>
+        <li><a href="../page_accessibilite/page_accessibilite.html">Accessibilité</a><span>Notre engagement et le niveau RGAA visé.</span></li>
+        <li><a href="../interface_connexion/interface_connexion.html">Connexion</a><span>Suivre vos sites et recevoir les alertes.</span></li>
+        <li><a href="../page_site_suivi/page_site_suivi.html">Sites suivis</a><span>Vos sites sous surveillance et leur évolution.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="final" aria-labelledby="titre-final">
+    <div class="page">
+      <div>
+        <h2 id="titre-final">Prêt à évaluer la santé de votre site ?</h2>
+        <p>Le diagnostic est gratuit, sans inscription et sans cookies traceurs. Obtenez vos premières priorités immédiatement.</p>
+      </div>
+      <a class="bouton" href="#formulaire-audit">Tester mon site maintenant</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="pied">
+  <div class="page">
+    <ul>
+      <li><a href="../page_mentions_legales/page_mentions_legales.html">Mentions légales</a></li>
+      <li><a href="../page_politique_confidentialite/page_politique_confidentialite.html">Confidentialité</a></li>
+      <li><a href="../page_accessibilite/page_accessibilite.html">Accessibilité</a></li>
+      <li><a href="../page_conditions_utilisation/page_conditions_utilisation.html">CGU</a></li>
+      <li><a href="../page_ecologie/page_ecologie.html">Écoconception</a></li>
+      <li><a href="../page_robot_audixio/page_robot_audixio.html">Robot Audixio</a></li>
+      <li><a href="../interface_bandeau_cookies/interface_bandeau_cookies.html">Cookies</a></li>
+      <li><a href="../page_pro/page_pro.html">Audixio Pro</a></li>
+    </ul>
+    <p class="petit">Audixio · Méthode V3.4 · Observatoire indépendant de l'hygiène web. Aucune donnée commerciale stockée.</p>
+    <p class="petit">© 2026 Audixio · Passif par défaut · Outil gratuit · Aucun traceur tiers · Polices auto-hébergées</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var f=document.getElementById('formulaire-audit'),i=document.getElementById('adresse'),e=document.getElementById('erreur-adresse');
+  if(!f)return;
+  f.addEventListener('submit',function(ev){
+    var v=i.value.trim(),ok=false;
+    try{var u=new URL(/^https?:\/\//i.test(v)?v:'https://'+v);ok=/\./.test(u.hostname);}catch(x){}
+    if(!ok){
+      ev.preventDefault();
+      e.textContent='Saisissez une adresse complète, par exemple https://domaine.fr.';
+      e.hidden=false;i.setAttribute('aria-invalid','true');i.setAttribute('aria-describedby','aide-adresse erreur-adresse');i.focus();
+    }else{
+      e.hidden=true;i.removeAttribute('aria-invalid');
+    }
+  });
+})();
+</script>
+</body>
+</html>
