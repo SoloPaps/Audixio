@@ -292,24 +292,27 @@ test('preuve de propriété : guides, création, vérification', async ({
   }, session);
   await page.goto(`/verifier?site=${SITE_ID}`);
   await expect(page.getByText('Projet artiste')).toBeVisible();
+  await page
+    .getByRole('tab', { name: 'Enregistrement du nom de domaine' })
+    .click();
   await expect(
     page.getByText('Un nom github.io ne se règle pas ici.'),
   ).toBeVisible();
   await expect(
     page.getByRole('heading', { name: 'Chez Netlify, dans le DNS' }),
   ).toBeVisible();
-  await page.getByLabel('Fichier sur le site').check();
+  await page.getByRole('tab', { name: 'Fichier HTML à la racine' }).click();
   await expect(page.getByText('.nojekyll')).toBeVisible();
   await page.getByRole('button', { name: 'Créer le code' }).click();
   await expect(page.getByText(TOKEN)).toBeVisible();
   await expect(
     page.getByText(
-      'https://solopaps.github.io/Projet-Site-Artiste/audigy-verification.txt',
+      'https://solopaps.github.io/Projet-Site-Artiste/audixio-verification.html',
     ),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Vérifier le site' }).click();
+  await page.getByRole('button', { name: 'Vérifier maintenant' }).click();
   await expect(
-    page.getByText('Le site est vérifié. Les tests approfondis sont ouverts.'),
+    page.getByRole('heading', { name: 'Contrôle du domaine confirmé' }),
   ).toBeVisible();
   await expectNoViolations(page);
 

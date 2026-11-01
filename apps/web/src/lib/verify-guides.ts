@@ -90,7 +90,7 @@ const WELL_KNOWN: Guide = {
 export function guidesFor(method: VerifyMethod): readonly Guide[] {
   if (method === 'dns_txt') return [NETLIFY, REGISTRAR];
   if (method === 'file') return [GITHUB, FILE];
-  if (method === 'html_file') return [HTML_FILE];
+  if (method === 'html_file') return [GITHUB, HTML_FILE];
   if (method === 'well_known') return [WELL_KNOWN];
   if (method === 'search_console') return [];
   return [META];
