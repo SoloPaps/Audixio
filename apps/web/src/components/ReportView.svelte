@@ -505,7 +505,7 @@ onMount(() => {
       {/if}
       <ShareSheet auditId={payload.audit.id} {host} open={shareOpen} onClose={() => { shareOpen = false; }} />
     {/if}
-    <section class="plan-card">
+    <section class="plan-card verify-card">
       <h2 id="verification">{t('section.verify')}</h2>
       <details>
         <summary>{t('verify.how')}</summary>

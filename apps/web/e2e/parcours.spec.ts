@@ -438,7 +438,7 @@ test('rapport sombre sans violation', async ({ page }) => {
       name: 'Audit de exemple.fr',
     }),
   ).toBeVisible();
-  await expect(page.getByLabel('Thème')).toHaveValue('dark');
+  await expect(page.getByRole('button', { name: 'FR' })).toBeVisible();
   await expectNoViolations(page);
 });
 

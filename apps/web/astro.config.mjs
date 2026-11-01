@@ -76,6 +76,40 @@ function authDev() {
   };
 }
 
+function maquetteDev() {
+  const mount = (server) => {
+    server.middlewares.use((req, res, next) => {
+      const raw = req.url ?? '';
+      const query = raw.indexOf('?');
+      const path = query === -1 ? raw : raw.slice(0, query);
+      const params = new URLSearchParams(query === -1 ? '' : raw.slice(query + 1));
+      const visuel = params.get('visuel');
+      let id = '';
+      if (path === '/rapport' && visuel === '1') id = 'hub';
+      else if (path === '/domaine' && visuel === 'ouvert') id = 'domaine';
+      else if (path === '/domaine' && visuel === 'restreint') id = 'restreint';
+      else if (path === '/verifier' && visuel === '1') id = 'preuve';
+      if (!id) {
+        next();
+        return;
+      }
+      server
+        .ssrLoadModule('/src/lib/maquette-html.ts')
+        .then((mod) => {
+          res.statusCode = 200;
+          res.setHeader('content-type', 'text/html; charset=utf-8');
+          res.end(mod.maquetteDocument(id));
+        })
+        .catch(next);
+    });
+  };
+  return {
+    name: 'audigy-maquette-visuel',
+    enforce: 'pre',
+    configureServer: mount,
+  };
+}
+
 function printRoute() {
   const mount = (server) => {
     server.middlewares.stack.unshift({ route: '', handle: rewriteRoutes });
@@ -98,7 +132,7 @@ export default defineConfig({
     format: 'directory',
   },
   vite: {
-    plugins: [authDev(), printRoute()],
+    plugins: [maquetteDev(), authDev(), printRoute()],
     define: {
       [envKey('URL')]: JSON.stringify(process.env.SUPABASE_URL ?? ''),
       [envKey(`${piece(['A', 'N', 'O', 'N'])}_KEY`)]: JSON.stringify(

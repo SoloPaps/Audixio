@@ -54,6 +54,8 @@ export const fr = {
   'home.scale.range.problem': '0–49',
   'nav.main': 'Pages',
   'nav.sites': 'Sites',
+  'nav.sites.long': 'Sites suivis',
+  'nav.close': 'Fermer le menu',
   'nav.account': 'Compte',
   'nav.login': 'Connexion',
   'nav.method': 'Méthode',

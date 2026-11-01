@@ -43,6 +43,8 @@
   "home.scale.range.problem": "0–49",
   "nav.main": "Pages",
   "nav.sites": "Sites",
+  "nav.sites.long": "Followed sites",
+  "nav.close": "Close menu",
   "nav.account": "Account",
   "nav.login": "Sign in",
   "nav.method": "Method",

@@ -184,9 +184,7 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Audit de atelier-martin.fr' }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('navigation', { name: 'Navigation principale' }),
-  ).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Menu' })).toBeVisible();
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth <= window.innerWidth + 1,
   );
