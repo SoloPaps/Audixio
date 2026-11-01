@@ -30,7 +30,9 @@ export function createOauthCrypto(key: Buffer): OauthCrypto {
   return {
     encrypt(plaintext) {
       const iv = randomBytes(IV_LEN);
-      const cipher = createCipheriv('aes-256-gcm', key, iv);
+      const cipher = createCipheriv('aes-256-gcm', key, iv, {
+        authTagLength: TAG_LEN,
+      });
       cipher.setAAD(AAD);
       const ciphertext = Buffer.concat([
         cipher.update(plaintext, 'utf8'),
@@ -48,7 +50,9 @@ export function createOauthCrypto(key: Buffer): OauthCrypto {
         const iv = blob.subarray(1, 1 + IV_LEN);
         const tag = blob.subarray(1 + IV_LEN, 1 + IV_LEN + TAG_LEN);
         const ciphertext = blob.subarray(1 + IV_LEN + TAG_LEN);
-        const decipher = createDecipheriv('aes-256-gcm', key, iv);
+        const decipher = createDecipheriv('aes-256-gcm', key, iv, {
+          authTagLength: TAG_LEN,
+        });
         decipher.setAAD(AAD);
         decipher.setAuthTag(tag);
         const plain = Buffer.concat([

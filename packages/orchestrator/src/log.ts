@@ -13,13 +13,13 @@ export const SECRET_ENV_NAMES = [
 ] as const;
 
 const PATTERNS: RegExp[] = [
-  /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g,
-  /\bsb_(?:secret|publishable)_[A-Za-z0-9_-]+/g,
-  /\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]+/g,
+  /eyJ[A-Za-z0-9_-]{1,16384}\.[A-Za-z0-9_-]{1,16384}\.[A-Za-z0-9_-]{1,16384}/g,
+  /\bsb_(?:secret|publishable)_[A-Za-z0-9_-]{1,4096}/g,
+  /\b(?:ghp|gho|ghs|ghu|github_pat)_[A-Za-z0-9_]{1,4096}/g,
   /\bAIza[0-9A-Za-z_-]{20,}/g,
-  /\bBearer\s+[^\s"']+/gi,
+  /\bBearer\s{1,16}[^\s"']{1,16384}/gi,
   /\b1\/\/[A-Za-z0-9_\-+/=]{8,}/g,
-  /\bya29\.[A-Za-z0-9_-]+/g,
+  /\bya29\.[A-Za-z0-9_-]{1,4096}/g,
 ];
 
 export type LogLevel = 'info' | 'warn' | 'error';

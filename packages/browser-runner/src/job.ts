@@ -154,9 +154,8 @@ export async function runJob(
 }
 
 function verifyUrl(origin: string | undefined, auditId: string): string {
-  const base = (
-    origin && origin.trim() !== '' ? origin : 'https://audigy.local'
-  ).replace(/\/+$/u, '');
+  let base = origin && origin.trim() !== '' ? origin : 'https://audigy.local';
+  while (base.endsWith('/')) base = base.slice(0, -1);
   return `${base}/verifier/${auditId}`;
 }
 
