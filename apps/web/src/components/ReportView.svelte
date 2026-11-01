@@ -4,7 +4,7 @@ import { formatNumber } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
 import { type AuditPayload, readAudit } from '../lib/audit-api.js';
 import { recognizedStack } from '../lib/brief.js';
-import { currentSession } from '../lib/browser-session.js';
+import { browserClient, currentSession } from '../lib/browser-session.js';
 import {
   domainPlain,
   domainSentence,
@@ -13,8 +13,22 @@ import {
 } from '../lib/domains.js';
 import { levelForStatus } from '../lib/findings.js';
 import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
-import { gradeCopy } from '../lib/grade.js';
-import { GLOBAL_SERIES, type HistoryView } from '../lib/history.js';
+import {
+  type ActionStatus,
+  badgeHref,
+  detailHref,
+  domainLetter,
+  failureKind,
+  hostLabel,
+  isActionStatus,
+  mergeApercu,
+  planHref,
+  priorityHref,
+  type SeverityTone,
+  severityTone,
+  shareGesture,
+  verifyHref,
+} from '../lib/hub-view.js';
 import { loginHref } from '../lib/nav.js';
 import { formatRating } from '../lib/places-api.js';
 import { pickPriorities } from '../lib/priorities.js';
@@ -33,22 +47,17 @@ import {
   scoredDomainCount,
 } from '../lib/report-model.js';
 import { levelForScore, levelLabel } from '../lib/score.js';
-import { loadSiteHistory } from '../lib/site-history.js';
 import { explainUntested } from '../lib/untested-cause.js';
 import { verdictCopy } from '../lib/verdict.js';
 import AuditOverlay from './AuditOverlay.svelte';
-import CategoryList from './CategoryList.svelte';
-import EmptyState from './EmptyState.svelte';
 import FindingList from './FindingList.svelte';
-import HistoryPanel from './HistoryPanel.svelte';
 import PreuveMentions from './PreuveMentions.svelte';
-import PriorityCards from './PriorityCards.svelte';
 import ReportFooter from './ReportFooter.svelte';
-import ScoreGauge from './ScoreGauge.svelte';
+import HubView from './HubView.svelte';
 import UntestedCause from './UntestedCause.svelte';
 
 interface Props {
-  mode?: 'report' | 'domain';
+  mode?: 'report' | 'domain' | 'detail' | 'plan' | 'badge';
 }
 
 let { mode = 'report' }: Props = $props();
@@ -57,8 +66,10 @@ let phase = $state<'loading' | 'message' | 'ready'>('loading');
 let message = $state(t('report.loading'));
 let payload = $state<AuditPayload | null>(null);
 let domainId = $state('');
-let history = $state<HistoryView | null>(null);
-let historyReady = $state(false);
+let checkId = $state('');
+let shareOpen = $state(false);
+let userId = $state('');
+let statuses = $state<Record<string, ActionStatus>>({});
 
 const items = $derived(
   payload
@@ -74,13 +85,19 @@ const shown = $derived.by(() => {
 const global = $derived(payload?.audit.globalScore ?? null);
 const aside = $derived(payload ? reputationAside(payload) : null);
 const verdict = $derived(verdictCopy(global, shown));
-const grade = $derived(gradeCopy(global));
 const reportRowList = $derived(
   payload
     ? reportRows(payload, fixesFor(hostingOf(payload.audit.site.hosting)))
     : [],
 );
-const priorities = $derived(pickPriorities(reportRowList));
+const priorities = $derived(pickPriorities(reportRowList, 10));
+const siteVerified = $derived(payload?.audit.siteVerified !== false);
+const host = $derived(payload ? hostLabel(payload.audit.site.url) : '');
+const letter = $derived(domainLetter(global, !siteVerified));
+const partialText = $derived(
+  payload?.audit.partialLabel ??
+    (siteVerified ? '' : t('report.partial', { n: scoredDomainCount(items) })),
+);
 const domainRow = $derived(items.find((item) => item.id === domainId));
 const domainScore = $derived(
   payload?.domains.find((row) => row.domain === domainId)?.score ??
@@ -91,7 +108,6 @@ const domainLocked = $derived(
   payload?.domains.find((row) => row.domain === domainId)?.locked === true ||
     domainRow?.locked === true,
 );
-const siteVerified = $derived(payload?.audit.siteVerified !== false);
 const domainUntested = $derived.by(() => {
   if (!payload || mode !== 'domain' || domainScore !== null) return null;
   const row = payload.domains.find((item) => item.domain === domainId);
@@ -110,6 +126,102 @@ const stamp = $derived.by(() => {
   const date = raw ? new Date(raw) : new Date();
   return Number.isNaN(date.getTime()) ? new Date() : date;
 });
+
+async function applyGate(source: AuditPayload): Promise<AuditPayload> {
+  const supabase = browserClient();
+  if (!supabase) return source;
+  const { data, error } = await supabase.rpc('read_rapport_apercu', {
+    p_audit_id: source.audit.id,
+  });
+  if (error || data == null) return source;
+  return mergeApercu(source, data);
+}
+
+async function loadStatuses(siteId: string): Promise<void> {
+  const supabase = browserClient();
+  if (!supabase) return;
+  const { data, error } = await supabase
+    .from('action_plan_items')
+    .select('check_id, status')
+    .eq('site_id', siteId);
+  if (error || !Array.isArray(data)) return;
+  const next: Record<string, ActionStatus> = {};
+  for (const row of data) {
+    if (isActionStatus(row.status)) next[row.check_id] = row.status;
+  }
+  statuses = next;
+}
+
+async function onStatus(
+  findingId: string,
+  status: ActionStatus,
+): Promise<void> {
+  if (!payload || !userId) {
+    statuses = { ...statuses, [findingId]: status };
+    return;
+  }
+  const row =
+    reportRowList.find((item) => item.checkId === findingId) ??
+    reportRowList.find((item) => item.id === findingId);
+  const domain = row?.domain;
+  const key = row?.checkId ?? findingId;
+  if (!domain) return;
+  statuses = { ...statuses, [key]: status };
+  const supabase = browserClient();
+  if (!supabase) return;
+  await supabase.from('action_plan_items').upsert(
+    {
+      user_id: userId,
+      site_id: payload.audit.site.id,
+      check_id: key,
+      domain,
+      status,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'user_id,site_id,check_id' },
+  );
+}
+
+async function onShare(): Promise<void> {
+  const coarse =
+    window.matchMedia('(pointer: coarse)').matches &&
+    window.matchMedia('(hover: none)').matches;
+  const canShare = typeof navigator.share === 'function';
+  if (shareGesture(coarse, canShare) && payload) {
+    try {
+      await navigator.share({
+        title: t('hub.share'),
+        url: `${location.origin}/rapport?id=${encodeURIComponent(payload.audit.id)}`,
+      });
+      return;
+    } catch {
+      shareOpen = true;
+      return;
+    }
+  }
+  shareOpen = true;
+}
+
+const badgeSnippet = $derived.by(() => {
+  if (!payload || typeof location === 'undefined') return '';
+  const mark = letter ?? '';
+  return `<a href="${location.origin}/rapport?id=${payload.audit.id}">${t('brand.ui')} ${mark}</a>`;
+});
+
+const detailRows = $derived(
+  mode === 'detail'
+    ? reportRowList.filter(
+        (row) => row.id === checkId || row.checkId === checkId,
+      )
+    : reportRowList,
+);
+
+function toneLabel(tone: SeverityTone): string {
+  if (tone === 'crit') return t('hub.sev.crit');
+  if (tone === 'fix') return t('hub.sev.fix');
+  if (tone === 'check') return t('hub.sev.check');
+  return t('hub.sev.minor');
+}
 
 function downloadMarkdown(event: MouseEvent): void {
   event.preventDefault();
@@ -147,16 +259,13 @@ function downloadMarkdown(event: MouseEvent): void {
 }
 
 onMount(() => {
-  let cancelled = false;
   void load();
-  return () => {
-    cancelled = true;
-  };
 
   async function load(): Promise<void> {
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
     domainId = params.get('domaine') ?? '';
+    checkId = params.get('check') ?? '';
     if (!id || (mode === 'domain' && !isKnownDomain(domainId))) {
       phase = 'message';
       message =
@@ -164,6 +273,7 @@ onMount(() => {
       return;
     }
     const session = await currentSession();
+    if (session) userId = session.user.id;
     if (!session) {
       location.replace(loginHref(`${location.pathname}${location.search}`));
       return;
@@ -181,18 +291,15 @@ onMount(() => {
       payload = result.payload;
       return;
     }
-    payload = result.payload;
+    const gated = await applyGate(result.payload);
+    payload = gated;
     phase = 'ready';
-    if (mode === 'report') {
-      const loaded = await loadSiteHistory(
-        result.payload.audit.site.id,
-        result.payload.audit.site.hosting,
-      );
-      if (!cancelled) {
-        history = loaded;
-        historyReady = true;
-      }
-    }
+    void loadStatuses(gated.audit.site.id);
+    queueMicrotask(() => {
+      const hash = location.hash.replace(/^#/u, '');
+      if (!hash) return;
+      document.getElementById(decodeURIComponent(hash))?.scrollIntoView();
+    });
   }
 });
 </script>
@@ -213,181 +320,124 @@ onMount(() => {
   {:else}
     <p><a class="link-action" href="/sites">{t('nav.sites')}</a></p>
   {/if}
+{:else if payload && payload.audit.status === 'failed'}
+  <section class="fail-card" aria-labelledby="fail-title">
+    <h1 id="fail-title">{t('hub.failed.title')}</h1>
+    <p>{failureKind(payload.audit.error) === 'denied' ? t('hub.failed.denied') : failureKind(payload.audit.error) === 'down' ? t('hub.failed.down') : t('hub.failed.body')}</p>
+    <p><a class="btn-primary" href={relaunchHref(payload.audit.site.id)}>{t('progress.retry')}</a></p>
+  </section>
 {:else if payload}
-  <div class="reading" class:stagger={mode === 'report'}>
-    {#if mode === 'domain'}
-      <section class="glass glass-module">
-        <div class="glass-plate">
-          <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('report.back')}</a></p>
-          <header class="verdict">
-            {#if domainLocked}
-              <p class="kicker">{t('domain.locked.badge')}</p>
-            {:else}
-              <ScoreGauge domain={domainPlain(domainId)} score={domainScore} size="hero" />
-            {/if}
-            <div>
-              <p class="kicker">{payload.audit.site.url}</p>
-              <h1>{domainPlain(domainId)}</h1>
-              {#if domainLocked}
-                <p class="detail">{t('domain.locked.teaser')}</p>
-                <p>
-                  <a class="link-action" href={`/verifier?site=${encodeURIComponent(payload.audit.site.id)}`}>{t('domain.locked.cta')}</a>
-                </p>
-              {:else}
-                <p class="detail">{domainSentence(domainId, levelForScore(domainScore))}</p>
-              {/if}
-              {#if domainUntested && !domainLocked}
-                <UntestedCause
-                  coverageNote={domainUntested.coverageNote}
-                  causes={domainUntested.causes}
-                />
-              {/if}
-              {#if domainId === 'reputation' && aside?.rating !== null && aside}
-                <p>{t('places.rating', { rating: formatRating(aside.rating) })}</p>
-                <p>{t('places.count', { count: formatNumber(aside.reviewCount ?? 0) })}</p>
-              {/if}
+  <div class="reading">
+    {#if mode === 'badge'}
+      <p class="crumbs"><a href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('badge.back')}</a></p>
+      <section class="plan-card">
+        <p>{host}</p>
+        <h1>{t('badge.title')}</h1>
+        <p>{t('badge.lead')}</p>
+        <p class="badge-preview"><span>{t('brand.ui')}</span><b>{letter ?? '–'}</b></p>
+        <pre class="badge-code">{badgeSnippet}</pre>
+      </section>
+    {:else if mode === 'plan'}
+      <section class="plan-card">
+        <p class="crumbs"><a href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{host}</a></p>
+        <h1>{t('hub.plan.title')}</h1>
+        <p>{t('hub.plan.lead')}</p>
+        <p>{t('plan.progress', { done: Object.values(statuses).filter((item) => item === 'done').length, total: priorities.length })}</p>
+      </section>
+      <FindingList
+        findings={reportRowList.filter((row) => row.catalogStatus === 'fail' || row.catalogStatus === 'warn')}
+        {statuses}
+        {onStatus}
+        detailHref={(id) => detailHref(payload.audit.id, id)}
+      />
+    {:else if mode === 'detail'}
+      <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('domain.back')}</a></p>
+      <FindingList
+        findings={detailRows}
+        {statuses}
+        {onStatus}
+      />
+    {:else if mode === 'domain'}
+      <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('domain.back')}</a></p>
+      <nav aria-label={t('domain.nav')}>
+        <ul class="domain-switch">
+          {#each items as item (item.id)}
+            <li>
+              <a
+                href={item.href}
+                aria-current={item.id === domainId ? 'page' : undefined}
+              >{item.label} <span>{item.locked ? t('domain.locked.badge') : domainLetter(item.score, false) ?? ''}</span></a>
+            </li>
+          {/each}
+        </ul>
+      </nav>
+      <header class="note-card">
+        <div class="rose" aria-hidden="true"><b>{domainLocked ? '–' : domainLetter(domainScore, false) ?? '–'}</b></div>
+        <div>
+          {#if domainLocked}
+            <p class="pill-lock">{t('domain.locked.badge')}</p>
+          {/if}
+          <h1>{domainPlain(domainId)}</h1>
+          {#if domainLocked}
+            <p>{t('hub.lock.lead')}</p>
+            <p>{t('hub.lock.why')}</p>
+            <div class="lock-grid">
+              <article><h2>{t('hub.lock.https')}</h2><p>{t('domain.locked.teaser')}</p></article>
+              <article><h2>{t('hub.lock.hsts')}</h2><p>{t('domain.locked.teaser')}</p></article>
+              <article><h2>{t('hub.lock.frame')}</h2><p>{t('domain.locked.teaser')}</p></article>
             </div>
-          </header>
-        </div>
-      </section>
-    {:else}
-      <section class="glass glass-module">
-        <div class="glass-plate">
-          <header class="verdict">
-            {#if siteVerified}
-              <ScoreGauge domain={t('domain.global')} score={global} size="hero" />
-            {:else}
-              <p class="kicker">{t('domain.locked.badge')}</p>
-            {/if}
-            <div>
-              <p class="kicker">{payload.audit.site.url}</p>
-              {#if !siteVerified}
-                <p>{t('report.partial', { n: scoredDomainCount(items) })}</p>
-              {:else if grade}
-                <p class="grade">
-                  <span class="grade-letter">{grade.letter}</span>
-                  <span class="grade-label">{grade.label}</span>
-                </p>
-              {/if}
-              <h1>{verdict.headline}</h1>
-              <p class="detail">{verdict.detail}</p>
-              <p class="hint">
-                {t('report.coverage', {
-                  scored: scoredDomainCount(items),
-                  total: REPORT_DOMAINS.length,
-                })}
-              </p>
-            </div>
-          </header>
-        </div>
-      </section>
-      {#if priorities.length > 0}
-        <section class="glass glass-module">
-          <div class="glass-plate">
-            <PriorityCards
-              {priorities}
-              siteId={payload.audit.site.id}
-              hosting={payload.audit.site.hosting}
-            />
-          </div>
-        </section>
-      {/if}
-      <section class="glass glass-module">
-        <div class="glass-plate">
-          <h2 id="corrections">{t('section.findings')}</h2>
-          <FindingList
-            findings={reportRowList}
-            brief={{
-              url: payload.audit.site.url,
-              at: stamp,
-              stack: recognizedStack(payload.findings),
-            }}
-          />
-        </div>
-      </section>
-      <section class="glass glass-module">
-        <div class="glass-plate">
-          <h2>{t('section.categories')}</h2>
-          <CategoryList {items} />
-        </div>
-      </section>
-      {#if aside}
-        <section class="glass glass-module">
-          <div class="glass-plate">
-            <h2>{t('places.aside.title')}</h2>
-            <p class="hint">{t('places.aside.note')}</p>
-            <ScoreGauge domain={t('domain.reputation.plain')} score={aside.score} />
-            {#if aside.name}
-              <p>{aside.name}</p>
-            {/if}
-            {#if aside.rating !== null}
-              <p>{t('places.rating', { rating: formatRating(aside.rating) })}</p>
-              <p>{t('places.count', { count: formatNumber(aside.reviewCount ?? 0) })}</p>
-            {/if}
-            <p>{domainSentence('reputation', aside.level)}</p>
-            {#if aside.score === null}
-              <p><a class="link-action" href="/sites">{t('places.choose')}</a></p>
-            {/if}
-          </div>
-        </section>
-      {/if}
-    {/if}
-
-    {#if mode === 'domain' && !domainLocked}
-      <section class="glass glass-module">
-        <div class="glass-plate">
-          <h2 id="corrections">{t('section.findings')}</h2>
-          <FindingList findings={shown} />
-        </div>
-      </section>
-    {/if}
-
-    {#if mode === 'report' && historyReady}
-      <section class="glass glass-module">
-        <div class="glass-plate">
-          <h2>{t('section.table')}</h2>
-          {#if history && history.points.length > 0}
-            <HistoryPanel
-              series={history.series}
-              points={history.points}
-              audits={history.snapshots}
-              initialSeries={[GLOBAL_SERIES]}
-            />
+            <p><a class="btn-primary" href={verifyHref(payload.audit.site.id)}>{t('domain.locked.cta')}</a></p>
           {:else}
-            <EmptyState message={t('history.summary.empty')}>
-              <p>
-                <a class="link-action" href={relaunchHref(payload.audit.site.id)}>{t('sites.audit')}</a>
-              </p>
-            </EmptyState>
+            {#if domainLetter(domainScore, false)}
+              <p>{t('report.grade.letter', { grade: domainLetter(domainScore, false) ?? 'C' })}</p>
+            {/if}
+            <p>{domainSentence(domainId, levelForScore(domainScore))}</p>
+            {#if domainId === 'accessibilite'}
+              <p>{t('hub.a11y')}</p>
+            {/if}
           {/if}
         </div>
-      </section>
+      </header>
+      {#if domainUntested && !domainLocked}
+        <UntestedCause coverageNote={domainUntested.coverageNote} causes={domainUntested.causes} />
+      {/if}
+      {#if !domainLocked}
+        <h2 id="corrections">{t('section.findings')}</h2>
+        <FindingList
+          findings={shown}
+          {statuses}
+          {onStatus}
+          detailHref={(id) => detailHref(payload.audit.id, id)}
+        />
+      {/if}
+    {:else}
+      <HubView
+        {payload}
+        {items}
+        rows={reportRowList}
+        {priorities}
+        {host}
+        {letter}
+        verified={siteVerified}
+        {partialText}
+        headline={verdict.headline}
+        {stamp}
+      />
     {/if}
-
-    <section class="glass glass-module">
-      <div class="glass-plate">
-        <p class="no-print export-links">
-          <a class="link-action" href={relaunchHref(payload.audit.site.id)}>{t('progress.retry')}</a>
-          <a class="link-action" href={`/rapport/${payload.audit.id}/imprimer`}>{t('print.link')}</a>
-          <a
-            class="link-action"
-            href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}
-            download={markdownFilename(payload.audit.site.url, stamp)}
-            onclick={downloadMarkdown}
-          >{t('export.markdown')}</a>
-        </p>
+    {#if mode === 'plan'}
+      <section class="plan-card verify-card">
         <h2 id="verification">{t('section.verify')}</h2>
         <details>
           <summary>{t('verify.how')}</summary>
-          <p class="prose">{t('verify.lead')}</p>
-          <p class="prose">{t('verify.pending')}</p>
-          <p class="prose">{t('verify.id')}</p>
+          <p>{t('verify.lead')}</p>
+          <p>{t('verify.pending')}</p>
+          <p>{t('verify.id')}</p>
         </details>
+        <p class="hub-actions">
+          <a class="btn-ghost" href={`/rapport/${payload.audit.id}/imprimer`}>{t('print.link')}</a>
+          <a class="btn-ghost" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`} download={markdownFilename(payload.audit.site.url, stamp)} onclick={downloadMarkdown}>{t('export.markdown')}</a>
+        </p>
         <PreuveMentions />
-      </div>
-    </section>
-    <section class="glass glass-module">
-      <div class="glass-plate">
         <ReportFooter
           url={payload.audit.site.url}
           at={stamp}
@@ -396,8 +446,8 @@ onMount(() => {
           fingerprintKind="id"
           verifyHref={`/verifier/${payload.audit.id}`}
         />
-      </div>
-    </section>
+      </section>
+    {/if}
   </div>
 {/if}
 

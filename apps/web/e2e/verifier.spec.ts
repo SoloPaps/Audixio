@@ -316,7 +316,7 @@ test('preuve de propriété : guides, création, vérification', async ({
   ).toBeVisible();
   await expectNoViolations(page);
 
-  await page.goto(`/verifier?site=${SITE_ID}&theme=dark`);
-  await expect(page.getByLabel('Thème')).toHaveValue('dark');
+  await page.goto(`/verifier?site=${SITE_ID}&theme=light`);
+  await expect(page.getByRole('button', { name: 'FR' })).toBeVisible();
   await expectNoViolations(page);
 });

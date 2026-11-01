@@ -150,6 +150,8 @@ test('markdown local et limite repliée', async ({ page }) => {
     false,
   );
 
+  await page.getByRole('link', { name: /^Impact écologique/ }).click();
+  await expect(page).toHaveURL(/domaine=ecologie/);
   const limit = page.locator('details.finding-limit');
   await expect(limit).toHaveCount(1);
   await expect(limit).not.toHaveJSProperty('open', true);
