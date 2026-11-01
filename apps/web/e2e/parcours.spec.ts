@@ -280,10 +280,18 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
   await expect(page).toHaveURL(/\/connexion/);
   await waitForIslands(page);
+  await page.route('**/api/auth/connexion', async (route) => {
+    await route.fulfill({
+      status: 400,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: false, error: 'invalid_credentials' }),
+    });
+  });
   await page.getByLabel('Adresse e-mail').fill('ada@exemple.fr');
-  await page.getByRole('button', { name: 'Envoyer le lien' }).click();
-  await expect(page.getByRole('status')).toContainText(
-    'Le lien arrive dans votre boîte',
+  await page.getByLabel('Mot de passe').fill('phrase-de-test-12');
+  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await expect(page.getByRole('alert')).toContainText(
+    'Adresse ou mot de passe incorrect.',
   );
 
   await page.evaluate((value) => {

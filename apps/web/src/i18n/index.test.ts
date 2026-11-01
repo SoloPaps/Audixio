@@ -39,10 +39,10 @@ describe('t', () => {
   });
 
   it('pose les phrases Arc Soft du compte et de la connexion', () => {
-    expect(t('login.card.title')).toBe('Recevoir un lien de connexion');
-    expect(t('login.submit')).toBe('Envoyer le lien');
+    expect(t('login.card.title')).toBe('Connexion');
+    expect(t('login.submit')).toBe('Se connecter');
     expect(t('login.sent')).toBe(
-      'Le lien arrive dans votre boîte. Il expire tout seul.',
+      'Si le compte peut être créé, un message part. Le lien dure 24 heures.',
     );
     expect(t('account.export.hint')).toBe(
       'Le fichier contient vos sites, vos rapports et l’historique.',
@@ -56,7 +56,7 @@ describe('t', () => {
     expect(t('account.delete.cancel')).toBe('Annuler');
     expect(t('account.delete.forever')).toBe('Supprimer définitivement');
     expect(t('login.lead')).toBe(
-      'Indiquez votre e-mail. Nous vous envoyons un lien, sans mot de passe.',
+      'Accédez à vos sites suivis et à vos rapports.',
     );
     expect(t('account.lead')).toBe(
       'Gérez l’export de vos données et la suppression du compte.',

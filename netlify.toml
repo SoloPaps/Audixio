@@ -49,6 +49,22 @@
   to = "/partage/index.html"
   status = 200
 
+[[edge_functions]]
+  function = "auth-guard"
+  path = "/sites"
+
+[[edge_functions]]
+  function = "auth-guard"
+  path = "/compte"
+
+[[edge_functions]]
+  function = "auth-guard"
+  path = "/compte/*"
+
+[[edge_functions]]
+  function = "auth-guard"
+  path = "/bienvenue"
+
 [[headers]]
   for = "/partage/*"
   [headers.values]

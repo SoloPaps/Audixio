@@ -532,7 +532,10 @@ describe('RLS Supabase local', () => {
     expect(hidden[0]?.details).toBe('[]');
     expect(hidden[0]?.body).not.toContain(secret);
     expect(hidden[0]?.body).not.toContain('securite');
-    expect(hidden[0]?.body).not.toContain('72');
+    const hiddenBody = JSON.parse(hidden[0]?.body ?? '{}') as {
+      global_score: number | null;
+    };
+    expect(hiddenBody.global_score).toBeNull();
 
     const anon = createUserClient({
       url: local.apiUrl,
@@ -1006,7 +1009,10 @@ describe('RLS Supabase local', () => {
         message.To.some((to) => to.Address === email),
       );
       if (hit) {
-        expect(hit.Subject).toBe('Votre lien de connexion Audigy');
+        expect([
+          'Votre lien de connexion Audigy',
+          'Confirmez votre adresse Audixio',
+        ]).toContain(hit.Subject);
         snippet = hit.Snippet;
         break;
       }
@@ -1015,10 +1021,11 @@ describe('RLS Supabase local', () => {
     const token = /Code : (\d{8})/.exec(snippet)?.[1];
     expect(token).toMatch(/^\d{8}$/);
 
+    const otpType = snippet.includes('Confirmez') ? 'signup' : 'email';
     const { data, error } = await client.auth.verifyOtp({
       email,
       token: token ?? '',
-      type: 'email',
+      type: otpType,
     });
     expect(error).toBeNull();
     expect(data.user?.email).toBe(email);

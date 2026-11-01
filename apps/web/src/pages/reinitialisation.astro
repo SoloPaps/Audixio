@@ -1,0 +1,13 @@
+---
+import ResetForm from '../components/ResetForm.svelte';
+import { t } from '../i18n/index.js';
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title={t('meta.reset.title')}
+  description={t('meta.reset.description')}
+  robots="noindex"
+>
+  <ResetForm client:load />
+</Base>

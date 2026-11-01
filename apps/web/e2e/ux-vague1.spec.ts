@@ -33,13 +33,9 @@ test('connexion et compte n’ont qu’un titre, avec leur accroche', async ({
 }) => {
   await page.goto('/connexion');
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Recevoir un lien de connexion',
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Connexion');
   await expect(
-    page.getByText(
-      'Indiquez votre e-mail. Nous vous envoyons un lien, sans mot de passe.',
-    ),
+    page.getByText('Accédez à vos sites suivis et à vos rapports.'),
   ).toBeVisible();
 
   await page.goto('/compte');

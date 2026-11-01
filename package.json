@@ -27,7 +27,9 @@
     "check": "pnpm guard && pnpm lint && pnpm copy-lint && pnpm typecheck && pnpm test && pnpm build && pnpm self-audit && pnpm test:ui && pnpm test:a11y"
   },
   "dependencies": {
-    "@audigy/orchestrator": "workspace:*"
+    "@audigy/db": "workspace:*",
+    "@audigy/orchestrator": "workspace:*",
+    "@supabase/ssr": "^0.8.0"
   },
   "devDependencies": {
     "@audigy/browser-runner": "workspace:*",

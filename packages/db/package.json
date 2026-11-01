@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./auth-policy": "./src/auth-policy.ts",
+    "./auth-guard": "./src/auth-guard.ts",
+    "./auth-http": "./src/auth-http.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.118.0"
   },
   "devDependencies": {

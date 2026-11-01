@@ -63,6 +63,7 @@ describe('fonctions Netlify', () => {
       'api-verifications-check',
       'api-verifications-create',
       'audit-run-background',
+      'auth',
       'digest-weekly',
       'oauth-google-callback',
       'oauth-google-revoke',

@@ -162,6 +162,7 @@ async function onDelete(): Promise<void> {
       <button type="button" class="button button-secondary" onclick={onSignOut}>
         {t('login.signout')}
       </button>
+      <p><a class="link-action" href="/bienvenue">{t('account.checklist')}</a></p>
     </div>
   </section>
   <section class="glass glass-module">
