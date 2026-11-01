@@ -250,6 +250,17 @@ describe('connexion Supabase local', () => {
     ).toBe(true);
   }, 90_000);
 
+  it('renvoie un lien sans dire si l’adresse existe', async () => {
+    const res = await call('/api/auth/renvoi', {
+      form: { email: 'absent-renvoi@exemple.fr' },
+      ip: '203.0.113.80',
+    });
+    const body = (await res.json()) as { ok?: boolean; error?: string | null };
+    expect(res.status).toBe(200);
+    expect(body.ok).toBe(true);
+    expect(body.error).toBeNull();
+  });
+
   it('bloque après trop de tentatives de connexion', async () => {
     const email = 'debit-auth@exemple.fr';
     let status = 0;

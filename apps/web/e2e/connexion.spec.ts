@@ -12,6 +12,10 @@ test('les écrans de connexion suivent le parcours e-mail', async ({ page }) => 
   await expect(
     page.getByRole('link', { name: 'Mot de passe oublié ?' }),
   ).toHaveAttribute('href', '/reinitialisation');
+  await page.goto('/connexion?erreur=lien');
+  await expect(
+    page.getByRole('button', { name: 'Renvoyer le lien' }),
+  ).toBeVisible();
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 

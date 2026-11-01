@@ -104,7 +104,7 @@ export const fr = {
   'login.submit': 'Se connecter',
   'login.sending': 'Connexion en cours.',
   'login.sent':
-    'Si le compte peut être créé, un message part. Le lien dure 24 heures.',
+    'Si le compte peut être créé, un message part. Le lien dure 15 minutes.',
   'login.failed': 'Adresse ou mot de passe incorrect.',
   'login.invalid_email': 'Cette adresse e-mail ne convient pas.',
   'login.invalid_credentials': 'Adresse ou mot de passe incorrect.',
@@ -118,15 +118,19 @@ export const fr = {
   'login.oauth.github': 'Continuer avec GitHub',
   'login.oauth_error': 'Cette méthode n’est pas disponible. Utilisez l’e-mail.',
   'login.link_error': 'Ce lien n’est plus valable. Demandez-en un nouveau.',
+  'login.resend': 'Renvoyer le lien',
+  'login.resend.lead':
+    'Le lien a expiré. Indiquez votre adresse pour en recevoir un nouveau.',
   'login.close': 'Fermer et revenir à l’accueil',
   'login.show_password': 'Afficher le mot de passe',
   'login.hide_password': 'Masquer le mot de passe',
   'login.signup.title': 'Créer un compte',
-  'login.signup.lead': 'Un message confirme l’adresse. Le lien dure 24 heures.',
+  'login.signup.lead':
+    'Un message confirme l’adresse. Le lien dure 15 minutes.',
   'login.signup.submit': 'Créer mon compte',
   'login.signup.sending': 'Création du compte.',
   'login.signup.sent':
-    'Si le compte peut être créé, un message part. Le lien dure 24 heures.',
+    'Si le compte peut être créé, un message part. Le lien dure 15 minutes.',
   'login.signup.password_hint': '10 caractères minimum.',
   'login.signup.terms': 'J’accepte les conditions d’utilisation.',
   'login.signup.terms_required': 'Cochez la case pour accepter les conditions.',
@@ -145,7 +149,7 @@ export const fr = {
   'reset.submit': 'Envoyer le lien',
   'reset.sending': 'Envoi en cours.',
   'reset.sent':
-    'Si un compte existe, le lien est dans votre boîte. Il dure 24 heures.',
+    'Si un compte existe, le lien est dans votre boîte. Il dure 15 minutes.',
   'reset.back': 'Retour à la connexion',
   'reset.new.title': 'Choisissez un nouveau mot de passe',
   'reset.new.lead': 'Saisissez-le deux fois. 10 caractères minimum.',

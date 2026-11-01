@@ -75,7 +75,7 @@ refresh_token_reuse_interval = 10
 enable_signup = true
 enable_anonymous_sign_ins = false
 enable_manual_linking = false
-minimum_password_length = 10
+minimum_password_length = 8
 
 [auth.rate_limit]
 email_sent = 100
@@ -92,7 +92,7 @@ enable_confirmations = true
 secure_password_change = false
 max_frequency = "1s"
 otp_length = 8
-otp_expiry = 86400
+otp_expiry = 900
 
 [auth.email.template.confirmation]
 subject = "Confirmez votre adresse Audixio"

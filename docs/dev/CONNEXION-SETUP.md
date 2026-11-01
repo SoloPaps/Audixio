@@ -43,8 +43,8 @@ Authentication → Providers → Email :
 
 - Activer l’e-mail.
 - Activer « Confirm email ».
-- Durée du code (OTP expiry) : **86400** secondes (24 heures).
-- Mot de passe minimum : **10** caractères.
+- Durée du code (OTP expiry) : **900** secondes (15 minutes).
+- Mot de passe minimum côté Supabase : **8** caractères. Le site en demande **10**.
 - Ne pas proposer le lien magique dans l’interface. Le fournisseur e-mail peut rester allumé : le site ne l’appelle pas pour se connecter.
 
 Authentication → Providers → Google : activer, coller l’identifiant et le secret de l’étape 1.
@@ -69,7 +69,7 @@ En local, Google et GitHub sont **éteints** dans `supabase/config.toml` (`enabl
 
 ## 5. Ce que fait le site
 
-- Inscription e-mail : message de confirmation, lien 24 h, page « Adresse e-mail confirmée ».
+- Inscription e-mail : message de confirmation, lien 15 minutes, page « Adresse e-mail confirmée ». Si le lien a expiré, la page de connexion propose « Renvoyer le lien ».
 - Inscription Google ou GitHub : page « Bienvenue » une seule fois (`profiles.onboarding_vu`). « Plus tard » va aux sites suivis. La checklist reste dans le compte.
 - Mot de passe oublié, déconnexion, cookies httpOnly (`@supabase/ssr`).
 - Pages `/sites`, `/compte` et `/bienvenue` : refus sans session (fonction edge `auth-guard` en production, même contrôle en `astro dev` quand la clé anon n’est pas celle des tests).

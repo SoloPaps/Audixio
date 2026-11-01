@@ -317,7 +317,7 @@ Gabarit commun : colonne centrée 600 px, mise en page simple (CSS à inliner à
 
 | Dossier | Usage |
 |---------|--------|
-| `email_confirmation_inscription/` | Bienvenue + « Confirmer mon adresse » → `page_email_confirme` ; expiration 24 h ; lien de secours en texte |
+| `email_confirmation_inscription/` | Bienvenue + « Confirmer mon adresse » → `page_email_confirme` ; expiration 15 minutes ; lien de secours en texte |
 | `email_recap_lundi/` | Récap hebdo, 2 états (`#change` : note, delta, nouveaux constats, SSL ; `#inchange` : rappel des résultats) ; CTA « Voir le rapport » → `page_rapport_hub` |
 
 ---
