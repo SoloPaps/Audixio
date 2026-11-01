@@ -21,6 +21,7 @@ export interface ApiDomain {
   score: number | null;
   coverage: number;
   level: string;
+  locked?: boolean;
 }
 
 export interface AuditPayload {
@@ -32,6 +33,8 @@ export interface AuditPayload {
     methodVersion: string;
     engineVersion: string;
     globalScore: number | null;
+    siteVerified?: boolean;
+    partialLabel?: string | null;
     coverage: number | null;
     createdAt: string;
     startedAt: string | null;

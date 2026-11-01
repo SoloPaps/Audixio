@@ -26,9 +26,16 @@ interface StoredVerification {
   method: VerifyMethod;
   status: string;
   token: string;
+  found: boolean | null;
 }
 
-const METHODS = ['dns_txt', 'file', 'meta'] as const;
+const METHODS = [
+  'meta',
+  'html_file',
+  'well_known',
+  'dns_txt',
+  'search_console',
+] as const;
 
 let loading = $state(true);
 let needLogin = $state(false);
@@ -39,28 +46,44 @@ let notice = $state('');
 let pending = $state(false);
 let site = $state<SiteRow | null>(null);
 let rows = $state<StoredVerification[]>([]);
-let method = $state<VerifyMethod>('dns_txt');
+let method = $state<VerifyMethod>('meta');
+let reportId = $state<string | null>(null);
 let accessToken = '';
 
 function isMethod(value: string): value is VerifyMethod {
-  return value === 'dns_txt' || value === 'file' || value === 'meta';
+  return (
+    value === 'dns_txt' ||
+    value === 'file' ||
+    value === 'html_file' ||
+    value === 'meta' ||
+    value === 'well_known' ||
+    value === 'search_console'
+  );
 }
 
 function current(): StoredVerification | null {
   return rows.find((row) => row.method === method) ?? null;
 }
 
-function statusText(status: string): string {
-  if (status === 'verified') return t('verify.verified');
-  if (status === 'expired') return t('verify.expired');
-  if (status === 'failed') return t('verify.failed');
-  return t('verify.status.pending');
+function sharedToken(): string {
+  return current()?.token ?? rows[0]?.token ?? '';
 }
 
 function methodLabel(value: VerifyMethod): string {
   if (value === 'dns_txt') return t('verify.method.dns');
   if (value === 'file') return t('verify.method.file');
+  if (value === 'html_file') return t('verify.method.html');
+  if (value === 'well_known') return t('verify.method.well_known');
+  if (value === 'search_console') return t('verify.method.gsc');
   return t('verify.method.meta');
+}
+
+function phaseOf(row: StoredVerification | null): 'idle' | 'ok' | 'fail' {
+  if (!row) return 'idle';
+  if (row.status === 'verified') return 'ok';
+  if (row.status === 'failed' || row.status === 'expired') return 'fail';
+  if (row.found === false) return 'fail';
+  return 'idle';
 }
 
 onMount(() => {
@@ -108,11 +131,19 @@ async function load(): Promise<void> {
     .select('id, method, status, token, created_at')
     .eq('site_id', siteId)
     .order('created_at', { ascending: false });
+  const audits = await supabase
+    .from('audits')
+    .select('id, status, finished_at')
+    .eq('site_id', siteId)
+    .in('status', ['done', 'partial'])
+    .order('finished_at', { ascending: false })
+    .limit(1);
   loading = false;
   if (proofError) {
     error = t('verify.error');
     return;
   }
+  reportId = audits.data?.[0]?.id ?? null;
   rows = (proofs ?? []).flatMap((row) =>
     isMethod(row.method)
       ? [
@@ -121,12 +152,13 @@ async function load(): Promise<void> {
             method: row.method,
             status: row.status,
             token: row.token,
+            found: null,
           },
         ]
       : [],
   );
   const first = rows[0];
-  if (first) method = first.method;
+  if (first && first.method !== 'search_console') method = first.method;
 }
 
 function remember(view: VerificationView, nextMethod: VerifyMethod): void {
@@ -135,30 +167,46 @@ function remember(view: VerificationView, nextMethod: VerifyMethod): void {
     method: nextMethod,
     status: view.status,
     token: view.token,
+    found: typeof view.found === 'boolean' ? view.found : null,
   };
-  rows = [next, ...rows.filter((row) => row.id !== next.id)];
+  rows = [
+    next,
+    ...rows.filter((row) => row.method !== nextMethod && row.id !== next.id),
+  ];
+}
+
+async function ensureRow(): Promise<StoredVerification | null> {
+  if (!site) return null;
+  const existing = current();
+  if (existing) return existing;
+  const created = await createVerification(accessToken, site.id, method);
+  if (isVerificationError(created)) {
+    error = created.error;
+    return null;
+  }
+  remember(created, method);
+  return current();
 }
 
 async function onCreate(): Promise<void> {
-  if (!site || pending) return;
+  if (!site || pending || method === 'search_console') return;
   error = '';
   notice = '';
   pending = true;
-  const result = await createVerification(accessToken, site.id, method);
+  await ensureRow();
   pending = false;
-  if (isVerificationError(result)) {
-    error = result.error;
-    return;
-  }
-  remember(result, method);
 }
 
 async function onCheck(): Promise<void> {
-  const row = current();
-  if (!row || pending) return;
+  if (!site || pending || method === 'search_console') return;
   error = '';
   notice = '';
   pending = true;
+  const row = await ensureRow();
+  if (!row) {
+    pending = false;
+    return;
+  }
   const result = await checkVerification(accessToken, row.id);
   pending = false;
   if (isVerificationError(result)) {
@@ -196,6 +244,10 @@ async function onCopy(value: string): Promise<void> {
   <p role="status">{t('verify.not_found')}</p>
   <p><a class="link-action" href="/sites">{t('verify.back')}</a></p>
 {:else}
+  {@const proof = current()}
+  {@const token = sharedToken()}
+  {@const challenge = token ? localChallenge(site, token) : null}
+  {@const phase = pending ? 'checking' : phaseOf(proof)}
   <p class="kicker">{site.label}</p>
   <p>{site.url}</p>
   {#if notice}
@@ -204,73 +256,93 @@ async function onCopy(value: string): Promise<void> {
   {#if error}
     <p class="form-error" role="alert">{error}</p>
   {/if}
-  <fieldset class="choices">
-    <legend>{t('verify.method')}</legend>
+  <div role="tablist" aria-label={t('verify.method')}>
     {#each METHODS as item (item)}
-      <label>
-        <input type="radio" name="method" value={item} bind:group={method} />
+      <button
+        type="button"
+        role="tab"
+        aria-selected={method === item}
+        onclick={() => {
+          method = item;
+        }}
+      >
         {methodLabel(item)}
-      </label>
+      </button>
     {/each}
-  </fieldset>
+  </div>
   {#if method === 'dns_txt' && site.host.endsWith('.github.io')}
     <p>{t('verify.github.dns')}</p>
   {/if}
-  {#each guidesFor(method) as guide (guide.title)}
-    <section>
-      <h2>{t(guide.title)}</h2>
-      <ol class="steps">
-        {#each guide.steps as step, index (step + String(index))}
-          <li>{t(step)}</li>
-        {/each}
-      </ol>
-    </section>
-  {/each}
-  {#if current()}
-    {@const proof = current()}
-    {@const challenge = localChallenge(site, proof?.token ?? '')}
-    <div class="challenge">
-      <p role="status">{statusText(proof?.status ?? 'pending')}</p>
-      <p>{t('verify.token')}</p>
-      <pre>{proof?.token}</pre>
-      {#if method === 'dns_txt'}
-        <p>{t('verify.record_name')}</p>
-        <pre>{challenge.dnsName}</pre>
-        <p>{t('verify.record_value')}</p>
-        <pre>{challenge.dnsValue}</pre>
-      {:else if method === 'file'}
-        <p>{t('verify.file_url')}</p>
-        <pre>{challenge.fileUrl}</pre>
-      {:else}
-        <p>{t('verify.meta_tag')}</p>
-        <pre>{challenge.metaTag}</pre>
-      {/if}
-      <button
-        class="button button-secondary"
-        type="button"
-        onclick={() => onCopy(proof?.token ?? '')}
-      >
-        {t('verify.copy')}
-      </button>
-    </div>
-    <button
-      class="button button-primary"
-      type="button"
-      disabled={pending}
-      onclick={onCheck}
-    >
-      {pending ? t('verify.checking') : t('verify.check')}
-    </button>
+  {#if method === 'search_console'}
+    <p>{t('verify.gsc.later')}</p>
   {:else}
-    <button
-      class="button button-primary"
-      type="button"
-      disabled={pending}
-      onclick={onCreate}
-    >
-      {pending ? t('verify.creating') : t('verify.create')}
-    </button>
+    {#each guidesFor(method) as guide (guide.title)}
+      <section>
+        <h2>{t(guide.title)}</h2>
+        <ol class="steps">
+          {#each guide.steps as step, index (step + String(index))}
+            <li>{t(step)}</li>
+          {/each}
+        </ol>
+      </section>
+    {/each}
+    {#if !token}
+      <button class="button button-primary" type="button" disabled={pending} onclick={onCreate}>
+        {pending ? t('verify.creating') : t('verify.create')}
+      </button>
+    {:else if challenge}
+      <div class="challenge">
+        <p>{t('verify.token')}</p>
+        <pre>{challenge.dnsValue}</pre>
+        <button class="button button-secondary" type="button" onclick={() => onCopy(challenge.dnsValue)}>
+          {t('verify.copy')}
+        </button>
+        {#if method === 'dns_txt'}
+          <p>{t('verify.record_name')}</p>
+          <pre>{challenge.dnsName}</pre>
+          <p>{t('verify.record_value')}</p>
+          <pre>{challenge.dnsValue}</pre>
+        {:else if method === 'html_file'}
+          <p>{t('verify.html_url')}</p>
+          <pre>{challenge.htmlFileUrl}</pre>
+        {:else if method === 'well_known'}
+          <p>{t('verify.well_known_url')}</p>
+          <pre>{challenge.wellKnownUrl}</pre>
+        {:else if method === 'file'}
+          <p>{t('verify.file_url')}</p>
+          <pre>{challenge.fileUrl}</pre>
+        {:else}
+          <p>{t('verify.meta_tag')}</p>
+          <pre>{challenge.metaTag}</pre>
+          <button class="button button-secondary" type="button" onclick={() => onCopy(challenge.metaTag)}>
+            {t('verify.copy')}
+          </button>
+        {/if}
+      </div>
+      <button class="button button-primary" type="button" disabled={pending} onclick={onCheck}>
+        {pending ? t('verify.checking') : phase === 'fail' ? t('verify.retry') : t('verify.now')}
+      </button>
+    {/if}
   {/if}
+  <section aria-live="polite">
+    {#if phase === 'checking'}
+      <h2>{t('verify.state.checking.title')}</h2>
+      <p>{t('verify.state.checking.body')}</p>
+    {:else if phase === 'ok'}
+      <h2>{t('verify.state.ok.title')}</h2>
+      <p>{t('verify.state.ok.body')}</p>
+      {#if reportId}
+        <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('verify.report')}</a></p>
+      {/if}
+    {:else if phase === 'fail'}
+      <h2>{t('verify.state.fail.title')}</h2>
+      <p>{t('verify.state.fail.body')}</p>
+    {:else}
+      <h2>{t('verify.state.idle.title')}</h2>
+      <p>{t('verify.state.idle.body')}</p>
+    {/if}
+    <p>{t('verify.recheck')}</p>
+  </section>
   <p class="page-links">
     <a class="link-action" href="/sites">{t('verify.back')}</a>
   </p>

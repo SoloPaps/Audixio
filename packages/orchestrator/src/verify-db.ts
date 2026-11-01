@@ -375,19 +375,30 @@ export function verificationDepsFromEnv(
       };
     },
     async insertPending(input) {
-      const { data, error } = await service
-        .from('site_verifications')
-        .insert({
-          site_id: input.siteId,
-          method: input.method,
-          token: input.token,
-          status: 'pending',
-          evidence: input.evidence,
-        })
-        .select('id')
-        .single();
-      if (error || !data) throw new Error('verification_insert_failed');
-      return data.id;
+      const { data, error } = await service.rpc('prepare_site_verification', {
+        p_site_id: input.siteId,
+        p_owner_id: input.ownerId,
+        p_method: input.method,
+        p_token: input.token,
+        p_evidence: input.evidence,
+      });
+      const row = Array.isArray(data) ? data[0] : null;
+      if (error || !row?.id || !row.token) {
+        throw new Error('verification_insert_failed');
+      }
+      return { id: row.id, token: row.token };
+    },
+    async allowProbe(userId, host) {
+      const { data, error } = await service.rpc('consume_verification_probe', {
+        p_user_id: userId,
+        p_host: host,
+      });
+      const row = Array.isArray(data) ? data[0] : null;
+      if (error || !row) throw new Error('rate_limit');
+      return {
+        allowed: row.allowed,
+        retryAfter: row.retry_after_seconds,
+      };
     },
     save: (patch) => savePatch(service, patch),
     appendAudit: (entry) => appendAudit(service, entry),

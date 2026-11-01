@@ -197,6 +197,43 @@ function byPriority(a: FindingView, b: FindingView): number {
   return a.checkId < b.checkId ? -1 : a.checkId > b.checkId ? 1 : 0;
 }
 
+function parseApercu(value: unknown): {
+  present: boolean;
+  siteVerified: boolean;
+  globalScore: number | null;
+  partialLabel: string | null;
+  locked: Set<string>;
+} {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return {
+      present: false,
+      siteVerified: false,
+      globalScore: null,
+      partialLabel: null,
+      locked: new Set(),
+    };
+  }
+  const row = value as Record<string, unknown>;
+  const locked = new Set<string>();
+  if (Array.isArray(row.domaines)) {
+    for (const item of row.domaines) {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) continue;
+      const domain = item as { domaine?: unknown; verrouille?: unknown };
+      if (domain.verrouille === true && typeof domain.domaine === 'string') {
+        locked.add(domain.domaine);
+      }
+    }
+  }
+  return {
+    present: true,
+    siteVerified: row.site_verifie === true,
+    globalScore: typeof row.score_global === 'number' ? row.score_global : null,
+    partialLabel:
+      typeof row.note_partielle === 'string' ? row.note_partielle : null,
+    locked,
+  };
+}
+
 export async function readAuditView(
   user: Client,
   auditId: string,
@@ -204,12 +241,27 @@ export async function readAuditView(
   const { data: audit, error } = await user
     .from('audits')
     .select(
-      'id, status, mode, trigger, method_version, engine_version, global_score, coverage, created_at, started_at, finished_at, error, site:sites(id, url, label, scope, hosting)',
+      'id, status, mode, trigger, method_version, engine_version, coverage, created_at, started_at, finished_at, error, site:sites(id, url, label, scope, hosting)',
     )
     .eq('id', auditId)
     .maybeSingle();
   if (error) throw new Error('audit_lookup_failed');
   if (!audit?.site) return null;
+  const apercu = await user.rpc('read_rapport_apercu', { p_audit_id: auditId });
+  if (apercu.error) throw new Error('audit_lookup_failed');
+  const gate = parseApercu(apercu.data);
+  let globalScore = gate.globalScore;
+  let siteVerified = gate.siteVerified;
+  if (!gate.present) {
+    const raw = await user
+      .from('audits')
+      .select('global_score')
+      .eq('id', auditId)
+      .maybeSingle();
+    if (raw.error) throw new Error('audit_lookup_failed');
+    globalScore = raw.data?.global_score ?? null;
+    siteVerified = true;
+  }
   const [domains, findings] = await Promise.all([
     user
       .from('domain_scores')
@@ -232,7 +284,9 @@ export async function readAuditView(
       trigger: audit.trigger,
       methodVersion: audit.method_version,
       engineVersion: audit.engine_version,
-      globalScore: audit.global_score,
+      globalScore,
+      siteVerified,
+      partialLabel: gate.partialLabel,
       coverage: audit.coverage,
       createdAt: audit.created_at,
       startedAt: audit.started_at,
@@ -240,8 +294,24 @@ export async function readAuditView(
       error: audit.error,
       site: audit.site,
     },
-    domains: domains.data ?? [],
+    domains: [
+      ...(domains.data ?? [])
+        .filter((row) => !gate.locked.has(row.domain))
+        .map((row) => ({ ...row, locked: false })),
+      ...[...gate.locked]
+        .filter(
+          (name) => !(domains.data ?? []).some((row) => row.domain === name),
+        )
+        .map((name) => ({
+          domain: name,
+          score: null,
+          coverage: 0,
+          level: 'locked',
+          locked: true,
+        })),
+    ],
     findings: (findings.data ?? [])
+      .filter((row) => !gate.locked.has(row.domain))
       .map((f) => ({
         domain: f.domain,
         checkId: f.check_id,

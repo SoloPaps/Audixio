@@ -144,10 +144,14 @@ export function categoryItems(
       id,
       label: domainPlain(id),
       technical: domainTech(id),
-      detail: domainSentence(id, level),
-      score: row ? score : null,
+      detail: row?.locked
+        ? t('domain.locked.teaser')
+        : domainSentence(id, level),
+      score: row?.locked ? null : row ? score : null,
+      locked: row?.locked === true,
       href: `/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(id)}`,
     };
+    if (row?.locked) return item;
     if (findings && item.score === null) {
       const explained = explainUntested({
         coverage: row?.coverage ?? null,

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
+import { scoreAutorise } from '../lib/apercu.js';
 import { browserClient } from '../lib/browser-session.js';
 import { scoreBadgeSvg, shareIsOpen } from '../lib/public-score.js';
 
@@ -54,7 +55,7 @@ async function loadAudit(): Promise<void> {
   if (!supabase) return;
   const { data, error: readError } = await supabase
     .from('audits')
-    .select('id, global_score, finished_at, status')
+    .select('id, finished_at, status')
     .eq('site_id', site.id)
     .in('status', ['done', 'partial']);
   if (readError || !Array.isArray(data)) return;
@@ -64,7 +65,7 @@ async function loadAudit(): Promise<void> {
     .at(-1);
   if (!latest) return;
   auditId = latest.id;
-  globalScore = latest.global_score;
+  globalScore = await scoreAutorise(supabase, latest.id);
   const { data: reports } = await supabase
     .from('reports')
     .select('id, share_token, visibility, revoked_at')

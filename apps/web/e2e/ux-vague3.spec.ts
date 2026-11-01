@@ -111,6 +111,24 @@ async function mockSites(
       });
       return;
     }
+    if (path.endsWith('/rest/v1/rpc/read_rapport_apercu')) {
+      const asked = request.postDataJSON() as { p_audit_id?: string } | null;
+      const row =
+        audits === 'error'
+          ? undefined
+          : audits.find((item) => item.id === asked?.p_audit_id);
+      const score =
+        typeof row?.global_score === 'number' ? row.global_score : null;
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          score_global: score,
+          site_verifie: score !== null,
+        }),
+      });
+      return;
+    }
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

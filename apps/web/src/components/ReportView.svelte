@@ -87,6 +87,11 @@ const domainScore = $derived(
     domainRow?.score ??
     null,
 );
+const domainLocked = $derived(
+  payload?.domains.find((row) => row.domain === domainId)?.locked === true ||
+    domainRow?.locked === true,
+);
+const siteVerified = $derived(payload?.audit.siteVerified !== false);
 const domainUntested = $derived.by(() => {
   if (!payload || mode !== 'domain' || domainScore !== null) return null;
   const row = payload.domains.find((item) => item.domain === domainId);
@@ -215,12 +220,23 @@ onMount(() => {
         <div class="glass-plate">
           <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('report.back')}</a></p>
           <header class="verdict">
-            <ScoreGauge domain={domainPlain(domainId)} score={domainScore} size="hero" />
+            {#if domainLocked}
+              <p class="kicker">{t('domain.locked.badge')}</p>
+            {:else}
+              <ScoreGauge domain={domainPlain(domainId)} score={domainScore} size="hero" />
+            {/if}
             <div>
               <p class="kicker">{payload.audit.site.url}</p>
               <h1>{domainPlain(domainId)}</h1>
-              <p class="detail">{domainSentence(domainId, levelForScore(domainScore))}</p>
-              {#if domainUntested}
+              {#if domainLocked}
+                <p class="detail">{t('domain.locked.teaser')}</p>
+                <p>
+                  <a class="link-action" href={`/verifier?site=${encodeURIComponent(payload.audit.site.id)}`}>{t('domain.locked.cta')}</a>
+                </p>
+              {:else}
+                <p class="detail">{domainSentence(domainId, levelForScore(domainScore))}</p>
+              {/if}
+              {#if domainUntested && !domainLocked}
                 <UntestedCause
                   coverageNote={domainUntested.coverageNote}
                   causes={domainUntested.causes}
@@ -238,10 +254,16 @@ onMount(() => {
       <section class="glass glass-module">
         <div class="glass-plate">
           <header class="verdict">
-            <ScoreGauge domain={t('domain.global')} score={global} size="hero" />
+            {#if siteVerified}
+              <ScoreGauge domain={t('domain.global')} score={global} size="hero" />
+            {:else}
+              <p class="kicker">{t('domain.locked.badge')}</p>
+            {/if}
             <div>
               <p class="kicker">{payload.audit.site.url}</p>
-              {#if grade}
+              {#if !siteVerified}
+                <p>{t('report.partial', { n: scoredDomainCount(items) })}</p>
+              {:else if grade}
                 <p class="grade">
                   <span class="grade-letter">{grade.letter}</span>
                   <span class="grade-label">{grade.label}</span>
@@ -311,7 +333,7 @@ onMount(() => {
       {/if}
     {/if}
 
-    {#if mode === 'domain'}
+    {#if mode === 'domain' && !domainLocked}
       <section class="glass glass-module">
         <div class="glass-plate">
           <h2 id="corrections">{t('section.findings')}</h2>

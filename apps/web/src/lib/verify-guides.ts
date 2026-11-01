@@ -1,6 +1,12 @@
 import type { MessageKey } from '../i18n/index.js';
 
-export type VerifyMethod = 'dns_txt' | 'file' | 'meta';
+export type VerifyMethod =
+  | 'dns_txt'
+  | 'file'
+  | 'html_file'
+  | 'meta'
+  | 'well_known'
+  | 'search_console';
 
 export interface Guide {
   title: MessageKey;
@@ -61,9 +67,31 @@ const META: Guide = {
   ],
 };
 
+const HTML_FILE: Guide = {
+  title: 'verify.guide.html.title',
+  steps: [
+    'verify.guide.html.1',
+    'verify.guide.html.2',
+    'verify.guide.html.3',
+    'verify.guide.html.4',
+  ],
+};
+
+const WELL_KNOWN: Guide = {
+  title: 'verify.guide.well_known.title',
+  steps: [
+    'verify.guide.well_known.1',
+    'verify.guide.well_known.2',
+    'verify.guide.well_known.3',
+  ],
+};
+
 /** Instructions selon la méthode. Le DNS couvre Netlify et le registrar. */
 export function guidesFor(method: VerifyMethod): readonly Guide[] {
   if (method === 'dns_txt') return [NETLIFY, REGISTRAR];
   if (method === 'file') return [GITHUB, FILE];
+  if (method === 'html_file') return [HTML_FILE];
+  if (method === 'well_known') return [WELL_KNOWN];
+  if (method === 'search_console') return [];
   return [META];
 }

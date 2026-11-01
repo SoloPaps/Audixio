@@ -65,10 +65,11 @@ describe('jeton', () => {
 });
 
 describe('défi', () => {
-  it('décrit les trois méthodes, sans dossier caché', () => {
+  it('décrit les méthodes, sans mélanger le préfixe et .well-known', () => {
     const dns = buildChallenge(origin, 'dns_txt', TOKEN);
-    expect(dns.dnsName).toBe('_audigy-challenge.exemple.fr');
-    expect(dns.dnsValue).toBe(`audigy-site-verification=${TOKEN}`);
+    expect(dns.dnsName).toBe('_audixio.exemple.fr');
+    expect(dns.dnsValue).toBe(`audixio-verify=${TOKEN}`);
+    expect(dns.searchConsole).toBe('later');
     expect(challengeName('www.exemple.fr')).toBe(
       '_audigy-challenge.exemple.fr',
     );
@@ -77,9 +78,15 @@ describe('défi', () => {
       'https://solopaps.github.io/Projet-Site-Artiste/audigy-verification.txt',
     );
     expect(file.fileUrl).not.toContain('.well-known');
+    expect(file.htmlFileUrl).toBe(
+      'https://solopaps.github.io/Projet-Site-Artiste/audixio-verification.html',
+    );
+    expect(file.wellKnownUrl).toBe(
+      'https://solopaps.github.io/.well-known/audixio-verify.txt',
+    );
     const meta = buildChallenge(origin, 'meta', TOKEN);
     expect(meta.metaTag).toBe(
-      `<meta name="audigy-verification" content="${TOKEN}">`,
+      `<meta name="audixio-verification" content="audixio-verify=${TOKEN}">`,
     );
     expect(verificationFileUrl(origin).pathname).toBe(
       '/audigy-verification.txt',
@@ -208,6 +215,54 @@ describe('lecture de la preuve', () => {
       },
     });
     expect(meta.outcome).toBe('present');
+
+    const htmlFile = `<!doctype html><html><head></head><body>\naudixio-verify=${TOKEN}\n</body></html>`;
+    const htmlProof = await probeOwnership('html_file', TOKEN, origin, {
+      fetch: async () => response(htmlFile),
+      dns: {
+        query: async () => {
+          throw new Error('inutile');
+        },
+        addresses: async () => [],
+      },
+    });
+    expect(htmlProof.outcome).toBe('present');
+    expect(htmlProof.location).toBe(
+      'https://exemple.fr/audixio-verification.html',
+    );
+
+    const known = await probeOwnership('well_known', TOKEN, pathSite, {
+      fetch: async (input) => {
+        expect(String(input)).toBe(
+          'https://solopaps.github.io/.well-known/audixio-verify.txt',
+        );
+        return response(`audixio-verify=${TOKEN}\n`);
+      },
+      dns: {
+        query: async () => {
+          throw new Error('inutile');
+        },
+        addresses: async () => [],
+      },
+    });
+    expect(known.outcome).toBe('present');
+
+    const calls: string[] = [];
+    const later = await probeOwnership('search_console', TOKEN, origin, {
+      fetch: async (input) => {
+        calls.push(String(input));
+        return response('');
+      },
+      dns: {
+        query: async () => {
+          calls.push('dns');
+          return { status: 0, authenticated: false, records: [] };
+        },
+        addresses: async () => [],
+      },
+    });
+    expect(later).toEqual({ outcome: 'error', location: 'search_console' });
+    expect(calls).toEqual([]);
   });
 
   it('ignore un fichier qui est en fait la page HTML', async () => {

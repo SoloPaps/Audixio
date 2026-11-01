@@ -17,6 +17,8 @@ export interface CategoryItem {
   detail: string;
   score: number | null;
   href?: string;
+  /** Domaine sensible sans preuve : pas de lettre, pas de détail. */
+  locked?: boolean;
   /** Phrase déjà fournie quand la couverture est sous 50 %. */
   coverageNote?: string | null;
   /** Absent du score public : pas de cause interne. */
