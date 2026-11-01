@@ -4,10 +4,6 @@ import { t } from '../i18n/index.js';
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title={t('meta.verify.title')} description={t('meta.verify.description')}>
-  <h1>{t('verify.title')}</h1>
-  <p class="prose">{t('verify.intro')}</p>
-  <p class="prose">{t('verify.consent')}</p>
-  <p class="prose">{t('verify.legal_law')}</p>
+<Base shell="canon" title={t('meta.verify.title')} description={t('meta.verify.description')}>
   <VerificationPanel client:load />
 </Base>

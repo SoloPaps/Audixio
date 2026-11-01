@@ -1,0 +1,11 @@
+---
+import { t } from '../i18n/index.js';
+import Base from '../layouts/Base.astro';
+---
+
+<Base shell="canon" title={t('nav.pricing')} description={t('pro.later')}>
+  <section class="plan-card">
+    <h1>{t('nav.pricing')}</h1>
+    <p>{t('pro.later')}</p>
+  </section>
+</Base>

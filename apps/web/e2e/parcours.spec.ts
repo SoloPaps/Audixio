@@ -317,13 +317,14 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Votre site peut mieux faire.',
+      name: 'Audit de exemple.fr',
     }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('img', { name: /Score global : 72 sur 100/ }),
-  ).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Protection' })).toBeVisible();
+  await expect(page.getByText('Note C', { exact: true })).toBeVisible();
+  await expect(page.getByText(/\/100/)).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /^Protection/ })).toBeVisible();
+  await page.getByRole('link', { name: /^Protection/ }).click();
+  await expect(page).toHaveURL(/domaine=securite/);
   await page.getByRole('button', { name: /Problèmes/ }).click();
   await expect(
     page.getByRole('heading', { level: 4, name: "Forcer l'adresse chiffrée" }),
@@ -346,14 +347,11 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   ).toBeVisible();
   await expectNoViolations(page);
 
-  await page.getByRole('link', { name: 'Protection' }).click();
-  await expect(page).toHaveURL(/domaine=securite/);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Protection' }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('img', { name: /Protection : 40 sur 100/ }),
-  ).toBeVisible();
+  await expect(page.getByText('Note E', { exact: true })).toBeVisible();
+  await expect(page.getByText(/\/100/)).toHaveCount(0);
   await expect(
     page.getByRole('link', { name: 'Retour au rapport' }),
   ).toBeVisible();
@@ -407,26 +405,19 @@ test('le rapport donne la note, trois priorités et le pont vers le brief', asyn
   }, session);
   await page.goto(`/rapport?id=${AUDIT_ID}`);
   await expect(page.getByText('Note C', { exact: true })).toBeVisible();
-  await expect(page.getByText(/\(72\/100\)/)).toBeVisible();
-  const section = page.getByRole('region', { name: '3 priorités d’action' });
+  await expect(page.getByText(/\/100/)).toHaveCount(0);
+  const section = page.getByRole('region', { name: 'Priorités' });
   await expect(section).toBeVisible();
   await expect(section.getByRole('listitem')).toHaveCount(2);
-  await section
-    .getByRole('button', { name: /^Comment corriger/ })
-    .first()
-    .click();
-  const dialog = page.getByRole('dialog');
-  await expect(dialog).toBeVisible();
   await expect(
-    dialog.getByText('Activez le certificat de votre hébergeur.'),
+    page.getByRole('link', { name: 'Ouvrir le plan d’action' }),
   ).toBeVisible();
-  await dialog.getByRole('button', { name: 'Fermer le guide' }).click();
-  await expect(dialog).toBeHidden();
-  await section
-    .getByRole('button', { name: /^\+ Ajouter au brief/ })
-    .first()
-    .click();
-  await expect(page.getByText('1 sélectionné')).toBeVisible();
+  await section.getByRole('link').first().click();
+  await expect(page).toHaveURL(/domaine=securite#finding-/);
+  await page.getByText('Voir comment corriger').first().click();
+  await expect(
+    page.getByText('Activez le certificat de votre hébergeur.'),
+  ).toBeVisible();
 });
 
 test('rapport sombre sans violation', async ({ page }) => {
@@ -444,7 +435,7 @@ test('rapport sombre sans violation', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Votre site peut mieux faire.',
+      name: 'Audit de exemple.fr',
     }),
   ).toBeVisible();
   await expect(page.getByLabel('Thème')).toHaveValue('dark');

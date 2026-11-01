@@ -1,5 +1,6 @@
 ---
 import { ClientRouter, fade } from 'astro:transitions';
+import CanonBar from '../components/CanonBar.svelte';
 import SiteBar from '../components/SiteBar.svelte';
 import ThemeToggle from '../components/ThemeToggle.svelte';
 import { t } from '../i18n/index.js';
@@ -7,6 +8,7 @@ import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/arc.css';
+import '../styles/canon.css';
 
 interface Props {
   title: string;
@@ -15,6 +17,7 @@ interface Props {
   print?: boolean;
   jsonLd?: string;
   still?: boolean;
+  shell?: 'classic' | 'canon';
 }
 
 const {
@@ -24,6 +27,7 @@ const {
   print = false,
   jsonLd,
   still = false,
+  shell = 'classic',
 } = Astro.props;
 const canonical = Astro.url.pathname || '/';
 const here = canonical.length > 1 ? canonical.replace(/\/$/u, '') : canonical;
@@ -45,39 +49,73 @@ const initialTheme =
     <ClientRouter fallback="swap" />
     <script is:inline src="/theme-init.js"></script>
   </head>
-  <body class:list={{ 'blobs-still': still }}>
+  <body class:list={{ 'blobs-still': still, canon: shell === 'canon' }}>
     <a class="skip" href="#contenu">{t('skip.content')}</a>
-    <div class="blobs" aria-hidden="true">
-      <div class="blob blob-petrol"></div>
-      <div class="blob blob-peach"></div>
-      <div class="blob blob-lilac"></div>
-    </div>
-    <header class:list={['site-bar', { 'print-hide': print }]}>
-      <div class="glass bar-glass">
-        <div class="glass-plate bar-plate">
-          <a
-            class="brand link-nav"
-            href="/"
-            aria-current={here === '/' ? 'page' : undefined}
-          >{t('brand.name')}</a>
-          <SiteBar pathname={Astro.url.pathname} client:load />
-          <ThemeToggle initial={initialTheme} client:load />
-        </div>
+    {shell === 'canon' ? null : (
+      <div class="blobs" aria-hidden="true">
+        <div class="blob blob-petrol"></div>
+        <div class="blob blob-peach"></div>
+        <div class="blob blob-lilac"></div>
       </div>
-    </header>
+    )}
+    {shell === 'canon' ? (
+      <CanonBar pathname={Astro.url.pathname} initial={initialTheme} client:load />
+    ) : (
+      <header class:list={['site-bar', { 'print-hide': print }]}>
+        <div class="glass bar-glass">
+          <div class="glass-plate bar-plate">
+            <a
+              class="brand link-nav"
+              href="/"
+              aria-current={here === '/' ? 'page' : undefined}
+            >{t('brand.name')}</a>
+            <SiteBar pathname={Astro.url.pathname} client:load />
+            <ThemeToggle initial={initialTheme} client:load />
+          </div>
+        </div>
+      </header>
+    )}
     <main id="contenu" class:list={['wrap', { legal: still }]} tabindex="-1">
       <noscript><p>{t('noscript')}</p></noscript>
       <slot />
     </main>
-    <footer class:list={['site-footer', { 'print-hide': print }]}>
-      <nav class="footer-nav" aria-label={t('footer.legal')}>
-        <a class="link-footer" href="/methode">{t('footer.method.nav')}</a>
-        <a class="link-footer" href="/cgu">{t('footer.terms')}</a>
-        <a class="link-footer" href="/confidentialite">{t('footer.privacy')}</a>
-        <a class="link-footer" href="/mentions-legales">{t('footer.mentions')}</a>
-        <a class="link-footer" href="/accessibilite">{t('footer.a11y')}</a>
-      </nav>
-      <p class="footer-note">{t('footer.note')}</p>
-    </footer>
+    {shell === 'canon' ? (
+      <footer class:list={['axf', { 'print-hide': print }]}>
+        <div class="axf-in">
+          <div class="axf-top">
+            <div>
+              <a class="axf-brand" href="/">
+                <img src="/marque/logo-pc.svg" alt={t('brand.ui')} width="107" height="28" />
+                <span class="axf-v">{t('footer.version')}</span>
+              </a>
+              <p class="axf-about">{t('footer.about')}</p>
+            </div>
+            <ul class="axf-links">
+              <li><a href="/mentions-legales">{t('footer.mentions')}</a></li>
+              <li><a href="/confidentialite">{t('footer.privacy')}</a></li>
+              <li><a href="/accessibilite">{t('footer.a11y')}</a></li>
+              <li><a href="/cgu">{t('footer.terms')}</a></li>
+              <li><a href="/pro">{t('footer.pro')}</a></li>
+            </ul>
+          </div>
+          <p class="axf-base">
+            <span>{t('footer.rights')}</span>
+            <span>{t('footer.passive')}</span>
+            <span>{t('footer.note')}</span>
+          </p>
+        </div>
+      </footer>
+    ) : (
+      <footer class:list={['site-footer', { 'print-hide': print }]}>
+        <nav class="footer-nav" aria-label={t('footer.legal')}>
+          <a class="link-footer" href="/methode">{t('footer.method.nav')}</a>
+          <a class="link-footer" href="/cgu">{t('footer.terms')}</a>
+          <a class="link-footer" href="/confidentialite">{t('footer.privacy')}</a>
+          <a class="link-footer" href="/mentions-legales">{t('footer.mentions')}</a>
+          <a class="link-footer" href="/accessibilite">{t('footer.a11y')}</a>
+        </nav>
+        <p class="footer-note">{t('footer.note')}</p>
+      </footer>
+    )}
   </body>
 </html>

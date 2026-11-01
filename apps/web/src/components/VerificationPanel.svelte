@@ -228,6 +228,13 @@ async function onCopy(value: string): Promise<void> {
 }
 </script>
 
+<header class="v-hero">
+  <p>{t('verify.title')}</p>
+  <h1>{site ? t('verify.of', { host: site.host }) : t('verify.title')}</h1>
+  <p>{t('verify.intro')}</p>
+  <p>{t('verify.consent')}</p>
+  <p>{t('verify.legal_law')}</p>
+</header>
 {#if loading}
   <p role="status">{t('verify.loading')}</p>
 {:else if needLogin}
@@ -256,7 +263,7 @@ async function onCopy(value: string): Promise<void> {
   {#if error}
     <p class="form-error" role="alert">{error}</p>
   {/if}
-  <div role="tablist" aria-label={t('verify.method')}>
+  <div class="v-tabs" role="tablist" aria-label={t('verify.method')}>
     {#each METHODS as item (item)}
       <button
         type="button"
@@ -287,14 +294,14 @@ async function onCopy(value: string): Promise<void> {
       </section>
     {/each}
     {#if !token}
-      <button class="button button-primary" type="button" disabled={pending} onclick={onCreate}>
+      <button class="btn-primary" type="button" disabled={pending} onclick={onCreate}>
         {pending ? t('verify.creating') : t('verify.create')}
       </button>
     {:else if challenge}
-      <div class="challenge">
+      <div class="v-card token-bar">
         <p>{t('verify.token')}</p>
         <pre>{challenge.dnsValue}</pre>
-        <button class="button button-secondary" type="button" onclick={() => onCopy(challenge.dnsValue)}>
+        <button class="btn-ghost" type="button" onclick={() => onCopy(challenge.dnsValue)}>
           {t('verify.copy')}
         </button>
         {#if method === 'dns_txt'}
@@ -314,17 +321,17 @@ async function onCopy(value: string): Promise<void> {
         {:else}
           <p>{t('verify.meta_tag')}</p>
           <pre>{challenge.metaTag}</pre>
-          <button class="button button-secondary" type="button" onclick={() => onCopy(challenge.metaTag)}>
+          <button class="btn-ghost" type="button" onclick={() => onCopy(challenge.metaTag)}>
             {t('verify.copy')}
           </button>
         {/if}
       </div>
-      <button class="button button-primary" type="button" disabled={pending} onclick={onCheck}>
+      <button class="btn-primary" type="button" disabled={pending} onclick={onCheck}>
         {pending ? t('verify.checking') : phase === 'fail' ? t('verify.retry') : t('verify.now')}
       </button>
     {/if}
   {/if}
-  <section aria-live="polite">
+  <section class="v-card status-{phase}" aria-live="polite">
     {#if phase === 'checking'}
       <h2>{t('verify.state.checking.title')}</h2>
       <p>{t('verify.state.checking.body')}</p>

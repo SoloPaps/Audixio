@@ -1,0 +1,9 @@
+---
+import ReportView from '../components/ReportView.svelte';
+import { t } from '../i18n/index.js';
+import Base from '../layouts/Base.astro';
+---
+
+<Base shell="canon" title={t('hub.detail')} description={t('meta.domain.description')}>
+  <ReportView mode="detail" client:load />
+</Base>
