@@ -56,7 +56,7 @@ export function inlineHashes(html: string): {
   const scripts: string[] = [];
   const styles: string[] = [];
   for (const match of html.matchAll(
-    /<script\b([^>]*)>([\s\S]*?)<\/script>/gi,
+    /<script\b([^>]*)>([\s\S]*?)<\/script\b[^>]*>/gi,
   )) {
     const attrs = match[1] ?? '';
     if (/\bsrc\s*=/i.test(attrs)) continue;

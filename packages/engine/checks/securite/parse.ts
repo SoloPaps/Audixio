@@ -421,20 +421,31 @@ export interface MixedHits {
   passive: string[];
 }
 
+/** Retire un motif jusqu'à stabilité (évite qu'un retrait en recrée un autre). */
+function stripRepeated(input: string, pattern: RegExp): string {
+  let out = input;
+  let previous: string;
+  do {
+    previous = out;
+    out = out.replace(pattern, '');
+  } while (out !== previous);
+  return out;
+}
+
 /** Balises et CSS statiques. Un `>` dans un attribut peut tronquer la balise. */
 export function scanMixed(html: string): MixedHits {
-  const noComments = html.replace(/<!--[\s\S]*?-->/g, '');
+  const noComments = stripRepeated(html, /<!--[\s\S]*?-->/g);
   const active: string[] = [];
   const passive: string[] = [];
   const styles: string[] = [];
   for (const block of noComments.matchAll(
-    /<style\b[^>]*>([\s\S]*?)<\/style>/gi,
+    /<style\b[^>]*>([\s\S]*?)<\/style\b[^>]*>/gi,
   )) {
     if (block[1]) styles.push(block[1]);
   }
-  const withoutStyle = noComments.replace(
-    /<style\b[^>]*>[\s\S]*?<\/style>/gi,
-    '',
+  const withoutStyle = stripRepeated(
+    noComments,
+    /<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi,
   );
   for (const tag of withoutStyle.matchAll(/<([a-zA-Z][\w:-]*)\b([^>]*)>/g)) {
     const name = tag[1]?.toLowerCase() ?? '';

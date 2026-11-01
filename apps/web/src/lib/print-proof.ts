@@ -5,7 +5,7 @@ const AUDIT_ID =
 export function printAuditId(pathname: string, search: string): string | null {
   const fromPath = /^\/rapport\/([^/]+)\/imprimer\/?$/u.exec(pathname)?.[1];
   const raw = fromPath ?? new URLSearchParams(search).get('id') ?? '';
-  let id = raw;
+  let id: string;
   try {
     id = decodeURIComponent(raw);
   } catch {
