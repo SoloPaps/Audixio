@@ -84,7 +84,7 @@ function inside(root: string, file: string): boolean {
 }
 
 async function fileFor(dist: string, pathname: string): Promise<string | null> {
-  let decoded = pathname;
+  let decoded: string;
   try {
     decoded = decodeURIComponent(pathname);
   } catch {

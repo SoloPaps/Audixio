@@ -103,6 +103,7 @@ export function createTlsProbe(options: TlsProbeOptions = {}): TlsProbe {
       host: target.host,
       port: target.port,
       ...(literalIp ? {} : { servername: host }),
+      // Voulu : la sonde mesure le certificat, y compris invalide ; aucune donnée n'est envoyée.
       rejectUnauthorized: false,
       ...((call?.minVersion ?? options.minVersion)
         ? { minVersion: call?.minVersion ?? options.minVersion }

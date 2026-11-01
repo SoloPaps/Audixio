@@ -313,8 +313,8 @@ function markupSpans(source: string, ext: string): Span[] {
       block.replace(/[^\n]/g, ' '),
     );
   }
-  text = text.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, blank);
-  text = text.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, blank);
+  text = text.replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, blank);
+  text = text.replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, blank);
   text = text.replace(/<[^>]*>/g, blank);
   text = blankBraces(text);
   if (text.trim().length === 0) return [];

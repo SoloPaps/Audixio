@@ -19,9 +19,9 @@ export function fold(value: string): string {
 
 export function visibleText(html: string): string {
   const stripped = html
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, ' ')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style\b[^>]*>/gi, ' ')
+    .replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript\b[^>]*>/gi, ' ')
     .replace(/<[^>]+>/g, ' ');
   return collapse(stripped);
 }
@@ -44,6 +44,7 @@ function resolveHttp(href: string, base: URL): URL | null {
     lower.startsWith('mailto:') ||
     lower.startsWith('tel:') ||
     lower.startsWith('javascript:') ||
+    lower.startsWith('vbscript:') ||
     lower.startsWith('data:')
   ) {
     return null;
@@ -59,10 +60,11 @@ function resolveHttp(href: string, base: URL): URL | null {
 }
 
 function decodeHtml(value: string): string {
+  // `&amp;` en dernier : sinon `&amp;quot;` serait décodé deux fois.
   return value
-    .replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'");
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&amp;/gi, '&');
 }
 
 /** Liens « Mentions » et « Confidentialité » d’une page HTML. */
