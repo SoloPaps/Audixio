@@ -69,7 +69,8 @@ function deps(overrides: Partial<VerificationDeps> = {}): {
       userFromToken: async (token) => (token === TOKEN ? USER : null),
       loadSite: async () => site,
       loadVerification: async () => verification(),
-      insertPending: async () => VER_ID,
+      insertPending: async () => ({ id: VER_ID, token: 'a'.repeat(43) }),
+      allowProbe: async () => ({ allowed: true, retryAfter: null }),
       save: async () => {},
       appendAudit: async () => {},
       notifyExpired: async () => {},
@@ -292,8 +293,20 @@ describe('POST /api/verifications', () => {
     };
     expect(body.status).toBe('pending');
     expect(body.token).toMatch(TOKEN_RE);
-    expect(body.dnsName).toBe('_audigy-challenge.exemple.fr');
+    expect(body.dnsName).toBe('_audixio.exemple.fr');
     expect(lines.join('\n')).not.toContain(body.token);
+
+    const limited = await handleCheckVerification(
+      post('http://localhost/api/verifications/check', {
+        verificationId: VER_ID,
+      }),
+      {
+        ...value,
+        allowProbe: async () => ({ allowed: false, retryAfter: 30 }),
+      },
+    );
+    expect(limited.status).toBe(429);
+    expect(await limited.json()).toMatchObject({ error: 'probe_limit' });
 
     const denied = await handleCreateVerification(
       post('http://localhost/api/verifications', { siteId: SITE_ID }, null),

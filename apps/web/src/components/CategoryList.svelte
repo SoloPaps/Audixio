@@ -21,8 +21,12 @@ let { items }: Props = $props();
     <p class="domain-detail">{item.detail}</p>
   </div>
   <div class="domain-score">
-    <span class="domain-num">{item.score === null ? t('score.empty') : item.score}</span>
-    <StatusMark {level} />
+    {#if item.locked}
+      <span class="domain-num">{t('domain.locked.badge')}</span>
+    {:else}
+      <span class="domain-num">{item.score === null ? t('score.empty') : item.score}</span>
+      <StatusMark {level} />
+    {/if}
   </div>
   <span class="visually-hidden">{gaugeLabel(item.label, item.score)}</span>
 {/snippet}

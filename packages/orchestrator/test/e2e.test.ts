@@ -147,10 +147,18 @@ async function engineView(auditId: string): Promise<AuditView> {
 }
 
 function expectLockedHidden(body: AuditView): void {
-  expect(body.domains.some((domain) => LOCKED.has(domain.domain))).toBe(false);
+  expect(body.audit.globalScore).toBeNull();
+  expect(body.audit.siteVerified).toBe(false);
+  for (const name of LOCKED) {
+    const row = body.domains.find((domain) => domain.domain === name);
+    expect(row?.locked).toBe(true);
+    expect(row?.score).toBeNull();
+  }
   expect(body.findings.some((finding) => LOCKED.has(finding.domain))).toBe(
     false,
   );
+  expect(JSON.stringify(body).toLowerCase()).not.toContain('hsts');
+  expect(JSON.stringify(body).toLowerCase()).not.toContain('x-frame');
 }
 
 /** Rapport réel du runner (fixture PART-13), recalé sur l'hôte audité. */
@@ -247,7 +255,6 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
       site: { url: 'https://bon.audigy.test', scope: 'origin' },
     });
     expect(body.audit.finishedAt).not.toBeNull();
-    expect(body.audit.globalScore).toBeTypeOf('number');
     expectLockedHidden(body);
     const engine = await engineView(first);
     expect(browserFinding(engine)).toMatchObject({

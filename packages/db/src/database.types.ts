@@ -966,6 +966,29 @@ export type Database = {
         Args: { p_audit_id: string };
         Returns: Json;
       };
+      prepare_site_verification: {
+        Args: {
+          p_site_id: string;
+          p_owner_id: string;
+          p_method: string;
+          p_token: string;
+          p_evidence: Json;
+        };
+        Returns: {
+          id: string;
+          token: string;
+        }[];
+      };
+      consume_verification_probe: {
+        Args: {
+          p_user_id: string;
+          p_host: string;
+        };
+        Returns: {
+          allowed: boolean;
+          retry_after_seconds: number | null;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;

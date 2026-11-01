@@ -1,5 +1,6 @@
 import type { Database } from '@audigy/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { scoreAutorise } from './apercu.js';
 import { browserClient } from './browser-session.js';
 import { fixesFor, hostingOf } from './fix-catalog.js';
 import { type HistoryView, rowsToHistory } from './history.js';
@@ -25,12 +26,18 @@ async function readHistory(
 ): Promise<HistoryView | null> {
   const audits = await supabase
     .from('audits')
-    .select('id, status, global_score, created_at, finished_at')
+    .select('id, status, created_at, finished_at')
     .eq('site_id', siteId)
     .in('status', ['done', 'partial', 'failed'])
     .order('created_at', { ascending: true });
   if (audits.error || !audits.data || audits.data.length === 0) return null;
-  const ids = audits.data.map((row) => row.id);
+  const withScore = await Promise.all(
+    audits.data.map(async (row) => ({
+      ...row,
+      global_score: await scoreAutorise(supabase, row.id),
+    })),
+  );
+  const ids = withScore.map((row) => row.id);
   const [domains, findings] = await Promise.all([
     supabase
       .from('domain_scores')
@@ -48,7 +55,7 @@ async function readHistory(
   }
   const fixes = fixesFor(hostingOf(hosting));
   const built = rowsToHistory({
-    audits: audits.data,
+    audits: withScore,
     domains: domains.data,
     findings: findings.data.map((row) => {
       const fix = row.fix_key ? fixes.get(row.fix_key) : undefined;

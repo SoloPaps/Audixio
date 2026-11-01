@@ -268,6 +268,28 @@ export const fr = {
   'verify.method.dns': 'Enregistrement du nom de domaine',
   'verify.method.file': 'Fichier sur le site',
   'verify.method.meta': 'Balise dans la page',
+  'verify.method.html': 'Fichier HTML à la racine',
+  'verify.method.well_known': 'Fichier .well-known',
+  'verify.method.gsc': 'Search Console',
+  'verify.gsc.later':
+    'Search Console arrive plus tard. Choisissez une autre méthode.',
+  'verify.now': 'Vérifier maintenant',
+  'verify.retry': 'Réessayer',
+  'verify.report': 'Voir le rapport complet',
+  'verify.state.idle.title': 'En attente de vérification',
+  'verify.state.idle.body':
+    'La détection démarre quand vous lancez la vérification.',
+  'verify.state.checking.title': 'Recherche du code',
+  'verify.state.checking.body': 'La sonde lit seulement l’adresse indiquée.',
+  'verify.state.ok.title': 'Contrôle du domaine confirmé',
+  'verify.state.ok.body':
+    'Le code a été détecté. Le rapport complet est ouvert.',
+  'verify.state.fail.title': 'Code introuvable',
+  'verify.state.fail.body':
+    'Vérifiez la publication, puis réessayez. Aucune pénalité.',
+  'verify.recheck': 'Audixio relit le code avant chaque test actif.',
+  'verify.html_url': 'Adresse du fichier HTML',
+  'verify.well_known_url': 'Adresse du fichier .well-known',
   'verify.create': 'Créer le code',
   'verify.creating': 'Création du code.',
   'verify.check': 'Vérifier le site',
@@ -324,6 +346,18 @@ export const fr = {
   'verify.guide.meta.3':
     'Le code doit être dans le HTML reçu, pas ajouté par un script.',
   'verify.guide.meta.4': 'Publiez, puis lancez la vérification.',
+  'verify.guide.html.title': 'Fichier HTML à la racine',
+  'verify.guide.html.1': 'Créez la page HTML à l’adresse indiquée.',
+  'verify.guide.html.2':
+    'La page contient la valeur indiquée, seule sur une ligne.',
+  'verify.guide.html.3': 'Publiez cette version du site.',
+  'verify.guide.html.4': 'Revenez ici et lancez la vérification.',
+  'verify.guide.well_known.title': 'Fichier public .well-known',
+  'verify.guide.well_known.1':
+    'Créez le fichier à l’adresse indiquée, à la racine du nom.',
+  'verify.guide.well_known.2':
+    'Le fichier contient seulement la valeur indiquée.',
+  'verify.guide.well_known.3': 'Publiez, puis lancez la vérification.',
   'progress.title': 'Avancement de l’audit',
   'progress.loading': 'Chargement de l’avancement.',
   'progress.queued': 'L’audit est en file. Il démarre bientôt.',
@@ -406,6 +440,11 @@ export const fr = {
   'domain.securite.improve': 'Certaines protections peuvent être renforcées.',
   'domain.securite.problem': 'Des protections importantes manquent.',
   'domain.securite.untested': 'Nous n’avons pas pu vérifier la protection.',
+  'domain.locked.badge': 'Verrouillé',
+  'domain.locked.teaser':
+    'Aperçu fermé. Le détail s’ouvre après la preuve de propriété.',
+  'domain.locked.cta': 'Prouver la propriété',
+  'report.partial': 'partielle · {n} domaines · site non vérifié',
   'domain.ecologie.good': 'La page reste légère à charger.',
   'domain.ecologie.improve': 'La page peut être allégée.',
   'domain.ecologie.problem': 'La page est lourde à charger.',
@@ -679,6 +718,8 @@ export const fr = {
     'Vous avez lancé 10 audits aujourd’hui. Réessayez demain.',
   'api.error.host_limit':
     'Ce site a été audité il y a moins de 15 minutes. Réessayez plus tard.',
+  'api.error.probe_limit':
+    'Trop de vérifications. Réessayez dans quelques minutes.',
   'api.error.internal':
     'Le service ne répond pas pour le moment. Réessayez dans quelques minutes.',
   'api.error.oauth_unconfigured':

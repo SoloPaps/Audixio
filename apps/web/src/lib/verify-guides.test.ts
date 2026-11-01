@@ -30,12 +30,15 @@ describe('guides de vérification', () => {
       pathPrefix: '/Projet-Site-Artiste',
     };
     const token = 'a'.repeat(43);
+    const challenge = buildChallenge(site, 'file', token);
     expect(localChallenge(site, token)).toEqual({
-      dnsName: buildChallenge(site, 'file', token).dnsName,
-      dnsValue: buildChallenge(site, 'file', token).dnsValue,
-      fileUrl: buildChallenge(site, 'file', token).fileUrl,
-      pageUrl: buildChallenge(site, 'file', token).pageUrl,
-      metaTag: buildChallenge(site, 'file', token).metaTag,
+      dnsName: challenge.dnsName,
+      dnsValue: challenge.dnsValue,
+      fileUrl: challenge.fileUrl,
+      htmlFileUrl: challenge.htmlFileUrl,
+      wellKnownUrl: challenge.wellKnownUrl,
+      pageUrl: challenge.pageUrl,
+      metaTag: challenge.metaTag,
     });
     expect(localChallenge(site, token).fileUrl).toContain(
       '/Projet-Site-Artiste/audigy-verification.txt',

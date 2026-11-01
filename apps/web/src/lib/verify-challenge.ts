@@ -8,6 +8,8 @@ export interface LocalChallenge {
   dnsName: string;
   dnsValue: string;
   fileUrl: string;
+  htmlFileUrl: string;
+  wellKnownUrl: string;
   pageUrl: string;
   metaTag: string;
 }
@@ -34,11 +36,15 @@ export function localChallenge(
     site.scope === 'path'
       ? `https://${host}${prefix(site.pathPrefix)}`
       : `https://${host}/`;
+  const origin = `https://${host}/`;
+  const published = `audixio-verify=${token}`;
   return {
-    dnsName: `_audigy-challenge.${dnsDomain(host)}`,
-    dnsValue: `audigy-site-verification=${token}`,
+    dnsName: `_audixio.${dnsDomain(host)}`,
+    dnsValue: published,
     fileUrl: new URL('audigy-verification.txt', base).href,
+    htmlFileUrl: new URL('audixio-verification.html', base).href,
+    wellKnownUrl: new URL('.well-known/audixio-verify.txt', origin).href,
     pageUrl: base,
-    metaTag: `<meta name="audigy-verification" content="${token}">`,
+    metaTag: `<meta name="audixio-verification" content="${published}">`,
   };
 }

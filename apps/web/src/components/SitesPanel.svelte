@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
+import { scoreAutorise } from '../lib/apercu.js';
 import {
   browserClient,
   currentSession,
@@ -82,10 +83,22 @@ async function load(): Promise<void> {
   const ids = rows.map((site) => site.id);
   const audits = await supabase
     .from('audits')
-    .select('id, site_id, status, global_score, finished_at, created_at')
+    .select('id, site_id, status, finished_at, created_at')
     .in('site_id', ids)
     .order('finished_at', { ascending: false, nullsFirst: false });
-  marks = latestAuditBySite(Array.isArray(audits.data) ? audits.data : []);
+  const auditRows = (Array.isArray(audits.data) ? audits.data : []).map(
+    (row) => ({
+      ...row,
+      global_score: null,
+    }),
+  );
+  const draft = latestAuditBySite(auditRows);
+  await Promise.all(
+    [...draft.values()].map(async (mark) => {
+      mark.score = await scoreAutorise(supabase, mark.auditId);
+    }),
+  );
+  marks = draft;
 }
 
 onMount(() => {

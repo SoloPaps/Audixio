@@ -168,7 +168,10 @@ export type {
   SearchConsolePort,
 } from './gsc.js';
 export {
+  AUDIXIO_LABEL,
   activeAllowed,
+  audixioDnsName,
+  audixioValue,
   buildChallenge,
   type ChallengeView,
   challengeName,
@@ -189,6 +192,8 @@ export {
   VERIFICATION_METHODS,
   type VerificationMethod,
   verificationFileUrl,
+  verificationHtmlUrl,
+  wellKnownUrl,
 } from './ownership.js';
 export { createRegistry, type Registry, validateCheck } from './registry.js';
 export {

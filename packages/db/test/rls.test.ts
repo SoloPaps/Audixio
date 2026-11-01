@@ -818,6 +818,63 @@ describe('RLS Supabase local', () => {
     expect(body).not.toContain('securite.csp');
     expect(body).not.toContain('"note_globale": "E"');
     expect(body).toContain('"verrouille": true');
+    expect(body).not.toContain('hsts');
+    expect(body).not.toContain('x-frame');
+
+    await expectDenied(
+      B,
+      (tx) => tx`
+        select global_score from public.audits where id = ${B_AUDIT}::uuid
+      `,
+    );
+    await expectDenied(
+      B,
+      (tx) => tx`select grade from public.audits where id = ${B_AUDIT}::uuid`,
+    );
+    const stillOpen = await asUser(
+      B,
+      (tx) => tx<{ id: string }[]>`
+        select id::text as id from public.audits where id = ${B_AUDIT}::uuid
+      `,
+    );
+    expect(stillOpen[0]?.id).toBe(B_AUDIT);
+
+    const proofToken = 'e'.repeat(43);
+    const [prepared] = await admin<{ id: string; token: string }[]>`
+      select id::text as id, token
+      from public.prepare_site_verification(
+        ${B_SITE}::uuid,
+        ${B}::uuid,
+        'html_file',
+        ${proofToken},
+        '{}'::jsonb
+      )
+    `;
+    const [again] = await admin<{ token: string }[]>`
+      select token
+      from public.prepare_site_verification(
+        ${B_SITE}::uuid,
+        ${B}::uuid,
+        'meta',
+        ${'f'.repeat(43)},
+        '{}'::jsonb
+      )
+    `;
+    expect(again?.token).toBe(prepared?.token);
+    expect(again?.token).toBe('b'.repeat(32));
+    expect(again?.token).not.toBe('f'.repeat(43));
+    const [slot] = await admin<{ allowed: boolean }[]>`
+      select allowed
+      from public.consume_verification_probe(${B}::uuid, 'b.example.com')
+    `;
+    expect(slot?.allowed).toBe(true);
+    await expectDenied(
+      B,
+      (tx) => tx`
+        select allowed
+        from public.consume_verification_probe(${B}::uuid, 'b.example.com')
+      `,
+    );
 
     const foreign = await asUser(
       A,

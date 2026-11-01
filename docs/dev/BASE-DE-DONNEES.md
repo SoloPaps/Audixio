@@ -28,7 +28,7 @@ Les tests RLS (`packages/db/test/rls.test.ts`) démarrent le stack local et rejo
 | `action_plan_items` | Statut de tâche par compte et par site (`todo`, `doing`, `done`, `auto_closed`) |
 | `alert_settings` | Cadence de ré-audit, délai certificat, seuil de baisse |
 
-Méthodes de preuve acceptées en base : `file` (fichier HTML déjà sondé), `html_file`, `meta`, `well_known`, `dns_txt`, `search_console`. Le moteur ne sonde encore que `file`, `meta` et `dns_txt`.
+Méthodes de preuve acceptées en base : `file` (fichier texte déjà sondé), `html_file`, `meta`, `well_known`, `dns_txt`, `search_console`. Le moteur sonde `file`, `html_file`, `meta`, `well_known` et `dns_txt`. `search_console` est un stub.
 
 ## Qui voit quoi
 
@@ -53,9 +53,9 @@ Le module TypeScript `@audigy/db` (`packages/db/src/droits.ts`) reprend la même
 
 ## Ce qui reste
 
-- L’écran lit encore `audits.global_score` en direct. La colonne existe pour le propriétaire. Le hub devra passer par `read_rapport_apercu` avant de retirer ce droit.
+- Le rapport passe par `read_rapport_apercu`. `authenticated` ne lit plus `audits.global_score` ni `grade` (migration `20261101213000`).
 - Le planificateur lit `schedules` (`weekly` / `monthly`), pas encore `alert_settings` ni `daily`.
 - Plafonds (2 sites, 1 lien en gratuit ; 10 sites en Pro) : fonctions `withinSiteQuota` et `withinLinkQuota`. Pas de trigger : un audit crée encore une ligne par adresse, et un rapport peut être à la fois `public` et `link`.
-- Sondes `.well-known`, fichier alias `html_file`, Search Console.
+- Sondes `html_file`, `meta` et `well_known` en place. `dns_txt` était déjà sondé. Search Console reste un stub : voir [PREUVES-PROPRIETE.md](PREUVES-PROPRIETE.md).
 - Fermeture automatique des tâches quand le constat disparaît.
 - Lien équipe distinct du lien public (`reports.visibility` reste `link`).

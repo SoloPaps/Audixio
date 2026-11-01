@@ -81,10 +81,15 @@ export interface VerificationDeps {
   ): Promise<OwnedVerification | null>;
   insertPending(input: {
     siteId: string;
+    ownerId: string;
     method: VerificationMethod;
     token: string;
     evidence: VerificationPatch['evidence'];
-  }): Promise<string>;
+  }): Promise<{ id: string; token: string }>;
+  allowProbe(
+    userId: string,
+    host: string,
+  ): Promise<{ allowed: boolean; retryAfter: number | null }>;
   save(patch: VerificationPatch): Promise<void>;
   appendAudit(event: AuditEvent): Promise<void>;
   notifyExpired(input: {
@@ -125,9 +130,24 @@ function view(site: OwnedSite, method: VerificationMethod, token: string) {
     dnsName: challenge.dnsName,
     dnsValue: challenge.dnsValue,
     fileUrl: challenge.fileUrl,
+    htmlFileUrl: challenge.htmlFileUrl,
+    wellKnownUrl: challenge.wellKnownUrl,
     pageUrl: challenge.pageUrl,
     metaTag: challenge.metaTag,
+    searchConsole: challenge.searchConsole,
   };
+}
+
+function proofLocation(
+  method: VerificationMethod,
+  challenge: ReturnType<typeof buildChallenge>,
+): string {
+  if (method === 'dns_txt') return challenge.dnsName;
+  if (method === 'file') return challenge.fileUrl;
+  if (method === 'html_file') return challenge.htmlFileUrl;
+  if (method === 'well_known') return challenge.wellKnownUrl;
+  if (method === 'search_console') return 'search_console';
+  return challenge.pageUrl;
 }
 
 async function authenticate(
@@ -167,22 +187,19 @@ export async function handleCreateVerification(
     if (!site) return apiError(404, 'site_not_found');
     const token = generateToken();
     const challenge = buildChallenge(siteOf(site), parsed.data.method, token);
-    const id = await deps.insertPending({
+    const stored = await deps.insertPending({
       siteId: site.id,
+      ownerId: site.ownerId,
       method: parsed.data.method,
       token,
       evidence: {
         host: site.host,
         scope: site.scope,
         pathPrefix: site.pathPrefix,
-        location:
-          parsed.data.method === 'dns_txt'
-            ? challenge.dnsName
-            : parsed.data.method === 'file'
-              ? challenge.fileUrl
-              : challenge.pageUrl,
+        location: proofLocation(parsed.data.method, challenge),
       },
     });
+    const id = stored.id;
     await deps.appendAudit(
       createEvent({
         actor: auth.userId,
@@ -199,7 +216,7 @@ export async function handleCreateVerification(
     return json(201, {
       id,
       status: 'pending',
-      ...view(site, parsed.data.method, token),
+      ...view(site, parsed.data.method, stored.token),
     });
   } catch (error) {
     deps.logger.error('verification_create_failed', { code: errorCode(error) });
@@ -232,6 +249,16 @@ export async function handleCheckVerification(
     if (!row) return apiError(404, 'verification_not_found');
     const site = await deps.loadSite(auth.userId, row.siteId);
     if (!site) return apiError(404, 'site_not_found');
+    const gate = await deps.allowProbe(auth.userId, site.host);
+    if (!gate.allowed) {
+      const retryAfter = gate.retryAfter ?? 60;
+      return apiError(
+        429,
+        'probe_limit',
+        { retryAfter },
+        { 'retry-after': String(retryAfter) },
+      );
+    }
     const read = await deps.probe(row.method, row.token, site);
     return finishCheck(
       deps,

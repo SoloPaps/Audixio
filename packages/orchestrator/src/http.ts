@@ -17,6 +17,7 @@ export type ApiError =
   | 'verification_not_found'
   | 'user_limit'
   | 'host_limit'
+  | 'probe_limit'
   | 'oauth_unconfigured'
   | 'places_disabled'
   | 'places_absent'
@@ -93,6 +94,9 @@ export interface AuditView {
     methodVersion: string;
     engineVersion: string;
     globalScore: number | null;
+    /** Faux tant que ce site n’a pas de preuve `verified`. */
+    siteVerified?: boolean;
+    partialLabel?: string | null;
     coverage: number | null;
     createdAt: string;
     startedAt: string | null;
@@ -111,6 +115,7 @@ export interface AuditView {
     score: number | null;
     coverage: number;
     level: string;
+    locked?: boolean;
   }[];
   /** Ordre de priorité : gravité, impact, effort, identifiant. */
   findings: FindingView[];
