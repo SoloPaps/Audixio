@@ -17,7 +17,7 @@ Mise à jour du 01/11/2026. Source des décisions : [00-DECISIONS.md](../00-DECI
 ## B. Sécurité (suite de l'audit du 31/10/2026)
 - Fait : INSERT direct sur `audits` retiré ; UPDATE de `sites` limité aux colonnes d'affichage (migration `20261031190000`).
 - À faire : relecture du jeton OAuth Google (stockage, révocation), de l'anti-SSRF (`packages/net`), de la limitation de débit, et des colonnes modifiables de `reports`.
-- Écarter l'alerte Dependabot minimatch (dev seulement), puis suivre les 71 alertes initiales.
+- minimatch forcé en 11.0.3 (override pnpm, GHSA-g3hv-75wg-m249) ; suivre les autres alertes Dependabot.
 - Épingler les actions GitHub sur leur hash (alertes zizmor) ; corriger `scorecard`.
 
 ## C. Design (voir `design/REFONTE-DESIGN-SOBRE.md`)
