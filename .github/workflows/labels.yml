@@ -1,0 +1,56 @@
+name: labels
+
+# Crée ou met à jour les étiquettes de .github/labels.yml. Ne supprime rien.
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/labels.yml
+      - .github/scripts/sync-labels.mjs
+      - .github/workflows/labels.yml
+  pull_request:
+    paths:
+      - .github/labels.yml
+      - .github/scripts/sync-labels.mjs
+      - .github/workflows/labels.yml
+  workflow_dispatch:
+
+concurrency:
+  group: labels-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  validate:
+    name: Étiquettes (validation)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # lire .github/labels.yml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Vérifier le fichier
+        run: node .github/scripts/sync-labels.mjs --check
+
+  sync:
+    name: Étiquettes (synchronisation)
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read # lire .github/labels.yml
+      issues: write # créer ou mettre à jour les étiquettes
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Créer ou mettre à jour
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node .github/scripts/sync-labels.mjs

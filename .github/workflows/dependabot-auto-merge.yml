@@ -1,32 +1,41 @@
 name: dependabot-auto-merge
 
-# Active la fusion automatique des mises à jour Dependabot mineures et correctifs.
-# La PR ne fusionne que si le ruleset est satisfait (CI et CodeQL verts).
-# Les versions majeures restent à valider à la main.
+# Fusion automatique limitée :
+# - correctifs (semver-patch), y compris indirects et production (souvent les alertes) ;
+# - mineures des dépendances directes de développement seulement.
+# Les majeures, les mineures de production et les mineures indirectes restent manuelles.
+# La PR ne fusionne que si le ruleset est satisfait (checks requis verts).
 on: pull_request
+
+concurrency:
+  group: dependabot-auto-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 permissions: {}
 
 jobs:
   auto-merge:
-    name: Fusion automatique (mineures et correctifs)
+    name: Fusion automatique (correctifs)
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
-      contents: write
-      pull-requests: write
+      contents: write # activer la fusion automatique
+      pull-requests: write # activer la fusion automatique
     steps:
       - name: Métadonnées Dependabot
         id: meta
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
       - name: Fusion automatique
-        if: steps.meta.outputs.update-type != 'version-update:semver-major'
+        if: >-
+          steps.meta.outputs.update-type == 'version-update:semver-patch' ||
+          (steps.meta.outputs.update-type == 'version-update:semver-minor' &&
+           steps.meta.outputs.dependency-type == 'direct:development')
         # Sans effet tant que « Allow auto-merge » n'est pas activé dans les réglages du dépôt.
         continue-on-error: true
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: gh pr merge --auto --squash "$PR_URL"

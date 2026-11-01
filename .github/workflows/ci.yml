@@ -1,12 +1,15 @@
 name: ci
 
+# push limité à main : une PR ne lance pas à la fois push et pull_request.
+# pull_request pose le check requis « check » sur la PR (forks compris).
 on:
   push:
-    branches: ['**']
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions: {}
@@ -15,15 +18,18 @@ jobs:
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    name: check
     permissions:
-      contents: write  # nécessaire à l'auto-commit des corrections
+      contents: write # pousser knip et Biome ; le jeton par défaut ne relance pas les workflows
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          persist-credentials: true
-          ref: ${{ github.ref_name }}
+          persist-credentials: false
           fetch-depth: 0
+          # Même dépôt : branche de tête, pour y pousser un correctif.
+          # Fork : commit de fusion, le jeton ne peut pas pousser.
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.head_ref || github.sha }}
 
       - name: pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
@@ -37,6 +43,53 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Auto-fix autorisé
+        id: gate
+        env:
+          ACTOR: ${{ github.actor }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          REPO: ${{ github.repository }}
+        run: |
+          fix=false
+          if [[ "$REF" != "refs/heads/main" && "$ACTOR" != "dependabot[bot]" && "$AUTHOR" != "dependabot[bot]" ]]; then
+            if [[ "$EVENT_NAME" != "pull_request" || "$HEAD_REPO" == "$REPO" ]]; then
+              fix=true
+            fi
+          fi
+          echo "run=$fix" >> "$GITHUB_OUTPUT"
+
+      # Corrections sûres. Jamais sur main, jamais pour dependabot[bot]
+      # (jeton en lecture seule : le push échoue), jamais depuis un fork.
+      # knip : exports et types inutilisés seulement. Un échec ne bloque pas.
+      - name: Auto-fix (knip, exports inutilisés)
+        if: steps.gate.outputs.run == 'true'
+        run: pnpm dlx knip@5 --fix --fix-type exports,types || true
+
+      - name: Auto-fix (Biome)
+        if: steps.gate.outputs.run == 'true'
+        run: pnpm format
+
+      - name: Commit des corrections
+        id: autofix
+        if: steps.gate.outputs.run == 'true'
+        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7
+        with:
+          commit_message: "chore: corrections automatiques (knip, Biome)"
+          branch: ${{ github.head_ref || github.ref_name }}
+          file_pattern: ". :!.github/workflows"
+          token: ${{ github.token }}
+
+      # Ce push ne déclenche ni push ni pull_request. Sans cet échec, HEAD
+      # n'a pas le check requis « check » et la PR reste bloquée.
+      - name: Refuser un HEAD sans check
+        if: steps.autofix.conclusion == 'success' && steps.autofix.outputs.changes_detected == 'true'
+        run: |
+          echo "::error title=Check requis absent::Un commit automatique a été poussé avec le jeton par défaut. Ce jeton ne relance pas les workflows : le check requis « check » n'est pas posé sur le nouveau commit. Poussez à nouveau pour le lancer (git commit --allow-empty -m 'ci: relance les checks' && git push). Aucun secret n'est requis. Jeton d'application facultatif : docs/dev/GITHUB-SETUP.md."
+          exit 1
+
       - name: Supabase CLI
         run: |
           curl -fsSL -o /tmp/supabase.tar.gz https://github.com/supabase/cli/releases/download/v2.122.0/supabase_linux_amd64.tar.gz
@@ -48,31 +101,7 @@ jobs:
       - name: Chromium
         run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
 
-      # 1) Corrections automatiques sûres (knip, Biome).
-      #    Jamais sur main : on corrige sur la branche de test, puis on merge.
-      # Code mort : retire seulement les exports/types inutilisés.
-      # Ne supprime ni fichiers ni dépendances (--fix-type limité).
-      # Un échec de knip ne bloque pas : les vérifications plus bas tranchent.
-      - name: Auto-fix (knip, exports inutilisés)
-        if: github.ref_name != 'main'
-        run: pnpm dlx knip@5 --fix --fix-type exports,types || true
-
-      # Ensuite : Biome remet le format propre.
-      - name: Auto-fix (Biome)
-        if: github.ref_name != 'main'
-        run: pnpm format
-
-      - name: Commit des corrections
-        if: github.ref_name != 'main'
-        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7
-        with:
-          commit_message: "🤖 [CI Auto-Fix] Corrections automatiques (knip, Biome)"
-          branch: ${{ github.ref_name }}
-          # Le token par défaut ne peut pas modifier .github/workflows
-          file_pattern: '. :!.github/workflows'
-
-      # 2) Vérifications : chacune s'exécute même si une précédente échoue,
-      #    pour voir toutes les erreurs d'un coup.
+      # Chaque vérification s'exécute même si une précédente échoue.
       - name: guard
         id: guard
         continue-on-error: true
@@ -118,7 +147,6 @@ jobs:
         continue-on-error: true
         run: pnpm test:a11y
 
-      # 3) Résumé : échoue si au moins une vérification a échoué.
       - name: Résumé
         if: always()
         env:

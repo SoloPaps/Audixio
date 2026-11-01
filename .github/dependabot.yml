@@ -11,9 +11,21 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    # Groupes séparés pour que l'auto-merge ne voie qu'un seul type de bump.
+    # minimatch : override racine vers 11.0.3 (GHSA-g3hv-75wg-m249).
+    # glob@13 (@sentry/bundler-plugins) borne minimatch en ^10 ; Dependabot
+    # ne peut pas résoudre 11.0.1 tout seul (security_update_not_possible).
     groups:
-      minor-and-patch:
-        update-types: [minor, patch]
+      patch:
+        update-types: [patch]
+      minor-dev:
+        dependency-type: development
+        update-types: [minor]
+      minor-prod:
+        dependency-type: production
+        update-types: [minor]
     ignore:
       # `astro check` (apps/web) ne gère pas encore TypeScript 7 : apps/web reste en 6.x.
       # À retirer quand Astro prend en charge TypeScript 7.
@@ -30,6 +42,8 @@ updates:
       day: monday
     cooldown:
       default-days: 7
+    labels:
+      - dependencies
     groups:
       actions:
         patterns: ["*"]
