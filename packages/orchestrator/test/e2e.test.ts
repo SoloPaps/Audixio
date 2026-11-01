@@ -22,6 +22,7 @@ import {
   handleCreate,
   handleGet,
   handleRun,
+  readAuditView,
   runDepsFromEnv,
   secretsFromEnv,
   signTrigger,
@@ -133,6 +134,25 @@ function browserFinding(audit: AuditView) {
   return audit.findings.find((f) => f.checkId === BROWSER_CHECK);
 }
 
+const LOCKED = new Set(['securite', 'vie_privee', 'dns_email']);
+
+async function engineView(auditId: string): Promise<AuditView> {
+  const service = createServiceClient({
+    url: local.apiUrl,
+    serviceRoleKey: local.serviceRoleKey,
+  });
+  const loaded = await readAuditView(service, auditId);
+  if (!loaded) throw new Error('audit absent');
+  return loaded;
+}
+
+function expectLockedHidden(body: AuditView): void {
+  expect(body.domains.some((domain) => LOCKED.has(domain.domain))).toBe(false);
+  expect(body.findings.some((finding) => LOCKED.has(finding.domain))).toBe(
+    false,
+  );
+}
+
 /** Rapport réel du runner (fixture PART-13), recalé sur l'hôte audité. */
 async function runnerReport(host: string): Promise<unknown> {
   const raw = await readFile(
@@ -203,8 +223,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
     const seen: { status: string; reason: string | null }[] = [];
     const absent: Dispatcher = {
       async dispatch(auditId) {
-        const res = await view('a', auditId);
-        const body = (await res.json()) as AuditView;
+        const body = await engineView(auditId);
         seen.push({
           status: body.audit.status,
           reason: browserFinding(body)?.reason ?? null,
@@ -229,26 +248,28 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
     });
     expect(body.audit.finishedAt).not.toBeNull();
     expect(body.audit.globalScore).toBeTypeOf('number');
-    expect(browserFinding(body)).toMatchObject({
+    expectLockedHidden(body);
+    const engine = await engineView(first);
+    expect(browserFinding(engine)).toMatchObject({
       status: 'untested',
       reason: 'reason.runner_absent',
     });
-    expect(body.domains.find((d) => d.domain === 'securite')?.score).toBeTypeOf(
-      'number',
-    );
     expect(
-      body.domains.find((d) => d.domain === 'vie_privee')?.score,
+      engine.domains.find((d) => d.domain === 'securite')?.score,
+    ).toBeTypeOf('number');
+    expect(
+      engine.domains.find((d) => d.domain === 'vie_privee')?.score,
     ).toBeNull();
     const browserIds = VIE_PRIVEE_CHECKS.filter((check) =>
       check.needs.includes('browser'),
     ).map((check) => check.id);
     expect(
-      body.findings
+      engine.findings
         .filter((finding) => browserIds.includes(finding.checkId))
         .map((finding) => finding.messageKey)
         .sort(),
     ).toEqual(browserIds.map((id) => `${id}.untested`).sort());
-    expect(body.findings.some((f) => f.checkId.startsWith('securite.'))).toBe(
+    expect(engine.findings.some((f) => f.checkId.startsWith('securite.'))).toBe(
       true,
     );
   });
@@ -329,18 +350,22 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
     const body = (await (await view('a', auditId)).json()) as AuditView;
     expect(body.audit.status).toBe('done');
     expect(jobs).toEqual(['https://mauvais.audigy.test']);
+    expectLockedHidden(body);
+    const engine = await engineView(auditId);
     const browserIds = VIE_PRIVEE_CHECKS.filter((c) =>
       c.needs.includes('browser'),
     ).map((c) => c.id);
-    const merged = body.findings.filter((f) => browserIds.includes(f.checkId));
+    const merged = engine.findings.filter((f) =>
+      browserIds.includes(f.checkId),
+    );
     expect(merged).toHaveLength(browserIds.length);
     for (const finding of merged) {
       expect(finding.status).not.toBe('untested');
       expect(finding.reason ?? '').not.toMatch(/^reason\.runner_/);
     }
-    expect(browserFinding(body)).toMatchObject({ status: 'pass' });
+    expect(browserFinding(engine)).toMatchObject({ status: 'pass' });
     expect(
-      body.domains.find((d) => d.domain === 'vie_privee')?.score,
+      engine.domains.find((d) => d.domain === 'vie_privee')?.score,
     ).toBeTypeOf('number');
   });
 

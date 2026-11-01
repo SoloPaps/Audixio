@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { DOMAINS, levelFor } from '@audigy/engine';
 import { describe, expect, it } from 'vitest';
+import { LOCKED_DOMAINS } from '../src/droits.js';
 import { repoRoot } from './local.js';
 
 const migration = readFileSync(
@@ -11,6 +12,10 @@ const seed = readFileSync(`${repoRoot}supabase/seed.sql`, 'utf8');
 const helper = readFileSync(`${repoRoot}packages/db/test/local.ts`, 'utf8');
 const places = readFileSync(
   `${repoRoot}supabase/migrations/20261024180000_places.sql`,
+  'utf8',
+);
+const coeur = readFileSync(
+  `${repoRoot}supabase/migrations/20261101181500_coeur_droits.sql`,
   'utf8',
 );
 
@@ -75,11 +80,33 @@ describe('migration', () => {
   });
 
   it('ne contient ni secret ni projet distant', () => {
-    const blob = `${migration}\n${places}\n${seed}\n${helper}`;
+    const blob = `${migration}\n${places}\n${coeur}\n${seed}\n${helper}`;
     expect(blob).not.toMatch(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/);
     expect(blob).not.toMatch(/supabase\.co/);
     expect(blob).not.toMatch(/--linked|--project-ref/);
     expect(helper).toContain("'db', 'reset', '--local', '--yes'");
+  });
+});
+
+describe('cœur droits', () => {
+  it('active le RLS et ne donne pas plan au client', () => {
+    for (const table of ['action_plan_items', 'alert_settings']) {
+      expect(coeur).toContain(`create table public.${table}`);
+      expect(coeur).toContain(
+        `alter table public.${table} enable row level security`,
+      );
+      expect(coeur).toContain(
+        `revoke all on public.${table} from public, anon, authenticated`,
+      );
+    }
+    expect(coeur).toContain('grant update (onboarding_vu)');
+    expect(coeur).not.toMatch(/grant update \([^)]*\bplan\b/);
+    expect(coeur).toContain('(select auth.uid())');
+    expect(coeur).toContain('security definer');
+    expect(coeur).toContain("set search_path = ''");
+    for (const domain of LOCKED_DOMAINS) {
+      expect(coeur).toContain(`'${domain}'`);
+    }
   });
 });
 

@@ -417,7 +417,15 @@ async function loadExport(
 }
 
 function mapProfile(
-  profile: Profile,
+  profile: Pick<
+    Profile,
+    | 'id'
+    | 'display_name'
+    | 'locale'
+    | 'weekly_digest'
+    | 'email_opt_out'
+    | 'created_at'
+  >,
   email: string | null,
 ): AccountExport['profil'] {
   return {

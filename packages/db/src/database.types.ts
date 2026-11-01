@@ -9,6 +9,98 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      action_plan_items: {
+        Row: {
+          check_id: string;
+          domain: string;
+          id: string;
+          site_id: string;
+          status: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          check_id: string;
+          domain: string;
+          id?: string;
+          site_id: string;
+          status?: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          check_id?: string;
+          domain?: string;
+          id?: string;
+          site_id?: string;
+          status?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'action_plan_items_site_id_fkey';
+            columns: ['site_id'];
+            isOneToOne: false;
+            referencedRelation: 'sites';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'action_plan_items_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      alert_settings: {
+        Row: {
+          alerts_enabled: boolean;
+          reaudit_cadence: string;
+          score_drop_points: number;
+          site_id: string;
+          ssl_warn_days: number;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          alerts_enabled?: boolean;
+          reaudit_cadence?: string;
+          score_drop_points?: number;
+          site_id: string;
+          ssl_warn_days?: number;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          alerts_enabled?: boolean;
+          reaudit_cadence?: string;
+          score_drop_points?: number;
+          site_id?: string;
+          ssl_warn_days?: number;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'alert_settings_site_id_fkey';
+            columns: ['site_id'];
+            isOneToOne: true;
+            referencedRelation: 'sites';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'alert_settings_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       alerts: {
         Row: {
           id: string;
@@ -132,6 +224,7 @@ export type Database = {
           error: string | null;
           finished_at: string | null;
           global_score: number | null;
+          grade: string | null;
           id: string;
           method_version: string;
           mode: string;
@@ -186,6 +279,7 @@ export type Database = {
           audit_id: string;
           coverage: number;
           domain: string;
+          grade: string | null;
           level: string;
           score: number | null;
         };
@@ -372,9 +466,11 @@ export type Database = {
         Row: {
           created_at: string;
           display_name: string;
-          id: string;
           email_opt_out: boolean;
+          id: string;
           locale: string;
+          onboarding_vu: boolean;
+          plan: string;
           weekly_digest: boolean;
         };
         ComputedFields: never;
@@ -384,6 +480,8 @@ export type Database = {
           email_opt_out?: boolean;
           id: string;
           locale?: string;
+          onboarding_vu?: boolean;
+          plan?: string;
           weekly_digest?: boolean;
         };
         Update: {
@@ -392,6 +490,8 @@ export type Database = {
           email_opt_out?: boolean;
           id?: string;
           locale?: string;
+          onboarding_vu?: boolean;
+          plan?: string;
           weekly_digest?: boolean;
         };
         Relationships: [];
@@ -735,6 +835,7 @@ export type Database = {
           error: string | null;
           finished_at: string | null;
           global_score: number | null;
+          grade: string | null;
           id: string;
           method_version: string;
           mode: string;
@@ -839,6 +940,22 @@ export type Database = {
       };
       digest_roster: {
         Args: { p_now: string };
+        Returns: Json;
+      };
+      ensure_alert_settings: {
+        Args: { p_site_id: string };
+        Returns: {
+          alerts_enabled: boolean;
+          reaudit_cadence: string;
+          score_drop_points: number;
+          site_id: string;
+          ssl_warn_days: number;
+          updated_at: string;
+          user_id: string;
+        }[];
+      };
+      read_rapport_apercu: {
+        Args: { p_audit_id: string };
         Returns: Json;
       };
     };
