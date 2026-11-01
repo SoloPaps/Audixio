@@ -1,9 +1,13 @@
 ---
+import '../styles/maquettes/domaine.css';
+import '../styles/maquettes/restreint.css';
 import ReportView from '../components/ReportView.svelte';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base shell="canon" title={t('meta.domain.title')} description={t('meta.domain.description')}>
-  <ReportView mode="domain" client:load />
-</Base>
+<Canon vue="domaine" title={t('meta.domain.title')} description={t('meta.domain.description')}>
+  <main id="contenu" tabindex="-1">
+    <ReportView mode="domain" client:load />
+  </main>
+</Canon>

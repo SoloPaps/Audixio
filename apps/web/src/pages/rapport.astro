@@ -1,9 +1,12 @@
 ---
+import '../styles/maquettes/hub.css';
 import ReportView from '../components/ReportView.svelte';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base shell="canon" title={t('meta.report.title')} description={t('meta.report.description')}>
-  <ReportView mode="report" client:load />
-</Base>
+<Canon vue="hub" title={t('meta.report.title')} description={t('meta.report.description')}>
+  <main id="contenu" class="wrap">
+    <ReportView mode="report" client:load />
+  </main>
+</Canon>

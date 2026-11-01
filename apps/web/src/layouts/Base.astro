@@ -1,6 +1,7 @@
 ---
 import { ClientRouter, fade } from 'astro:transitions';
 import CanonBar from '../components/CanonBar.svelte';
+import CanonFooter from '../components/CanonFooter.astro';
 import SiteBar from '../components/SiteBar.svelte';
 import ThemeToggle from '../components/ThemeToggle.svelte';
 import { t } from '../i18n/index.js';
@@ -9,6 +10,8 @@ import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/arc.css';
 import '../styles/canon.css';
+import '../styles/polices.css';
+import '../styles/chrome.css';
 
 interface Props {
   title: string;
@@ -80,31 +83,7 @@ const initialTheme =
       <slot />
     </main>
     {shell === 'canon' ? (
-      <footer class:list={['axf', { 'print-hide': print }]}>
-        <div class="axf-in">
-          <div class="axf-top">
-            <div>
-              <a class="axf-brand" href="/">
-                <img src="/marque/logo-pc.svg" alt={t('brand.ui')} width="107" height="28" />
-                <span class="axf-v">{t('footer.version')}</span>
-              </a>
-              <p class="axf-about">{t('footer.about')}</p>
-            </div>
-            <ul class="axf-links">
-              <li><a href="/mentions-legales">{t('footer.mentions')}</a></li>
-              <li><a href="/confidentialite">{t('footer.privacy')}</a></li>
-              <li><a href="/accessibilite">{t('footer.a11y')}</a></li>
-              <li><a href="/cgu">{t('footer.terms')}</a></li>
-              <li><a href="/pro">{t('footer.pro')}</a></li>
-            </ul>
-          </div>
-          <p class="axf-base">
-            <span>{t('footer.rights')}</span>
-            <span>{t('footer.passive')}</span>
-            <span>{t('footer.note')}</span>
-          </p>
-        </div>
-      </footer>
+      <CanonFooter />
     ) : (
       <footer class:list={['site-footer', { 'print-hide': print }]}>
         <nav class="footer-nav" aria-label={t('footer.legal')}>

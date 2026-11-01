@@ -53,7 +53,7 @@ import AuditOverlay from './AuditOverlay.svelte';
 import FindingList from './FindingList.svelte';
 import PreuveMentions from './PreuveMentions.svelte';
 import ReportFooter from './ReportFooter.svelte';
-import ShareSheet from './ShareSheet.svelte';
+import HubView from './HubView.svelte';
 import UntestedCause from './UntestedCause.svelte';
 
 interface Props {
@@ -411,122 +411,43 @@ onMount(() => {
         />
       {/if}
     {:else}
-      <header class="hub-head">
-        <div>
-          <ol class="crumbs">
-            <li><a href="/sites">{t('nav.sites')}</a></li>
-            <li>{host}</li>
-          </ol>
-          <h1 class="hub-title">{t('hub.audit', { host })}</h1>
-          {#if siteVerified}
-            <p class="pill-ok">{t('hub.verified')}</p>
-          {:else if partialText}
-            <p class="pill-lock">{partialText}</p>
-          {/if}
-          <p>{verdict.detail}</p>
-        </div>
-        <div class="hub-actions">
-          <button class="btn-ghost" type="button" onclick={onShare}>{t('hub.share')}</button>
-          <a class="btn-ghost" href={badgeHref(payload.audit.id)}>{t('hub.badge')}</a>
-          <a class="btn-ghost" href={relaunchHref(payload.audit.site.id)}>{t('progress.retry')}</a>
-        </div>
-      </header>
-      <section class="note-card" aria-labelledby="t-note">
-        <div class="rose" aria-hidden="true"><b>{letter ?? '–'}</b></div>
-        <div>
-          <h2 id="t-note">{t('hub.note')}</h2>
-          {#if letter}
-            <p>{t('report.grade.letter', { grade: letter })}</p>
-            <p>{verdict.headline}</p>
-          {:else}
-            <p>{t('hub.note.missing')}</p>
-          {/if}
-          <p>{t('report.coverage', { scored: scoredDomainCount(items), total: REPORT_DOMAINS.length })}</p>
-        </div>
-      </section>
-      <section aria-labelledby="t-prio">
-        <div class="sec-h">
-          <h2 id="t-prio">{t('hub.priorities')}</h2>
-        </div>
-        <ol class="prio">
-          {#each priorities as item, index (item.id)}
-            {@const row = reportRowList.find((entry) => entry.id === item.id)}
-            {@const tone = severityTone(row?.severity ?? 1, row?.catalogStatus ?? 'warn')}
-            <li>
-              <a href={priorityHref(payload.audit.id, row?.domain ?? '', item.id)}>
-                <span class="rank">{index + 1}</span>
-                <span>{item.title}</span>
-                <span class="sev sev-{tone}">{toneLabel(tone)}</span>
-                <span>{domainPlain(row?.domain ?? '')}</span>
-              </a>
-            </li>
-          {/each}
-        </ol>
-      </section>
-      <section aria-labelledby="t-dom">
-        <div class="sec-h">
-          <h2 id="t-dom">{t('hub.domains')}</h2>
-          <p>{t('hub.domains.hint')}</p>
-        </div>
-        <ul class="doms">
-          {#each items as item (item.id)}
-            <li>
-              <a class="dom" href={item.href}>
-                <span class="dom-name">{item.label}</span>
-                <span class="dom-sum">{item.locked ? t('domain.locked.teaser') : item.detail}</span>
-                {#if !item.locked && item.score !== null}
-                  <span class="bar" aria-hidden="true"><i style={`--w:${Math.max(0, Math.min(100, item.score))}%`}></i></span>
-                {/if}
-                <span class="grade-chip grade-{(domainLetter(item.score, item.locked) ?? 'n').toLowerCase()}">
-                  {item.locked ? t('domain.locked.badge') : domainLetter(item.score, false) ?? '–'}
-                </span>
-              </a>
-            </li>
-          {/each}
-        </ul>
-      </section>
-      <section class="brief-band" aria-labelledby="t-ai">
-        <div>
-          <h2 id="t-ai">{t('hub.brief.title')}</h2>
-          <p>{t('hub.brief.lead')}</p>
-        </div>
-        <a class="btn-white" href={planHref(payload.audit.id)}>{t('hub.brief.cta')}</a>
-      </section>
-      {#if aside}
-        <section class="plan-card">
-          <h2>{t('domain.reputation.plain')}</h2>
-          {#if aside.name}<p>{aside.name}</p>{/if}
-          {#if aside.rating !== null}
-            <p>{t('places.rating', { rating: formatRating(aside.rating) })}</p>
-            <p>{t('places.count', { count: formatNumber(aside.reviewCount ?? 0) })}</p>
-          {/if}
-          <p>{domainSentence('reputation', aside.level)}</p>
-        </section>
-      {/if}
-      <ShareSheet auditId={payload.audit.id} {host} open={shareOpen} onClose={() => { shareOpen = false; }} />
-    {/if}
-    <section class="plan-card verify-card">
-      <h2 id="verification">{t('section.verify')}</h2>
-      <details>
-        <summary>{t('verify.how')}</summary>
-        <p>{t('verify.lead')}</p>
-        <p>{t('verify.pending')}</p>
-        <p>{t('verify.id')}</p>
-      </details>
-      <p class="hub-actions">
-        <a class="btn-ghost" href={`/rapport/${payload.audit.id}/imprimer`}>{t('print.link')}</a>
-        <a class="btn-ghost" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`} download={markdownFilename(payload.audit.site.url, stamp)} onclick={downloadMarkdown}>{t('export.markdown')}</a>
-      </p>
-      <PreuveMentions />
-      <ReportFooter
-        url={payload.audit.site.url}
-        at={stamp}
-        methodVersion={payload.audit.methodVersion}
-        fingerprint={payload.audit.id}
-        fingerprintKind="id"
-        verifyHref={`/verifier/${payload.audit.id}`}
+      <HubView
+        {payload}
+        {items}
+        rows={reportRowList}
+        {priorities}
+        {host}
+        {letter}
+        verified={siteVerified}
+        {partialText}
+        headline={verdict.headline}
+        {stamp}
       />
-    </section>
+    {/if}
+    {#if mode === 'plan'}
+      <section class="plan-card verify-card">
+        <h2 id="verification">{t('section.verify')}</h2>
+        <details>
+          <summary>{t('verify.how')}</summary>
+          <p>{t('verify.lead')}</p>
+          <p>{t('verify.pending')}</p>
+          <p>{t('verify.id')}</p>
+        </details>
+        <p class="hub-actions">
+          <a class="btn-ghost" href={`/rapport/${payload.audit.id}/imprimer`}>{t('print.link')}</a>
+          <a class="btn-ghost" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`} download={markdownFilename(payload.audit.site.url, stamp)} onclick={downloadMarkdown}>{t('export.markdown')}</a>
+        </p>
+        <PreuveMentions />
+        <ReportFooter
+          url={payload.audit.site.url}
+          at={stamp}
+          methodVersion={payload.audit.methodVersion}
+          fingerprint={payload.audit.id}
+          fingerprintKind="id"
+          verifyHref={`/verifier/${payload.audit.id}`}
+        />
+      </section>
+    {/if}
   </div>
 {/if}
 
