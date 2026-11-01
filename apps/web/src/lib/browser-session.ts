@@ -32,8 +32,28 @@ export function browserClient(): SupabaseClient<Database> | null {
   return client;
 }
 
+function sessionFromStorage(): Session | null {
+  const legacy = storedAccessToken();
+  if (!legacy) return null;
+  return {
+    access_token: legacy.access_token,
+    refresh_token: '',
+    expires_in: 3600,
+    expires_at: legacy.expires_at ?? 0,
+    token_type: 'bearer',
+    user: {
+      id: legacy.userId,
+      aud: 'authenticated',
+      role: 'authenticated',
+      email: legacy.email,
+      app_metadata: {},
+      user_metadata: {},
+      created_at: '',
+    },
+  } as Session;
+}
+
 async function sessionFromCookie(): Promise<Session | null> {
-  if (cached && cached.at > Date.now() - 20_000) return cached.session;
   try {
     const res = await fetch('/api/auth/session', { credentials: 'include' });
     if (!res.ok) return null;
@@ -60,26 +80,13 @@ async function sessionFromCookie(): Promise<Session | null> {
 }
 
 export async function currentSession(): Promise<Session | null> {
-  const remote = await sessionFromCookie();
-  if (remote) return remote;
-  const legacy = storedAccessToken();
-  if (!legacy) return null;
-  return {
-    access_token: legacy.access_token,
-    refresh_token: '',
-    expires_in: 3600,
-    expires_at: legacy.expires_at ?? 0,
-    token_type: 'bearer',
-    user: {
-      id: legacy.userId,
-      aud: 'authenticated',
-      role: 'authenticated',
-      email: legacy.email,
-      app_metadata: {},
-      user_metadata: {},
-      created_at: '',
-    },
-  } as Session;
+  if (cached && cached.at > Date.now() - 20_000) return cached.session;
+  const stored = sessionFromStorage();
+  if (stored) {
+    cached = { at: Date.now(), session: stored };
+    return stored;
+  }
+  return sessionFromCookie();
 }
 
 export async function signOut(): Promise<void> {

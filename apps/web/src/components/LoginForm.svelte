@@ -48,11 +48,17 @@ onMount(() => {
   const code = params.get('erreur');
   if (code && messages[code]) error = messages[code];
   if (params.get('envoye') === '1') sent = true;
+  const oauth = params.get('oauth');
+  if ((oauth === 'google' || oauth === 'github') && !code) {
+    const target = new URLSearchParams({ provider: oauth, next });
+    location.assign(`/api/auth/oauth?${target.toString()}`);
+  }
 });
 
 function oauthHref(provider: 'google' | 'github'): string {
-  const params = new URLSearchParams({ provider, next });
-  return `/api/auth/oauth?${params.toString()}`;
+  const params = new URLSearchParams({ oauth: provider, next });
+  const base = mode === 'signup' ? '/inscription' : '/connexion';
+  return `${base}?${params.toString()}`;
 }
 
 async function post(

@@ -5,10 +5,10 @@ test('les écrans de connexion suivent le parcours e-mail', async ({ page }) => 
   await page.goto('/connexion');
   await expect(
     page.getByRole('link', { name: 'Continuer avec Google' }),
-  ).toHaveAttribute('href', /provider=google/);
+  ).toHaveAttribute('href', /oauth=google/);
   await expect(
     page.getByRole('link', { name: 'Continuer avec GitHub' }),
-  ).toHaveAttribute('href', /provider=github/);
+  ).toHaveAttribute('href', /oauth=github/);
   await expect(
     page.getByRole('link', { name: 'Mot de passe oublié ?' }),
   ).toHaveAttribute('href', '/reinitialisation');
