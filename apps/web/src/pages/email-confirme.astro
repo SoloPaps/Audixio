@@ -1,0 +1,19 @@
+---
+import { t } from '../i18n/index.js';
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title={t('meta.confirmed.title')}
+  description={t('meta.confirmed.description')}
+  robots="noindex"
+>
+  <div class="reading">
+    <h1>{t('confirmed.title')}</h1>
+    <p class="prose">{t('confirmed.lead')}</p>
+    <p class="page-links">
+      <a class="button button-primary" href="/#audit-form">{t('confirmed.audit')}</a>
+      <a class="button button-bordered" href="/bienvenue">{t('confirmed.discover')}</a>
+    </p>
+  </div>
+</Base>

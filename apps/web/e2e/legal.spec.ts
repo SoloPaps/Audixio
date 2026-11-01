@@ -92,16 +92,23 @@ test('la connexion est une carte avec un seul envoi', async ({ page }) => {
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Recevoir un lien de connexion',
+      name: 'Connexion',
     }),
   ).toBeVisible();
   await expect(page.getByLabel('Adresse e-mail')).toHaveAttribute(
     'type',
     'email',
   );
+  await expect(page.getByLabel('Mot de passe')).toHaveAttribute(
+    'type',
+    'password',
+  );
   await expect(
-    page.getByRole('button', { name: 'Envoyer le lien' }),
+    page.getByRole('button', { name: 'Se connecter' }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Mot de passe oublié ?' }),
+  ).toHaveAttribute('href', '/reinitialisation');
   const card = page.locator('.login-card');
   const box = await card.boundingBox();
   expect(Math.round(box?.width ?? 0)).toBeLessThanOrEqual(480);

@@ -1,0 +1,53 @@
+---
+import WelcomeMark from '../components/WelcomeMark.svelte';
+import { t } from '../i18n/index.js';
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title={t('meta.welcome.title')}
+  description={t('meta.welcome.description')}
+  robots="noindex"
+>
+  <div class="reading">
+    <p>{t('welcome.eyebrow')}</p>
+    <h1>{t('welcome.title')}</h1>
+    <WelcomeMark client:load />
+    <p class="prose">{t('welcome.lead')}</p>
+    <p class="page-links">
+      <a class="button button-primary" href="/#audit-form">{t('welcome.audit')}</a>
+      <a class="button button-bordered" href="/sites">{t('welcome.later')}</a>
+    </p>
+    <p>{t('welcome.later.hint')}</p>
+    <h2>{t('welcome.check.title')}</h2>
+    <ol aria-label={t('welcome.steps')}>
+      <li>
+        <h3>{t('welcome.check.1.title')}</h3>
+        <p>{t('welcome.check.1.text')}</p>
+        <a class="link-action" href="/#audit-form">{t('welcome.check.1.action')}</a>
+      </li>
+      <li>
+        <h3>{t('welcome.check.2.title')}</h3>
+        <p>{t('welcome.check.2.text')}</p>
+        <a class="link-action" href="/verifier">{t('welcome.check.2.action')}</a>
+      </li>
+      <li>
+        <h3>{t('welcome.check.3.title')}</h3>
+        <p>{t('welcome.check.3.text')}</p>
+        <a class="link-action" href="/sites">{t('welcome.check.3.action')}</a>
+      </li>
+    </ol>
+    <p>{t('welcome.note')}</p>
+    <h2>{t('welcome.more')}</h2>
+    <ul>
+      <li>
+        <a class="link-action" href="/methode">{t('welcome.method')}</a>
+        <p>{t('welcome.method.hint')}</p>
+      </li>
+      <li>
+        <a class="link-action" href="/rapport">{t('welcome.example')}</a>
+        <p>{t('welcome.example.hint')}</p>
+      </li>
+    </ul>
+  </div>
+</Base>

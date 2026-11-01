@@ -826,6 +826,14 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      consume_rate_limit: {
+        Args: {
+          p_key: string;
+          p_limit: number;
+          p_window_start: string;
+        };
+        Returns: boolean;
+      };
       claim_next_audit: {
         Args: Record<PropertyKey, never>;
         Returns: {

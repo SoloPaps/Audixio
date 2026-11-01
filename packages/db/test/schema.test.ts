@@ -18,6 +18,10 @@ const coeur = readFileSync(
   `${repoRoot}supabase/migrations/20261101181500_coeur_droits.sql`,
   'utf8',
 );
+const authSql = readFileSync(
+  `${repoRoot}supabase/migrations/20261101194215_auth_securite.sql`,
+  'utf8',
+);
 
 const TABLES = [
   'profiles',
@@ -80,7 +84,7 @@ describe('migration', () => {
   });
 
   it('ne contient ni secret ni projet distant', () => {
-    const blob = `${migration}\n${places}\n${coeur}\n${seed}\n${helper}`;
+    const blob = `${migration}\n${places}\n${coeur}\n${authSql}\n${seed}\n${helper}`;
     expect(blob).not.toMatch(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/);
     expect(blob).not.toMatch(/supabase\.co/);
     expect(blob).not.toMatch(/--linked|--project-ref/);
@@ -104,6 +108,18 @@ describe('cœur droits', () => {
     expect(coeur).toContain('(select auth.uid())');
     expect(coeur).toContain('security definer');
     expect(coeur).toContain("set search_path = ''");
+    expect(authSql).toContain(
+      'alter function private.note_lettre(integer) set search_path',
+    );
+    expect(authSql).toContain(
+      'revoke all on function public.list_my_oauth_connections() from public, anon, authenticated',
+    );
+    expect(authSql).toContain(
+      'grant execute on function public.consume_rate_limit(text, timestamptz, integer) to service_role',
+    );
+    expect(authSql).not.toMatch(
+      /grant execute on function public\.consume_rate_limit[\s\S]*to anon/,
+    );
     for (const domain of LOCKED_DOMAINS) {
       expect(coeur).toContain(`'${domain}'`);
     }

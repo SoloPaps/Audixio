@@ -40,6 +40,42 @@ function rewriteRoutes(req, _res, next) {
   next();
 }
 
+function authDev() {
+  const mount = (server) => {
+    server.middlewares.use((req, res, next) => {
+      const path = (req.url ?? '').split('?')[0] ?? '';
+      const auth = path.startsWith('/api/auth');
+      const guarded =
+        path === '/sites' ||
+        path.startsWith('/sites/') ||
+        path === '/compte' ||
+        path.startsWith('/compte/') ||
+        path === '/bienvenue' ||
+        path.startsWith('/bienvenue/');
+      if (!auth && !guarded) {
+        next();
+        return;
+      }
+      server
+        .ssrLoadModule('/src/lib/auth-node.ts')
+        .then(async (mod) => {
+          if (!auth) {
+            const stopped = await mod.guardAuthNode(req, res);
+            if (!stopped) next();
+            return;
+          }
+          await mod.handleAuthNode(req, res);
+        })
+        .catch(next);
+    });
+  };
+  return {
+    name: 'audigy-auth-dev',
+    enforce: 'pre',
+    configureServer: mount,
+  };
+}
+
 function printRoute() {
   const mount = (server) => {
     server.middlewares.stack.unshift({ route: '', handle: rewriteRoutes });
@@ -62,7 +98,7 @@ export default defineConfig({
     format: 'directory',
   },
   vite: {
-    plugins: [printRoute()],
+    plugins: [authDev(), printRoute()],
     define: {
       [envKey('URL')]: JSON.stringify(process.env.SUPABASE_URL ?? ''),
       [envKey(`${piece(['A', 'N', 'O', 'N'])}_KEY`)]: JSON.stringify(

@@ -64,6 +64,10 @@ additional_redirect_urls = [
   "http://localhost:8888",
   "http://127.0.0.1:4321",
   "http://localhost:4321",
+  "http://127.0.0.1:8888/api/auth/callback",
+  "http://localhost:8888/api/auth/callback",
+  "http://127.0.0.1:4321/api/auth/callback",
+  "http://localhost:4321/api/auth/callback",
 ]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
@@ -71,7 +75,7 @@ refresh_token_reuse_interval = 10
 enable_signup = true
 enable_anonymous_sign_ins = false
 enable_manual_linking = false
-minimum_password_length = 8
+minimum_password_length = 10
 
 [auth.rate_limit]
 email_sent = 100
@@ -84,15 +88,37 @@ token_verifications = 30
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
-enable_confirmations = false
+enable_confirmations = true
 secure_password_change = false
 max_frequency = "1s"
 otp_length = 8
-otp_expiry = 3600
+otp_expiry = 86400
+
+[auth.email.template.confirmation]
+subject = "Confirmez votre adresse Audixio"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Réinitialiser le mot de passe Audixio"
+content_path = "./supabase/templates/recovery.html"
 
 [auth.email.template.magic_link]
 subject = "Votre lien de connexion Audigy"
 content_path = "./supabase/templates/magic_link.html"
+
+# Google et GitHub : désactivés tant que les identifiants ne sont pas posés
+# dans l'environnement local. Aucun secret ici. Voir docs/dev/CONNEXION-SETUP.md.
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+
+[auth.external.github]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
 
 [auth.sms]
 enable_signup = false

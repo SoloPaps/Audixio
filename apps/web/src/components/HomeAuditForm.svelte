@@ -17,7 +17,7 @@ function onSubmit(event: SubmitEvent): void {
 }
 </script>
 
-<form class="audit-form" action="/lancer" method="get" novalidate onsubmit={onSubmit}>
+<form id="audit-form" class="audit-form" action="/lancer" method="get" novalidate onsubmit={onSubmit}>
   <div class="field">
     <label for="site-url">{t('home.url')}</label>
     <input

@@ -4,6 +4,10 @@ import { t } from '../i18n/index.js';
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title={t('meta.login.title')} description={t('meta.login.description')}>
-  <LoginForm client:load />
+<Base
+  title={t('meta.login.title')}
+  description={t('meta.login.description')}
+  robots="noindex"
+>
+  <LoginForm mode="login" client:load />
 </Base>
