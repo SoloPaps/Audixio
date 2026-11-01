@@ -20,3 +20,5 @@ supabase/.temp/
 securite-local/
 
 .aider*
+
+.local-grokbot/
