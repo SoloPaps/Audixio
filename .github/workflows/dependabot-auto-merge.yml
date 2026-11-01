@@ -5,9 +5,7 @@ name: dependabot-auto-merge
 # Les versions majeures restent à valider à la main.
 on: pull_request
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
   auto-merge:
@@ -15,6 +13,9 @@ jobs:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Métadonnées Dependabot
         id: meta
