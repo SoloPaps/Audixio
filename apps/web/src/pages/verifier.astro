@@ -1,14 +1,7 @@
 ---
 import VerificationPanel from '../components/VerificationPanel.svelte';
 import { t } from '../i18n/index.js';
-import { maquetteDocument } from '../lib/maquette-html';
 import Base from '../layouts/Base.astro';
-
-if (Astro.url.searchParams.get('visuel') === '1') {
-  return new Response(maquetteDocument('preuve'), {
-    headers: { 'content-type': 'text/html; charset=utf-8' },
-  });
-}
 ---
 
 <Base shell="canon" title={t('meta.verify.title')} description={t('meta.verify.description')}>

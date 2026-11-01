@@ -1,16 +1,7 @@
 ---
 import ReportView from '../components/ReportView.svelte';
 import { t } from '../i18n/index.js';
-import { maquetteDocument } from '../lib/maquette-html';
 import Base from '../layouts/Base.astro';
-
-const visuel = Astro.url.searchParams.get('visuel');
-if (visuel === 'ouvert' || visuel === 'restreint') {
-  return new Response(
-    maquetteDocument(visuel === 'restreint' ? 'restreint' : 'domaine'),
-    { headers: { 'content-type': 'text/html; charset=utf-8' } },
-  );
-}
 ---
 
 <Base shell="canon" title={t('meta.domain.title')} description={t('meta.domain.description')}>
