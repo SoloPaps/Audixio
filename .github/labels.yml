@@ -1,0 +1,25 @@
+# Étiquettes du dépôt. Mise à jour : workflow labels (création / mise à jour, sans suppression).
+- name: security
+  color: "b60205"
+  description: "Sécurité"
+- name: ci
+  color: "1d76db"
+  description: "Intégration continue"
+- name: maquettes
+  color: "fbca04"
+  description: "Maquettes et design"
+- name: docs
+  color: "0075ca"
+  description: "Documentation"
+- name: dependencies
+  color: "0366d6"
+  description: "Dépendances"
+- name: bug
+  color: "d73a4a"
+  description: "Quelque chose ne fonctionne pas"
+- name: enhancement
+  color: "a2eeef"
+  description: "Amélioration"
+- name: accessibility
+  color: "0e8a16"
+  description: "Accessibilité"
