@@ -19,6 +19,7 @@ let terms = $state(false);
 let error = $state('');
 let sent = $state(false);
 let pending = $state(false);
+let expired = $state(false);
 let next = $state('/sites');
 const configured = authConfigured();
 
@@ -47,6 +48,7 @@ onMount(() => {
   rememberNext(next);
   const code = params.get('erreur');
   if (code && messages[code]) error = messages[code];
+  if (code === 'lien' || code === 'link') expired = true;
   if (params.get('envoye') === '1') sent = true;
   const oauth = params.get('oauth');
   if ((oauth === 'google' || oauth === 'github') && !code) {
@@ -100,6 +102,24 @@ async function onLogin(event: SubmitEvent): Promise<void> {
   };
   if (remember) fields.remember = 'on';
   await post('/api/auth/connexion', fields);
+  pending = false;
+}
+
+async function onResend(): Promise<void> {
+  error = '';
+  sent = false;
+  if (!configured) {
+    error = t('login.unconfigured');
+    return;
+  }
+  if (!validEmail(email)) {
+    error = t('login.invalid_email');
+    return;
+  }
+  if (pending) return;
+  pending = true;
+  await post('/api/auth/renvoi', { email });
+  if (!error) sent = true;
   pending = false;
 }
 
@@ -205,6 +225,17 @@ async function onSignup(event: SubmitEvent): Promise<void> {
         </p>
         {#if error}
           <p class="form-error" role="alert">{error}</p>
+        {/if}
+        {#if expired}
+          <p>{t('login.resend.lead')}</p>
+          <button
+            class="button button-secondary"
+            type="button"
+            disabled={pending}
+            onclick={onResend}
+          >
+            {t('login.resend')}
+          </button>
         {/if}
         <button class="button button-primary" type="submit" disabled={pending}>
           {pending ? t('login.sending') : t('login.submit')}

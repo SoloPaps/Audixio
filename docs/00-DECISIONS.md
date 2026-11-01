@@ -6,6 +6,10 @@ Originaux conservés tels quels dans [`archive/fusionnes-2026-10-29/`](archive/f
 
 ---
 
+## Décisions du 1er novembre 2026
+
+- **Lien de confirmation et de réinitialisation** : valable **15 minutes** (réglage Supabase, 900 secondes). Le site demande toujours un mot de passe d’au moins 10 caractères. Supabase en accepte 8.
+
 ## Décisions du 30 octobre 2026
 
 - **Tarifs → page Pro** : l'item nav « Tarifs » (33 pages, desktop + menu mobile) et tous les CTA Pro / Passer Pro / Découvrir Pro mènent à `finales/page_pro/` (comparatif Gratuit vs Pro + CTA liste d'attente). La popup `interface_passer_pro` est réservée au moment où une limite est atteinte.

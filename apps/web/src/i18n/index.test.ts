@@ -42,7 +42,7 @@ describe('t', () => {
     expect(t('login.card.title')).toBe('Connexion');
     expect(t('login.submit')).toBe('Se connecter');
     expect(t('login.sent')).toBe(
-      'Si le compte peut être créé, un message part. Le lien dure 24 heures.',
+      'Si le compte peut être créé, un message part. Le lien dure 15 minutes.',
     );
     expect(t('account.export.hint')).toBe(
       'Le fichier contient vos sites, vos rapports et l’historique.',

@@ -272,6 +272,42 @@ export async function handleAuthRequest(
     return answer(request, null, '/inscription?envoye=1', 200, pending);
   }
 
+  if (path === '/api/auth/renvoi') {
+    if (!validEmail(email)) {
+      return finish(
+        request,
+        'invalid_email',
+        '/connexion?erreur=email',
+        400,
+        pending,
+      );
+    }
+    if (!(await allow(service, request, 'signup', email))) {
+      return finish(
+        request,
+        'rate_limited',
+        '/connexion?erreur=debit',
+        429,
+        pending,
+      );
+    }
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: callbackUrl(url) },
+    });
+    if (error && !quietResend(error.message, codeOf(error))) {
+      return finish(
+        request,
+        'unavailable',
+        '/connexion?erreur=indisponible',
+        503,
+        pending,
+      );
+    }
+    return answer(request, null, '/connexion?envoye=1', 200, pending);
+  }
+
   if (path === '/api/auth/reinitialisation') {
     if (!validEmail(email)) {
       return finish(
@@ -374,7 +410,11 @@ async function handleCallback(
             : 'email',
     });
     if (verified.error) {
-      return finish(request, 'link', '/connexion?erreur=lien', 400, pending);
+      const page =
+        type === 'recovery'
+          ? '/reinitialisation?erreur=lien'
+          : '/connexion?erreur=lien';
+      return finish(request, 'link', page, 400, pending);
     }
     kind = type === 'recovery' ? 'recovery' : 'signup';
   } else {
@@ -383,7 +423,11 @@ async function handleCallback(
 
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) {
-    return finish(request, 'link', '/connexion?erreur=lien', 400, pending);
+    const page =
+      kind === 'recovery'
+        ? '/reinitialisation?erreur=lien'
+        : '/connexion?erreur=lien';
+    return finish(request, 'link', page, 400, pending);
   }
   const profile = await readProfile(supabase, data.user.id);
   await maybeStoreName(supabase, data.user, profile.displayName);
@@ -492,6 +536,17 @@ function sessionOnlyCookie(on: boolean, secure: boolean): string {
   };
   if (!on) options.maxAge = 0;
   return serializeCookieHeader('audixio_session_only', on ? '1' : '', options);
+}
+
+function quietResend(message: string, code: string): boolean {
+  const text = `${code} ${message}`.toLowerCase();
+  return (
+    benignSignup(message, code) ||
+    text.includes('not found') ||
+    text.includes('confirm') ||
+    text.includes('otp') ||
+    text.includes('user')
+  );
 }
 
 function benignSignup(message: string, code: string | undefined): boolean {
