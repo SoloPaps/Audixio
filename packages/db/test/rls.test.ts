@@ -531,16 +531,18 @@ describe('RLS Supabase local', () => {
     expect(hidden).toHaveLength(1);
     expect(hidden[0]?.details).toBe('[]');
     expect(hidden[0]?.body).not.toContain(secret);
-    expect(hidden[0]?.body).not.toContain('securite.hsts');
-    expect(hidden[0]?.body).toContain('72');
+    expect(hidden[0]?.body).not.toContain('securite');
+    expect(hidden[0]?.body).not.toContain('72');
 
     const anon = createUserClient({
       url: local.apiUrl,
       anonKey: local.anonKey,
     });
     const viaClient = await readPublicScore(anon, 'public-b1');
-    expect(viaClient?.global_score).toBe(72);
+    expect(viaClient?.global_score).toBeNull();
     expect(JSON.stringify(viaClient)).not.toContain(secret);
+    expect(JSON.stringify(viaClient)).not.toContain('securite');
+    expect(JSON.stringify(viaClient?.domains)).toContain('performance');
     expect(JSON.stringify(viaClient?.security_details)).toBe('[]');
 
     await asUser(
@@ -560,7 +562,8 @@ describe('RLS Supabase local', () => {
         from public.read_public_score('public-b1') as x
       `,
     );
-    expect(shown[0]?.details).toContain('securite.hsts');
+    expect(shown[0]?.details).toBe('[]');
+    expect(shown[0]?.body).not.toContain('securite');
     expect(shown[0]?.body).not.toContain(secret);
     expect(shown[0]?.body).not.toContain('measured');
 
@@ -585,7 +588,9 @@ describe('RLS Supabase local', () => {
 
     const open = await readSharedScore(anon, token);
     expect(open?.audit_id).toBe(auditId);
+    expect(open?.global_score).toBeNull();
     expect(JSON.stringify(open)).not.toContain(secret);
+    expect(JSON.stringify(open)).not.toContain('securite');
 
     await asUser(
       B,
@@ -755,6 +760,224 @@ describe('RLS Supabase local', () => {
     const claimed = await claimNextAudit(service);
     expect(claimed?.status).toBe('running');
     expect(claimed?.engine_version).toBe('api');
+  });
+
+  it('cache le détail sensible tant que le site n’est pas prouvé', async () => {
+    const secret = 'secret-hsts-value';
+    await admin`
+      insert into public.domain_scores (audit_id, domain, score, coverage, level)
+      values (${B_AUDIT}::uuid, 'performance', 82, 1, 'good')
+    `;
+    await admin`
+      insert into public.findings (
+        audit_id, domain, check_id, status, severity, impact, score,
+        measured, message_key, fix_key
+      ) values (
+        ${B_AUDIT}::uuid, 'securite', 'securite.csp', 'fail', 4, 3, 0,
+        ${JSON.stringify({ header: secret })}::jsonb, 'finding.securite.csp',
+        'securite.csp'
+      )
+    `;
+
+    const [grade] = await admin<{ grade: string }[]>`
+      select grade from public.audits where id = ${B_AUDIT}::uuid
+    `;
+    expect(grade?.grade).toBe('E');
+
+    const hiddenScores = await asUser(
+      B,
+      (tx) => tx<{ domain: string }[]>`
+        select domain from public.domain_scores
+        where audit_id = ${B_AUDIT}::uuid
+        order by domain
+      `,
+    );
+    expect(hiddenScores.map((row) => row.domain)).toEqual(['performance']);
+
+    const hiddenFindings = await asUser(
+      B,
+      (tx) => tx<{ check_id: string }[]>`
+        select check_id from public.findings where audit_id = ${B_AUDIT}::uuid
+      `,
+    );
+    expect(hiddenFindings).toEqual([]);
+
+    const preview = await asUser(
+      B,
+      (tx) => tx<{ body: string }[]>`
+        select public.read_rapport_apercu(${B_AUDIT}::uuid)::text as body
+      `,
+    );
+    const body = preview[0]?.body ?? '';
+    expect(body).toContain('partielle · 1 domaines · site non vérifié');
+    expect(body).toContain('performance');
+    expect(body).not.toContain(secret);
+    expect(body).not.toContain('securite.csp');
+    expect(body).not.toContain('"note_globale": "E"');
+    expect(body).toContain('"verrouille": true');
+
+    const foreign = await asUser(
+      A,
+      (tx) => tx<{ body: string | null }[]>`
+        select public.read_rapport_apercu(${B_AUDIT}::uuid)::text as body
+      `,
+    );
+    expect(foreign[0]?.body).toBeNull();
+
+    await expectDenied(
+      null,
+      (tx) => tx`select public.read_rapport_apercu(${B_AUDIT}::uuid)`,
+    );
+
+    await admin`
+      insert into public.site_verifications (
+        site_id, method, token, status, verified_at, last_checked_at
+      ) values (
+        ${B_SITE}::uuid, 'meta', ${'d'.repeat(32)}, 'verified', now(), now()
+      )
+    `;
+
+    const shown = await asUser(
+      B,
+      (tx) => tx<{ body: string }[]>`
+        select public.read_rapport_apercu(${B_AUDIT}::uuid)::text as body
+      `,
+    );
+    const open = shown[0]?.body ?? '';
+    expect(open).toContain(secret);
+    expect(open).toContain('securite.csp');
+    expect(open).toContain('"note_globale": "E"');
+    expect(open).not.toContain('partielle ·');
+
+    await admin`
+      update public.site_verifications
+      set status = 'expired'
+      where site_id = ${B_SITE}::uuid and status = 'verified'
+    `;
+  });
+
+  it('fige le plan, l’accueil et les alertes gratuites', async () => {
+    const [profile] = await asUser(
+      A,
+      (tx) => tx<{ onboarding_vu: boolean; plan: string }[]>`
+        select onboarding_vu, plan from public.profiles where id = ${A}::uuid
+      `,
+    );
+    expect(profile).toEqual({ onboarding_vu: false, plan: 'free' });
+
+    const seen = await asUser(
+      A,
+      (tx) => tx<{ onboarding_vu: boolean }[]>`
+        update public.profiles
+        set onboarding_vu = true
+        where id = ${A}::uuid
+        returning onboarding_vu
+      `,
+    );
+    expect(seen[0]?.onboarding_vu).toBe(true);
+
+    await expectDenied(
+      A,
+      (tx) => tx`
+        update public.profiles set plan = 'pro' where id = ${A}::uuid
+      `,
+    );
+
+    const [settings] = await asUser(
+      B,
+      (tx) => tx<
+        {
+          reaudit_cadence: string;
+          ssl_warn_days: number;
+          score_drop_points: number;
+        }[]
+      >`
+        select reaudit_cadence, ssl_warn_days, score_drop_points
+        from public.ensure_alert_settings(${B_SITE}::uuid)
+      `,
+    );
+    expect(settings).toEqual({
+      reaudit_cadence: 'monthly',
+      ssl_warn_days: 14,
+      score_drop_points: 0,
+    });
+
+    const clamped = await asUser(
+      B,
+      (tx) => tx<{ reaudit_cadence: string; ssl_warn_days: number }[]>`
+        update public.alert_settings
+        set reaudit_cadence = 'daily', ssl_warn_days = 3, score_drop_points = 5
+        where site_id = ${B_SITE}::uuid
+        returning reaudit_cadence, ssl_warn_days
+      `,
+    );
+    expect(clamped[0]).toEqual({
+      reaudit_cadence: 'monthly',
+      ssl_warn_days: 14,
+    });
+
+    await expectDenied(
+      A,
+      (tx) => tx`select * from public.ensure_alert_settings(${B_SITE}::uuid)`,
+    );
+
+    await admin`
+      update public.profiles set plan = 'pro' where id = ${B}::uuid
+    `;
+    const pro = await asUser(
+      B,
+      (tx) => tx<{ reaudit_cadence: string; ssl_warn_days: number }[]>`
+        update public.alert_settings
+        set reaudit_cadence = 'daily', ssl_warn_days = 7, score_drop_points = 5
+        where site_id = ${B_SITE}::uuid
+        returning reaudit_cadence, ssl_warn_days
+      `,
+    );
+    expect(pro[0]).toEqual({ reaudit_cadence: 'daily', ssl_warn_days: 7 });
+    await admin`
+      update public.profiles set plan = 'free' where id = ${B}::uuid
+    `;
+    await admin`
+      update public.alert_settings
+      set reaudit_cadence = 'monthly', ssl_warn_days = 14, score_drop_points = 0
+      where site_id = ${B_SITE}::uuid
+    `;
+  });
+
+  it('isole le plan d’action et refuse un domaine sensible', async () => {
+    const saved = await asUser(
+      B,
+      (tx) => tx<{ id: string }[]>`
+        insert into public.action_plan_items (user_id, site_id, check_id, domain, status)
+        values (${B}::uuid, ${B_SITE}::uuid, 'seo.title', 'seo', 'todo')
+        returning id::text as id
+      `,
+    );
+    expect(saved).toHaveLength(1);
+
+    await expectDenied(
+      B,
+      (tx) => tx`
+        insert into public.action_plan_items (user_id, site_id, check_id, domain, status)
+        values (${B}::uuid, ${B_SITE}::uuid, 'securite.hsts', 'securite', 'todo')
+      `,
+    );
+    await expectDenied(
+      B,
+      (tx) => tx`
+        update public.action_plan_items
+        set status = 'auto_closed'
+        where site_id = ${B_SITE}::uuid and check_id = 'seo.title'
+      `,
+    );
+
+    const foreign = await asUser(
+      A,
+      (tx) => tx`
+        select id from public.action_plan_items where user_id = ${B}::uuid
+      `,
+    );
+    expect(foreign).toHaveLength(0);
   });
 
   it('connecte par lien magique et crée le profil', async () => {
