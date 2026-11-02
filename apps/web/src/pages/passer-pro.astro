@@ -1,0 +1,93 @@
+---
+import '../styles/maquettes/passer.css';
+import { t } from '../i18n/index.js';
+import Canon from '../layouts/Canon.astro';
+---
+
+<Canon vue="passer" title={t('mq.passer.meta.title')} description={t('mq.passer.meta.desc')} robots="noindex, nofollow">
+<p hidden id="mq.pp.sites.html">{t('mq.pp.sites.html')}</p><p hidden id="mq.pp.sites.l">{t('mq.pp.sites.l')}</p><p hidden id="mq.pp.sites.v">{t('mq.pp.sites.v')}</p><p hidden id="mq.pp.liens.html">{t('mq.pp.liens.html')}</p><p hidden id="mq.pp.liens.l">{t('mq.pp.liens.l')}</p><p hidden id="mq.pp.liens.v">{t('mq.pp.liens.v')}</p><p hidden id="mq.pp.saved">{t('mq.pp.saved')}</p><p hidden id="mq.pp.err.bad">{t('mq.pp.err.bad')}</p><p hidden id="mq.pp.err.empty">{t('mq.pp.err.empty')}</p>
+
+<main id="contenu" tabindex="-1" class="bgh" aria-hidden="true" inert>
+<div class="ph"><div><h1>{t('mq.pp.sites.l')}</h1><p class="lede">{t('mq.passer.001')}</p></div>
+<div class="quota" aria-label={t('mq.passer.002')}><span class="qchip"><span class="qdots" aria-hidden="true"><i></i><i></i></span><b>{t('mq.pp.sites.v')}</b> {t('mq.passer.003')}</span><span class="qchip"><span class="qdots" aria-hidden="true"><i></i></span><b>{t('mq.pp.liens.v')}</b> {t('mq.passer.004')}</span></div></div>
+<section aria-labelledby="h-sites"><h2 id="h-sites" class="sr-only">{t('mq.passer.005')}</h2>
+<div class="sites">
+<article class="site"><span class="tile t-a" aria-hidden="true">{t('mq.passer.006')}</span><div><h2>{t('mq.passer.007')}</h2><p><span class="sr-only">{t('mq.passer.008')} </span>{t('mq.passer.009')}</p></div></article>
+<article class="site"><span class="tile t-b" aria-hidden="true">{t('mq.passer.010')}</span><div><h2>{t('mq.passer.011')}</h2><p><span class="sr-only">{t('mq.passer.012')} </span>{t('mq.passer.013')}</p></div></article>
+<button class="add" type="button" data-pro="sites"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>{t('mq.passer.014')}<small>{t('mq.passer.015')}</small></span></button>
+</div></section>
+</main>
+<div class="pm" id="pro-modal">
+<div class="pm-scrim" data-close aria-hidden="true"></div>
+<div class="pm-dlg" role="dialog" aria-modal="true" aria-labelledby="pm-t" aria-describedby="pm-d" tabindex="-1">
+<button class="pm-x" type="button" data-close aria-label={t('mq.passer.016')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+<div id="pm-main">
+<div class="pm-top st" style="--i:0"><span class="pm-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 15.6 6.6 18.5l1.2-6L3.3 8.3l6.1-.7z"/></svg></span>
+<div><span class="badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 15.6 6.6 18.5l1.2-6L3.3 8.3l6.1-.7z"/></svg>{t('mq.passer.017')}</span><span class="soon">{t('mq.passer.018')}</span></div></div>
+<h2 id="pm-t" class="st" style="--i:1">{t('mq.passer.019')}</h2>
+<p id="pm-d" class="pm-d st" style="--i:2"></p>
+<div class="meter st" style="--i:3"><div class="lab"><span id="pm-ml"></span><span id="pm-mv"></span></div><div class="bar" aria-hidden="true"><i></i></div></div>
+<h3 class="st" style="--i:4">{t('mq.passer.020')}</h3>
+<ul class="feats">
+<li class="st" style="--i:5"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.passer.021')}<small>{t('mq.passer.022')}</small></span></li>
+<li class="st" style="--i:6"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.passer.023')}<small>{t('mq.passer.024')}</small></span></li>
+<li class="st" style="--i:7"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.passer.025')}<small>{t('mq.passer.026')}</small></span></li>
+<li class="st" style="--i:8"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.passer.027')}<small>{t('mq.passer.028')}</small></span></li>
+</ul>
+<p class="free st" style="--i:9">{t('mq.passer.029')}</p>
+<form class="wlf st" style="--i:10" id="pm-form" novalidate>
+<label for="pm-email">{t('mq.passer.030')}</label>
+<div class="wrow" id="pm-row"><input id="pm-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder={t('mq.passer.031')} aria-describedby="pm-hint pm-err" required>
+<button class="btn btn-primary" type="submit" id="pm-sub"><span class="bl">{t('mq.passer.032')}</span><svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="spin" aria-hidden="true"></span></button></div>
+<p class="err" id="pm-err"></p>
+<p class="hint" id="pm-hint">{t('mq.passer.033')}</p>
+</form>
+<div class="later st" style="--i:11"><button class="btn btn-text" type="button" data-close>{t('mq.passer.034')}</button><a class="lk-pill" href="/pro">{t('mq.passer.035')}</a></div>
+</div>
+<div class="okv" id="pm-ok" tabindex="-1" hidden>
+<div class="okc" aria-hidden="true"><svg viewBox="0 0 84 84" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle class="bg" cx="42" cy="42" r="38"/><circle class="c" cx="42" cy="42" r="38"/><path class="k" d="M27 43l10 10 21-22"/></svg><span class="ring"></span></div>
+<h2 id="pm-okt">{t('mq.passer.036')}</h2>
+<p>{t('mq.passer.037')} <b id="pm-okmail"></b> {t('mq.passer.038')}</p>
+<div class="okr"><button class="btn btn-primary" type="button" data-close>{t('mq.passer.039')}</button><a class="lk-pill" href="/pro">{t('mq.passer.040')}</a></div>
+</div>
+</div></div>
+<p class="sr-only" id="live" role="status" aria-live="polite"></p>
+
+
+
+<script is:inline>
+function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typeof line==='string'&&line)return line;var node=document.getElementById(key);return node?node.textContent:'';}
+(function(){var d=document,R=matchMedia('(prefers-reduced-motion: reduce)'),m=d.getElementById('pro-modal'),dlg=m.querySelector('.pm-dlg'),
+main=d.getElementById('pm-main'),ok=d.getElementById('pm-ok'),f=d.getElementById('pm-form'),i=d.getElementById('pm-email'),b=d.getElementById('pm-sub'),er=d.getElementById('pm-err'),row=d.getElementById('pm-row'),
+bg=[d.querySelector('.bgh')],BACK='/sites',last=null,tm;
+var TXT={sites:{d:tr('mq.pp.sites.html'),l:tr('mq.pp.sites.l'),v:tr('mq.pp.sites.v')},liens:{d:tr('mq.pp.liens.html'),l:tr('mq.pp.liens.l'),v:tr('mq.pp.liens.v')}};
+d.addEventListener('pointerdown',function(e){var t=e.target.closest('.btn');if(!t||R.matches)return;var r=t.getBoundingClientRect(),s=Math.max(r.width,r.height),k=d.createElement('span');k.className='rip';k.style.cssText='width:'+s+'px;height:'+s+'px;left:'+(e.clientX-r.left-s/2)+'px;top:'+(e.clientY-r.top-s/2)+'px';t.appendChild(k);setTimeout(function(){k.remove()},700)});
+function foc(){return Array.prototype.filter.call(dlg.querySelectorAll('button,[href],input,[tabindex]:not([tabindex="-1"])'),function(e){return !e.disabled&&e.offsetParent!==null})}
+function open(kind,src){var t=TXT[kind]||TXT.sites;last=src||d.activeElement;clearTimeout(tm);
+ d.getElementById('pm-d').innerHTML=t.d;d.getElementById('pm-ml').textContent=t.l;d.getElementById('pm-mv').textContent=t.v;
+ main.hidden=false;ok.hidden=true;er.textContent='';i.removeAttribute('aria-invalid');f.reset();
+ bg.forEach(function(e){e&&(e.inert=true)});d.body.classList.add('noscroll');
+ m.classList.remove('on','off');m.hidden=false;void dlg.offsetWidth;requestAnimationFrame(function(){m.classList.add('on')});
+ i.focus({preventScroll:true})}
+function close(){if(m.hidden)return;m.classList.add('off');m.classList.remove('on');
+ bg.forEach(function(e){e&&(e.inert=false)});d.body.classList.remove('noscroll');
+ tm=setTimeout(function(){location.href=BACK},R.matches?0:300)}
+d.querySelectorAll('[data-pro]').forEach(function(x){x.addEventListener('click',function(){open(x.dataset.pro,x)})});
+m.addEventListener('click',function(e){if(e.target.closest('[data-close]'))close()});
+d.addEventListener('keydown',function(e){if(m.hidden||m.classList.contains('off'))return;
+ if(e.key==='Escape'){e.preventDefault();close();return}
+ if(e.key==='Tab'){var a=foc();if(!a.length){e.preventDefault();return}var fi=a[0],la=a[a.length-1];
+  if(e.shiftKey&&(d.activeElement===fi||!dlg.contains(d.activeElement))){e.preventDefault();la.focus()}
+  else if(!e.shiftKey&&(d.activeElement===la||!dlg.contains(d.activeElement))){e.preventDefault();fi.focus()}}});
+i.addEventListener('input',function(){if(i.getAttribute('aria-invalid')){i.removeAttribute('aria-invalid');er.textContent=''}});
+f.addEventListener('submit',function(e){e.preventDefault();var v=i.value.trim();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){i.setAttribute('aria-invalid','true');er.textContent=v?tr('mq.pp.err.bad'):tr('mq.pp.err.empty');
+  row.classList.remove('shake');void row.offsetWidth;if(!R.matches)row.classList.add('shake');i.focus();return}
+ b.setAttribute('aria-busy','true');setTimeout(function(){b.removeAttribute('aria-busy');d.getElementById('pm-okmail').textContent=v;
+  main.hidden=true;ok.hidden=false;dlg.setAttribute('aria-labelledby','pm-okt');dlg.removeAttribute('aria-describedby');ok.focus();
+  var l=d.getElementById('live');l.textContent='';setTimeout(function(){l.textContent=tr('mq.pp.saved')},50)},R.matches?100:800)});
+var mo=new MutationObserver(function(){if(!ok.hidden)return;dlg.setAttribute('aria-labelledby','pm-t');dlg.setAttribute('aria-describedby','pm-d')});mo.observe(ok,{attributes:true,attributeFilter:['hidden']});
+open(location.hash==='#pro-liens'?'liens':'sites');
+})();
+</script>
+</Canon>
