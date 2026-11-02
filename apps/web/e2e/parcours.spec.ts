@@ -65,7 +65,9 @@ async function expectNoViolations(page: Page): Promise<void> {
       const iterations = item.effect?.getTiming().iterations ?? 1;
       return Number.isFinite(iterations);
     });
-    await Promise.all(pending.map((item) => item.finished));
+    await Promise.all(
+      pending.map((item) => item.finished.catch(() => undefined)),
+    );
   });
   const results = await new AxeBuilder({ page }).analyze();
   expect(
@@ -336,13 +338,81 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
 
   await page.goto('/sites');
   await waitForIslands(page);
-  await expect(page.getByText('Aucun site pour le moment.')).toBeVisible();
-  await page.getByLabel('Adresse du site').fill('notes.exemple.fr');
-  await page.getByRole('button', { name: 'Ajouter un site' }).click();
-  await expect(page.getByText('Le site a été ajouté.')).toBeVisible();
   await expect(
-    page.getByRole('link', { name: /Lancer un audit/ }),
+    page.getByRole('heading', { name: 'Suivez votre premier site' }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Lancer un audit' }),
+  ).toHaveAttribute('href', '/#audit-form');
+  await page.evaluate(() => {
+    const storage = (
+      globalThis as unknown as {
+        localStorage: { getItem: (key: string) => string | null };
+      }
+    ).localStorage;
+    return storage.getItem('audigy-auth');
+  });
+  await page.unroute('http://127.0.0.1:54321/**');
+  const seeded: Record<string, unknown>[] = [
+    {
+      id: '33333333-3333-4333-8333-333333333333',
+      owner_id: session.user.id,
+      url: 'https://exemple.fr',
+      host: 'exemple.fr',
+      label: 'exemple.fr',
+      scope: 'origin',
+      path_prefix: null,
+      hosting: 'other',
+      is_public: false,
+      public_slug: null,
+      expose_security: false,
+    },
+  ];
+  await page.route('http://127.0.0.1:54321/**', async (route) => {
+    const request = route.request();
+    const url = new URL(request.url());
+    if (request.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204 });
+      return;
+    }
+    if (
+      url.pathname.endsWith('/rest/v1/sites') &&
+      request.method() === 'POST'
+    ) {
+      const body = request.postDataJSON() as Record<string, unknown>;
+      const row = {
+        id: '22222222-2222-4222-8222-222222222222',
+        ...body,
+      };
+      seeded.push(row);
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify(row),
+      });
+      return;
+    }
+    if (url.pathname.endsWith('/rest/v1/sites')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(seeded),
+      });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: '{}',
+    });
+  });
+  await page.goto('/sites');
+  await waitForIslands(page);
+  await page.getByLabel('Adresse du site à suivre').fill('notes.exemple.fr');
+  await page.getByRole('button', { name: 'Ajouter un site' }).click();
+  await expect(page.locator('#toast')).toContainText(
+    'Site ajouté à la file d’analyse : notes.exemple.fr',
+  );
   await expect(page.getByText('notes.exemple.fr').first()).toBeVisible();
   await expectNoViolations(page);
 });

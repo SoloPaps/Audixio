@@ -12,6 +12,11 @@ const MAQUETTE_PORT = [
   'apps/web/src/styles/canon.css',
   'apps/web/src/styles/chrome.css',
   'apps/web/src/components/ShareSheet.svelte',
+  'apps/web/src/components/AccountBoard.svelte',
+  'apps/web/src/components/AlertsBoard.svelte',
+  'apps/web/src/components/HistoryBoard.svelte',
+  'apps/web/src/components/SitesBoard.svelte',
+  'apps/web/src/components/WelcomeBoard.svelte',
   'apps/web/src/lib/motion/accueil.js',
   'apps/web/src/pages/index.astro',
   'apps/web/src/pages/methode.astro',
@@ -218,6 +223,12 @@ describe('couleurs des CSS', () => {
     expect(isMaquettePort('apps/web/src/styles/canon.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/styles/chrome.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/components/ShareSheet.svelte')).toBe(
+      true,
+    );
+    expect(isMaquettePort('apps/web/src/components/SitesBoard.svelte')).toBe(
+      true,
+    );
+    expect(isMaquettePort('apps/web/src/components/AccountBoard.svelte')).toBe(
       true,
     );
     expect(isMaquettePort('apps/web/src/lib/motion/accueil.js')).toBe(true);

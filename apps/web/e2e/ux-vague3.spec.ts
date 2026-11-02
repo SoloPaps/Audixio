@@ -246,28 +246,23 @@ test('la liste des sites garde une tuile et replie les actions', async ({
   await signIn(page);
   await page.goto('/sites');
   await waitForIslands(page);
-  const gsc = page.getByRole('link', { name: 'Connecter Search Console' });
-  await expect(gsc).toHaveCount(1);
-  await expect(gsc).toHaveClass(/link-action/);
-  await expect(page.locator('.button-primary')).toHaveCount(1);
   const tile = page.getByRole('link', { name: /exemple\.fr/ });
   await expect(tile).toHaveAttribute('href', `/rapport?id=${AUDIT_ID}`);
-  await expect(tile.locator('.kicker')).toHaveCSS(
-    'font-family',
-    /JetBrains Mono/,
-  );
-  await expect(tile).toContainText('23 oct. 2026');
-  await expect(tile).toContainText('72');
-  const actions = page.locator('details.site-actions');
-  await expect(actions).not.toHaveJSProperty('open', true);
-  await expect(
-    page.getByRole('link', { name: /Prouver que le site est à vous/ }),
-  ).toBeHidden();
-  await actions.locator('summary').click();
+  await expect(tile).toHaveCSS('font-weight', '800');
+  const card = page.locator('article.beam', { hasText: 'exemple.fr' });
+  await expect(card).toContainText('23 oct. 2026');
+  await expect(card).toContainText('72');
   await expect(
     page.getByRole('link', { name: /Prouver que le site est à vous/ }),
   ).toBeVisible();
+  await expect(page.locator('details[open]')).toHaveCount(0);
   await expectNoViolations(page);
+
+  await page.goto('/compte');
+  await waitForIslands(page);
+  const gsc = page.getByRole('link', { name: 'Connecter Search Console' });
+  await expect(gsc).toHaveCount(1);
+  await expect(gsc).toHaveAttribute('href', '/search-console');
 });
 
 test('aucun site utilise la plaque vide, pas l’erreur réseau', async ({
@@ -277,16 +272,19 @@ test('aucun site utilise la plaque vide, pas l’erreur réseau', async ({
   await signIn(page);
   await page.goto('/sites');
   await waitForIslands(page);
-  const empty = page.locator('.empty');
-  await expect(empty).toContainText('Aucun site pour le moment.');
-  await expect(empty.locator('.button-primary')).toHaveCount(1);
-  await expect(empty.getByRole('status')).toHaveCount(0);
+  await expect(
+    page.getByRole('heading', { name: 'Suivez votre premier site' }),
+  ).toBeVisible();
+  await expect(page.getByText('0 site suivi')).toBeVisible();
+  const emptyCta = page.getByRole('link', { name: 'Lancer un audit' });
+  await expect(emptyCta).toHaveAttribute('href', '/#audit-form');
+  await expect(page.locator('.hero').getByRole('status')).toHaveCount(0);
 
   await page.unroute('http://127.0.0.1:54321/**');
   await mockSites(page, [], 'error');
   await page.goto('/sites');
   await waitForIslands(page);
-  await expect(page.getByRole('status')).toContainText(
+  await expect(page.locator('main').getByRole('status')).toContainText(
     'La liste des sites ne s’affiche pas. Réessayez.',
   );
   await expect(page.locator('.empty')).toHaveCount(0);

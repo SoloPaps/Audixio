@@ -1,0 +1,15 @@
+---
+import HistoryBoard from '../components/HistoryBoard.svelte';
+import { t } from '../i18n/index.js';
+import Canon from '../layouts/Canon.astro';
+import '../styles/maquettes/historique.css';
+---
+
+<Canon
+  vue="historique"
+  title={t('mq.ui.meta.history.title')}
+  description={t('mq.ui.meta.history.description')}
+  robots="noindex, nofollow"
+>
+  <HistoryBoard client:load />
+</Canon>

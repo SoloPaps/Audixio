@@ -1,13 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-const pages = [
-  '/',
-  '/dev/composants',
-  '/compte',
-  '/sites',
-  '/methode',
-] as const;
+const pages = ['/', '/dev/composants', '/methode'] as const;
 
 test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -20,6 +14,27 @@ test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
       return view.getComputedStyle(element).animationName;
     });
     expect(name).toBe('none');
+  }
+  for (const path of ['/compte', '/sites'] as const) {
+    await page.goto(path);
+    await expect(page.locator('.blob-petrol')).toHaveCount(0);
+    const running = await page.evaluate(() => {
+      const view = globalThis as unknown as {
+        document: { querySelectorAll: (selector: string) => Iterable<unknown> };
+        getComputedStyle: (node: unknown) => {
+          animationName: string;
+          animationDuration: string;
+        };
+      };
+      return [...view.document.querySelectorAll('main *')].some((node) => {
+        const style = view.getComputedStyle(node);
+        return (
+          style.animationName !== 'none' &&
+          !style.animationDuration.startsWith('0')
+        );
+      });
+    });
+    expect(running).toBe(false);
   }
   await page.goto('/');
   const gauge = await page

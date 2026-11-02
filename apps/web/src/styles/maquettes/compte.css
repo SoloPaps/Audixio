@@ -1,0 +1,3204 @@
+/* Porté de la maquette co, limité à html[data-vue=compte]. Aucun fichier docs/design servi. */
+html[data-vue="compte"] {
+  --bg: #ede8f5;
+  --surface: rgba(255, 255, 255, 0.8);
+  --solid: #fff;
+  --line: #adbbda;
+  --soft: rgba(61, 82, 160, 0.13);
+  --primary: #3d52a0;
+  --accent: #7091e6;
+  --lav: #8697c4;
+  --text: #1e2a55;
+  --muted: #4a5585;
+  --tint: rgba(61, 82, 160, 0.06);
+  --pill: rgba(61, 82, 160, 0.08);
+  --shadow:
+    0 30px 60px -30px rgba(61, 82, 160, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  --crit: #b42318;
+  --crit-bg: #fef3f2;
+  --crit-bd: #fecdca;
+  --fix: #b54708;
+  --fix-bg: #fff6ed;
+  --fix-bd: #fec84b;
+  --chk: #854a0e;
+  --chk-bg: #fefbe8;
+  --chk-bd: #fde272;
+  --minor: #475467;
+  --ok: #067647;
+  --ok-bg: #ecfdf3;
+  --ok-bd: #abefc6;
+  --own: #155e75;
+  --own-bg: #ecfdff;
+  --own-bd: #67d4e8;
+  --nt: #475467;
+  --nt-bg: #f2f4f7;
+  --nt-bd: #d0d5dd;
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 72px;
+  --s7: 112px;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+html[data-vue="compte"] *,
+html[data-vue="compte"] *::before,
+html[data-vue="compte"] *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html[data-vue="compte"] body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+html[data-vue="compte"] body::before {
+  content: "";
+  position: fixed;
+  inset: -20% -10% auto;
+  height: 75vh;
+  background:
+    radial-gradient(
+      40% 50% at 25% 30%,
+      rgba(112, 145, 230, 0.26),
+      transparent 70%
+    ),
+    radial-gradient(
+      35% 45% at 85% 10%,
+      rgba(134, 151, 196, 0.24),
+      transparent 70%
+    );
+  pointer-events: none;
+  z-index: -1;
+}
+html[data-vue="compte"] a {
+  color: var(--primary);
+}
+html[data-vue="compte"] :focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+html[data-vue="compte"] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+html[data-vue="compte"] .skip {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 2000;
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 99px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+html[data-vue="compte"] .skip:focus {
+  top: 12px;
+}
+html[data-vue="compte"] [hidden] {
+  display: none !important;
+}
+
+html[data-vue="compte"] main {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--s6) 32px var(--s5);
+  flex: 1;
+}
+@media (max-width: 600px) {
+  html[data-vue="compte"] main {
+    padding: var(--s5) 20px var(--s4);
+  }
+}
+html[data-vue="compte"] .crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+html[data-vue="compte"] .crumbs li + li::before {
+  content: "/";
+  margin-right: 8px;
+  opacity: 0.55;
+}
+html[data-vue="compte"] .crumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+html[data-vue="compte"] .crumbs a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+html[data-vue="compte"] .crumbs [aria-current] {
+  color: var(--text);
+  font-weight: 600;
+}
+html[data-vue="compte"] .hero {
+  margin: var(--s4) 0 var(--s6);
+}
+html[data-vue="compte"] .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+html[data-vue="compte"] .eyebrow .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: codot 2.4s ease-out infinite;
+}
+@keyframes codot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(112, 145, 230, 0.6);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 9px rgba(112, 145, 230, 0);
+  }
+}
+html[data-vue="compte"] h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  margin: var(--s2) 0 var(--s3);
+  max-width: 20ch;
+}
+html[data-vue="compte"] .lede {
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.7;
+}
+html[data-vue="compte"] .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: var(--s3);
+}
+html[data-vue="compte"] .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+html[data-vue="compte"] .chip svg,
+html[data-vue="compte"] .badge svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+html[data-vue="compte"] .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1px solid;
+}
+html[data-vue="compte"] .b-crit {
+  color: var(--crit);
+  background: var(--crit-bg);
+  border-color: var(--crit-bd);
+}
+html[data-vue="compte"] .b-fix {
+  color: var(--fix);
+  background: var(--fix-bg);
+  border-color: var(--fix-bd);
+}
+html[data-vue="compte"] .b-chk {
+  color: var(--chk);
+  background: var(--chk-bg);
+  border-color: var(--chk-bd);
+}
+html[data-vue="compte"] .b-ok {
+  color: var(--ok);
+  background: var(--ok-bg);
+  border-color: var(--ok-bd);
+}
+html[data-vue="compte"] .b-own {
+  color: var(--own);
+  background: var(--own-bg);
+  border-color: var(--own-bd);
+}
+html[data-vue="compte"] .b-nt {
+  color: var(--nt);
+  background: var(--nt-bg);
+  border-color: var(--nt-bd);
+}
+html[data-vue="compte"] .b-minor {
+  color: var(--minor);
+  background: #fff;
+  border-color: #d0d5dd;
+}
+html[data-vue="compte"] section.block {
+  margin-top: var(--s7);
+}
+@media (max-width: 600px) {
+  html[data-vue="compte"] section.block {
+    margin-top: var(--s6);
+  }
+  html[data-vue="compte"] .hero {
+    margin-bottom: var(--s5);
+  }
+}
+html[data-vue="compte"] .kicker {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  filter: saturate(1.1);
+}
+html[data-vue="compte"] .kicker {
+  color: #3d52a0;
+}
+html[data-vue="compte"] h2.sec {
+  font-size: clamp(24px, 3vw, 32px);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  font-weight: 800;
+  margin: 10px 0 14px;
+  max-width: 28ch;
+}
+html[data-vue="compte"] .sec-lede {
+  color: var(--muted);
+  max-width: 65ch;
+  font-size: 16.5px;
+  margin-bottom: var(--s5);
+}
+html[data-vue="compte"] .card {
+  position: relative;
+  background: var(--surface);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid var(--soft);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+html[data-vue="compte"] .card.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+html[data-vue="compte"] .card.sheen.in::after {
+  animation: cosheen 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.35s 1;
+}
+@keyframes cosheen {
+  to {
+    transform: translateX(120%);
+  }
+}
+html[data-vue="compte"] .pad {
+  padding: var(--s5);
+}
+@media (max-width: 600px) {
+  html[data-vue="compte"] .pad {
+    padding: var(--s3);
+  }
+}
+html[data-vue="compte"] .tilt {
+  transition:
+    transform 0.5s var(--out),
+    box-shadow 0.5s var(--out);
+  will-change: transform;
+}
+html[data-vue="compte"] .tilt:hover {
+  box-shadow:
+    0 40px 70px -30px rgba(61, 82, 160, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+html[data-vue="compte"] .btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 24px;
+  border-radius: 99px;
+  font:
+    600 15px Inter,
+    sans-serif;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  transition:
+    transform 0.4s var(--spring),
+    box-shadow 0.3s,
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+html[data-vue="compte"] .btn svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+html[data-vue="compte"] .btn:active {
+  transform: scale(0.96);
+}
+html[data-vue="compte"] .btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 12px 26px -12px rgba(61, 82, 160, 0.75);
+}
+html[data-vue="compte"] .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(61, 82, 160, 0.8);
+}
+html[data-vue="compte"] .btn-ghost {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--primary);
+  border-color: var(--line);
+}
+html[data-vue="compte"] .btn-ghost:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+html[data-vue="compte"] .btn .arrow {
+  transition: transform 0.4s var(--spring);
+}
+html[data-vue="compte"] .btn:hover .arrow {
+  transform: translateX(4px);
+}
+html[data-vue="compte"] .g-a {
+  --g: #2fa36b;
+  --gt: #d6f2e3;
+  --gi: #065f3a;
+  --gr: 47, 163, 107;
+}
+html[data-vue="compte"] .g-b {
+  --g: #7091e6;
+  --gt: #dde4f8;
+  --gi: #2b3b85;
+  --gr: 112, 145, 230;
+}
+html[data-vue="compte"] .g-c {
+  --g: #e0a63a;
+  --gt: #fbe8c8;
+  --gi: #8a4b08;
+  --gr: 224, 166, 58;
+}
+html[data-vue="compte"] .g-d {
+  --g: #e1763f;
+  --gt: #fadbc9;
+  --gi: #a23b0a;
+  --gr: 225, 118, 63;
+}
+html[data-vue="compte"] .gchip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 11px;
+  background: var(--gt);
+  color: var(--gi);
+  font-weight: 800;
+  font-size: 16px;
+}
+html[data-vue="compte"] .gbar {
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(61, 82, 160, 0.1);
+  overflow: hidden;
+}
+html[data-vue="compte"] .gbar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: var(--g);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1.4s var(--out) 0.2s;
+}
+html[data-vue="compte"] .in .gbar i,
+html[data-vue="compte"] .gbar.in i {
+  transform: scaleX(var(--v));
+}
+html[data-vue="compte"] .glass {
+  background:
+    radial-gradient(
+      130% 80% at 28% -10%,
+      rgba(255, 255, 255, 0.85),
+      rgba(255, 255, 255, 0) 55%
+    ),
+    linear-gradient(150deg, rgba(var(--gr), 0.4), rgba(var(--gr), 0.2));
+  color: var(--gi);
+  border: 1px solid rgba(var(--gr), 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -6px 12px -6px rgba(var(--gr), 0.3),
+    0 10px 22px -10px rgba(var(--gr), 0.65),
+    0 2px 6px -2px rgba(var(--gr), 0.25);
+  backdrop-filter: blur(12px) saturate(1.5);
+}
+
+html[data-vue="compte"].js .rv {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  transition:
+    opacity 0.9s var(--out),
+    transform 1s var(--spring);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+html[data-vue="compte"].js .rv.in {
+  opacity: 1;
+  transform: none;
+}
+@media print {
+  html[data-vue="compte"].js .rv {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+html[data-vue="compte"] .toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 1500;
+  transform: translate(-50%, 30px);
+  opacity: 0;
+  background: #1e2a55;
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 20px 40px -15px rgba(30, 42, 85, 0.6);
+  transition:
+    opacity 0.35s,
+    transform 0.5s var(--spring);
+  pointer-events: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+html[data-vue="compte"] .toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-vue="compte"] *,
+  html[data-vue="compte"] *::before,
+  html[data-vue="compte"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+  html[data-vue="compte"].js .rv {
+    opacity: 1;
+    transform: none;
+  }
+  html[data-vue="compte"] .card.sheen::after {
+    display: none;
+  }
+}
+
+html[data-vue="compte"],
+html[data-vue="compte"] body {
+  overflow-x: clip;
+}
+html[data-vue="compte"] .khero .eyebrow {
+  padding: 6px 14px 6px 12px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(61, 82, 160, 0.12);
+}
+html[data-vue="compte"] .aurora {
+  position: absolute;
+  top: -120px;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  height: 760px;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(#000 55%, transparent);
+  mask: linear-gradient(#000 55%, transparent);
+}
+html[data-vue="compte"] .aurora i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+  will-change: transform;
+}
+html[data-vue="compte"] .aurora i:nth-child(1) {
+  width: 520px;
+  height: 520px;
+  left: 4%;
+  top: 40px;
+  background: #7091e6;
+  animation: coau1 18s ease-in-out infinite alternate;
+}
+html[data-vue="compte"] .aurora i:nth-child(2) {
+  width: 460px;
+  height: 460px;
+  right: 6%;
+  top: 0;
+  background: #adbbda;
+  opacity: 0.75;
+  animation: coau2 22s ease-in-out infinite alternate;
+}
+html[data-vue="compte"] .aurora i:nth-child(3) {
+  width: 380px;
+  height: 380px;
+  left: 42%;
+  top: 180px;
+  background: #8697c4;
+  opacity: 0.45;
+  animation: coau3 16s ease-in-out infinite alternate;
+}
+html[data-vue="compte"] .aurora i:nth-child(4) {
+  width: 300px;
+  height: 300px;
+  right: 30%;
+  top: -60px;
+  background: #c9d4f7;
+  opacity: 0.9;
+  animation: coau1 20s ease-in-out infinite alternate-reverse;
+}
+html[data-vue="compte"] .aurora::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(61, 82, 160, 0.16) 1px,
+    transparent 1.2px
+  );
+  background-size: 22px 22px;
+  -webkit-mask: radial-gradient(60% 70% at 50% 30%, #000, transparent);
+  mask: radial-gradient(60% 70% at 50% 30%, #000, transparent);
+}
+@keyframes coau1 {
+  to {
+    transform: translate3d(120px, 60px, 0) scale(1.15);
+  }
+}
+@keyframes coau2 {
+  to {
+    transform: translate3d(-140px, 90px, 0) scale(0.9);
+  }
+}
+@keyframes coau3 {
+  to {
+    transform: translate3d(-80px, -50px, 0) scale(1.2);
+  }
+}
+html[data-vue="compte"] .khero {
+  position: relative;
+  isolation: isolate;
+  margin: var(--s3) 0 var(--s7);
+}
+html[data-vue="compte"] .layer {
+  transition: transform 0.9s var(--out);
+  will-change: transform;
+}
+html[data-vue="compte"] .gpanel {
+  position: relative;
+  border-radius: 32px;
+  padding: var(--s5);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.78),
+    rgba(255, 255, 255, 0.42)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 50px 90px -40px rgba(61, 82, 160, 0.45),
+    0 0 0 1px rgba(61, 82, 160, 0.08),
+    inset 0 1px 0 #fff;
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+}
+html[data-vue="compte"] .gpanel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--ang, 0deg),
+    rgba(112, 145, 230, 0),
+    rgba(112, 145, 230, 0.7),
+    rgba(173, 187, 218, 0) 30%,
+    rgba(61, 82, 160, 0.5) 60%,
+    rgba(112, 145, 230, 0)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: cospinb 9s linear infinite;
+  pointer-events: none;
+}
+@property --ang {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes cospinb {
+  to {
+    --ang: 360deg;
+  }
+}
+html[data-vue="compte"] .grad-txt {
+  background: linear-gradient(100deg, #3d52a0 10%, #7091e6 55%, #3d52a0 90%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cogt 7s ease-in-out infinite alternate;
+}
+@keyframes cogt {
+  to {
+    background-position: 100% 0;
+  }
+}
+html[data-vue="compte"] .btn {
+  overflow: hidden;
+}
+html[data-vue="compte"] .btn .rip {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.45);
+  transform: scale(0);
+  animation: corip 0.7s var(--out) forwards;
+  pointer-events: none;
+}
+html[data-vue="compte"] .btn-ghost .rip {
+  background: rgba(112, 145, 230, 0.25);
+}
+@keyframes corip {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+html[data-vue="compte"] .btn:active {
+  transform: scale(0.97);
+}
+html[data-vue="compte"] .btn[aria-busy="true"] {
+  pointer-events: none;
+}
+html[data-vue="compte"] .btn[aria-busy="true"] .bl {
+  opacity: 0;
+}
+html[data-vue="compte"] .btn .spin {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2.5px solid currentColor;
+  border-right-color: transparent;
+  opacity: 0;
+  animation: corot 0.8s linear infinite;
+}
+html[data-vue="compte"] .btn[aria-busy="true"] .spin {
+  opacity: 1;
+}
+@keyframes corot {
+  to {
+    transform: rotate(360deg);
+  }
+}
+html[data-vue="compte"] .btn-danger {
+  background: #b42318;
+  color: #fff;
+  box-shadow: 0 14px 30px -14px rgba(180, 35, 24, 0.7);
+}
+html[data-vue="compte"] .btn-danger:hover {
+  background: #912018;
+}
+html[data-vue="compte"] .btn-danger[disabled] {
+  background: #e4e7ec;
+  color: #475467;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+html[data-vue="compte"] .btn-sm {
+  min-height: 44px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+html[data-vue="compte"] .sk {
+  position: relative;
+  overflow: hidden;
+  background: #e6e9f5;
+  border-radius: 10px;
+  color: transparent !important;
+}
+html[data-vue="compte"] .sk * {
+  visibility: hidden;
+}
+html[data-vue="compte"] .sk::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.75),
+    transparent
+  );
+  animation: coshim 1.2s infinite;
+}
+@keyframes coshim {
+  to {
+    transform: translateX(100%);
+  }
+}
+html[data-vue="compte"] .pulse {
+  position: relative;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2fa36b;
+}
+html[data-vue="compte"] .pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: copls 2s var(--out) infinite;
+}
+@keyframes copls {
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+html[data-vue="compte"] .cp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+html[data-vue="compte"] .cp svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.4s var(--spring);
+}
+html[data-vue="compte"] .cp.ok svg {
+  transform: scale(1.2);
+}
+html[data-vue="compte"] :focus-visible {
+  outline: 3px solid #3d52a0;
+  outline-offset: 3px;
+}
+html[data-vue="compte"] .qnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: var(--s4);
+}
+html[data-vue="compte"] .qnav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--soft);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition:
+    transform 0.4s var(--spring),
+    background 0.3s,
+    box-shadow 0.3s;
+}
+html[data-vue="compte"] .qnav a:hover {
+  transform: translateY(-3px);
+  background: #fff;
+  box-shadow: 0 12px 24px -14px rgba(61, 82, 160, 0.5);
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-vue="compte"] .aurora i,
+  html[data-vue="compte"] .gpanel::before,
+  html[data-vue="compte"] .grad-txt,
+  html[data-vue="compte"] .pulse::after,
+  html[data-vue="compte"] .sk::after {
+    animation: none !important;
+  }
+  html[data-vue="compte"] .layer {
+    transform: none !important;
+  }
+}
+
+html[data-vue="compte"] .pz {
+  position: relative;
+  isolation: isolate;
+  border-radius: 36px;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--pa),
+    rgba(173, 187, 218, 0.25) 0 70%,
+    #7091e6 82%,
+    #fff 88%,
+    #e8c77a 91%,
+    rgba(173, 187, 218, 0.25) 96%
+  );
+  animation: copbeam 6s linear infinite paused;
+  box-shadow: 0 60px 120px -50px rgba(30, 42, 85, 0.75);
+}
+@property --pa {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+@keyframes copbeam {
+  to {
+    --pa: 360deg;
+  }
+}
+html[data-vue="compte"] .pz::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  z-index: -1;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(26px);
+  opacity: 0.55;
+}
+html[data-vue="compte"] .play .pz,
+html[data-vue="compte"] .play.pz {
+  animation-play-state: running;
+}
+html[data-vue="compte"] .pin {
+  position: relative;
+  overflow: hidden;
+  border-radius: 34px;
+  background: radial-gradient(
+    120% 90% at 0% 0%,
+    #2a3a82 0%,
+    #18214a 45%,
+    #121937 100%
+  );
+  color: #fff;
+  padding: clamp(28px, 5vw, 64px);
+}
+html[data-vue="compte"] .pau {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+html[data-vue="compte"] .pau i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.55;
+  animation: copa1 14s ease-in-out infinite alternate paused;
+}
+html[data-vue="compte"] .pau i:nth-child(1) {
+  width: 420px;
+  height: 420px;
+  left: -80px;
+  top: -120px;
+  background: #3d52a0;
+}
+html[data-vue="compte"] .pau i:nth-child(2) {
+  width: 360px;
+  height: 360px;
+  right: -60px;
+  top: 20%;
+  background: #7091e6;
+  opacity: 0.38;
+  animation-name: copa2;
+  animation-duration: 18s;
+}
+html[data-vue="compte"] .pau i:nth-child(3) {
+  width: 300px;
+  height: 300px;
+  left: 40%;
+  bottom: -140px;
+  background: #8697c4;
+  opacity: 0.3;
+  animation-duration: 20s;
+}
+html[data-vue="compte"] .play .pau i {
+  animation-play-state: running;
+}
+@keyframes copa1 {
+  to {
+    transform: translate3d(90px, 60px, 0) scale(1.15);
+  }
+}
+@keyframes copa2 {
+  to {
+    transform: translate3d(-110px, -40px, 0) scale(0.9);
+  }
+}
+html[data-vue="compte"] .pin::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  -webkit-mask: radial-gradient(70% 60% at 30% 10%, #000, transparent);
+  mask: radial-gradient(70% 60% at 30% 10%, #000, transparent);
+}
+html[data-vue="compte"] .pin > * {
+  position: relative;
+  z-index: 1;
+}
+html[data-vue="compte"] .ptop {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: var(--s5);
+  align-items: end;
+  margin-bottom: var(--s5);
+}
+@media (max-width: 900px) {
+  html[data-vue="compte"] .ptop {
+    grid-template-columns: 1fr;
+    gap: var(--s4);
+  }
+}
+html[data-vue="compte"] .pbadge {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: linear-gradient(135deg, #f3dfa8, #d9b25f);
+  color: #3a2a05;
+  font:
+    800 12.5px Inter,
+    sans-serif;
+  letter-spacing: 0.14em;
+}
+html[data-vue="compte"] .pbadge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.85) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  animation: coshine 3.6s ease-in-out infinite paused;
+}
+html[data-vue="compte"] .play .pbadge::after {
+  animation-play-state: running;
+}
+@keyframes coshine {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  85%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+html[data-vue="compte"] .psoon {
+  display: inline-flex;
+  margin-left: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #dde4f8;
+  vertical-align: middle;
+}
+html[data-vue="compte"] .pin h2 {
+  font-size: clamp(30px, 4.4vw, 50px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  margin: var(--s3) 0 var(--s2);
+  max-width: 18ch;
+  color: #fff;
+}
+html[data-vue="compte"] .pin h2 em {
+  font-style: normal;
+  background: linear-gradient(100deg, #adbbda, #fff 40%, #9fb4ff 70%, #adbbda);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cogt 6s ease-in-out infinite alternate;
+}
+html[data-vue="compte"] .pin .pl {
+  color: #d5dcf2;
+  font-size: 17px;
+  max-width: 54ch;
+}
+html[data-vue="compte"] .pcta {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+@media (min-width: 901px) {
+  html[data-vue="compte"] .pcta {
+    justify-items: end;
+    text-align: right;
+  }
+}
+html[data-vue="compte"] .pcta small {
+  color: #c9d2f0;
+  font-size: 13.5px;
+  max-width: 34ch;
+}
+html[data-vue="compte"] .pbtn {
+  position: relative;
+  overflow: visible;
+  min-height: 56px;
+  padding: 0 28px;
+  border-radius: 99px;
+  border: 0;
+  background: #fff;
+  color: #1e2a55;
+  font:
+    700 16px Inter,
+    sans-serif;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.08),
+    0 20px 40px -16px rgba(112, 145, 230, 0.9);
+  transition:
+    transform 0.45s var(--spring),
+    box-shadow 0.4s,
+    background 0.4s,
+    color 0.4s;
+}
+html[data-vue="compte"] .pbtn:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 8px rgba(255, 255, 255, 0.12),
+    0 26px 50px -16px rgba(112, 145, 230, 1);
+}
+html[data-vue="compte"] .pbtn:active {
+  transform: scale(0.96);
+}
+html[data-vue="compte"] .pbtn .bel {
+  width: 20px;
+  height: 20px;
+  transform-origin: 50% 10%;
+}
+html[data-vue="compte"] .pbtn:hover .bel {
+  animation: coring 0.9s var(--out);
+}
+@keyframes coring {
+  20% {
+    transform: rotate(16deg);
+  }
+  40% {
+    transform: rotate(-12deg);
+  }
+  60% {
+    transform: rotate(8deg);
+  }
+  80% {
+    transform: rotate(-4deg);
+  }
+}
+html[data-vue="compte"] .pbtn[aria-pressed="true"] {
+  background: #d6f2e3;
+  color: #065f3a;
+}
+html[data-vue="compte"] .pbtn[aria-busy="true"] {
+  pointer-events: none;
+  opacity: 0.85;
+}
+html[data-vue="compte"] .cf {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  pointer-events: none;
+  animation: cocf 0.9s var(--out) forwards;
+}
+@keyframes cocf {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y)))
+      rotate(var(--r)) scale(1);
+    opacity: 0;
+  }
+}
+html[data-vue="compte"] .pgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s3);
+}
+@media (max-width: 760px) {
+  html[data-vue="compte"] .pgrid {
+    grid-template-columns: 1fr;
+  }
+}
+html[data-vue="compte"] .pf {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  padding: var(--s4);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.09),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition:
+    transform 0.5s var(--spring),
+    border-color 0.4s;
+}
+html[data-vue="compte"] .pf:hover {
+  transform: translateY(-4px);
+  border-color: rgba(173, 187, 218, 0.45);
+}
+html[data-vue="compte"] .pf::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    260px circle at var(--x, 50%) var(--y, 0%),
+    rgba(112, 145, 230, 0.28),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+html[data-vue="compte"] .pf:hover::before {
+  opacity: 1;
+}
+html[data-vue="compte"] .ill {
+  position: relative;
+  height: 168px;
+  border-radius: 18px;
+  background: rgba(8, 12, 34, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin-bottom: var(--s3);
+}
+html[data-vue="compte"] .pf h3 {
+  font-size: 19px;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+html[data-vue="compte"] .pf h3 b {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f1530;
+  background: #adbbda;
+  padding: 2px 10px;
+  border-radius: 99px;
+}
+html[data-vue="compte"] .pf p {
+  color: #c9d2f0;
+  font-size: 15px;
+  max-width: 44ch;
+}
+html[data-vue="compte"] .pz * {
+  animation-play-state: paused;
+}
+html[data-vue="compte"] .play .pz * {
+  animation-play-state: running;
+}
+
+html[data-vue="compte"] .tl1 {
+  position: absolute;
+  left: 28px;
+  top: 18px;
+  bottom: 18px;
+  width: 2px;
+  background: linear-gradient(#7091e6, rgba(112, 145, 230, 0.1));
+}
+html[data-vue="compte"] .hc {
+  position: absolute;
+  left: 46px;
+  right: 18px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  font-size: 12px;
+  color: #dde4f8;
+  opacity: 0;
+  animation: cohs 7s var(--out) infinite;
+}
+html[data-vue="compte"] .hc::before {
+  content: "";
+  position: absolute;
+  left: -23px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #7091e6;
+  box-shadow: 0 0 0 4px rgba(112, 145, 230, 0.25);
+}
+html[data-vue="compte"] .hc .gk {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 11.5px;
+}
+html[data-vue="compte"] .hc .ln {
+  flex: 1;
+  height: 6px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.14);
+}
+html[data-vue="compte"] .h0 {
+  top: 114px;
+  animation-delay: 0s;
+}
+html[data-vue="compte"] .h1 {
+  top: 66px;
+  animation-delay: 0.6s;
+}
+html[data-vue="compte"] .h2 {
+  top: 18px;
+  animation-delay: 1.2s;
+}
+@keyframes cohs {
+  0% {
+    opacity: 0;
+    transform: translateY(-26px) scale(0.96);
+  }
+  10%,
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+html[data-vue="compte"] .ch {
+  position: absolute;
+  inset: 14px 16px 26px;
+}
+html[data-vue="compte"] .ch svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+html[data-vue="compte"] .ch .gl {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+html[data-vue="compte"] .ch .tr {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: codr 6s var(--out) infinite;
+}
+html[data-vue="compte"] .ch .tr:nth-of-type(2) {
+  animation-delay: 0.35s;
+}
+html[data-vue="compte"] .ch .tr:nth-of-type(3) {
+  animation-delay: 0.7s;
+}
+@keyframes codr {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  45%,
+  85% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+html[data-vue="compte"] .ch .ar {
+  fill: url(#par);
+  opacity: 0;
+  animation: cofa 6s ease infinite;
+}
+@keyframes cofa {
+  30%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+html[data-vue="compte"] .lg2 {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 8px;
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  color: #c9d2f0;
+}
+html[data-vue="compte"] .lg2 span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+html[data-vue="compte"] .lg2 i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+html[data-vue="compte"] .env {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  width: 64px;
+  height: 48px;
+  margin-top: -24px;
+  border-radius: 10px;
+  background: linear-gradient(150deg, #7091e6, #3d52a0);
+  box-shadow: 0 16px 30px -12px rgba(0, 0, 0, 0.6);
+  animation: cobob 3.5s ease-in-out infinite;
+}
+html[data-vue="compte"] .env::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom right,
+      transparent 49%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 52%
+    ),
+    linear-gradient(
+      to bottom left,
+      transparent 49%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 52%
+    );
+  background-size: 50% 60%;
+  background-repeat: no-repeat;
+  background-position:
+    left top,
+    right top;
+}
+html[data-vue="compte"] .env b {
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e8c77a;
+  color: #3a2a05;
+  font-size: 11px;
+  display: grid;
+  place-items: center;
+  animation: copop 7.5s var(--spring) infinite;
+}
+@keyframes cobob {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes copop {
+  0%,
+  8% {
+    transform: scale(0);
+  }
+  14%,
+  90% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+html[data-vue="compte"] .tst {
+  position: absolute;
+  left: 104px;
+  right: 14px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff;
+  color: #1e2a55;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  animation: cots 7.5s var(--spring) infinite;
+}
+html[data-vue="compte"] .tst i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+html[data-vue="compte"] .tst span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+html[data-vue="compte"] .t1 {
+  top: 16px;
+}
+html[data-vue="compte"] .t2 {
+  top: 64px;
+  animation-delay: 0.6s;
+}
+html[data-vue="compte"] .t3 {
+  top: 112px;
+  animation-delay: 1.2s;
+}
+@keyframes cots {
+  0%,
+  6% {
+    opacity: 0;
+    transform: translateX(30px) scale(0.9);
+  }
+  14%,
+  82% {
+    opacity: 1;
+    transform: none;
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+
+html[data-vue="compte"] .mt {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+html[data-vue="compte"] .mt .tk {
+  position: relative;
+  height: 16px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+html[data-vue="compte"] .mt .fl {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  transform: scaleX(0.42);
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7091e6, #adbbda 60%, #e8c77a);
+  animation: cofill 6s var(--out) infinite;
+}
+html[data-vue="compte"] .mt .fl::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: cosh2 1.6s linear infinite;
+}
+@keyframes cosh2 {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+@keyframes cofill {
+  0%,
+  12% {
+    transform: scaleX(0.42);
+  }
+  30% {
+    transform: scaleX(0.44);
+  }
+  60%,
+  85% {
+    transform: scaleX(0.96);
+  }
+  100% {
+    transform: scaleX(0.42);
+  }
+}
+html[data-vue="compte"] .mt .cap {
+  position: absolute;
+  left: 42%;
+  top: -30px;
+  bottom: -30px;
+  width: 0;
+  border-left: 2px dashed rgba(232, 199, 122, 0.85);
+}
+html[data-vue="compte"] .mt .cap span {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #e8c77a;
+  white-space: nowrap;
+}
+html[data-vue="compte"] .mt .mpro {
+  position: absolute;
+  right: 0;
+  top: -30px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.06em;
+}
+html[data-vue="compte"] .mt .sc {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #c9d2f0;
+  margin-top: 14px;
+}
+html[data-vue="compte"] .ptr {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin-top: var(--s4);
+  padding-top: var(--s4);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 14px;
+  color: #c9d2f0;
+}
+html[data-vue="compte"] .ptr span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+html[data-vue="compte"] .ptr svg {
+  width: 16px;
+  height: 16px;
+  color: #9ee6bf;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-vue="compte"] .pz,
+  html[data-vue="compte"] .pz *,
+  html[data-vue="compte"] .pz *::before,
+  html[data-vue="compte"] .pz *::after {
+    animation: none !important;
+  }
+  html[data-vue="compte"] .hc {
+    opacity: 1;
+  }
+  html[data-vue="compte"] .ch .tr {
+    stroke-dashoffset: 0;
+  }
+  html[data-vue="compte"] .ch .ar {
+    opacity: 1;
+  }
+  html[data-vue="compte"] .tst {
+    opacity: 1;
+  }
+  html[data-vue="compte"] .env b {
+    transform: none;
+  }
+  html[data-vue="compte"] .mt .fl {
+    transform: scaleX(0.96);
+  }
+}
+html[data-vue="compte"] .lg2 span {
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  html[data-vue="compte"] .lg2 {
+    gap: 10px;
+    font-size: 10.5px;
+  }
+  html[data-vue="compte"] .env {
+    left: 12px;
+    width: 48px;
+    height: 38px;
+    margin-top: -19px;
+  }
+  html[data-vue="compte"] .tst {
+    left: 72px;
+    right: 10px;
+    font-size: 11.5px;
+    padding: 0 10px;
+  }
+  html[data-vue="compte"] .pf {
+    padding: var(--s3);
+  }
+}
+html[data-vue="compte"] h1 {
+  font-size: clamp(36px, 5.2vw, 60px);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  margin: var(--s2) 0 var(--s3);
+}
+html[data-vue="compte"] .hgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s6);
+  align-items: center;
+}
+@media (max-width: 980px) {
+  html[data-vue="compte"] .hgrid {
+    grid-template-columns: 1fr;
+    gap: var(--s5);
+  }
+}
+html[data-vue="compte"] .idc {
+  display: grid;
+  gap: var(--s4);
+}
+html[data-vue="compte"] .who {
+  display: flex;
+  gap: var(--s3);
+  align-items: center;
+}
+html[data-vue="compte"] .av {
+  position: relative;
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+html[data-vue="compte"] .av::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--ang),
+    #3d52a0,
+    #7091e6,
+    #adbbda,
+    #3d52a0
+  );
+  animation: cospinb 6s linear infinite;
+}
+html[data-vue="compte"] .av span {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(150deg, #fff, #dde4f8);
+  display: grid;
+  place-items: center;
+  font:
+    800 26px Inter,
+    sans-serif;
+  color: #3d52a0;
+  border: 3px solid #fff;
+}
+html[data-vue="compte"] .who .em {
+  font-weight: 700;
+  font-size: clamp(16px, 2vw, 19px);
+  overflow-wrap: anywhere;
+  color: var(--text);
+}
+html[data-vue="compte"] .who .st {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--muted);
+}
+html[data-vue="compte"] .ok-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px 3px 10px;
+  border-radius: 99px;
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+  color: #067647;
+  font-weight: 700;
+  font-size: 13px;
+}
+html[data-vue="compte"] .ok-chip .pulse {
+  width: 8px;
+  height: 8px;
+}
+html[data-vue="compte"] .gz {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s4);
+  align-items: center;
+  padding: var(--s3);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(61, 82, 160, 0.1);
+}
+@media (max-width: 420px) {
+  html[data-vue="compte"] .gz {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+}
+html[data-vue="compte"] .ring {
+  position: relative;
+  width: 132px;
+  height: 132px;
+}
+html[data-vue="compte"] .ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+html[data-vue="compte"] .ring .bg {
+  fill: none;
+  stroke: #e6e9f5;
+  stroke-width: 12;
+}
+html[data-vue="compte"] .ring .fg {
+  fill: none;
+  stroke: url(#rg);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-dasharray: 339.3;
+  stroke-dashoffset: 339.3;
+  transition: stroke-dashoffset 1.6s var(--out) 0.3s;
+  filter: drop-shadow(0 6px 10px rgba(61, 82, 160, 0.35));
+}
+html[data-vue="compte"] .in .ring .fg,
+html[data-vue="compte"] .ring.in .fg {
+  stroke-dashoffset: calc(339.3 * (1 - var(--v)));
+}
+html[data-vue="compte"] .ring .n {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+html[data-vue="compte"] .ring .n b {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  line-height: 1;
+}
+html[data-vue="compte"] .ring .n small {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 4px;
+}
+html[data-vue="compte"] .chk {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  font-size: 14.5px;
+}
+html[data-vue="compte"] .chk li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+html[data-vue="compte"] .chk i {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ecfdf3;
+  color: #067647;
+  border: 1px solid #abefc6;
+}
+html[data-vue="compte"] .chk i svg {
+  width: 13px;
+  height: 13px;
+}
+html[data-vue="compte"] .chk li.todo i {
+  background: #fff;
+  border: 1.5px dashed #8697c4;
+  color: #3d52a0;
+}
+html[data-vue="compte"] .chk a {
+  color: var(--primary);
+  font-weight: 600;
+}
+html[data-vue="compte"] .idf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+html[data-vue="compte"] .blk {
+  margin-top: var(--s7);
+  scroll-margin-top: 110px;
+}
+html[data-vue="compte"] .bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--s3);
+}
+html[data-vue="compte"] .bento > * {
+  grid-column: span 12;
+}
+@media (min-width: 900px) {
+  html[data-vue="compte"] .c7 {
+    grid-column: span 7 !important;
+  }
+  html[data-vue="compte"] .c5 {
+    grid-column: span 5 !important;
+  }
+  html[data-vue="compte"] .c6 {
+    grid-column: span 6 !important;
+  }
+}
+html[data-vue="compte"] .box {
+  padding: var(--s5);
+}
+@media (max-width: 600px) {
+  html[data-vue="compte"] .box {
+    padding: var(--s4) var(--s3);
+  }
+}
+html[data-vue="compte"] .box h3 {
+  font-size: 21px;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+html[data-vue="compte"] .box .sub {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: var(--s2);
+}
+html[data-vue="compte"] .box p {
+  color: var(--muted);
+  max-width: 60ch;
+}
+html[data-vue="compte"] .hic {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(150deg, #dde4f8, #fff);
+  color: #3d52a0;
+  border: 1px solid #adbbda;
+  margin-bottom: var(--s3);
+  transition: transform 0.6s var(--spring);
+}
+html[data-vue="compte"] .box:hover .hic {
+  transform: rotate(-8deg) scale(1.06);
+}
+html[data-vue="compte"] .hic svg {
+  width: 24px;
+  height: 24px;
+}
+html[data-vue="compte"] .gsc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--s4);
+  padding: var(--s3);
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid var(--soft);
+}
+html[data-vue="compte"] .gsc .l {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+html[data-vue="compte"] .gsc .gl {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: #f5f7ff;
+  border: 1px solid var(--soft);
+}
+html[data-vue="compte"] .gsc .gl svg {
+  width: 22px;
+  height: 22px;
+}
+html[data-vue="compte"] .gsc b {
+  display: block;
+}
+html[data-vue="compte"] .gsc small {
+  display: inline-block;
+  color: var(--muted);
+  font-size: 13.5px;
+  margin-top: 2px;
+}
+html[data-vue="compte"] .fine {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+html[data-vue="compte"] .cms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-top: var(--s4);
+}
+html[data-vue="compte"] .cm {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--soft);
+  transition:
+    transform 0.45s var(--spring),
+    box-shadow 0.4s,
+    background 0.3s;
+}
+html[data-vue="compte"] .cm:hover {
+  transform: translateY(-3px);
+  background: #fff;
+  box-shadow: 0 18px 30px -20px rgba(61, 82, 160, 0.55);
+}
+html[data-vue="compte"] .cm .lg {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font:
+    800 14px Inter,
+    sans-serif;
+}
+html[data-vue="compte"] .cm b {
+  font-size: 15px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+html[data-vue="compte"] .cm small {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-top: 2px;
+}
+html[data-vue="compte"] .soon {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475467;
+  background: #f2f4f7;
+  border: 1px solid #d0d5dd;
+  border-radius: 99px;
+  padding: 1px 8px;
+}
+html[data-vue="compte"] .static {
+  margin-top: var(--s3);
+  display: flex;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(61, 82, 160, 0.05);
+  border: 1px dashed #adbbda;
+  font-size: 14.5px;
+  color: var(--muted);
+}
+html[data-vue="compte"] .static b {
+  color: var(--text);
+}
+html[data-vue="compte"] .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: var(--s3) 0;
+}
+html[data-vue="compte"] .mc {
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--soft);
+  font-size: 14px;
+}
+html[data-vue="compte"] .mc b {
+  font-family: ui-monospace, monospace;
+}
+html[data-vue="compte"] .sw {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: var(--s3) 0;
+  padding: var(--s3);
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid var(--soft);
+  cursor: pointer;
+}
+html[data-vue="compte"] .sw input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+html[data-vue="compte"] .sw .tg {
+  flex: none;
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 99px;
+  background: #c4cbe3;
+  transition: background 0.35s;
+  margin-top: 2px;
+}
+html[data-vue="compte"] .sw .tg::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(30, 42, 85, 0.3);
+  transition: transform 0.45s var(--spring);
+}
+html[data-vue="compte"] .sw input:checked + .tg {
+  background: #3d52a0;
+}
+html[data-vue="compte"] .sw input:checked + .tg::after {
+  transform: translateX(20px);
+}
+html[data-vue="compte"] .sw input:focus-visible + .tg {
+  outline: 3px solid #3d52a0;
+  outline-offset: 3px;
+}
+html[data-vue="compte"] .sw span.t {
+  font-size: 15px;
+  color: var(--text);
+}
+html[data-vue="compte"] .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+html[data-vue="compte"] .lnk {
+  color: var(--primary);
+  font-weight: 600;
+}
+html[data-vue="compte"] .done {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  color: #067647;
+  font-weight: 600;
+  font-size: 14.5px;
+}
+html[data-vue="compte"] .done.on {
+  display: inline-flex;
+  animation: copin 0.5s var(--out);
+}
+html[data-vue="compte"] .done svg {
+  width: 16px;
+  height: 16px;
+}
+@keyframes copin {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+html[data-vue="compte"] .jf {
+  display: flex;
+  gap: var(--s3);
+  align-items: center;
+  margin: var(--s4) 0 var(--s3);
+  padding: var(--s3);
+  border-radius: 20px;
+  background: #1e2a55;
+  color: #e6eaf8;
+}
+html[data-vue="compte"] .jf .br {
+  font:
+    800 28px ui-monospace,
+    monospace;
+  color: #9fb4ff;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.07);
+  flex: none;
+}
+html[data-vue="compte"] .jf b {
+  display: block;
+  color: #fff;
+}
+html[data-vue="compte"] .jf small {
+  color: #c9d2f0;
+  font-size: 13.5px;
+  font-family: ui-monospace, monospace;
+}
+html[data-vue="compte"] .pbar {
+  height: 6px;
+  border-radius: 99px;
+  background: #e6e9f5;
+  overflow: hidden;
+  margin-top: var(--s2);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+html[data-vue="compte"] .pbar.on {
+  opacity: 1;
+}
+html[data-vue="compte"] .pbar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(0);
+  background: linear-gradient(90deg, #3d52a0, #7091e6);
+  border-radius: inherit;
+}
+html[data-vue="compte"] .pbar.run i {
+  transition: transform 1.4s var(--out);
+  transform: scaleX(1);
+}
+html[data-vue="compte"] .pro {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(155deg, #3d52a0, #5b71c9 60%, #7091e6);
+  color: #fff;
+  border: 0;
+}
+html[data-vue="compte"] .pro::after {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  right: -120px;
+  top: -120px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.35),
+    transparent 65%
+  );
+}
+html[data-vue="compte"] .pro .sub,
+html[data-vue="compte"] .pro p,
+html[data-vue="compte"] .pro h3 {
+  color: #fff;
+}
+html[data-vue="compte"] .pro p {
+  opacity: 0.92;
+}
+html[data-vue="compte"] .pro .hic {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
+}
+html[data-vue="compte"] .pro .bd {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  margin-bottom: var(--s2);
+}
+html[data-vue="compte"] .prg {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--s5);
+  align-items: center;
+}
+@media (max-width: 800px) {
+  html[data-vue="compte"] .prg {
+    grid-template-columns: 1fr;
+  }
+}
+html[data-vue="compte"] .pfe {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+html[data-vue="compte"] .pfe li {
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+  color: #fff;
+}
+html[data-vue="compte"] .pfe b {
+  display: block;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+html[data-vue="compte"] .pro .btn {
+  background: #fff;
+  color: #3d52a0;
+  margin-top: var(--s4);
+}
+html[data-vue="compte"] .pro .btn[aria-pressed="true"] {
+  background: #ecfdf3;
+  color: #067647;
+}
+html[data-vue="compte"] .cgrid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: var(--s3);
+}
+@media (max-width: 900px) {
+  html[data-vue="compte"] .cgrid {
+    grid-template-columns: 1fr;
+  }
+}
+html[data-vue="compte"] .rt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #067647;
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+  padding: 4px 12px;
+  border-radius: 99px;
+  margin-bottom: var(--s3);
+}
+html[data-vue="compte"] .mcard {
+  margin-top: var(--s4);
+  padding: var(--s3);
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid var(--soft);
+  display: grid;
+  gap: 12px;
+}
+html[data-vue="compte"] .mcard small {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+html[data-vue="compte"] .mcard a {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--primary);
+  word-break: break-all;
+}
+html[data-vue="compte"] .f {
+  display: grid;
+  gap: var(--s3);
+}
+html[data-vue="compte"] .fld label {
+  display: block;
+  font-weight: 600;
+  font-size: 14.5px;
+  margin-bottom: 8px;
+}
+html[data-vue="compte"] .fld select,
+html[data-vue="compte"] .fld textarea {
+  width: 100%;
+  font:
+    500 15px Inter,
+    sans-serif;
+  color: var(--text);
+  background: #fff;
+  border: 1.5px solid #adbbda;
+  border-radius: 14px;
+  padding: 12px 14px;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s;
+}
+html[data-vue="compte"] .fld select {
+  min-height: 50px;
+  appearance: none;
+  background: #fff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%233D52A0' stroke-width='2'/%3E%3C/svg%3E")
+    no-repeat right 16px center;
+  padding-right: 40px;
+}
+html[data-vue="compte"] .fld textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+html[data-vue="compte"] .fld select:focus,
+html[data-vue="compte"] .fld textarea:focus {
+  outline: none;
+  border-color: #3d52a0;
+  box-shadow: 0 0 0 4px rgba(112, 145, 230, 0.25);
+}
+html[data-vue="compte"] .fld .hint {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+html[data-vue="compte"] .fld [aria-invalid="true"] {
+  border-color: #b42318;
+  box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.12);
+}
+html[data-vue="compte"] .err {
+  color: #b42318;
+  font-weight: 600;
+}
+html[data-vue="compte"] .sent {
+  display: none;
+  text-align: center;
+  padding: var(--s5) var(--s3);
+}
+html[data-vue="compte"] .sent.on {
+  display: block;
+  animation: copin 0.6s var(--out);
+}
+html[data-vue="compte"] .sent .bub {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto var(--s3);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ecfdf3;
+  color: #067647;
+  border: 1px solid #abefc6;
+}
+html[data-vue="compte"] .sent .bub svg {
+  width: 32px;
+  height: 32px;
+}
+html[data-vue="compte"] .sent h3 {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+html[data-vue="compte"] .qa {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--s5);
+  border-radius: 32px;
+  text-decoration: none;
+  color: var(--text);
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.85),
+    rgba(221, 228, 248, 0.85)
+  );
+  border: 1px solid rgba(61, 82, 160, 0.14);
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.5s var(--spring),
+    box-shadow 0.4s;
+}
+html[data-vue="compte"] .qa:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 40px 70px -35px rgba(61, 82, 160, 0.6);
+}
+html[data-vue="compte"] .qa h2 {
+  font-size: clamp(22px, 2.6vw, 28px);
+  letter-spacing: -0.025em;
+  margin-bottom: 8px;
+}
+html[data-vue="compte"] .qa p {
+  color: var(--muted);
+  max-width: 56ch;
+}
+html[data-vue="compte"] .qa .go {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #3d52a0;
+  color: #fff;
+  box-shadow: 0 16px 30px -14px rgba(61, 82, 160, 0.9);
+  transition: transform 0.5s var(--spring);
+}
+html[data-vue="compte"] .qa:hover .go {
+  transform: translateX(6px);
+}
+html[data-vue="compte"] .qa .go svg {
+  width: 26px;
+  height: 26px;
+}
+html[data-vue="compte"] .dz {
+  border: 1.5px solid #fecdca;
+  background: linear-gradient(160deg, #fff, #fef3f2);
+}
+html[data-vue="compte"] .dz .hic {
+  background: #fef3f2;
+  border-color: #fecdca;
+  color: #b42318;
+}
+html[data-vue="compte"] .dz .sub {
+  color: #b42318;
+}
+html[data-vue="compte"] .dz .row {
+  margin-top: var(--s4);
+}
+html[data-vue="compte"] dialog {
+  margin: auto;
+  border: 0;
+  border-radius: 28px;
+  padding: var(--s5);
+  max-width: min(480px, calc(100vw - 32px));
+  box-shadow: 0 40px 90px -30px rgba(30, 42, 85, 0.6);
+  color: var(--text);
+}
+html[data-vue="compte"] dialog::backdrop {
+  background: rgba(30, 42, 85, 0.35);
+  backdrop-filter: blur(6px);
+}
+html[data-vue="compte"] dialog[open] {
+  animation: codg 0.5s var(--spring);
+}
+@keyframes codg {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+}
+html[data-vue="compte"] dialog h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+html[data-vue="compte"] dialog p {
+  color: var(--muted);
+  margin-bottom: var(--s3);
+}
+html[data-vue="compte"] dialog input {
+  width: 100%;
+  min-height: 50px;
+  font:
+    600 16px ui-monospace,
+    monospace;
+  border: 1.5px solid #adbbda;
+  border-radius: 14px;
+  padding: 0 14px;
+  letter-spacing: 0.05em;
+}
+html[data-vue="compte"] dialog input:focus {
+  outline: none;
+  border-color: #b42318;
+  box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.15);
+}
+html[data-vue="compte"] dialog .row {
+  margin-top: var(--s4);
+  justify-content: flex-end;
+}
+
+html[data-vue="compte"] #acces-partages .card {
+  padding: var(--s5);
+}
+@media (max-width: 600px) {
+  html[data-vue="compte"] #acces-partages .card {
+    padding: var(--s3);
+  }
+}
+html[data-vue="compte"] .ap-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--s4);
+}
+html[data-vue="compte"] .ap-cap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid var(--soft);
+  font-size: 14px;
+  color: var(--muted);
+}
+html[data-vue="compte"] .ap-cap b {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+html[data-vue="compte"] .ap-meter {
+  width: 72px;
+  height: 8px;
+  border-radius: 99px;
+  background: #ede8f5;
+  overflow: hidden;
+}
+html[data-vue="compte"] .ap-meter i {
+  display: block;
+  height: 100%;
+  background: #3d52a0;
+  border-radius: inherit;
+  transform-origin: left;
+  transform: scaleX(var(--v, 1));
+  transition: transform 0.8s var(--out);
+}
+html[data-vue="compte"] .ap-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 var(--s3);
+  list-style: none;
+}
+html[data-vue="compte"] .ap-types li {
+  font-size: 13px;
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--soft);
+}
+html[data-vue="compte"] .ap-types b {
+  color: var(--text);
+}
+html[data-vue="compte"] .ap-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+html[data-vue="compte"] .ap-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px 20px;
+  align-items: center;
+  padding: 20px 22px;
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid var(--soft);
+  transition:
+    transform 0.4s var(--spring),
+    box-shadow 0.4s var(--out),
+    border-color 0.3s;
+  transform-origin: center top;
+}
+html[data-vue="compte"] .ap-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px -22px rgba(61, 82, 160, 0.55);
+  border-color: #adbbda;
+}
+html[data-vue="compte"] .ap-av {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ede8f5;
+  color: #3d52a0;
+  font-weight: 800;
+  font-size: 18px;
+  border: 1px solid #adbbda;
+}
+html[data-vue="compte"] .ap-who b {
+  display: block;
+  font-size: 16px;
+  word-break: break-all;
+}
+html[data-vue="compte"] .ap-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 6px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+html[data-vue="compte"] .ap-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+html[data-vue="compte"] .ap-meta svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+html[data-vue="compte"] .ap-tag {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 99px;
+  background: #ede8f5;
+  color: #3d52a0;
+  border: 1px solid #adbbda;
+}
+html[data-vue="compte"] .ap-act {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+html[data-vue="compte"] .btn-revoke {
+  background: #fff;
+  color: #b42318;
+  border-color: #fecdca;
+}
+html[data-vue="compte"] .btn-revoke:hover {
+  background: #fef3f2;
+  border-color: #b42318;
+  transform: translateY(-2px);
+}
+html[data-vue="compte"] .btn-copy.ok {
+  color: #067647;
+  border-color: #abefc6;
+  background: #ecfdf3;
+}
+@media (max-width: 760px) {
+  html[data-vue="compte"] .ap-row {
+    grid-template-columns: auto 1fr;
+  }
+  html[data-vue="compte"] .ap-act {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+}
+html[data-vue="compte"] .ap-row.out {
+  animation: coapOut 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  pointer-events: none;
+}
+@keyframes coapOut {
+  30% {
+    opacity: 1;
+    transform: translateX(0) scale(0.99);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(40px) scaleY(0.4);
+  }
+}
+html[data-vue="compte"] .ap-empty {
+  text-align: center;
+  padding: var(--s5) var(--s3);
+  border: 1.5px dashed #adbbda;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.6);
+}
+html[data-vue="compte"] .ap-empty.on {
+  animation: coapIn 0.7s var(--spring);
+}
+@keyframes coapIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+}
+html[data-vue="compte"] .ap-empty .hic {
+  margin: 0 auto var(--s2);
+}
+html[data-vue="compte"] .ap-empty h3 {
+  font-size: 19px;
+  margin-bottom: 6px;
+}
+html[data-vue="compte"] .ap-empty h3:focus {
+  outline: none;
+}
+html[data-vue="compte"] .ap-empty p {
+  color: var(--muted);
+  max-width: 52ch;
+  margin: 0 auto;
+}
+html[data-vue="compte"] .ap-note {
+  margin-top: var(--s3);
+  font-size: 13.5px;
+  color: var(--muted);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+html[data-vue="compte"] .ap-note svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 3px;
+  color: #3d52a0;
+}
+html[data-vue="compte"].js .rv2 {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  transition:
+    opacity 0.8s var(--out),
+    transform 0.9s var(--spring);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+html[data-vue="compte"].js .rv2.in {
+  opacity: 1;
+  transform: none;
+}
+html[data-vue="compte"] #dlgr .ap-site {
+  font-weight: 700;
+  color: var(--text);
+}
+@media print {
+  html[data-vue="compte"].js .rv2 {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-vue="compte"].js .rv2 {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html[data-vue="compte"] .ap-row,
+  html[data-vue="compte"] .ap-row:hover {
+    transition: none;
+    transform: none;
+  }
+  html[data-vue="compte"] .ap-row.out {
+    animation: none;
+    opacity: 0;
+  }
+  html[data-vue="compte"] .ap-empty.on {
+    animation: none;
+  }
+  html[data-vue="compte"] .ap-meter i {
+    transition: none;
+  }
+}
+html[data-vue="compte"] .khero .lede {
+  color: var(--text);
+}
+
+@media (max-width: 900px) {
+  html[data-vue="compte"] .lnk,
+  html[data-vue="compte"] .mcard a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  html[data-vue="compte"] .idc .lnk,
+  html[data-vue="compte"] .idc a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+@media (max-width: 480px) {
+  html[data-vue="compte"] .gpanel {
+    padding: var(--s3);
+  }
+  html[data-vue="compte"] .who {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  html[data-vue="compte"] .ap-row {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  html[data-vue="compte"] .jf {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  html[data-vue="compte"] .jf small {
+    overflow-wrap: anywhere;
+  }
+}
+@media (max-width: 360px) {
+  html[data-vue="compte"] main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+html[data-vue="compte"] {
+  --ax-edge: clamp(12px, 3vw, 32px);
+  --ax-r: 28px;
+  --ax-max: 1240px;
+  --ax-bd: #adbbda;
+  --ax-sf: #ede8f5;
+}
+
+html[data-vue="compte"] body::before {
+  display: none;
+}
+html[data-vue="compte"] main {
+  padding-top: var(--s4);
+}
+@media (max-width: 900px) {
+  html[data-vue="compte"] main {
+    padding-top: var(--s3);
+  }
+}
+html[data-vue="compte"] .crumbs {
+  margin-bottom: var(--s3);
+}
+html[data-vue="compte"] .khero {
+  position: relative;
+  isolation: isolate;
+  margin: 0 0 var(--s5);
+  padding: clamp(24px, 5vw, 48px);
+  border-radius: var(--ax-r);
+  border: 1px solid rgba(173, 187, 218, 0.7);
+  background:
+    radial-gradient(
+      60% 80% at 15% 0%,
+      rgba(112, 145, 230, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      50% 70% at 95% 0%,
+      rgba(134, 151, 196, 0.22),
+      transparent 70%
+    ),
+    linear-gradient(180deg, #ede8f5, #f7f5fc);
+  box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
+}
+html[data-vue="compte"] .khero {
+  margin-bottom: var(--s5);
+}
+html[data-vue="compte"] .aurora {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  -webkit-mask: none;
+  mask: none;
+}
+@media (max-width: 600px) {
+  html[data-vue="compte"] .khero {
+    padding: 16px;
+  }
+  html[data-vue="compte"] .khero .gpanel {
+    padding: 24px 20px;
+  }
+}
+
+html[data-vue="compte"] .axf-links a {
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+}
+html[data-vue="compte"] .axn-logo,
+html[data-vue="compte"] .axf-logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+html[data-vue="compte"] .lk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+html[data-vue="compte"] .lk-grid li {
+  display: flex;
+  min-width: 0;
+}
+html[data-vue="compte"] .lk {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  padding: 16px 16px 16px 16px;
+  border: 1px solid #adbbda;
+  border-radius: 20px;
+  background: #fff;
+  color: #1e2a55;
+  text-decoration: none;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
+html[data-vue="compte"] .lk:hover,
+html[data-vue="compte"] .lk:focus-visible {
+  transform: translateY(-3px);
+  border-color: #7091e6;
+  box-shadow: 0 16px 32px -16px rgba(61, 82, 160, 0.45);
+}
+html[data-vue="compte"] .lk:focus-visible {
+  outline: 2px solid #3d52a0;
+  outline-offset: 3px;
+}
+html[data-vue="compte"] .lk-ico {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #ede8f5;
+  color: #3d52a0;
+  display: grid;
+  place-items: center;
+}
+html[data-vue="compte"] .lk-ico svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+html[data-vue="compte"] .lk-tx {
+  min-width: 0;
+  flex: 1;
+}
+html[data-vue="compte"] .lk-t {
+  display: block;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #1e2a55;
+}
+html[data-vue="compte"] .lk-d {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 400;
+  color: #4a5585;
+}
+html[data-vue="compte"] .lk-ar {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: #3d52a0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+html[data-vue="compte"] .lk:hover .lk-ar,
+html[data-vue="compte"] .lk:focus-visible .lk-ar {
+  transform: translateX(4px);
+  color: #1e2a55;
+}
+html[data-vue="compte"] .lk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px 8px 18px;
+  border: 1px solid #adbbda;
+  border-radius: 999px;
+  background: #fff;
+  color: #3d52a0;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s,
+    border-color 0.25s,
+    background 0.25s;
+}
+html[data-vue="compte"] .lk-pill:hover,
+html[data-vue="compte"] .lk-pill:focus-visible {
+  transform: translateY(-2px);
+  border-color: #7091e6;
+  background: #ede8f5;
+  color: #1e2a55;
+  box-shadow: 0 10px 24px -14px rgba(61, 82, 160, 0.5);
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-vue="compte"] .lk,
+  html[data-vue="compte"] .lk-ar,
+  html[data-vue="compte"] .lk-pill {
+    transition: none;
+  }
+  html[data-vue="compte"] .lk:hover,
+  html[data-vue="compte"] .lk:focus-visible,
+  html[data-vue="compte"] .lk-pill:hover,
+  html[data-vue="compte"] .lk-pill:focus-visible {
+    transform: none;
+  }
+}
+html[data-vue="compte"] .grad-txt,
+html[data-vue="compte"] h1 .grad,
+html[data-vue="compte"] h1 .u,
+html[data-vue="compte"] .pin h2 em,
+html[data-vue="compte"] .lvn {
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+html[data-vue="compte"] .hero h1 {
+  line-height: 1.1;
+}
+html[data-vue="compte"] .hero h1 .w {
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+html[data-vue="compte"] .four {
+  padding-bottom: 0.1em;
+}
+html[data-vue="compte"] .pau i {
+  display: none !important;
+}
+html[data-vue="compte"] .aurora i,
+html[data-vue="compte"] .blobs i,
+html[data-vue="compte"] .vault-halo,
+html[data-vue="compte"] .floating-orb {
+  display: none !important;
+}
+html[data-vue="compte"] .aurora,
+html[data-vue="compte"] .blobs {
+  background:
+    radial-gradient(
+      42% 60% at 0% 0%,
+      rgba(134, 151, 196, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      36% 55% at 100% 100%,
+      rgba(243, 201, 168, 0.18),
+      transparent 72%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.25),
+      rgba(237, 232, 245, 0.12)
+    ) !important;
+}
+html[data-vue="compte"] .khero {
+  background:
+    radial-gradient(40% 70% at 0% 0%, rgba(134, 151, 196, 0.2), transparent 70%),
+    radial-gradient(
+      34% 60% at 100% 100%,
+      rgba(243, 201, 168, 0.16),
+      transparent 72%
+    ),
+    linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
+}
+html[data-vue="compte"] #dlgd b {
+  text-transform: uppercase;
+}
+html[data-vue="compte"] a.login-out {
+  font-weight: 600;
+  border-top: 1px solid transparent;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
