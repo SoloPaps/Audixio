@@ -1,0 +1,60 @@
+---
+import '../styles/maquettes/audit.css';
+import { t } from '../i18n/index.js';
+import Canon from '../layouts/Canon.astro';
+
+const messages = {
+  'mq.lg.648': t('mq.lg.648'),
+};
+---
+
+<Canon vue="audit" title={t('mq.meta.audit.title')} description={t('mq.meta.audit.desc')} robots="noindex">
+<main id="contenu" class="wrap" >
+<nav class="crumbs fade" aria-label={t('mq.lg.001')}><ol><li><a href="/">{t('mq.lg.002')}</a></li><li aria-current="page">{t('mq.lg.594')}</li><li aria-current="page">{t('mq.lg.595')}</li></ol></nav><section class="hero" aria-label={t('mq.lg.596')}><div class="seg-wrap fade"><div class="seg" role="group" aria-label={t('mq.lg.597')}><button type="button" data-cs="echec">{t('mq.lg.595')}</button><button type="button" data-cs="bloque">{t('mq.lg.598')}</button><button type="button" data-cs="injoignable">{t('mq.lg.599')}</button></div><span class="seg-note">{t('mq.lg.600')}</span></div><div data-case="echec">
+<div class="badge-ic err"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg></div>
+<span class="chip err"><i aria-hidden="true"></i>{t('mq.lg.601')}</span>
+<h1 class="fade">{t('mq.lg.602')}<span class="grad">{t('mq.lg.603')}</span></h1>
+<p class="lead fade" style="--d:.1s">{t('mq.lg.604')}</p>
+<div class="grid2 fade" style="--d:.2s">
+<div class="panel"><h2 class="h3">{t('mq.lg.605')}</h2><dl class="dl"><div><dt>{t('mq.lg.606')}</dt><dd>{t('mq.lg.607')}</dd></div><div><dt>{t('mq.lg.608')}</dt><dd>{t('mq.lg.609')}</dd></div><div><dt>{t('mq.lg.610')}</dt><dd>{t('mq.lg.611')}</dd></div><div><dt>{t('mq.lg.612')}</dt><dd>{t('mq.lg.613')}</dd></div></dl></div>
+<div class="panel"><h2 class="h3">{t('mq.lg.614')}</h2><ul class="tips"><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.615')}</span></li><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.616')}</span></li><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.617')}</span></li></ul></div>
+</div></div><div data-case="bloque" hidden>
+<div class="badge-ic err"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg></div>
+<span class="chip err"><i aria-hidden="true"></i>{t('mq.lg.598')}</span>
+<h1 class="fade">{t('mq.lg.618')}<span class="grad">{t('mq.lg.619')}</span>{t('mq.lg.620')}</h1>
+<p class="lead fade" style="--d:.1s">{t('mq.lg.621')}</p>
+<div class="grid2 fade" style="--d:.2s">
+<div class="panel"><h2 class="h3">{t('mq.lg.605')}</h2><dl class="dl"><div><dt>{t('mq.lg.606')}</dt><dd>{t('mq.lg.607')}</dd></div><div><dt>{t('mq.lg.622')}</dt><dd>{t('mq.lg.623')}</dd></div><div><dt>{t('mq.lg.624')}</dt><dd>{t('mq.lg.424')}</dd></div><div><dt>{t('mq.lg.612')}</dt><dd>{t('mq.lg.613')}</dd></div></dl></div>
+<div class="panel"><h2 class="h3">{t('mq.lg.614')}</h2><ul class="tips"><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.625')}</span></li><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.626')}</span></li><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.627')}</span></li></ul></div>
+</div></div><div data-case="injoignable" hidden>
+<div class="badge-ic err"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg></div>
+<span class="chip err"><i aria-hidden="true"></i>{t('mq.lg.599')}</span>
+<h1 class="fade">{t('mq.lg.628')}<span class="grad">{t('mq.lg.629')}</span>{t('mq.lg.630')}</h1>
+<p class="lead fade" style="--d:.1s">{t('mq.lg.631')}</p>
+<div class="grid2 fade" style="--d:.2s">
+<div class="panel"><h2 class="h3">{t('mq.lg.605')}</h2><dl class="dl"><div><dt>{t('mq.lg.606')}</dt><dd>{t('mq.lg.607')}</dd></div><div><dt>{t('mq.lg.632')}</dt><dd>{t('mq.lg.633')}</dd></div><div><dt>{t('mq.lg.634')}</dt><dd>{t('mq.lg.635')}</dd></div><div><dt>{t('mq.lg.612')}</dt><dd>{t('mq.lg.613')}</dd></div></dl></div>
+<div class="panel"><h2 class="h3">{t('mq.lg.614')}</h2><ul class="tips"><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.636')}</span></li><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.637')}</span></li><li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('mq.lg.638')}</span></li></ul></div>
+</div></div><div class="acts fade" style="--d:.3s"><button class="btn btn-primary" type="button" id="retry"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg><span>{t('mq.lg.639')}</span></button><a class="btn btn-ghost" href="/#audit-form">{t('mq.lg.640')}</a></div>
+</section>
+<section class="sec" aria-labelledby="h-aide"><h2 id="h-aide">{t('mq.lg.641')}</h2><ul class="lk-grid">
+<li><a class="lk" href="/robot"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.lg.642')}</span><span class="lk-d">{t('mq.lg.643')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+<li><a class="lk" href="/verifier"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.lg.644')}</span><span class="lk-d">{t('mq.lg.645')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+<li><a class="lk" href="/compte#contact"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.lg.646')}</span><span class="lk-d">{t('mq.lg.647')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+</ul></section>
+</main>
+<div class="toast" role="status" aria-live="polite"></div>
+<script type="application/json" id="i18n-msg" set:html={JSON.stringify(messages)}></script>
+<script>
+import { bindMaquetteMotion } from '../lib/motion';
+bindMaquetteMotion();
+document.dispatchEvent(new Event('audixio-motion'));
+</script>
+<script is:inline>
+var MSG = JSON.parse(document.getElementById('i18n-msg').textContent);
+
+(function(){var t=document.querySelector(".toast"),tt;window.say=function(m){t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("show")},2600)};})();
+function seg(group,attr){var bs=document.querySelectorAll('[data-'+group+']');function show(v,push){bs.forEach(function(b){b.setAttribute('aria-pressed',b.dataset[group]===v?'true':'false')});document.querySelectorAll('['+attr+']').forEach(function(p){p.hidden=p.getAttribute(attr)!==v});if(push)history.replaceState(null,'','#'+v);}
+bs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset[group],true)})});var h=location.hash.slice(1);var ok=[].some.call(bs,function(b){return b.dataset[group]===h});show(ok?h:bs[0].dataset[group],false);return show;}seg('cs','data-case');var r=document.getElementById('retry');r.addEventListener('click',function(){r.classList.add('busy');r.disabled=true;r.querySelector('span').textContent=MSG['mq.lg.648'];setTimeout(function(){location.href="/progression"},1200)});
+
+</script>
+</Canon>
