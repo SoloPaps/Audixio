@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { PNG } from 'pngjs';
+import { expect, type Page, test } from '@playwright/test';
 import pixelmatch from 'pixelmatch';
-import { expect, test, type Page } from '@playwright/test';
+import { PNG } from 'pngjs';
 
 const ROOT = '/workspace/docs/design/maquettes/finales';
 const OUT = '/opt/cursor/artifacts/pixel';
@@ -43,7 +43,11 @@ async function shoot(page: Page, url: string, width: number): Promise<Buffer> {
   await silenceFonts(page);
   await page.setViewportSize({ width, height: 900 });
   await page.goto(url, { waitUntil: 'load' });
-  return page.screenshot({ fullPage: true, animations: 'disabled', caret: 'hide' });
+  return page.screenshot({
+    fullPage: true,
+    animations: 'disabled',
+    caret: 'hide',
+  });
 }
 
 function parse(buffer: Buffer): PNG {

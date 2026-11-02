@@ -62,7 +62,9 @@ export function revealAll(
     { threshold },
   );
   for (const node of nodes) io.observe(node);
-  const onPrint = (): void => nodes.forEach((node) => node.classList.add('in'));
+  const onPrint = (): void => {
+    for (const node of nodes) node.classList.add('in');
+  };
   window.addEventListener('beforeprint', onPrint);
   return () => {
     io.disconnect();

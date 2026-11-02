@@ -1,36 +1,22 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import { formatNumber } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
 import { type AuditPayload, readAudit } from '../lib/audit-api.js';
-import { recognizedStack } from '../lib/brief.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
-import {
-  domainPlain,
-  domainSentence,
-  isKnownDomain,
-  REPORT_DOMAINS,
-} from '../lib/domains.js';
+import { domainPlain, domainSentence, isKnownDomain } from '../lib/domains.js';
 import { levelForStatus } from '../lib/findings.js';
 import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
 import {
   type ActionStatus,
-  badgeHref,
   detailHref,
   domainLetter,
   failureKind,
   hostLabel,
   isActionStatus,
   mergeApercu,
-  planHref,
-  priorityHref,
-  type SeverityTone,
-  severityTone,
-  shareGesture,
   verifyHref,
 } from '../lib/hub-view.js';
 import { loginHref } from '../lib/nav.js';
-import { formatRating } from '../lib/places-api.js';
 import { pickPriorities } from '../lib/priorities.js';
 import { progressLive } from '../lib/progress-live.js';
 import { relaunchHref } from '../lib/relaunch.js';
@@ -43,7 +29,6 @@ import {
   categoryItems,
   reportFindings,
   reportRows,
-  reputationAside,
   scoredDomainCount,
 } from '../lib/report-model.js';
 import { levelForScore, levelLabel } from '../lib/score.js';
@@ -51,9 +36,9 @@ import { explainUntested } from '../lib/untested-cause.js';
 import { verdictCopy } from '../lib/verdict.js';
 import AuditOverlay from './AuditOverlay.svelte';
 import FindingList from './FindingList.svelte';
+import HubView from './HubView.svelte';
 import PreuveMentions from './PreuveMentions.svelte';
 import ReportFooter from './ReportFooter.svelte';
-import HubView from './HubView.svelte';
 import UntestedCause from './UntestedCause.svelte';
 
 interface Props {
@@ -67,7 +52,6 @@ let message = $state(t('report.loading'));
 let payload = $state<AuditPayload | null>(null);
 let domainId = $state('');
 let checkId = $state('');
-let shareOpen = $state(false);
 let userId = $state('');
 let statuses = $state<Record<string, ActionStatus>>({});
 
@@ -83,7 +67,6 @@ const shown = $derived.by(() => {
   return reportFindings(payload, fixes);
 });
 const global = $derived(payload?.audit.globalScore ?? null);
-const aside = $derived(payload ? reputationAside(payload) : null);
 const verdict = $derived(verdictCopy(global, shown));
 const reportRowList = $derived(
   payload
@@ -182,26 +165,6 @@ async function onStatus(
   );
 }
 
-async function onShare(): Promise<void> {
-  const coarse =
-    window.matchMedia('(pointer: coarse)').matches &&
-    window.matchMedia('(hover: none)').matches;
-  const canShare = typeof navigator.share === 'function';
-  if (shareGesture(coarse, canShare) && payload) {
-    try {
-      await navigator.share({
-        title: t('hub.share'),
-        url: `${location.origin}/rapport?id=${encodeURIComponent(payload.audit.id)}`,
-      });
-      return;
-    } catch {
-      shareOpen = true;
-      return;
-    }
-  }
-  shareOpen = true;
-}
-
 const badgeSnippet = $derived.by(() => {
   if (!payload || typeof location === 'undefined') return '';
   const mark = letter ?? '';
@@ -215,13 +178,6 @@ const detailRows = $derived(
       )
     : reportRowList,
 );
-
-function toneLabel(tone: SeverityTone): string {
-  if (tone === 'crit') return t('hub.sev.crit');
-  if (tone === 'fix') return t('hub.sev.fix');
-  if (tone === 'check') return t('hub.sev.check');
-  return t('hub.sev.minor');
-}
 
 function downloadMarkdown(event: MouseEvent): void {
   event.preventDefault();
@@ -410,7 +366,7 @@ onMount(() => {
           detailHref={(id) => detailHref(payload.audit.id, id)}
         />
       {/if}
-    {:else}
+    {:else if mode === 'report'}
       <HubView
         {payload}
         {items}

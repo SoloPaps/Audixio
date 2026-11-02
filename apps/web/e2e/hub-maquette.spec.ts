@@ -186,7 +186,7 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole('button', { name: 'Menu' })).toBeVisible();
   const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+    'document.documentElement.scrollWidth <= window.innerWidth + 1',
   );
   expect(overflow).toBe(true);
   await page.screenshot({
@@ -229,7 +229,9 @@ test('page de preuve, bureau et 330 px', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Prouver que le site est à vous' }),
   ).toBeVisible();
-  await expect(page.getByText('Connectez-vous pour vérifier un site.')).toBeVisible();
+  await expect(
+    page.getByText('Connectez-vous pour vérifier un site.'),
+  ).toBeVisible();
   await expect(page.getByRole('link', { name: 'Tarifs' })).toBeVisible();
   await page.screenshot({
     path: '/opt/cursor/artifacts/preuve-desktop.png',
@@ -238,7 +240,7 @@ test('page de preuve, bureau et 330 px', async ({ page }) => {
   await axe(page);
   await page.setViewportSize({ width: 330, height: 700 });
   const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth <= window.innerWidth + 1,
+    'document.documentElement.scrollWidth <= window.innerWidth + 1',
   );
   expect(overflow).toBe(true);
   await page.screenshot({
@@ -279,7 +281,9 @@ test('page de preuve, bureau et 330 px', async ({ page }) => {
   });
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto(`/verifier?site=${SITE_ID}&theme=light`);
-  await expect(page.getByRole('tab', { name: 'Balise dans la page' })).toBeVisible();
+  await expect(
+    page.getByRole('tab', { name: 'Balise dans la page' }),
+  ).toBeVisible();
   await page.screenshot({
     path: '/opt/cursor/artifacts/preuve-methodes.png',
     fullPage: true,

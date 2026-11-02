@@ -10,5 +10,12 @@
     "netlify/**/*.ts",
     "vitest.config.ts"
   ],
-  "exclude": ["node_modules", "dist", "**/dist", "**/.astro"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/dist",
+    "**/.astro",
+    "apps/web/src/lib/rose.ts",
+    "apps/web/src/lib/motion.ts"
+  ]
 }

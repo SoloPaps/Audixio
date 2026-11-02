@@ -106,7 +106,11 @@ function onKey(event: KeyboardEvent): void {
     return;
   }
   if (event.key !== 'Tab' || !dialog) return;
-  const list = [...dialog.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input')];
+  const list = [
+    ...dialog.querySelectorAll<HTMLElement>(
+      'a[href],button:not([disabled]),input',
+    ),
+  ];
   const index = list.indexOf(document.activeElement as HTMLElement);
   if (event.shiftKey && index <= 0) {
     event.preventDefault();

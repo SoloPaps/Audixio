@@ -14,8 +14,8 @@ import {
   shareGesture,
 } from '../lib/hub-view.js';
 import { linkPins, revealAll } from '../lib/motion.js';
-import type { CategoryItem, ReportRow } from '../lib/report-model.js';
 import { relaunchHref } from '../lib/relaunch.js';
+import type { CategoryItem, ReportRow } from '../lib/report-model.js';
 import { rose } from '../lib/rose.js';
 import ShareSheet from './ShareSheet.svelte';
 
@@ -128,16 +128,18 @@ onMount(() => {
   void tick().then(() => {
     if (!root) return;
     if (roseHost) {
-      const cards = [...root.querySelectorAll<HTMLElement>('.dom')].map((el, index) => {
-        const item = items[index];
-        return {
-          el,
-          icon: el.dataset.icon ?? 'i-perf',
-          short: el.dataset.short ?? '',
-          score: item && !item.locked ? item.score : null,
-          grade: item ? gradeOf(item) : null,
-        };
-      });
+      const cards = [...root.querySelectorAll<HTMLElement>('.dom')].map(
+        (el, index) => {
+          const item = items[index];
+          return {
+            el,
+            icon: el.dataset.icon ?? 'i-perf',
+            short: el.dataset.short ?? '',
+            score: item && !item.locked ? item.score : null,
+            grade: item ? gradeOf(item) : null,
+          };
+        },
+      );
       const summary = cards
         .map((card) =>
           card.score === null
@@ -232,7 +234,7 @@ onMount(() => {
                   {#if PIN_SPOTS[index]?.bar}{@render pin(item, index)}{/if}
                 {/each}
               </div>
-              <svg class="ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="color:#4A5585"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>
+              <svg class="ico muted" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>
             </div>
             <div class="stage-shot">
               <div class="shot" aria-hidden="true">

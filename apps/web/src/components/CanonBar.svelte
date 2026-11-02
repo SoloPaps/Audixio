@@ -1,130 +1,142 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { t } from '../i18n/index.js';
-  import { storedSessionPresent } from '../lib/auth-storage.js';
+import { onMount } from 'svelte';
+import { t } from '../i18n/index.js';
+import { storedSessionPresent } from '../lib/auth-storage.js';
 
-  interface Props {
-    pathname: string;
-    initial?: 'system' | 'light' | 'dark';
+interface Props {
+  pathname: string;
+  initial?: 'system' | 'light' | 'dark';
+}
+
+let { pathname }: Props = $props();
+let loggedIn = $state(false);
+let open = $state(false);
+let scrolled = $state(false);
+let showTop = $state(false);
+let locale = $state<'fr' | 'en'>('fr');
+let header: HTMLElement | undefined = $state();
+let burger: HTMLButtonElement | undefined = $state();
+let sheet: HTMLDivElement | undefined = $state();
+
+const REPORT_PATHS = [
+  '/rapport',
+  '/domaine',
+  '/verifier',
+  '/plan',
+  '/constat',
+  '/badge',
+];
+
+function normalize(path: string): string {
+  const clean =
+    path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
+  return REPORT_PATHS.some(
+    (item) => clean === item || clean.startsWith(`${item}/`),
+  )
+    ? '/sites'
+    : clean;
+}
+
+const here = $derived(normalize(pathname));
+
+function current(href: string): 'page' | undefined {
+  if (href === '/') return here === '/' ? 'page' : undefined;
+  return here === href || here.startsWith(`${href}/`) ? 'page' : undefined;
+}
+
+const items = [
+  { href: '/', label: t('nav.home') },
+  { href: '/methode', label: t('nav.method') },
+  { href: '/sites', label: t('nav.sites.long') },
+  { href: '/pro', label: t('nav.pricing') },
+];
+
+function setMenu(next: boolean, back: boolean): void {
+  open = next;
+  const root = document.documentElement;
+  if (next) {
+    root.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => {
+      sheet?.querySelector<HTMLElement>('a,button')?.focus();
+    }, 50);
+  } else {
+    root.style.overflow = '';
+    document.body.style.overflow = '';
+    if (back) burger?.focus();
   }
+}
 
-  let { pathname }: Props = $props();
-  let loggedIn = $state(false);
-  let open = $state(false);
-  let scrolled = $state(false);
-  let showTop = $state(false);
-  let locale = $state<'fr' | 'en'>('fr');
-  let header: HTMLElement | undefined = $state();
-  let burger: HTMLButtonElement | undefined = $state();
-  let sheet: HTMLDivElement | undefined = $state();
-
-  const REPORT_PATHS = ['/rapport', '/domaine', '/verifier', '/plan', '/constat', '/badge'];
-
-  function normalize(path: string): string {
-    const clean = path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
-    return REPORT_PATHS.some((item) => clean === item || clean.startsWith(`${item}/`))
-      ? '/sites'
-      : clean;
-  }
-
-  const here = $derived(normalize(pathname));
-
-  function current(href: string): 'page' | undefined {
-    if (href === '/') return here === '/' ? 'page' : undefined;
-    return here === href || here.startsWith(`${href}/`) ? 'page' : undefined;
-  }
-
-  const items = [
-    { href: '/', label: t('nav.home') },
-    { href: '/methode', label: t('nav.method') },
-    { href: '/sites', label: t('nav.sites.long') },
-    { href: '/pro', label: t('nav.pricing') },
-  ];
-
-  function setMenu(next: boolean, back: boolean): void {
-    open = next;
-    const root = document.documentElement;
-    if (next) {
-      root.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => {
-        sheet?.querySelector<HTMLElement>('a,button')?.focus();
-      }, 50);
-    } else {
-      root.style.overflow = '';
-      document.body.style.overflow = '';
-      if (back) burger?.focus();
-    }
-  }
-
-  function onKey(event: KeyboardEvent): void {
-    if (!open || !burger || !sheet) return;
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      setMenu(false, true);
-      return;
-    }
-    if (event.key !== 'Tab') return;
-    const list: HTMLElement[] = [
-      burger,
-      ...sheet.querySelectorAll<HTMLElement>('a[href],button'),
-    ];
-    const index = list.indexOf(document.activeElement as HTMLElement);
-    if (event.shiftKey && index <= 0) {
-      event.preventDefault();
-      list[list.length - 1]?.focus();
-    } else if (!event.shiftKey && (index === list.length - 1 || index < 0)) {
-      event.preventDefault();
-      list[0]?.focus();
-    }
-  }
-
-  function onScroll(): void {
-    const y = window.scrollY;
-    scrolled = y > 8;
-    showTop = y > window.innerHeight * 0.9;
-  }
-
-  function toTop(): void {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-    header?.querySelector<HTMLElement>('.axn-logo')?.focus({ preventScroll: true });
-  }
-
-  async function setLocale(event: MouseEvent, next: 'fr' | 'en'): Promise<void> {
+function onKey(event: KeyboardEvent): void {
+  if (!open || !burger || !sheet) return;
+  if (event.key === 'Escape') {
     event.preventDefault();
-    if (next === locale) return;
-    try {
-      if (next === 'en' && !localStorage.getItem('audigy-en')) {
-        const res = await fetch('/dictionnaire-en.json');
-        if (!res.ok) return;
-        localStorage.setItem('audigy-en', await res.text());
-      }
-      localStorage.setItem('audigy-locale', next);
-      location.reload();
-    } catch {
-      locale = 'fr';
-    }
+    setMenu(false, true);
+    return;
   }
+  if (event.key !== 'Tab') return;
+  const list: HTMLElement[] = [
+    burger,
+    ...sheet.querySelectorAll<HTMLElement>('a[href],button'),
+  ];
+  const index = list.indexOf(document.activeElement as HTMLElement);
+  if (event.shiftKey && index <= 0) {
+    event.preventDefault();
+    list[list.length - 1]?.focus();
+  } else if (!event.shiftKey && (index === list.length - 1 || index < 0)) {
+    event.preventDefault();
+    list[0]?.focus();
+  }
+}
 
-  onMount(() => {
-    document.documentElement.setAttribute('data-theme', 'light');
-    loggedIn = storedSessionPresent();
-    if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
-    onScroll();
-    const wide = window.matchMedia('(min-width: 901px)');
-    const onWide = (event: MediaQueryListEvent): void => {
-      if (event.matches) setMenu(false, false);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    document.addEventListener('keydown', onKey);
-    wide.addEventListener('change', onWide);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      document.removeEventListener('keydown', onKey);
-      wide.removeEventListener('change', onWide);
-    };
-  });
+function onScroll(): void {
+  const y = window.scrollY;
+  scrolled = y > 8;
+  showTop = y > window.innerHeight * 0.9;
+}
+
+function toTop(): void {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  header
+    ?.querySelector<HTMLElement>('.axn-logo')
+    ?.focus({ preventScroll: true });
+}
+
+async function setLocale(event: MouseEvent, next: 'fr' | 'en'): Promise<void> {
+  event.preventDefault();
+  if (next === locale) return;
+  try {
+    if (next === 'en' && !localStorage.getItem('audigy-en')) {
+      const res = await fetch('/dictionnaire-en.json');
+      if (!res.ok) return;
+      localStorage.setItem('audigy-en', await res.text());
+    }
+    localStorage.setItem('audigy-locale', next);
+    location.reload();
+  } catch {
+    locale = 'fr';
+  }
+}
+
+onMount(() => {
+  document.documentElement.setAttribute('data-theme', 'light');
+  loggedIn = storedSessionPresent();
+  if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
+  onScroll();
+  const wide = window.matchMedia('(min-width: 901px)');
+  const onWide = (event: MediaQueryListEvent): void => {
+    if (event.matches) setMenu(false, false);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  document.addEventListener('keydown', onKey);
+  wide.addEventListener('change', onWide);
+  return () => {
+    window.removeEventListener('scroll', onScroll);
+    document.removeEventListener('keydown', onKey);
+    wide.removeEventListener('change', onWide);
+  };
+});
 </script>
 
 {#snippet lang()}

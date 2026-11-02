@@ -815,15 +815,52 @@ html[data-theme="dark"] body.canon .canon-login {
   color: #0b1021;
 }
 
-.v-hero,.v-card{background:#fff;border:1px solid rgba(61,82,160,.13);border-radius:28px;padding:48px;margin-top:24px;box-shadow:0 30px 60px -30px rgba(61,82,160,.3)}
-.v-card h2{margin-top:0}
-.doms{background:transparent;border:0;padding:0;gap:16px}
-.dom{background:#fff;border:1px solid rgba(61,82,160,.18);border-radius:24px;box-shadow:0 14px 36px -16px rgba(61,82,160,.26);padding:20px 24px}
-.grade-c,.grade-d{background:#FBE8C8;color:#8A4B08}
-.verify-card details{border:1px solid #ADBBDA;border-radius:16px;padding:16px 18px;background:#fff}
-.verify-card summary{cursor:pointer;font-weight:600}
-.verify-card summary::-webkit-details-marker{display:none}
-.verify-card .report-footer{font-family:Inter,sans-serif}
+.v-hero,
+.v-card {
+  background: #fff;
+  border: 1px solid rgba(61, 82, 160, 0.13);
+  border-radius: 28px;
+  padding: 48px;
+  margin-top: 24px;
+  box-shadow: 0 30px 60px -30px rgba(61, 82, 160, 0.3);
+}
+.v-card h2 {
+  margin-top: 0;
+}
+.doms {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  gap: 16px;
+}
+.dom {
+  background: #fff;
+  border: 1px solid rgba(61, 82, 160, 0.18);
+  border-radius: 24px;
+  box-shadow: 0 14px 36px -16px rgba(61, 82, 160, 0.26);
+  padding: 20px 24px;
+}
+.grade-c,
+.grade-d {
+  background: #fbe8c8;
+  color: #8a4b08;
+}
+.verify-card details {
+  border: 1px solid #adbbda;
+  border-radius: 16px;
+  padding: 16px 18px;
+  background: #fff;
+}
+.verify-card summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.verify-card summary::-webkit-details-marker {
+  display: none;
+}
+.verify-card .report-footer {
+  font-family: Inter, sans-serif;
+}
 
 @media (max-width: 330px) {
   .canon-bar,

@@ -62,8 +62,8 @@ const TINT: Record<string, string> = {
   A: '#D6F2E3',
   B: '#DDE4F8',
   C: '#FBE8C8',
-  D: '#FADBC9',
-  E: '#FADBC9',
+  D: '#fadbc9',
+  E: '#fadbc9',
   F: '#F8D4D4',
 };
 
@@ -115,56 +115,112 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
   };
 
   host.querySelector('.rose-fb')?.remove();
-  const svg = el('svg', { viewBox: '0 0 500 500', role: 'img', 'aria-labelledby': 'roseT roseD' }, host);
+  const svg = el(
+    'svg',
+    { viewBox: '0 0 500 500', role: 'img', 'aria-labelledby': 'roseT roseD' },
+    host,
+  );
   el('title', { id: 'roseT' }, svg).textContent = text.title;
   el('desc', { id: 'roseD' }, svg).textContent = text.desc;
   const defs = el('defs', {}, svg);
-  const lg = el('linearGradient', { id: 'gLetter', x1: '0', y1: '0', x2: '1', y2: '1' }, defs);
+  const lg = el(
+    'linearGradient',
+    { id: 'gLetter', x1: '0', y1: '0', x2: '1', y2: '1' },
+    defs,
+  );
   el('stop', { offset: '0', 'stop-color': '#2B3B85' }, lg);
   el('stop', { offset: '1', 'stop-color': '#7091E6' }, lg);
   for (const key of Object.keys(GRGB)) {
-    const q = el('linearGradient', { id: `gP${key}`, x1: '0', y1: '0', x2: '0', y2: '1' }, defs);
+    const q = el(
+      'linearGradient',
+      { id: `gP${key}`, x1: '0', y1: '0', x2: '0', y2: '1' },
+      defs,
+    );
     el('stop', { offset: '0', 'stop-color': TINT[key] ?? '#fff' }, q);
-    el('stop', { offset: '1', 'stop-color': `rgb(${GRGB[key]})`, 'stop-opacity': '.62' }, q);
+    el(
+      'stop',
+      { offset: '1', 'stop-color': `rgb(${GRGB[key]})`, 'stop-opacity': '.62' },
+      q,
+    );
   }
-  const rg = el('radialGradient', { id: 'gDisc', cx: '.5', cy: '.4', r: '.7' }, defs);
+  const rg = el(
+    'radialGradient',
+    { id: 'gDisc', cx: '.5', cy: '.4', r: '.7' },
+    defs,
+  );
   el('stop', { offset: '0', 'stop-color': '#fff', 'stop-opacity': '.95' }, rg);
   el('stop', { offset: '.7', 'stop-color': '#fff', 'stop-opacity': '.75' }, rg);
-  el('stop', { offset: '1', 'stop-color': '#EDE8F5', 'stop-opacity': '.85' }, rg);
-  const fl = el('filter', { id: 'fSh', x: '-30%', y: '-30%', width: '160%', height: '160%' }, defs);
-  el('feDropShadow', { dx: 0, dy: 6, stdDeviation: 9, 'flood-color': '#3D52A0', 'flood-opacity': '.24' }, fl);
+  el(
+    'stop',
+    { offset: '1', 'stop-color': '#EDE8F5', 'stop-opacity': '.85' },
+    rg,
+  );
+  const fl = el(
+    'filter',
+    { id: 'fSh', x: '-30%', y: '-30%', width: '160%', height: '160%' },
+    defs,
+  );
+  el(
+    'feDropShadow',
+    {
+      dx: 0,
+      dy: 6,
+      stdDeviation: 9,
+      'flood-color': '#3D52A0',
+      'flood-opacity': '.24',
+    },
+    fl,
+  );
 
   const rings = el('g', {}, svg);
   const ringEls: SVGElement[] = [];
   for (const v of [50, 70, 90, 100]) {
     const r = RIN + 3 + (PR * v) / 100;
     ringEls.push(
-      el('circle', {
-        cx: C,
-        cy: C,
-        r,
-        fill: 'none',
-        stroke: `rgba(61,82,160,${v === 100 ? 0.3 : 0.16})`,
-        'stroke-width': 1,
-        'stroke-dasharray': v === 100 ? 'none' : '3 5',
-      }, rings),
+      el(
+        'circle',
+        {
+          cx: C,
+          cy: C,
+          r,
+          fill: 'none',
+          stroke: `rgba(61,82,160,${v === 100 ? 0.3 : 0.16})`,
+          'stroke-width': 1,
+          'stroke-dasharray': v === 100 ? 'none' : '3 5',
+        },
+        rings,
+      ),
     );
     if (v === 100) continue;
     const [x, y] = pt(r, -112.5).split(' ');
-    const label = el('text', { x: x ?? 0, y: y ?? 0, 'text-anchor': 'middle', 'dominant-baseline': 'central', class: 'scale-t' }, rings);
+    const label = el(
+      'text',
+      {
+        x: x ?? 0,
+        y: y ?? 0,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        class: 'scale-t',
+      },
+      rings,
+    );
     label.textContent = String(v);
   }
-  const dash = el('circle', {
-    cx: C,
-    cy: C,
-    r: RMAX + 9,
-    fill: 'none',
-    stroke: 'rgba(61,82,160,.32)',
-    'stroke-width': 1.2,
-    'stroke-dasharray': '2 9',
-    'stroke-linecap': 'round',
-    class: 'ringd',
-  }, svg);
+  const dash = el(
+    'circle',
+    {
+      cx: C,
+      cy: C,
+      r: RMAX + 9,
+      fill: 'none',
+      stroke: 'rgba(61,82,160,.32)',
+      'stroke-width': 1.2,
+      'stroke-dasharray': '2 9',
+      'stroke-linecap': 'round',
+      class: 'ringd',
+    },
+    svg,
+  );
 
   const groups: SVGElement[] = [];
   const tracks: SVGElement[] = [];
@@ -175,36 +231,95 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
   const icons: SVGElement[] = [];
   cards.forEach((card, i) => {
     const grd = card.score !== null ? card.grade : null;
-    const gr = el('g', { class: `pg k-${grd ?? 'N'}`, 'aria-hidden': 'true' }, svg);
+    const gr = el(
+      'g',
+      { class: `pg k-${grd ?? 'N'}`, 'aria-hidden': 'true' },
+      svg,
+    );
     const a = ang(i);
-    const tr = el('path', { class: 'track', d: sector(RIN, RMAX, a[0], a[1]) }, gr);
+    const tr = el(
+      'path',
+      { class: 'track', d: sector(RIN, RMAX, a[0], a[1]) },
+      gr,
+    );
     const pe = grd
-      ? el('path', {
-          fill: `url(#gP${grd})`,
-          stroke: `url(#gP${grd})`,
-          'stroke-width': 6,
-          'stroke-linejoin': 'round',
-          style: `filter:drop-shadow(0 6px 10px rgba(${GRGB[grd]},.30))`,
-        }, gr)
-      : el('path', { fill: 'none', stroke: '#8697C4', 'stroke-width': 2, 'stroke-dasharray': '5 5', 'stroke-linejoin': 'round' }, gr);
-    const sh = grd ? el('path', { fill: 'none', stroke: 'rgba(255,255,255,.75)', 'stroke-width': 1.6, 'stroke-linecap': 'round' }, gr) : null;
-    const ti = grd ? el('circle', { r: 4.6, fill: '#fff', stroke: PETAL[grd] ?? '#7091E6', 'stroke-width': 2.4 }, gr) : null;
+      ? el(
+          'path',
+          {
+            fill: `url(#gP${grd})`,
+            stroke: `url(#gP${grd})`,
+            'stroke-width': 6,
+            'stroke-linejoin': 'round',
+            style: `filter:drop-shadow(0 6px 10px rgba(${GRGB[grd]},.30))`,
+          },
+          gr,
+        )
+      : el(
+          'path',
+          {
+            fill: 'none',
+            stroke: '#8697C4',
+            'stroke-width': 2,
+            'stroke-dasharray': '5 5',
+            'stroke-linejoin': 'round',
+          },
+          gr,
+        );
+    const sh = grd
+      ? el(
+          'path',
+          {
+            fill: 'none',
+            stroke: 'rgba(255,255,255,.75)',
+            'stroke-width': 1.6,
+            'stroke-linecap': 'round',
+          },
+          gr,
+        )
+      : null;
+    const ti = grd
+      ? el(
+          'circle',
+          {
+            r: 4.6,
+            fill: '#fff',
+            stroke: PETAL[grd] ?? '#7091E6',
+            'stroke-width': 2.4,
+          },
+          gr,
+        )
+      : null;
     const [lx, ly] = pt(RIN + 24, th(i)).split(' ');
-    const le = el('text', {
-      x: lx ?? 0,
-      y: ly ?? 0,
-      'text-anchor': 'middle',
-      'dominant-baseline': 'central',
-      'font-family': 'JetBrains Mono, monospace',
-      'font-weight': 700,
-      'font-size': 20,
-      fill: grd ? (INK[grd] ?? '#4A5585') : '#4A5585',
-    }, gr);
+    const le = el(
+      'text',
+      {
+        x: lx ?? 0,
+        y: ly ?? 0,
+        'text-anchor': 'middle',
+        'dominant-baseline': 'central',
+        'font-family': 'JetBrains Mono, monospace',
+        'font-weight': 700,
+        'font-size': 20,
+        fill: grd ? (INK[grd] ?? '#4A5585') : '#4A5585',
+      },
+      gr,
+    );
     le.textContent = grd ?? '?';
     const [ix, iy] = pt(226, th(i)).split(' ');
     const ic = el('g', { class: 'ic' }, gr);
     el('circle', { cx: ix ?? 0, cy: iy ?? 0, r: 16 }, ic);
-    el('use', { href: `#${card.icon}`, x: Number(ix) - 9, y: Number(iy) - 9, width: 18, height: 18, class: 'ico' }, ic);
+    el(
+      'use',
+      {
+        href: `#${card.icon}`,
+        x: Number(ix) - 9,
+        y: Number(iy) - 9,
+        width: 18,
+        height: 18,
+        class: 'ico',
+      },
+      ic,
+    );
     groups.push(gr);
     tracks.push(tr);
     petals.push(pe);
@@ -219,21 +334,75 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     const a1 = -k * 3.4;
     const a0 = a1 - 3.5;
     const R = RMAX + 8;
-    el('path', {
-      d: `M${C} ${C} L${pt(R, a1)} A${R} ${R} 0 0 0 ${pt(R, a0)} Z`,
-      fill: '#7091E6',
-      'fill-opacity': (0.3 * (1 - k / 16) ** 1.7).toFixed(3),
-      transform: 'translate(0 0)',
-    }, sweep);
+    el(
+      'path',
+      {
+        d: `M${C} ${C} L${pt(R, a1)} A${R} ${R} 0 0 0 ${pt(R, a0)} Z`,
+        fill: '#7091E6',
+        'fill-opacity': (0.3 * (1 - k / 16) ** 1.7).toFixed(3),
+        transform: 'translate(0 0)',
+      },
+      sweep,
+    );
   }
-  el('line', { x1: C, y1: C, x2: C + RMAX + 14, y2: C, stroke: '#3D52A0', 'stroke-width': 2, 'stroke-linecap': 'round' }, sweep);
+  el(
+    'line',
+    {
+      x1: C,
+      y1: C,
+      x2: C + RMAX + 14,
+      y2: C,
+      stroke: '#3D52A0',
+      'stroke-width': 2,
+      'stroke-linecap': 'round',
+    },
+    sweep,
+  );
 
   const disc = el('g', {}, svg);
-  el('circle', { cx: C, cy: C, r: RIN - 6, fill: 'url(#gDisc)', filter: 'url(#fSh)', stroke: 'rgba(255,255,255,.95)', 'stroke-width': 2 }, disc);
-  el('circle', { cx: C, cy: C, r: RIN - 4.5, fill: 'none', stroke: 'rgba(61,82,160,.14)', 'stroke-width': 1 }, disc);
-  el('circle', { cx: C, cy: C, r: RIN - 15, fill: 'none', stroke: 'rgba(61,82,160,.18)', 'stroke-dasharray': '2 5' }, disc);
+  el(
+    'circle',
+    {
+      cx: C,
+      cy: C,
+      r: RIN - 6,
+      fill: 'url(#gDisc)',
+      filter: 'url(#fSh)',
+      stroke: 'rgba(255,255,255,.95)',
+      'stroke-width': 2,
+    },
+    disc,
+  );
+  el(
+    'circle',
+    {
+      cx: C,
+      cy: C,
+      r: RIN - 4.5,
+      fill: 'none',
+      stroke: 'rgba(61,82,160,.14)',
+      'stroke-width': 1,
+    },
+    disc,
+  );
+  el(
+    'circle',
+    {
+      cx: C,
+      cy: C,
+      r: RIN - 15,
+      fill: 'none',
+      stroke: 'rgba(61,82,160,.18)',
+      'stroke-dasharray': '2 5',
+    },
+    disc,
+  );
   const cLabel = el('text', { x: C, y: C - 44, class: 'c-label' }, disc);
-  const cGrade = el('text', { x: C, y: C + 2, class: 'c-grade', fill: 'url(#gLetter)' }, disc);
+  const cGrade = el(
+    'text',
+    { x: C, y: C + 2, class: 'c-grade', fill: 'url(#gLetter)' },
+    disc,
+  );
   const cScore = el('text', { x: C, y: C + 46, class: 'c-score' }, disc);
   const LABEL = text.label.toLocaleUpperCase('fr-FR');
   cLabel.textContent = LABEL;
@@ -263,7 +432,12 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       const sh = sheens[i];
       if (sh) {
         const R = (r1 - 3).toFixed(2);
-        sh.setAttribute('d', r1 - r0 > 8 ? `M${pt(r1 - 3, a[0] + 3)} A${R} ${R} 0 0 1 ${pt(r1 - 3, a[1] - 3)}` : '');
+        sh.setAttribute(
+          'd',
+          r1 - r0 > 8
+            ? `M${pt(r1 - 3, a[0] + 3)} A${R} ${R} 0 0 1 ${pt(r1 - 3, a[1] - 3)}`
+            : '',
+        );
         sh.setAttribute('opacity', (prog[i] ?? 0) > 0.01 ? '1' : '0');
       }
       petals[i]?.setAttribute('opacity', (prog[i] ?? 0) > 0.01 ? '1' : '0');
@@ -274,9 +448,15 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
         const [x, y] = pt(r1, th(i)).split(' ');
         tip.setAttribute('cx', x ?? '0');
         tip.setAttribute('cy', y ?? '0');
-        tip.setAttribute('opacity', String(clamp(((prog[i] ?? 0) - 0.4) * 2, 0, 1)));
+        tip.setAttribute(
+          'opacity',
+          String(clamp(((prog[i] ?? 0) - 0.4) * 2, 0, 1)),
+        );
       }
-      letters[i]?.setAttribute('opacity', String(clamp(((prog[i] ?? 0) - 0.55) * 2.2, 0, 1)));
+      letters[i]?.setAttribute(
+        'opacity',
+        String(clamp(((prog[i] ?? 0) - 0.55) * 2.2, 0, 1)),
+      );
     });
     sweep.setAttribute('transform', `rotate(${sweepA.toFixed(2)} ${C} ${C})`);
     sweep.setAttribute('opacity', String(sweepO));
@@ -294,7 +474,10 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     if (!card || card.score !== null) {
       const gr = card ? (card.grade ?? '–') : G;
       cGrade.textContent = gr;
-      cGrade.setAttribute('fill', card ? (INK[gr] ?? '#4A5585') : 'url(#gLetter)');
+      cGrade.setAttribute(
+        'fill',
+        card ? (INK[gr] ?? '#4A5585') : 'url(#gLetter)',
+      );
       cScore.textContent = `${card ? card.score : g}/100`;
     } else {
       cGrade.textContent = '—';
@@ -307,9 +490,12 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
 
   function applyIntro(t: number): void {
     ringP = easeOut(clamp(t / 700, 0, 1));
-    prog = cards.map((_card, i) => easeBack(clamp((t - (SWEEP * i) / N + 80) / GROW, 0, 1)));
+    prog = cards.map((_card, i) =>
+      easeBack(clamp((t - (SWEEP * i) / N + 80) / GROW, 0, 1)),
+    );
     sweepA = -90 + 360 * clamp(t / SWEEP, 0, 1);
-    sweepO = t < SWEEP ? clamp(t / 150, 0, 1) : 1 - clamp((t - SWEEP) / 380, 0, 1);
+    sweepO =
+      t < SWEEP ? clamp(t / 150, 0, 1) : 1 - clamp((t - SWEEP) / 380, 0, 1);
     const n = Math.round(g * easeOut(clamp((t - 200) / (TOTAL - 700), 0, 1)));
     cScore.textContent = `${n}/100`;
     cGrade.textContent = t > TOTAL - 650 ? G : '';
@@ -408,7 +594,10 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       }
       const target = cards[i]?.el;
       if (!target) return;
-      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      target.scrollIntoView({
+        behavior: reduce ? 'auto' : 'smooth',
+        block: 'center',
+      });
       history.replaceState(null, '', `#${target.id}`);
       target.style.animation = 'none';
       target.getBoundingClientRect();
@@ -417,7 +606,11 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     });
   });
   on(document, 'pointerdown', (e) => {
-    if (e.pointerType === 'touch' && !(e.target as Element | null)?.closest?.('#rose')) setActive(-1);
+    if (
+      e.pointerType === 'touch' &&
+      !(e.target as Element | null)?.closest?.('#rose')
+    )
+      setActive(-1);
   });
   cards.forEach((card, i) => {
     on(card.el, 'pointerenter', (e) => {
