@@ -65,6 +65,30 @@ const PAGES = [
     live: `/rapport?id=${AUDIT_ID}&theme=light`,
     ready: 'Partager le rapport',
   },
+  {
+    id: 'constat',
+    mock: `${ROOT}/page_rapport_details/page_rapport_details.html`,
+    live: `/constat?id=${AUDIT_ID}&check=constat.px&theme=light`,
+    ready: 'Images trop volumineuses à l’ouverture',
+  },
+  {
+    id: 'plan',
+    mock: `${ROOT}/page_plan_action/page_plan_action.html`,
+    live: `/plan?id=${AUDIT_ID}&theme=light`,
+    ready: 'Plan d’action',
+  },
+  {
+    id: 'brief',
+    mock: `${ROOT}/page_brief_ia/page_brief_ia.html`,
+    live: `/brief?id=${AUDIT_ID}&theme=light`,
+    ready: 'Configuration de votre prompt IA',
+  },
+  {
+    id: 'badge',
+    mock: `${ROOT}/interface_badge_partage/interface_badge_partage.html`,
+    live: `/badge?id=${AUDIT_ID}&theme=light`,
+    ready: 'Afficher votre note sur votre site',
+  },
 ] as const;
 
 const WIDTHS = [1280, 330] as const;
@@ -95,16 +119,25 @@ function finding(input: {
   };
 }
 
-function audit(kind: 'hub' | 'domaine' | 'restreint'): unknown {
+function audit(
+  kind:
+    | 'hub'
+    | 'domaine'
+    | 'restreint'
+    | 'constat'
+    | 'plan'
+    | 'brief'
+    | 'badge',
+): unknown {
   const host = kind === 'restreint' ? 'exemple.fr' : 'atelier-martin.fr';
   const locked = kind === 'restreint';
   const domains = [
-    ['performance', kind === 'domaine' ? 58 : 58],
-    ['seo', 78],
-    ['securite', locked ? null : 62],
-    ['ecologie', 60],
+    ['performance', kind === 'brief' ? 52 : 58],
+    ['seo', kind === 'brief' ? 78 : 78],
+    ['securite', locked ? null : kind === 'brief' ? 45 : 62],
+    ['ecologie', kind === 'brief' ? 58 : 60],
     ['accessibilite', 81],
-    ['qualite', 84],
+    ['qualite', kind === 'brief' ? 92 : 84],
     ['vie_privee', null],
     ['dns_email', 95],
   ] as const;
@@ -220,7 +253,7 @@ function audit(kind: 'hub' | 'domaine' | 'restreint'): unknown {
       trigger: 'manual',
       methodVersion: '2026.1',
       engineVersion: '0.1.0',
-      globalScore: locked ? null : 74,
+      globalScore: locked ? null : kind === 'badge' ? 82 : 74,
       siteVerified: !locked,
       partialLabel: locked ? 'partielle · 7 domaines · site non vérifié' : null,
       coverage: 1,
@@ -243,13 +276,110 @@ function audit(kind: 'hub' | 'domaine' | 'restreint'): unknown {
       level: score === null ? 'untested' : 'improve',
       locked: locked && domain === 'securite',
     })),
-    findings: kind === 'domaine' ? domainFindings : locked ? [] : hubFindings,
+    findings:
+      kind === 'domaine'
+        ? domainFindings
+        : kind === 'constat'
+          ? [
+              finding({
+                domain: 'performance',
+                checkId: 'constat.prev',
+                status: 'fail',
+                severity: 3,
+                impact: 2,
+                messageKey: 'constat.px.prev',
+                minutes: 20,
+              }),
+              finding({
+                domain: 'performance',
+                checkId: 'constat.px',
+                status: 'fail',
+                severity: 4,
+                impact: 3,
+                messageKey: 'constat.px.title',
+                reason: 'constat.px.lede',
+                minutes: 20,
+              }),
+              finding({
+                domain: 'performance',
+                checkId: 'constat.next',
+                status: 'warn',
+                severity: 2,
+                impact: 2,
+                messageKey: 'constat.px.next',
+                minutes: 20,
+              }),
+            ]
+          : kind === 'plan'
+            ? [1, 2, 3, 4, 5, 6, 7].map((n) =>
+                finding({
+                  domain:
+                    n === 1
+                      ? 'vie_privee'
+                      : n === 2 || n === 5
+                        ? 'securite'
+                        : n === 3
+                          ? 'performance'
+                          : n === 6
+                            ? 'ecologie'
+                            : 'accessibilite',
+                  checkId: `plan.${n}`,
+                  status: n === 4 || n === 6 || n === 7 ? 'warn' : 'fail',
+                  severity: n === 1 ? 4 : n === 6 ? 2 : 3,
+                  impact: n === 1 || n === 2 ? 3 : n === 5 || n === 6 ? 1 : 2,
+                  messageKey: `plan.px.t${n}`,
+                  reason: `plan.px.w${n}`,
+                  minutes: n === 2 ? 40 : 15,
+                }),
+              )
+            : kind === 'brief'
+              ? (
+                  [
+                    ['performance', 'fail', 4, 1],
+                    ['performance', 'warn', 3, 2],
+                    ['performance', 'pass', 2, 3],
+                    ['seo', 'fail', 3, 4],
+                    ['seo', 'warn', 2, 5],
+                    ['securite', 'fail', 4, 6],
+                    ['securite', 'fail', 3, 7],
+                    ['securite', 'pass', 2, 8],
+                    ['ecologie', 'fail', 3, 9],
+                    ['ecologie', 'warn', 2, 10],
+                    ['accessibilite', 'fail', 4, 11],
+                    ['accessibilite', 'warn', 3, 12],
+                    ['qualite', 'fail', 2, 13],
+                    ['dns_email', 'warn', 2, 14],
+                  ] as const
+                ).map(([domain, status, severity, n]) =>
+                  finding({
+                    domain,
+                    checkId: `brief.${n}`,
+                    status,
+                    severity,
+                    impact: 2,
+                    messageKey: `brief.px.t${n}`,
+                    reason: `brief.px.d${n}`,
+                    minutes: 20,
+                  }),
+                )
+              : locked
+                ? []
+                : hubFindings,
   };
 }
 
 async function install(
   page: Page,
-  kind: 'hub' | 'domaine' | 'restreint' | 'preuve' | 'partager',
+  kind:
+    | 'hub'
+    | 'domaine'
+    | 'restreint'
+    | 'preuve'
+    | 'partager'
+    | 'constat'
+    | 'plan'
+    | 'brief'
+    | 'badge',
 ): Promise<void> {
   const css = readFileSync(FONTS, 'utf8').replaceAll(
     'url(/fonts/',
@@ -282,11 +412,14 @@ async function install(
   });
   await page.route('**/api/audits/**', async (route) => {
     const bodyKind =
-      kind === 'domaine'
-        ? 'domaine'
-        : kind === 'restreint'
-          ? 'restreint'
-          : 'hub';
+      kind === 'domaine' ||
+      kind === 'restreint' ||
+      kind === 'constat' ||
+      kind === 'plan' ||
+      kind === 'brief' ||
+      kind === 'badge'
+        ? kind
+        : 'hub';
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -340,11 +473,22 @@ async function install(
       });
       return;
     }
+    const planItems =
+      kind === 'plan'
+        ? [
+            { check_id: 'plan.2', status: 'doing' },
+            { check_id: 'plan.4', status: 'done' },
+            { check_id: 'plan.7', status: 'doing' },
+          ]
+        : [];
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body:
-        url.includes('action_plan') || url.includes('/audits') ? '[]' : 'null',
+      body: url.includes('action_plan')
+        ? JSON.stringify(planItems)
+        : url.includes('/audits')
+          ? '[]'
+          : 'null',
     });
   });
 }
@@ -494,6 +638,101 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
             }),
           ).toBeVisible();
           await expect(page.getByText(/HSTS|X-Frame|CSP/)).toHaveCount(0);
+        }
+        if (item.id === 'constat') {
+          await expect(page.getByText('Simulateur').first()).toBeVisible();
+          await expect(
+            page.getByRole('heading', {
+              name: 'Ce que vos visiteurs ressentent vraiment',
+            }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Liste des images à optimiser' }),
+          ).toBeVisible();
+          await expect(page.getByText('hero-banner-atelier.jpg')).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Plan d’action en 3 étapes' }),
+          ).toBeVisible();
+          await expect(page.getByText('Avec mon CMS')).toBeVisible();
+          await expect(page.getByText('Avec du code')).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Consigne IA prête à l’emploi' }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('link', { name: 'Ouvrir le brief IA' }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Scripts JavaScript non différés'),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Polices web non préchargées'),
+          ).toBeVisible();
+        }
+        if (item.id === 'plan') {
+          await expect(
+            page.getByRole('heading', { name: 'Où commencer' }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Gains rapides' }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Tâches' }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Supprimer les traceurs déposés avant consentement'),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Aller plus loin' }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('link', { name: 'Brief IA' }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('link', { name: 'Télécharger en Markdown' }),
+          ).toBeVisible();
+        }
+        if (item.id === 'brief') {
+          await expect(
+            page.getByRole('heading', { name: 'Domaines d’audit (8)' }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Images trop volumineuses à l’ouverture').first(),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', {
+              name: 'Rendu du prompt prêt pour votre assistant',
+            }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('audixio-prompt-remediation.md').first(),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('button', {
+              name: 'Copier le prompt pour votre assistant IA',
+            }),
+          ).toBeVisible();
+          await expect(page.getByText('Lancer le test')).toBeVisible();
+          await expect(page.getByText('Verrouillé')).toHaveCount(0);
+        }
+        if (item.id === 'badge') {
+          await expect(page.getByText('Style du badge')).toBeVisible();
+          await expect(
+            page.getByText('Complet', { exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Compact', { exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Pastille', { exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Code à coller dans votre site'),
+          ).toBeVisible();
+          await expect(page.getByText('Lien public du rapport')).toBeVisible();
+          await expect(
+            page.getByRole('link', { name: 'Retour au rapport' }),
+          ).toBeVisible();
+          await expect(page.getByText('note B')).toBeVisible();
         }
         if (item.id === 'preuve') {
           await expect(page.getByText('Copier le snippet')).toBeVisible();

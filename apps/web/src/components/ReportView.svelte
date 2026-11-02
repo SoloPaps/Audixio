@@ -8,7 +8,6 @@ import { levelForStatus } from '../lib/findings.js';
 import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
 import {
   type ActionStatus,
-  detailHref,
   domainLetter,
   failureKind,
   hostLabel,
@@ -16,6 +15,7 @@ import {
   mergeApercu,
 } from '../lib/hub-view.js';
 import { loginHref } from '../lib/nav.js';
+import { detailAllowed } from '../lib/plan-board.js';
 import { pickPriorities } from '../lib/priorities.js';
 import { progressLive } from '../lib/progress-live.js';
 import { relaunchHref } from '../lib/relaunch.js';
@@ -34,16 +34,17 @@ import { levelLabel } from '../lib/score.js';
 import { explainUntested } from '../lib/untested-cause.js';
 import { verdictCopy } from '../lib/verdict.js';
 import AuditOverlay from './AuditOverlay.svelte';
+import BadgeView from './BadgeView.svelte';
+import BriefView from './BriefView.svelte';
+import ConstatView from './ConstatView.svelte';
 import DomainLockedView from './DomainLockedView.svelte';
 import DomainView from './DomainView.svelte';
-import FindingList from './FindingList.svelte';
 import HubView from './HubView.svelte';
-import PreuveMentions from './PreuveMentions.svelte';
-import ReportFooter from './ReportFooter.svelte';
+import PlanView from './PlanView.svelte';
 import UntestedCause from './UntestedCause.svelte';
 
 interface Props {
-  mode?: 'report' | 'domain' | 'detail' | 'plan' | 'badge';
+  mode?: 'report' | 'domain' | 'detail' | 'plan' | 'badge' | 'brief';
 }
 
 let { mode = 'report' }: Props = $props();
@@ -166,12 +167,6 @@ async function onStatus(
   );
 }
 
-const badgeSnippet = $derived.by(() => {
-  if (!payload || typeof location === 'undefined') return '';
-  const mark = letter ?? '';
-  return `<a href="${location.origin}/rapport?id=${payload.audit.id}">${t('brand.ui')} ${mark}</a>`;
-});
-
 const detailRows = $derived(
   mode === 'detail'
     ? reportRowList.filter(
@@ -283,37 +278,51 @@ onMount(() => {
     <p>{failureKind(payload.audit.error) === 'denied' ? t('hub.failed.denied') : failureKind(payload.audit.error) === 'down' ? t('hub.failed.down') : t('hub.failed.body')}</p>
     <p><a class="btn-primary" href={relaunchHref(payload.audit.site.id)}>{t('progress.retry')}</a></p>
   </section>
+{:else if payload && mode === 'badge'}
+  <BadgeView
+    auditId={payload.audit.id}
+    {host}
+    verified={siteVerified}
+    score={global}
+  />
 {:else if payload}
   <div class="reading">
-    {#if mode === 'badge'}
-      <p class="crumbs"><a href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('badge.back')}</a></p>
-      <section class="plan-card">
-        <p>{host}</p>
-        <h1>{t('badge.title')}</h1>
-        <p>{t('badge.lead')}</p>
-        <p class="badge-preview"><span>{t('brand.ui')}</span><b>{letter ?? '–'}</b></p>
-        <pre class="badge-code">{badgeSnippet}</pre>
-      </section>
-    {:else if mode === 'plan'}
-      <section class="plan-card">
-        <p class="crumbs"><a href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{host}</a></p>
-        <h1>{t('hub.plan.title')}</h1>
-        <p>{t('hub.plan.lead')}</p>
-        <p>{t('plan.progress', { done: Object.values(statuses).filter((item) => item === 'done').length, total: priorities.length })}</p>
-      </section>
-      <FindingList
-        findings={reportRowList.filter((row) => row.catalogStatus === 'fail' || row.catalogStatus === 'warn')}
+    {#if mode === 'plan'}
+      <PlanView
+        auditId={payload.audit.id}
+        {host}
+        rows={reportRowList}
         {statuses}
         {onStatus}
-        detailHref={(id) => detailHref(payload.audit.id, id)}
+        verified={siteVerified}
+        locked={new Set(items.filter((item) => item.locked).map((item) => item.id))}
+        onDownload={downloadMarkdown}
+        downloadName={markdownFilename(payload.audit.site.url, stamp)}
+      />
+    {:else if mode === 'brief'}
+      <BriefView
+        auditId={payload.audit.id}
+        {host}
+        url={payload.audit.site.url}
+        {stamp}
+        verified={siteVerified}
+        {items}
+        rows={reportRowList}
       />
     {:else if mode === 'detail'}
-      <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('domain.back')}</a></p>
-      <FindingList
-        findings={detailRows}
-        {statuses}
-        {onStatus}
-      />
+      {#if detailRows[0]}
+        <ConstatView
+          auditId={payload.audit.id}
+          {host}
+          verified={siteVerified}
+          row={detailRows[0]}
+          siblings={reportRowList.filter((row) => row.domain === detailRows[0]?.domain && (row.catalogStatus === 'fail' || row.catalogStatus === 'warn') && detailAllowed(row.domain ?? '', items.find((item) => item.id === row.domain)?.locked === true, siteVerified))}
+          allowed={detailAllowed(detailRows[0].domain ?? '', items.find((item) => item.id === detailRows[0]?.domain)?.locked === true, siteVerified)}
+        />
+      {:else}
+        <h1>{t('hub.detail')}</h1>
+        <p role="status">{t('constat.missing')}</p>
+      {/if}
     {:else if mode === 'domain'}
       {#if domainLocked}
         <DomainLockedView auditId={payload.audit.id} siteId={payload.audit.site.id} {domainId} {host} {items} />
@@ -346,30 +355,6 @@ onMount(() => {
         headline={verdict.headline}
         {stamp}
       />
-    {/if}
-    {#if mode === 'plan'}
-      <section class="plan-card verify-card">
-        <h2 id="verification">{t('section.verify')}</h2>
-        <details>
-          <summary>{t('verify.how')}</summary>
-          <p>{t('verify.lead')}</p>
-          <p>{t('verify.pending')}</p>
-          <p>{t('verify.id')}</p>
-        </details>
-        <p class="hub-actions">
-          <a class="btn-ghost" href={`/rapport/${payload.audit.id}/imprimer`}>{t('print.link')}</a>
-          <a class="btn-ghost" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`} download={markdownFilename(payload.audit.site.url, stamp)} onclick={downloadMarkdown}>{t('export.markdown')}</a>
-        </p>
-        <PreuveMentions />
-        <ReportFooter
-          url={payload.audit.site.url}
-          at={stamp}
-          methodVersion={payload.audit.methodVersion}
-          fingerprint={payload.audit.id}
-          fingerprintKind="id"
-          verifyHref={`/verifier/${payload.audit.id}`}
-        />
-      </section>
     {/if}
   </div>
 {/if}

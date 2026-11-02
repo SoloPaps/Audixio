@@ -40,6 +40,10 @@ export function planHref(auditId: string): string {
   return `/plan?id=${encodeURIComponent(auditId)}`;
 }
 
+export function briefHref(auditId: string): string {
+  return `/brief?id=${encodeURIComponent(auditId)}`;
+}
+
 export function badgeHref(auditId: string): string {
   return `/badge?id=${encodeURIComponent(auditId)}`;
 }
