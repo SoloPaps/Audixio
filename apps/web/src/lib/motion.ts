@@ -7,6 +7,36 @@ export function calm(): boolean {
   );
 }
 
+/** Inclinaison légère de la carte de connexion, coupée si le mouvement est réduit. */
+export function bindTilt(card: HTMLElement): () => void {
+  if (
+    calm() ||
+    !window.matchMedia('(hover: hover) and (pointer: fine)').matches
+  ) {
+    return () => {};
+  }
+  const move = (event: MouseEvent): void => {
+    const x = (window.innerWidth / 2 - event.clientX) / 45;
+    const y = (window.innerHeight / 2 - event.clientY) / 45;
+    card.style.transform = `rotateY(${x}deg) rotateX(${-y}deg)`;
+  };
+  const leave = (): void => {
+    card.style.transition = 'transform .5s ease';
+    card.style.transform = 'none';
+  };
+  const enter = (): void => {
+    card.style.transition = 'none';
+  };
+  document.addEventListener('mousemove', move);
+  document.addEventListener('mouseleave', leave);
+  card.addEventListener('mouseenter', enter);
+  return () => {
+    document.removeEventListener('mousemove', move);
+    document.removeEventListener('mouseleave', leave);
+    card.removeEventListener('mouseenter', enter);
+  };
+}
+
 function easeOut(x: number): number {
   return 1 - (1 - x) ** 3;
 }

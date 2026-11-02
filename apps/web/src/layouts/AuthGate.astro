@@ -1,0 +1,42 @@
+---
+import ThemeToggle from '../components/ThemeToggle.svelte';
+import { t } from '../i18n/index.js';
+import '../styles/polices.css';
+import '../styles/maquettes/auth.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const theme = Astro.url.searchParams.get('theme');
+const initial = theme === 'light' || theme === 'dark' ? theme : 'system';
+---
+
+<!doctype html>
+<html lang="fr" data-theme={initial === 'system' ? undefined : initial}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#EDE8F5" />
+    <link rel="canonical" href={Astro.url.pathname || '/'} />
+    <script is:inline src="/theme-init.js"></script>
+  </head>
+  <body class="auth-gate">
+    <a class="skip" href="#contenu">{t('skip.content')}</a>
+    <header class="auth-tools">
+      <ThemeToggle initial={initial} client:load />
+    </header>
+    <div class="backdrop" aria-hidden="true"></div>
+    <div class="veil" aria-hidden="true"></div>
+    <div class="orb o1" aria-hidden="true"></div>
+    <div class="orb o2" aria-hidden="true"></div>
+    <slot />
+  </body>
+</html>

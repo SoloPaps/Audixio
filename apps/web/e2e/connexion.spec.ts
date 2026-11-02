@@ -44,3 +44,27 @@ test('les écrans de connexion suivent le parcours e-mail', async ({ page }) => 
     page.getByRole('heading', { level: 1, name: 'Bienvenue sur Audixio' }),
   ).toBeVisible();
 });
+
+test('la carte de connexion reprend le survol et le focus de la maquette', async ({
+  page,
+}) => {
+  await page.goto('/connexion');
+  const submit = page.getByRole('button', { name: 'Se connecter' });
+  const before = await submit.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (el: unknown) => { transform: string };
+    };
+    return view.getComputedStyle(node).transform;
+  });
+  await submit.hover();
+  const after = await submit.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (el: unknown) => { transform: string };
+    };
+    return view.getComputedStyle(node).transform;
+  });
+  expect(after).not.toBe(before);
+  const email = page.getByLabel('Adresse e-mail');
+  await email.focus();
+  await expect(email).toHaveCSS('border-top-color', 'rgb(61, 82, 160)');
+});
