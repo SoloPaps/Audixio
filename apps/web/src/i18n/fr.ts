@@ -2191,7 +2191,8 @@ export const fr = {
   'preuve.unlock.1': 'Le détail complet du rapport',
   'preuve.unlock.1b': 'Chaque constat, ses preuves et les fichiers concernés.',
   'preuve.unlock.2': 'Le brief IA de correction',
-  'preuve.unlock.2b': 'Un plan d’action prêt à transmettre à votre prestataire.',
+  'preuve.unlock.2b':
+    'Un plan d’action prêt à transmettre à votre prestataire.',
   'preuve.unlock.3': 'Le partage public ou équipe',
   'preuve.unlock.3b': 'Un lien propre, sans exposer de donnée sensible.',
   'preuve.unlock.4': 'Les tests actifs',
@@ -2217,8 +2218,7 @@ export const fr = {
   'domaine.px.t3': 'Trop de styles d’écriture téléchargés',
   'domaine.px.w3':
     '4 familles de polices sont appelées, avec 8 variantes d’épaisseur superflues.',
-  'domaine.px.t4':
-    'Compression des fichiers de code activée (Gzip / Brotli)',
+  'domaine.px.t4': 'Compression des fichiers de code activée (Gzip / Brotli)',
   'domaine.px.w4':
     'Les pages et les feuilles de style sont compactées avant l’envoi.',
   'domaine.px.t5': 'Mise en cache du navigateur configurée',
