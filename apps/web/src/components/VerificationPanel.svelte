@@ -48,6 +48,7 @@ let site = $state<SiteRow | null>(null);
 let rows = $state<StoredVerification[]>([]);
 let method = $state<VerifyMethod>('meta');
 let reportId = $state<string | null>(null);
+let sim = $state<'ok' | 'fail' | null>(null);
 let accessToken = '';
 
 function isMethod(value: string): value is VerifyMethod {
@@ -264,8 +265,6 @@ async function onCopy(value: string): Promise<void> {
         <p class="eyebrow">{t('preuve.eyebrow')}</p>
         <h1 id="h1">{t('preuve.h1')} <span class="grad-txt">{site.host}</span></h1>
         <p class="lede">{t('preuve.lede')}</p>
-        <p>{t('verify.consent')}</p>
-        <p>{t('verify.legal_law')}</p>
         <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a>{#if reportId}<a class="btn btn-ghost" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('preuve.report')}</a>{/if}</div>
       </div>
       <div class="orbx">
@@ -311,10 +310,10 @@ async function onCopy(value: string): Promise<void> {
     <h2 class="sec" id="hw">{t('preuve.why.title')}</h2>
     <p class="sec-lede">{t('preuve.why.lead')}</p>
     <div class="unl">
-      <div class="ut rv"><h3>{t('preuve.unlock.1')}</h3><p>{t('preuve.unlock.1b')}</p></div>
-      <div class="ut rv"><h3>{t('preuve.unlock.2')}</h3><p>{t('preuve.unlock.2b')}</p></div>
-      <div class="ut rv"><h3>{t('preuve.unlock.3')}</h3><p>{t('preuve.unlock.3b')}</p></div>
-      <div class="ut rv"><h3>{t('preuve.unlock.4')}</h3><p>{t('preuve.unlock.4b')}</p><span class="soon">{t('preuve.later')}</span></div>
+      <div class="ut rv"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div><h3>{t('preuve.unlock.1')}</h3><p>{t('preuve.unlock.1b')}</p></div>
+      <div class="ut rv"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z"/></svg></div><h3>{t('preuve.unlock.2')}</h3><p>{t('preuve.unlock.2b')}</p></div>
+      <div class="ut rv"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></div><h3>{t('preuve.unlock.3')}</h3><p>{t('preuve.unlock.3b')}</p></div>
+      <div class="ut rv"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg></div><h3>{t('preuve.unlock.4')}</h3><p>{t('preuve.unlock.4b')}</p><span class="soon">{t('preuve.later')}</span></div>
     </div>
   </section>
   <section class="blk" id="methodes" aria-labelledby="hm">
@@ -335,7 +334,14 @@ async function onCopy(value: string): Promise<void> {
       <p>{t('verify.github.dns')}</p>
     {/if}
     {#if method === 'search_console'}
-      <p>{t('verify.gsc.later')}</p>
+      <section class="card panel">
+        <h3>{t('verify.method.gsc')} <span class="tag">{t('preuve.hint.gsc')}</span></h3>
+        <p>{t('verify.gsc.later')}</p>
+        <div class="prow">
+          <a class="btn gbtn" href="/search-console"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.5-.2-2.3H12v4.3h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.2-2.7l-3.5-2.7c-1 .7-2.2 1-3.7 1-2.9 0-5.3-1.9-6.2-4.5H2.2v2.8A11 11 0 0 0 12 23z"/><path fill="#fbbc05" d="M5.8 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.2a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.2 7.1l3.6 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg>{t('preuve.google')}</a>
+          <span class="secure"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>{t('preuve.google.secure')}</span>
+        </div>
+      </section>
     {:else}
       {#each guidesFor(method) as guide (guide.title)}
         <section class="card panel">
@@ -346,7 +352,6 @@ async function onCopy(value: string): Promise<void> {
       {#if challenge}
         {#if method === 'meta'}
           <div class="code"><div class="hd"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>{t('preuve.code.title')}</span><span class="ready">{t('preuve.code.ready')}</span></div><pre>{challenge.metaTag}</pre></div>
-          <button type="button" class="btn btn-ghost btn-sm" onclick={() => onCopy(challenge.metaTag)}>{t('verify.copy')}</button>
         {:else}
         <dl class="kv">
           {#if method === 'dns_txt'}
@@ -362,18 +367,42 @@ async function onCopy(value: string): Promise<void> {
         </dl>
         {/if}
         <div class="prow">
+          {#if method === 'meta'}
+            <button type="button" class="btn btn-ghost" onclick={() => onCopy(challenge.metaTag)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>{t('preuve.copy.snippet')}</button>
+          {/if}
           <button class="btn btn-primary" type="button" disabled={pending} onclick={onCheck}>{pending ? t('verify.checking') : phase === 'fail' ? t('verify.retry') : t('verify.now')}</button>
         </div>
       {/if}
     {/if}
+    <div class="sim"><span id="siml">{t('preuve.sim')}</span><div class="seg" role="group" aria-labelledby="siml"><button type="button" aria-pressed={sim !== 'fail'} onclick={() => { sim = 'ok'; }}>{t('preuve.sim.ok')}</button><button type="button" aria-pressed={sim === 'fail'} onclick={() => { sim = 'fail'; }}>{t('preuve.sim.fail')}</button></div></div>
   </section>
-  <section class="blk" aria-live="polite">
-    <div class="sv {phase}">
-      {#if phase === 'ok' && reportId}
-        <p><a class="btn btn-primary" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('verify.report')}</a></p>
-      {/if}
-      <p>{t('verify.recheck')}</p>
+  <section class="blk" aria-labelledby="hs">
+    <p class="kicker">{t('preuve.detect.kicker')}</p>
+    <h2 class="sec" id="hs">{t('preuve.detect')}</h2>
+    <div class="card stat" data-st={sim ?? (phase === 'checking' ? 'scan' : phase)} aria-live="polite">
+      <div class="sbadge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+      <div>
+        <div class="sv idle"><span class="badge b-nt">{t('preuve.sv.idle.b')}</span><h3>{t('preuve.sv.idle.t')}</h3><p>{t('preuve.sv.idle.p')}</p></div>
+        <div class="sv scan"><span class="badge b-own">{t('preuve.sv.scan.b')}</span><h3>{t('preuve.sv.scan.t')}</h3><p>{t('preuve.sv.scan.p')}</p><div class="skl" aria-hidden="true"><span class="sk"></span><span class="sk"></span><span class="sk"></span></div></div>
+        <div class="sv ok"><span class="badge b-ok">{t('preuve.sv.ok.b')}</span><h3>{t('preuve.sv.ok.t')}</h3><p>{t('preuve.sv.ok.p')}</p>{#if reportId}<div class="acts"><a class="btn btn-primary" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('verify.report')}</a></div>{/if}</div>
+        <div class="sv fail"><span class="badge b-crit">{t('preuve.sv.fail.b')}</span><h3>{t('preuve.sv.fail.t')}</h3><p>{t('preuve.sv.fail.p')}</p></div>
+        <p class="auto">{t('preuve.detect.auto')}</p>
+      </div>
     </div>
+    <div class="alt">
+      <div class="card"><h4>{t('preuve.alt.1')} <span class="badge b-nt">{t('preuve.alt.1t')}</span></h4><p>{t('preuve.alt.1b')}</p></div>
+      <div class="card"><h4>{t('preuve.alt.2')} <span class="badge b-ok">{t('preuve.alt.2t')}</span></h4><p>{t('preuve.alt.2b')}</p></div>
+      <div class="card"><h4>{t('preuve.alt.3')} <span class="badge b-fix">{t('preuve.alt.3t')}</span></h4><p>{t('preuve.alt.3b')}</p></div>
+    </div>
+  </section>
+  <section class="blk" aria-labelledby="hg">
+    <p class="kicker">{t('preuve.gov.kicker')}</p>
+    <h2 class="sec" id="hg">{t('preuve.gov')}</h2>
+    <ul class="gov">
+      <li><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>{t('preuve.gov.1')}</li>
+      <li><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>{t('preuve.gov.2')}</li>
+      <li><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>{t('preuve.gov.3')}</li>
+    </ul>
   </section>
   <div class="dock" role="region" aria-label={t('preuve.choose')}>
     <p>{t('preuve.dock', { host: site.host, method: methodLabel(method) })}</p>

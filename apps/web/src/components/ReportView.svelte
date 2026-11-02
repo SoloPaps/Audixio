@@ -316,7 +316,7 @@ onMount(() => {
       />
     {:else if mode === 'domain'}
       {#if domainLocked}
-        <DomainLockedView auditId={payload.audit.id} siteId={payload.audit.site.id} {domainId} {host} />
+        <DomainLockedView auditId={payload.audit.id} siteId={payload.audit.site.id} {domainId} {host} {items} />
       {:else}
         {#if domainUntested}
           <UntestedCause coverageNote={domainUntested.coverageNote} causes={domainUntested.causes} />

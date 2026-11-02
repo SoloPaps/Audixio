@@ -2045,6 +2045,16 @@ html:where([data-vue="restreint"]) {
   background: var(--warn-bg);
   color: var(--warn);
 }
+:where(html[data-vue="restreint"]) .g-a {
+  background: var(--ok-bg);
+  color: var(--ok);
+}
+:where(html[data-vue="restreint"]) .g-d,
+:where(html[data-vue="restreint"]) .g-e,
+:where(html[data-vue="restreint"]) .g-f {
+  background: #fde8d8;
+  color: #9a3412;
+}
 :where(html[data-vue="restreint"]) .back-all {
   display: flex;
   justify-content: center;

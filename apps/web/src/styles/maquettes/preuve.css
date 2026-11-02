@@ -1376,6 +1376,12 @@ html:where([data-vue="preuve"]),
   display: block;
   animation: preuve-pin 0.5s var(--out);
 }
+:where(html[data-vue="preuve"]) .stat .sv.idle,
+:where(html[data-vue="preuve"]) .stat .sv.scan,
+:where(html[data-vue="preuve"]) .stat .sv.ok,
+:where(html[data-vue="preuve"]) .stat .sv.fail {
+  animation: none;
+}
 :where(html[data-vue="preuve"]) .sv h3 {
   font-size: 22px;
   letter-spacing: -0.02em;

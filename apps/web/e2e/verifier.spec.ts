@@ -314,9 +314,9 @@ test('preuve de propriété : guides, création, vérification', async ({
     .locator('#methodes')
     .getByRole('button', { name: 'Vérifier maintenant' })
     .click();
-  await expect(
-    page.getByRole('heading', { name: 'Contrôle du domaine confirmé' }),
-  ).toBeVisible();
+  await expect(page.locator('#orbt')).toContainText(
+    'Contrôle du domaine confirmé',
+  );
   await expectNoViolations(page);
 
   await page.goto(`/verifier?site=${SITE_ID}&theme=light`);

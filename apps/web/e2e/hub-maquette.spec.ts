@@ -211,7 +211,7 @@ test('domaine verrouillé sans indice précis', async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByText('Verrouillé').first()).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'Prouver la propriété' }),
+    page.getByRole('link', { name: 'Vérifier la propriété du site' }),
   ).toBeVisible();
   await expect(page.getByText(/HSTS|X-Frame|CSP/)).toHaveCount(0);
   await page.screenshot({

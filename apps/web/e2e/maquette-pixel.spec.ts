@@ -410,6 +410,78 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
         await expect(
           page.getByRole('heading', { name: item.ready }).first(),
         ).toBeVisible();
+        if (item.id === 'domaine') {
+          await expect(page.getByText('près de 3 secondes')).toBeVisible();
+          await expect(page.getByText('de fluidité ressentie')).toBeVisible();
+          await expect(page.getByText('optimisations').first()).toBeVisible();
+          await expect(page.getByText('Impact').first()).toBeVisible();
+          await expect(page.getByText('Optimal').first()).toBeVisible();
+          await expect(
+            page.getByText('Fiche détaillée à venir').first(),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Sélection pour le prompt IA' }),
+          ).toBeVisible();
+          await expect(page.getByText('Pour chaque constat')).toBeVisible();
+          await expect(
+            page.getByRole('button', { name: 'Générer et copier le prompt' }),
+          ).toBeVisible();
+          await expect(
+            page.getByText(
+              'Le prompt est construit dans votre navigateur à partir de vos choix.',
+            ),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', {
+              name: 'Créez un compte pour débloquer ces outils',
+            }),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('link', { name: 'Créer un compte gratuitement' }),
+          ).toBeVisible();
+          await expect(page.getByText('Infrastructure & e-mail')).toBeVisible();
+        }
+        if (item.id === 'restreint') {
+          await expect(
+            page.getByText('Réservé au propriétaire', { exact: true }),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Preuve de propriété', { exact: true }),
+          ).toBeVisible();
+          await expect(page.getByText('Choisir la méthode')).toBeVisible();
+          await expect(page.getByText('Continuer avec Google')).toBeVisible();
+          await expect(
+            page.getByText('Vérifier la propriété du site'),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Consulter le guide pas à pas'),
+          ).toBeVisible();
+          await expect(
+            page.getByText('Ce que la vérification débloque'),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('link', {
+              name: 'Retour au rapport d’audit complet',
+            }),
+          ).toBeVisible();
+          await expect(page.getByText(/HSTS|X-Frame|CSP/)).toHaveCount(0);
+        }
+        if (item.id === 'preuve') {
+          await expect(page.getByText('Copier le snippet')).toBeVisible();
+          await expect(
+            page.getByText('Résultat simulé (aperçu)'),
+          ).toBeVisible();
+          await expect(
+            page.getByRole('heading', { name: 'Où en est la détection' }),
+          ).toBeVisible();
+          await expect(page.getByText('État initial')).toBeVisible();
+          await expect(page.getByText('Échec soft')).toBeVisible();
+          await expect(
+            page.getByRole('heading', {
+              name: 'Une preuve sans accès à votre serveur',
+            }),
+          ).toBeVisible();
+        }
         const html = await page.content();
         expect(
           html,

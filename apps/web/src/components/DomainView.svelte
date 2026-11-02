@@ -1,13 +1,19 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { t } from '../i18n/index.js';
+import { storedSessionPresent } from '../lib/auth-storage.js';
 import { renderBrief, type TerminalMode } from '../lib/brief.js';
-import { barState } from '../lib/brief-bar.js';
 import type { CategoryItem } from '../lib/categories.js';
-import { domainSentence, domainShort, REPORT_DOMAINS } from '../lib/domains.js';
+import {
+  domainPager,
+  domainSentence,
+  domainShort,
+  REPORT_DOMAINS,
+} from '../lib/domains.js';
 import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
+import { loginHref } from '../lib/nav.js';
 import { saveTextFile } from '../lib/report-export.js';
 import { levelForScore } from '../lib/score.js';
 
@@ -45,6 +51,7 @@ let sortDesc = $state(true);
 let open = $state<Record<string, boolean>>({});
 let choices = $state<Record<string, Choice>>({});
 let copied = $state(false);
+let signedIn = $state(false);
 
 const letter = $derived(domainLetter(score, false));
 const level = $derived(levelForScore(score));
@@ -54,6 +61,15 @@ const title = $derived(
   domainId === 'performance' && (level === 'improve' || level === 'problem')
     ? t('domaine.performance.title')
     : sentence,
+);
+const lede = $derived(
+  domainId === 'performance' ? t('domaine.lede.speed') : sentence,
+);
+const cardTitle = $derived(
+  domainId === 'performance' ? t('domaine.card.speed') : sentence,
+);
+const cardSub = $derived(
+  domainId === 'performance' ? t('domaine.card.speed.sub') : name,
 );
 const order = REPORT_DOMAINS as readonly string[];
 const index = $derived(Math.max(0, order.indexOf(domainId)));
@@ -104,15 +120,31 @@ const chkN = $derived(
   actionable.filter((item) => choiceOf(item) === 'chk').length,
 );
 const selectedN = $derived(fixN + chkN);
-const bar = $derived(
-  barState({
-    failCount: counted.crit + counted.fix,
-    warnCount: chkN,
-    passCount: counted.ok,
-    selectedCount: selectedN,
-  }),
-);
 const ladder = ['D', 'C', 'B', 'A'] as const;
+
+function secondsOf(item: Finding): number {
+  if (item.status === 'pass') return 0;
+  const hard = findings.filter(
+    (row) => row.status !== 'pass' && row.severity >= 4,
+  );
+  if (item.severity >= 4) return hard.indexOf(item) === 0 ? 1.1 : 0.7;
+  return 0.3;
+}
+
+function frSec(value: number): string {
+  return value.toLocaleString('fr-FR', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+}
+
+const gain = $derived(
+  findings.reduce(
+    (sum, item) => sum + (item.severity >= 4 ? secondsOf(item) : 0),
+    0,
+  ),
+);
+const optN = $derived(findings.filter((item) => item.status !== 'pass').length);
 
 function ladderLabel(id: string): string {
   if (id === letter) return t('domaine.now');
@@ -197,6 +229,7 @@ $effect(() => {
 });
 
 onMount(() => {
+  signedIn = storedSessionPresent();
   document.documentElement.dataset.vue = 'domaine';
   document.documentElement.classList.add('has-ind');
   let stop = (): void => {};
@@ -233,20 +266,24 @@ onMount(() => {
       <div>
         <div class="meta"><span class="tag">{t('domaine.tag', { name })}</span></div>
         <h1>{title}<span class="q">{t('domaine.q')}</span></h1>
-        <p class="lede">{sentence}</p>
+        <p class="lede">{lede}</p>
         <div class="hacts">
           <a class="btn btn-primary" href="#constats">{t('domaine.see', { n: findings.length })}</a>
           <a class="btn btn-ghost" href="#prompt">{t('domaine.prepare')}</a>
         </div>
       </div>
       <section class="card gcard g-{letter?.toLowerCase() ?? 'n'} rv" aria-labelledby="gt">
-        <div class="gtop"><span class="gbig" aria-hidden="true">{letter ?? '–'}</span><div><h2 id="gt">{#if letter}<span class="sr-only">{t('domaine.grade.note', { grade: letter })}</span>{/if}{sentence}</h2><p>{name}</p></div></div>
+        <div class="gtop"><span class="gbig" aria-hidden="true">{letter ?? '–'}</span><div><h2 id="gt">{#if letter}<span class="sr-only">{t('domaine.grade.note', { grade: letter })}</span>{/if}{cardTitle}</h2><p>{cardSub}</p></div></div>
         <div class="gbar" aria-hidden="true"><i style={`--v:${Math.max(0, Math.min(100, score ?? 0)) / 100}`}></i></div>
         <ol class="ladder rv" aria-label={t('domaine.ladder')}>
           {#each ladder as step (step)}
             <li class={`g-${step.toLowerCase()}`} class:now={step === letter} class:goal={step === 'A'} aria-current={step === letter ? 'step' : undefined}><span class="gchip">{step}</span>{ladderLabel(step)}</li>
           {/each}
         </ol>
+        {#if gain > 0}
+          <p class="gain"><span class="v">+{frSec(gain)} s</span><small>{t('domaine.gain.lead')}</small></p>
+          <p class="gnote"><span class="badge b-fix">{t('domaine.gain.opt', { n: optN })}</span> {t('domaine.gain.goal')}</p>
+        {/if}
       </section>
     </div>
   </div>
@@ -279,7 +316,9 @@ onMount(() => {
               <div class="cst-h">
                 {#if sev === 'crit'}<span class="badge b-crit">{t('domaine.filter.crit')}</span>
                 {:else if sev === 'fix'}<span class="badge b-fix">{t('domaine.filter.mod')}</span>
-                {:else}<span class="badge b-ok">{t('domaine.filter.ok')}</span>{/if}
+                {:else}<span class="badge b-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.filter.ok')}</span>{/if}
+                {#if sev === 'ok'}<span class="imp ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.impact.ok')}</span>
+                {:else}<span class="imp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></svg>{t('domaine.impact.s', { n: frSec(secondsOf(item)) })}</span>{/if}
               </div>
               <h3>{item.title}</h3>
               <p class="cd">{item.why}</p>
@@ -302,7 +341,8 @@ onMount(() => {
                 {/if}
                 <div class="cst-a">
                   <button type="button" class="det" aria-expanded={open[item.id] ? 'true' : 'false'} aria-controls={`d-${item.id}`} onclick={() => { open = { ...open, [item.id]: !open[item.id] }; }}>{t('domaine.details')} {@render chev()}</button>
-                  {#if sev !== 'ok'}<a class="btn btn-primary btn-sm" href={detailHref(auditId, item.id)}>{t('domaine.fix.link')}</a>{/if}
+                  {#if sev !== 'ok' && (item.actionHref || item.code)}<a class="btn btn-primary btn-sm" href={item.actionHref ?? detailHref(auditId, item.id)}>{t('domaine.fix.link')}</a>
+                  {:else if sev !== 'ok'}<span class="soon">{t('domaine.soon')}</span>{/if}
                 </div>
               </div>
               <div class="acc" class:open={open[item.id]} id={`d-${item.id}`}><div><div class="acc-in"><p class="al">{sev === 'ok' ? t('domaine.observe') : t('domaine.actions')}</p><ul>{#each item.steps as step, stepIndex (step + String(stepIndex))}<li>{step}</li>{/each}</ul></div></div></div>
@@ -312,9 +352,14 @@ onMount(() => {
         <p class="empty card" hidden={shown.length > 0}>{t('domaine.empty')}</p>
       </div>
       <aside class="card pp" id="prompt" aria-labelledby="pt">
-        <div class="ph"><h2 id="pt">{t('domaine.prompt.title')}</h2></div>
+        <div class="ph"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/></svg></span><h2 id="pt">{t('domaine.prompt.title')}</h2></div>
         <p class="sum">{t('domaine.prompt.sum', { n: selectedN, fix: fixN, chk: chkN })}</p>
-        {#if bar.hint}<p class="hint">{t('domaine.prompt.hint')}</p>{/if}
+        <p class="hint">{t('domaine.prompt.hint')}</p>
+        <ul>
+          {#each actionable as item (item.id)}
+            <li><span>{item.title}</span><span class="badge {choiceOf(item) === 'fix' ? 'b-fix' : choiceOf(item) === 'chk' ? 'b-own' : 'b-ok'}">{choiceOf(item) === 'fix' ? t('domaine.correct') : choiceOf(item) === 'chk' ? t('domaine.check') : t('domaine.none')}</span></li>
+          {/each}
+        </ul>
         <form novalidate onsubmit={onGenerate}>
           <button type="submit" class="fz" class:in={copied}><span class="sr-only">{t('domaine.prompt.gen')}</span><span class="st st-def" aria-hidden="true">{t('domaine.prompt.gen')}</span><span class="st st-ok" aria-hidden="true">{t('domaine.prompt.done')}</span></button>
         </form>
@@ -330,18 +375,37 @@ onMount(() => {
         <h2 id="xt">{t('domaine.export.title')}</h2>
         <p class="sec-lede">{t('domaine.export.lead')}</p>
         <div class="acts">
-          <button type="button" class="btn btn-ghost" onclick={onCopyBrief}>{t('domaine.export.copy')}</button>
-          <a class="btn btn-ghost" href={`mailto:?subject=${encodeURIComponent(name)}&body=${encodeURIComponent(briefText())}`}>{t('domaine.export.mail')}</a>
-          <button type="button" class="btn btn-ghost" onclick={onExport}>{t('domaine.export.file')}</button>
+          {#if signedIn}
+            <button type="button" class="btn btn-ghost" onclick={onCopyBrief}>{t('domaine.export.copy')}</button>
+            <a class="btn btn-ghost" href={`mailto:?subject=${encodeURIComponent(name)}&body=${encodeURIComponent(briefText())}`}>{t('domaine.export.mail')}</a>
+            <button type="button" class="btn btn-ghost" onclick={onExport}>{t('domaine.export.file')}</button>
+          {:else}
+            <button type="button" class="btn btn-ghost" aria-disabled="true">{t('domaine.export.copy')} <span class="sr-only">{t('domaine.lock.sr')}</span></button>
+            <button type="button" class="btn btn-ghost" aria-disabled="true">{t('domaine.export.mail')} <span class="sr-only">{t('domaine.lock.sr')}</span></button>
+            <button type="button" class="btn btn-ghost" aria-disabled="true">{t('domaine.export.file')} <span class="sr-only">{t('domaine.lock.sr')}</span></button>
+          {/if}
         </div>
       </div>
+      {#if !signedIn}
+        <div class="lockc">
+          <span class="lk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+          <h3>{t('domaine.lock.title')}</h3>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.lock.1')}</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.lock.2')}</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.lock.3')}</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.lock.4')}</li>
+          </ul>
+          <a class="btn btn-primary" href={loginHref(`/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(domainId)}`)}>{t('domaine.lock.cta')}</a>
+        </div>
+      {/if}
     </div>
   </section>
 
   <nav class="pager" aria-label={t('domain.nav')}>
-    {#if prev?.href}<a href={prev.href}><span><small>{t('domaine.prev')}</small><b>{domainShort(prev.id)}</b></span></a>{/if}
-    <a class="mid" href={hubHref}>{t('domaine.hub')}</a>
-    {#if next?.href}<a class="nx" href={next.href}><span><small>{t('domaine.next')}</small><b>{domainShort(next.id)}</b></span></a>{/if}
+    {#if prev?.href}<a href={prev.href}><span class="ar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></span><span><small>{t('domaine.prev')}</small><b>{domainPager(prev.id)}</b></span></a>{/if}
+    <a class="mid" href={hubHref}><span class="ar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg></span>{t('domaine.hub')}</a>
+    {#if next?.href}<a class="nx" href={next.href}><span><small>{t('domaine.next')}</small><b>{domainPager(next.id)}</b></span><span class="ar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></a>{/if}
   </nav>
   <p class="eco-line">{t('hub.eco.lead')} <a href="/ecoconception">{t('hub.eco.link')}</a>.</p>
 </div>

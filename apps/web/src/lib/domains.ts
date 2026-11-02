@@ -142,6 +142,23 @@ export function domainShort(id: string): string {
   return key ? t(key) : domainTech(id);
 }
 
+const PAGER: Record<string, MessageKey> = {
+  performance: 'domain.performance.pager',
+  seo: 'domain.seo.pager',
+  securite: 'domain.securite.pager',
+  ecologie: 'domain.ecologie.pager',
+  accessibilite: 'domain.accessibilite.pager',
+  qualite: 'domain.qualite.pager',
+  vie_privee: 'domain.vie_privee.pager',
+  dns_email: 'domain.dns_email.pager',
+};
+
+/** Libellé long du pager de domaine (maquette). */
+export function domainPager(id: string): string {
+  const key = PAGER[id];
+  return key ? t(key) : domainShort(id);
+}
+
 /** Pictogramme du domaine dans le sprite SVG des vues rapport. */
 export function domainSymbol(id: string): string {
   return SYMBOL[id] ?? 'i-code';
