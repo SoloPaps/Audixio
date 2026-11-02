@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { formatDate } from '../i18n/format.js';
-import { t } from '../i18n/index.js';
+import { type MessageKey, t } from '../i18n/index.js';
 import type { AuditPayload } from '../lib/audit-api.js';
 import { domainShort, domainSymbol } from '../lib/domains.js';
 import {
@@ -100,6 +100,21 @@ function toneLabel(tone: SeverityTone): string {
 }
 function gradeOf(item: CategoryItem): string | null {
   return domainLetter(item.score, item.locked);
+}
+const SUM: Record<string, MessageKey> = {
+  performance: 'hub.sum.performance',
+  seo: 'hub.sum.seo',
+  securite: 'hub.sum.securite',
+  ecologie: 'hub.sum.ecologie',
+  accessibilite: 'hub.sum.accessibilite',
+  qualite: 'hub.sum.qualite',
+  vie_privee: 'hub.sum.vie_privee',
+  dns_email: 'hub.sum.dns_email',
+};
+function blurb(item: CategoryItem): string {
+  if (item.locked) return item.detail;
+  const key = SUM[item.id];
+  return key ? t(key) : item.detail;
 }
 
 async function onShare(event: MouseEvent): Promise<void> {
@@ -287,7 +302,7 @@ onMount(() => {
         {@const grade = gradeOf(item)}
         <li class="rv" style={`--i:${index}`}><a class="dom" id={`domaine-${item.id}`} href={item.href} data-key={item.id} data-g={grade ?? 'N'} data-icon={domainSymbol(item.id)} data-short={domainShort(item.id)}>
           <span class="tile g-{grade ?? 'N'}"><svg class="ico" width="26" height="26" aria-hidden="true"><use href={`#${domainSymbol(item.id)}`}/></svg></span>
-          <span class="dom-txt"><span class="dom-name">{domainShort(item.id)}</span><span class="dom-sum">{item.detail}</span></span>
+          <span class="dom-txt"><span class="dom-name">{domainShort(item.id)}</span><span class="dom-sum">{blurb(item)}</span></span>
           {#if grade && item.score !== null}
             <span class="dom-score"><span class="bar mt m-{grade}" style={`--w:${Math.max(0, Math.min(100, item.score))}%`} aria-hidden="true"><i></i></span><span class="grade chip m-{grade}" aria-label={t('report.grade.letter', { grade })}>{grade}</span></span>
           {:else}

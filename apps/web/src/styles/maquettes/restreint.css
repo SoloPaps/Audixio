@@ -227,6 +227,12 @@ html:where([data-vue="restreint"]) {
   opacity: 1;
   transform: none;
 }
+@media (prefers-reduced-motion: reduce) {
+  :where(html[data-vue="restreint"]).js .rv {
+    opacity: 1;
+    transform: none;
+  }
+}
 :where(html[data-vue="restreint"]) .btn {
   position: relative;
   overflow: hidden;

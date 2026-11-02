@@ -228,129 +228,117 @@ async function onCopy(value: string): Promise<void> {
 }
 </script>
 
-<header class="v-hero">
-  <p>{t('verify.title')}</p>
-  <h1>{site ? t('verify.of', { host: site.host }) : t('verify.title')}</h1>
-  <p>{t('verify.intro')}</p>
-  <p>{t('verify.consent')}</p>
-  <p>{t('verify.legal_law')}</p>
-</header>
 {#if loading}
   <p role="status">{t('verify.loading')}</p>
 {:else if needLogin}
-  <p role="status">{t('verify.need_login')}</p>
-  <p>
-    <a class="link-action" href={loginHref(`${location.pathname}${location.search}`)}>
-      {t('nav.login')}
-    </a>
-  </p>
+  <section class="khero" data-st="idle" aria-labelledby="h1">
+    <h1 id="h1">{t('verify.title')}</h1>
+    <p role="status">{t('verify.need_login')}</p>
+    <p><a class="btn btn-primary" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a></p>
+  </section>
 {:else if missing}
   <p role="status">{t('verify.missing')}</p>
-  <p><a class="link-action" href="/sites">{t('verify.back')}</a></p>
+  <p><a class="btn btn-ghost" href="/sites">{t('verify.back')}</a></p>
 {:else if notFound || !site}
   <p role="status">{t('verify.not_found')}</p>
-  <p><a class="link-action" href="/sites">{t('verify.back')}</a></p>
+  <p><a class="btn btn-ghost" href="/sites">{t('verify.back')}</a></p>
 {:else}
   {@const proof = current()}
   {@const token = sharedToken()}
   {@const challenge = token ? localChallenge(site, token) : null}
   {@const phase = pending ? 'checking' : phaseOf(proof)}
-  <p class="kicker">{site.label}</p>
-  <p>{site.url}</p>
-  {#if notice}
-    <p role="status">{notice}</p>
-  {/if}
-  {#if error}
-    <p class="form-error" role="alert">{error}</p>
-  {/if}
-  <div class="v-tabs" role="tablist" aria-label={t('verify.method')}>
-    {#each METHODS as item (item)}
-      <button
-        type="button"
-        role="tab"
-        aria-selected={method === item}
-        onclick={() => {
-          method = item;
-        }}
-      >
-        {methodLabel(item)}
-      </button>
-    {/each}
-  </div>
-  {#if method === 'dns_txt' && site.host.endsWith('.github.io')}
-    <p>{t('verify.github.dns')}</p>
-  {/if}
-  {#if method === 'search_console'}
-    <p>{t('verify.gsc.later')}</p>
-  {:else}
-    {#each guidesFor(method) as guide (guide.title)}
-      <section>
-        <h2>{t(guide.title)}</h2>
-        <ol class="steps">
-          {#each guide.steps as step, index (step + String(index))}
-            <li>{t(step)}</li>
-          {/each}
-        </ol>
-      </section>
-    {/each}
-    {#if !token}
-      <button class="btn-primary" type="button" disabled={pending} onclick={onCreate}>
-        {pending ? t('verify.creating') : t('verify.create')}
-      </button>
-    {:else if challenge}
-      <div class="v-card token-bar">
-        <p>{t('verify.token')}</p>
-        <pre>{challenge.dnsValue}</pre>
-        <button class="btn-ghost" type="button" onclick={() => onCopy(challenge.dnsValue)}>
-          {t('verify.copy')}
-        </button>
-        {#if method === 'dns_txt'}
-          <p>{t('verify.record_name')}</p>
-          <pre>{challenge.dnsName}</pre>
-          <p>{t('verify.record_value')}</p>
-          <pre>{challenge.dnsValue}</pre>
-        {:else if method === 'html_file'}
-          <p>{t('verify.html_url')}</p>
-          <pre>{challenge.htmlFileUrl}</pre>
-        {:else if method === 'well_known'}
-          <p>{t('verify.well_known_url')}</p>
-          <pre>{challenge.wellKnownUrl}</pre>
-        {:else if method === 'file'}
-          <p>{t('verify.file_url')}</p>
-          <pre>{challenge.fileUrl}</pre>
-        {:else}
-          <p>{t('verify.meta_tag')}</p>
-          <pre>{challenge.metaTag}</pre>
-          <button class="btn-ghost" type="button" onclick={() => onCopy(challenge.metaTag)}>
-            {t('verify.copy')}
-          </button>
-        {/if}
+  <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={`/rapport?id=${encodeURIComponent(reportId ?? '')}`}>{site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>
+  <section class="khero" id="st" data-st={phase === 'checking' ? 'run' : phase} aria-labelledby="h1">
+    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="hgrid">
+      <div>
+        <p class="eyebrow">{t('preuve.eyebrow')}</p>
+        <h1 id="h1">{t('preuve.h1')} <span class="grad-txt">{site.host}</span></h1>
+        <p class="lede">{t('preuve.lede')}</p>
+        <p>{t('verify.consent')}</p>
+        <p>{t('verify.legal_law')}</p>
+        <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a></div>
       </div>
-      <button class="btn-primary" type="button" disabled={pending} onclick={onCheck}>
-        {pending ? t('verify.checking') : phase === 'fail' ? t('verify.retry') : t('verify.now')}
-      </button>
-    {/if}
-  {/if}
-  <section class="v-card status-{phase}" aria-live="polite">
-    {#if phase === 'checking'}
-      <h2>{t('verify.state.checking.title')}</h2>
-      <p>{t('verify.state.checking.body')}</p>
-    {:else if phase === 'ok'}
-      <h2>{t('verify.state.ok.title')}</h2>
-      <p>{t('verify.state.ok.body')}</p>
-      {#if reportId}
-        <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('verify.report')}</a></p>
-      {/if}
-    {:else if phase === 'fail'}
-      <h2>{t('verify.state.fail.title')}</h2>
-      <p>{t('verify.state.fail.body')}</p>
-    {:else}
-      <h2>{t('verify.state.idle.title')}</h2>
-      <p>{t('verify.state.idle.body')}</p>
-    {/if}
-    <p>{t('verify.recheck')}</p>
+      <div class="gpanel">
+        <p class="stl" id="orbt">
+          {#if phase === 'checking'}{t('verify.state.checking.title')}
+          {:else if phase === 'ok'}{t('verify.state.ok.title')}
+          {:else if phase === 'fail'}{t('verify.state.fail.title')}
+          {:else}{t('verify.state.idle.title')}{/if}
+          <small>
+            {#if phase === 'checking'}{t('verify.state.checking.body')}
+            {:else if phase === 'ok'}{t('verify.state.ok.body')}
+            {:else if phase === 'fail'}{t('verify.state.fail.body')}
+            {:else}{t('verify.state.idle.body')}{/if}
+          </small>
+        </p>
+      </div>
+    </div>
   </section>
-  <p class="page-links">
-    <a class="link-action" href="/sites">{t('verify.back')}</a>
-  </p>
+  {#if notice}<p role="status">{notice}</p>{/if}
+  {#if error}<p class="form-error" role="alert">{error}</p>{/if}
+  <section aria-labelledby="hw">
+    <p class="kicker">{t('preuve.why.kicker')}</p>
+    <h2 class="sec" id="hw">{t('preuve.why.title')}</h2>
+    <p class="sec-lede">{t('preuve.why.lead')}</p>
+  </section>
+  <section class="blk" id="methodes" aria-labelledby="hm">
+    <p class="kicker">{t('preuve.methods.kicker')}</p>
+    <h2 class="sec" id="hm">{t('preuve.methods')}</h2>
+    <p class="sec-lede">{t('preuve.methods.lead')}</p>
+    {#if challenge}
+      <div class="tokbar rv"><div><span class="tl">{t('preuve.token')}</span><code>{challenge.dnsValue}</code></div><button type="button" class="btn btn-sm" onclick={() => onCopy(challenge.dnsValue)}>{t('preuve.copy.token')}</button></div>
+    {:else}
+      <button class="btn btn-primary" type="button" disabled={pending} onclick={onCreate}>{pending ? t('verify.creating') : t('verify.create')}</button>
+    {/if}
+    <div class="tabs rv" role="tablist" aria-label={t('verify.method')}>
+      {#each METHODS as item (item)}
+        <button class="tab" type="button" role="tab" aria-selected={method === item} onclick={() => { method = item; }}>{methodLabel(item)}</button>
+      {/each}
+    </div>
+    {#if method === 'dns_txt' && site.host.endsWith('.github.io')}
+      <p>{t('verify.github.dns')}</p>
+    {/if}
+    {#if method === 'search_console'}
+      <p>{t('verify.gsc.later')}</p>
+    {:else}
+      {#each guidesFor(method) as guide (guide.title)}
+        <section class="panel">
+          <h3>{t(guide.title)}</h3>
+          <ol class="steps">{#each guide.steps as step, index (step + String(index))}<li>{t(step)}</li>{/each}</ol>
+        </section>
+      {/each}
+      {#if challenge}
+        <dl class="kv">
+          {#if method === 'dns_txt'}
+            <div><dt>{t('verify.record_name')}</dt><dd>{challenge.dnsName}</dd></div>
+            <div><dt>{t('verify.record_value')}</dt><dd>{challenge.dnsValue}</dd></div>
+          {:else if method === 'html_file'}
+            <div><dt>{t('verify.html_url')}</dt><dd>{challenge.htmlFileUrl}</dd></div>
+          {:else if method === 'well_known'}
+            <div><dt>{t('verify.well_known_url')}</dt><dd>{challenge.wellKnownUrl}</dd></div>
+          {:else if method === 'file'}
+            <div><dt>{t('verify.file_url')}</dt><dd>{challenge.fileUrl}</dd></div>
+          {:else}
+            <div><dt>{t('verify.meta_tag')}</dt><dd>{challenge.metaTag}</dd><button type="button" class="btn btn-ghost btn-sm" onclick={() => onCopy(challenge.metaTag)}>{t('verify.copy')}</button></div>
+          {/if}
+        </dl>
+        <div class="prow">
+          <button class="btn btn-primary" type="button" disabled={pending} onclick={onCheck}>{pending ? t('verify.checking') : phase === 'fail' ? t('verify.retry') : t('verify.now')}</button>
+        </div>
+      {/if}
+    {/if}
+  </section>
+  <section class="blk" aria-live="polite">
+    <div class="sv {phase}">
+      {#if phase === 'ok' && reportId}
+        <p><a class="btn btn-primary" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('verify.report')}</a></p>
+      {/if}
+      <p>{t('verify.recheck')}</p>
+    </div>
+  </section>
+  <div class="dock" role="region" aria-label={t('preuve.choose')}>
+    <p>{site.host}</p>
+    <div class="r"><a class="btn btn-ghost btn-sm" href="/sites">{t('verify.back')}</a></div>
+  </div>
 {/if}

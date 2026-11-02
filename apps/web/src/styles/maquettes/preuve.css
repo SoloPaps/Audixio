@@ -360,6 +360,12 @@
   opacity: 1;
   transform: none;
 }
+@media (prefers-reduced-motion: reduce) {
+  :where(html[data-vue="preuve"]).js .rv {
+    opacity: 1;
+    transform: none;
+  }
+}
 @media print {
   :where(html[data-vue="preuve"]).js .rv {
     opacity: 1 !important;

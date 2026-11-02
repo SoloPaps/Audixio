@@ -2035,6 +2035,10 @@ html:where([data-vue="domaine"]),
   height: 18px;
 }
 @media (prefers-reduced-motion: reduce) {
+  :where(html[data-vue="domaine"]).js .rv {
+    opacity: 1;
+    transform: none;
+  }
   :where(html[data-vue="domaine"]) .gbig::after,
   :where(html[data-vue="domaine"]) .lockc .lk,
   :where(html[data-vue="domaine"]).js .ladder.in li.goal .gchip {

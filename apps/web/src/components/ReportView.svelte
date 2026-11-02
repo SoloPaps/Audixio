@@ -3,7 +3,7 @@ import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { type AuditPayload, readAudit } from '../lib/audit-api.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
-import { domainPlain, domainSentence, isKnownDomain } from '../lib/domains.js';
+import { domainPlain, isKnownDomain } from '../lib/domains.js';
 import { levelForStatus } from '../lib/findings.js';
 import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
 import {
@@ -14,7 +14,6 @@ import {
   hostLabel,
   isActionStatus,
   mergeApercu,
-  verifyHref,
 } from '../lib/hub-view.js';
 import { loginHref } from '../lib/nav.js';
 import { pickPriorities } from '../lib/priorities.js';
@@ -31,10 +30,12 @@ import {
   reportRows,
   scoredDomainCount,
 } from '../lib/report-model.js';
-import { levelForScore, levelLabel } from '../lib/score.js';
+import { levelLabel } from '../lib/score.js';
 import { explainUntested } from '../lib/untested-cause.js';
 import { verdictCopy } from '../lib/verdict.js';
 import AuditOverlay from './AuditOverlay.svelte';
+import DomainLockedView from './DomainLockedView.svelte';
+import DomainView from './DomainView.svelte';
 import FindingList from './FindingList.svelte';
 import HubView from './HubView.svelte';
 import PreuveMentions from './PreuveMentions.svelte';
@@ -314,56 +315,22 @@ onMount(() => {
         {onStatus}
       />
     {:else if mode === 'domain'}
-      <p><a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('domain.back')}</a></p>
-      <nav aria-label={t('domain.nav')}>
-        <ul class="domain-switch">
-          {#each items as item (item.id)}
-            <li>
-              <a
-                href={item.href}
-                aria-current={item.id === domainId ? 'page' : undefined}
-              >{item.label} <span>{item.locked ? t('domain.locked.badge') : domainLetter(item.score, false) ?? ''}</span></a>
-            </li>
-          {/each}
-        </ul>
-      </nav>
-      <header class="note-card">
-        <div class="rose" aria-hidden="true"><b>{domainLocked ? '–' : domainLetter(domainScore, false) ?? '–'}</b></div>
-        <div>
-          {#if domainLocked}
-            <p class="pill-lock">{t('domain.locked.badge')}</p>
-          {/if}
-          <h1>{domainPlain(domainId)}</h1>
-          {#if domainLocked}
-            <p>{t('hub.lock.lead')}</p>
-            <p>{t('hub.lock.why')}</p>
-            <div class="lock-grid">
-              <article><h2>{t('hub.lock.https')}</h2><p>{t('domain.locked.teaser')}</p></article>
-              <article><h2>{t('hub.lock.hsts')}</h2><p>{t('domain.locked.teaser')}</p></article>
-              <article><h2>{t('hub.lock.frame')}</h2><p>{t('domain.locked.teaser')}</p></article>
-            </div>
-            <p><a class="btn-primary" href={verifyHref(payload.audit.site.id)}>{t('domain.locked.cta')}</a></p>
-          {:else}
-            {#if domainLetter(domainScore, false)}
-              <p>{t('report.grade.letter', { grade: domainLetter(domainScore, false) ?? 'C' })}</p>
-            {/if}
-            <p>{domainSentence(domainId, levelForScore(domainScore))}</p>
-            {#if domainId === 'accessibilite'}
-              <p>{t('hub.a11y')}</p>
-            {/if}
-          {/if}
-        </div>
-      </header>
-      {#if domainUntested && !domainLocked}
-        <UntestedCause coverageNote={domainUntested.coverageNote} causes={domainUntested.causes} />
-      {/if}
-      {#if !domainLocked}
-        <h2 id="corrections">{t('section.findings')}</h2>
-        <FindingList
+      {#if domainLocked}
+        <DomainLockedView auditId={payload.audit.id} siteId={payload.audit.site.id} {domainId} {host} />
+      {:else}
+        {#if domainUntested}
+          <UntestedCause coverageNote={domainUntested.coverageNote} causes={domainUntested.causes} />
+        {/if}
+        <DomainView
+          auditId={payload.audit.id}
+          {domainId}
+          {host}
+          verified={siteVerified}
+          score={domainScore}
           findings={shown}
-          {statuses}
-          {onStatus}
-          detailHref={(id) => detailHref(payload.audit.id, id)}
+          {items}
+          url={payload.audit.site.url}
+          {stamp}
         />
       {/if}
     {:else if mode === 'report'}
