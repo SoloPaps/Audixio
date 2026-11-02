@@ -114,6 +114,56 @@ export function domainPlain(id: string): string {
   return key ? t(key) : id;
 }
 
+const SHORT: Record<string, MessageKey> = {
+  performance: 'domain.performance.short',
+  seo: 'domain.seo.short',
+  securite: 'domain.securite.short',
+  ecologie: 'domain.ecologie.short',
+  accessibilite: 'domain.accessibilite.short',
+  qualite: 'domain.qualite.short',
+  vie_privee: 'domain.vie_privee.short',
+  dns_email: 'domain.dns_email.short',
+};
+
+const SYMBOL: Record<string, string> = {
+  performance: 'i-perf',
+  seo: 'i-seo',
+  securite: 'i-sec',
+  ecologie: 'i-eco',
+  accessibilite: 'i-a11y',
+  qualite: 'i-code',
+  vie_privee: 'i-priv',
+  dns_email: 'i-dns',
+};
+
+/** Nom court des cartes et puces du rapport (maquettes finales). */
+export function domainShort(id: string): string {
+  const key = SHORT[id];
+  return key ? t(key) : domainTech(id);
+}
+
+const PAGER: Record<string, MessageKey> = {
+  performance: 'domain.performance.pager',
+  seo: 'domain.seo.pager',
+  securite: 'domain.securite.pager',
+  ecologie: 'domain.ecologie.pager',
+  accessibilite: 'domain.accessibilite.pager',
+  qualite: 'domain.qualite.pager',
+  vie_privee: 'domain.vie_privee.pager',
+  dns_email: 'domain.dns_email.pager',
+};
+
+/** Libellé long du pager de domaine (maquette). */
+export function domainPager(id: string): string {
+  const key = PAGER[id];
+  return key ? t(key) : domainShort(id);
+}
+
+/** Pictogramme du domaine dans le sprite SVG des vues rapport. */
+export function domainSymbol(id: string): string {
+  return SYMBOL[id] ?? 'i-code';
+}
+
 export function domainTech(id: string): string {
   const key = TECH[id];
   return key ? t(key) : id;

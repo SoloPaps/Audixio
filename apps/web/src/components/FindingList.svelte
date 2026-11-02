@@ -38,11 +38,20 @@ interface BriefContext {
 interface Props {
   findings: Finding[] | ReportRow[];
   brief?: BriefContext | null;
+  statuses?: Readonly<Record<string, string>>;
+  onStatus?: (findingId: string, status: 'todo' | 'doing' | 'done') => void;
+  detailHref?: (findingId: string) => string;
 }
 
 type FilterId = 'all' | 'fail' | 'warn' | 'pass';
 
-let { findings, brief = null }: Props = $props();
+let {
+  findings,
+  brief = null,
+  statuses = {},
+  onStatus,
+  detailHref,
+}: Props = $props();
 let copiedId = $state<string | null>(null);
 let filter = $state<FilterId>('all');
 let checked = $state<Record<string, boolean>>({});
@@ -222,6 +231,13 @@ const filters: { id: FilterId; label: string }[] = [
   { id: 'pass', label: t('report.filter.pass') },
 ];
 
+function statusKey(finding: Finding): string {
+  if ('checkId' in finding && typeof finding.checkId === 'string') {
+    return finding.checkId;
+  }
+  return finding.id;
+}
+
 async function copyCode(finding: Finding): Promise<void> {
   if (!finding.code) return;
   try {
@@ -279,6 +295,28 @@ async function copyCode(finding: Finding): Promise<void> {
         <StatusMark level={levelForStatus(finding.status)} />
         <div class="finding-copy">
           <h4>{finding.title}</h4>
+          {#if detailHref}
+            <p><a class="link-action" href={detailHref(finding.id)}>{t('hub.detail')}</a></p>
+          {/if}
+          {#if onStatus}
+            <label>
+              {t('plan.status')}
+              <select
+                class="plan-status"
+                value={statuses[statusKey(finding)] === 'doing' || statuses[statusKey(finding)] === 'done' ? statuses[statusKey(finding)] : 'todo'}
+                onchange={(event) => {
+                  const next = event.currentTarget.value;
+                  if (next === 'todo' || next === 'doing' || next === 'done') {
+                    onStatus(statusKey(finding), next);
+                  }
+                }}
+              >
+                <option value="todo">{t('plan.todo')}</option>
+                <option value="doing">{t('plan.doing')}</option>
+                <option value="done">{t('plan.done')}</option>
+              </select>
+            </label>
+          {/if}
           {#if finding.actionHref && finding.actionLabel}
             <p><a class="link-action" href={finding.actionHref}>{finding.actionLabel}</a></p>
           {/if}

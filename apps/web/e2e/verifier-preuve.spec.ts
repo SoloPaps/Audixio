@@ -77,9 +77,9 @@ test('la preuve affiche les méthodes, l’attente et le report de Search Consol
   await expect(
     page.getByRole('tab', { name: 'Fichier .well-known' }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'En attente de vérification' }),
-  ).toBeVisible();
+  await expect(page.locator('#orbt')).toContainText(
+    'En attente de vérification',
+  );
   await page.getByRole('tab', { name: 'Search Console' }).click();
   await expect(page.getByText('Search Console arrive plus tard')).toBeVisible();
   await page.screenshot({

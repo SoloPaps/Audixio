@@ -6,6 +6,21 @@ const ROOT = path.resolve('apps/web');
 const TOKEN_FILE = path.normalize('apps/web/src/styles/tokens.css');
 const ARC_FILE = 'apps/web/src/styles/arc.css';
 
+/** Portage figé des maquettes finales : couleurs et rythmes copiés, contrôlés par le test pixel. */
+const MAQUETTE_PORT = [
+  'apps/web/src/styles/maquettes/',
+  'apps/web/src/styles/canon.css',
+  'apps/web/src/styles/chrome.css',
+  'apps/web/src/components/ShareSheet.svelte',
+];
+
+function isMaquettePort(relative: string): boolean {
+  const norm = repoPath(relative);
+  return MAQUETTE_PORT.some((item) =>
+    item.endsWith('/') ? norm.startsWith(item) : norm === item,
+  );
+}
+
 function repoPath(relative: string): string {
   return relative.replaceAll('\\', '/');
 }
@@ -110,6 +125,7 @@ describe('couleurs des CSS', () => {
     for (const file of await filesUnder(ROOT)) {
       const text = await readFile(file, 'utf8');
       const relative = path.relative(process.cwd(), file);
+      if (isMaquettePort(relative)) continue;
       const isTokens = path.normalize(relative) === TOKEN_FILE;
       const chunks =
         isTokens || file.endsWith('.js') ? [text] : styleChunks(file, text);
@@ -147,7 +163,8 @@ describe('couleurs des CSS', () => {
     const violations: string[] = [];
     for (const file of await filesUnder(ROOT)) {
       const relative = path.relative(process.cwd(), file);
-      if (path.normalize(relative) === TOKEN_FILE) continue;
+      if (path.normalize(relative) === TOKEN_FILE || isMaquettePort(relative))
+        continue;
       const text = await readFile(file, 'utf8');
       for (const chunk of styleChunks(file, text)) {
         const lines = chunk.split('\n');
@@ -189,6 +206,20 @@ describe('couleurs des CSS', () => {
       }
     }
     expect(violations).toEqual([]);
+  });
+
+  it('laisse le portage des maquettes hors des tokens, pas le reste', () => {
+    expect(isMaquettePort('apps/web/src/styles/maquettes/hub.css')).toBe(true);
+    expect(isMaquettePort('apps/web/src/styles/canon.css')).toBe(true);
+    expect(isMaquettePort('apps/web/src/styles/chrome.css')).toBe(true);
+    expect(isMaquettePort('apps/web/src/components/ShareSheet.svelte')).toBe(
+      true,
+    );
+    expect(isMaquettePort(ARC_FILE)).toBe(false);
+    expect(isMaquettePort('apps/web/src/styles/tokens.css')).toBe(false);
+    expect(isMaquettePort('apps/web/src/components/HubView.svelte')).toBe(
+      false,
+    );
   });
 
   it('reconnaît arc.css quel que soit le séparateur', () => {

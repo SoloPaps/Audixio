@@ -310,13 +310,19 @@ test('preuve de propriété : guides, création, vérification', async ({
       'https://solopaps.github.io/Projet-Site-Artiste/audixio-verification.html',
     ),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Vérifier maintenant' }).click();
-  await expect(
-    page.getByRole('heading', { name: 'Contrôle du domaine confirmé' }),
-  ).toBeVisible();
+  await page
+    .locator('#methodes')
+    .getByRole('button', { name: 'Vérifier maintenant' })
+    .click();
+  await expect(page.locator('#orbt')).toContainText(
+    'Contrôle du domaine confirmé',
+  );
   await expectNoViolations(page);
 
-  await page.goto(`/verifier?site=${SITE_ID}&theme=dark`);
-  await expect(page.getByLabel('Thème')).toHaveValue('dark');
+  await page.goto(`/verifier?site=${SITE_ID}&theme=light`);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(
+    page.locator('.axn-lang [aria-current="true"]').first(),
+  ).toHaveText('FR');
   await expectNoViolations(page);
 });

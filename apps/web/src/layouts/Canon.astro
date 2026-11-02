@@ -1,0 +1,48 @@
+---
+import CanonBar from '../components/CanonBar.svelte';
+import CanonFooter from '../components/CanonFooter.astro';
+import { t } from '../i18n/index.js';
+import '../styles/polices.css';
+import '../styles/chrome.css';
+
+export type Vue = 'hub' | 'domaine' | 'restreint' | 'preuve';
+
+interface Props {
+  title: string;
+  description: string;
+  vue: Vue;
+  robots?: string;
+}
+
+const { title, description, vue, robots = 'noindex, nofollow' } = Astro.props;
+const canonical = Astro.url.pathname || '/';
+---
+
+<!doctype html>
+<html lang="fr" data-theme="light" data-vue={vue}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#EDE8F5" />
+    <link rel="canonical" href={canonical} />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('has-js');
+        var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (d.dataset.vue !== 'restreint' || !calm) d.classList.add('js');
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#contenu">{t('skip.main')}</a>
+    <CanonBar pathname={Astro.url.pathname} client:load />
+    <slot />
+    <CanonFooter />
+  </body>
+</html>

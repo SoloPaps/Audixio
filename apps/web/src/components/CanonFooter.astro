@@ -1,0 +1,32 @@
+---
+import { t } from '../i18n/index.js';
+---
+
+<footer class="axf">
+  <div class="axf-in">
+    <div class="axf-top">
+      <div>
+        <div class="axf-brand">
+          <a class="axf-logo" href="/" aria-label={t('footer.home')}><img src="/marque/logo-pc.svg" alt="" width="82" height="26" loading="lazy" decoding="async" /></a>
+          <span class="axf-v">{t('footer.version')}</span>
+        </div>
+        <p class="axf-about">{t('footer.about')}</p>
+      </div>
+      <nav aria-label={t('footer.legal.links')}>
+        <ul class="axf-links">
+          <li><a href="/mentions-legales">{t('footer.mentions')}</a></li>
+          <li><a href="/confidentialite">{t('footer.privacy')}</a></li>
+          <li><a href="/accessibilite">{t('footer.a11y')}</a></li>
+          <li><a href="/cgu">{t('footer.cgu')}</a></li>
+          <li><a href="/ecoconception">{t('footer.eco')}</a></li>
+          <li><a href="/methode#method-never">{t('footer.robot')}</a></li>
+          <li><a href="/confidentialite#privacy-what">{t('footer.cookies')}</a></li>
+          <li><a class="axf-pro" href="/pro">{t('footer.pro')}<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 17 17 7M8 7h9v9" /></svg></a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="axf-bot">
+      <p style="margin:0">{t('footer.bottom')}</p>
+    </div>
+  </div>
+</footer>
