@@ -34,10 +34,9 @@ test('le sommaire marque le chapitre et la barre de lecture avance', async ({
   await expect(link).toHaveAttribute('aria-current', 'true');
   await expect
     .poll(() =>
-      page.locator('.progress').evaluate((node) => {
-        const value = getComputedStyle(node).getPropertyValue('--p').trim();
-        return Number(value);
-      }),
+      page.evaluate(
+        '(() => { const node = document.querySelector(".progress"); return Number(getComputedStyle(node).getPropertyValue("--p")); })()',
+      ),
     )
     .toBeGreaterThan(0.2);
 });
@@ -54,7 +53,9 @@ test('le survol incline une tuile et le compteur atteint sa cible', async ({
   const card = page.locator('.tilt').first();
   await card.hover();
   await expect
-    .poll(() => card.evaluate((node) => node.style.transform))
+    .poll(() =>
+      page.evaluate('(() => document.querySelector(".tilt").style.transform)()'),
+    )
     .toContain('rotateX');
   await card.dispatchEvent('pointerleave');
 });
@@ -64,12 +65,9 @@ test('le focus clavier pose un contour visible', async ({ page }) => {
   await page.goto('/cookies?theme=light');
   await ready(page);
   await page.keyboard.press('Tab');
-  const outline = await page.evaluate(() => {
-    const el = document.activeElement;
-    if (!el) return '';
-    const style = getComputedStyle(el);
-    return `${style.outlineStyle} ${style.outlineWidth}`;
-  });
+  const outline = await page.evaluate(
+    '(() => { const el = document.activeElement; if (!el) return ""; const style = getComputedStyle(el); return style.outlineStyle + " " + style.outlineWidth; })()',
+  );
   expect(outline).toMatch(/solid/);
   expect(outline).not.toMatch(/0px/);
 });
@@ -191,11 +189,15 @@ test('le survol d’un lien d’audit le soulève', async ({ page }) => {
   await page.goto('/audit-echoue?theme=light');
   await ready(page);
   const link = page.locator('a.lk').first();
-  const before = await link.evaluate(
-    (node) => getComputedStyle(node).transform,
+  const before = await page.evaluate(
+    '(() => getComputedStyle(document.querySelector("a.lk")).transform)()',
   );
   await link.hover();
   await expect
-    .poll(() => link.evaluate((node) => getComputedStyle(node).transform))
+    .poll(() =>
+      page.evaluate(
+        '(() => getComputedStyle(document.querySelector("a.lk")).transform)()',
+      ),
+    )
     .not.toBe(before);
 });
