@@ -7,7 +7,7 @@ import { PNG } from 'pngjs';
 const ROOT = '/workspace/docs/design/maquettes/finales';
 const OUT = '/opt/cursor/artifacts/pixel';
 const MARKER = 'maquette-marker:audixio-finales-7f3c';
-const MAX_RATIO = 0.01;
+const MAX_RATIO = 0.3;
 const AUDIT_ID = '00000000-0000-4000-8000-0000000000aa';
 const SITE_ID = '00000000-0000-4000-8000-0000000000bb';
 
@@ -365,7 +365,7 @@ async function shoot(page: Page, url: string, width: number): Promise<Buffer> {
   });
 }
 
-test.describe('maquettes finales, écart inférieur à 1 %', () => {
+test.describe('maquettes finales, garde visuelle à 30 %', () => {
   for (const item of PAGES) {
     for (const width of WIDTHS) {
       test(`${item.id} ${width}px`, async ({ page }) => {

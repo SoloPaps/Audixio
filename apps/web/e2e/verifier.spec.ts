@@ -310,7 +310,10 @@ test('preuve de propriété : guides, création, vérification', async ({
       'https://solopaps.github.io/Projet-Site-Artiste/audixio-verification.html',
     ),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Vérifier maintenant' }).click();
+  await page
+    .locator('#methodes')
+    .getByRole('button', { name: 'Vérifier maintenant' })
+    .click();
   await expect(
     page.getByRole('heading', { name: 'Contrôle du domaine confirmé' }),
   ).toBeVisible();

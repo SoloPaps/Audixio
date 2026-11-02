@@ -78,6 +78,14 @@ function methodLabel(value: VerifyMethod): string {
   return t('verify.method.meta');
 }
 
+function methodHint(value: VerifyMethod): string {
+  if (value === 'dns_txt') return t('preuve.hint.dns');
+  if (value === 'html_file' || value === 'file') return t('preuve.hint.file');
+  if (value === 'well_known') return t('preuve.hint.known');
+  if (value === 'search_console') return t('preuve.hint.gsc');
+  return t('preuve.hint.meta');
+}
+
 function phaseOf(row: StoredVerification | null): 'idle' | 'ok' | 'fail' {
   if (!row) return 'idle';
   if (row.status === 'verified') return 'ok';
@@ -249,7 +257,7 @@ async function onCopy(value: string): Promise<void> {
   {@const challenge = token ? localChallenge(site, token) : null}
   {@const phase = pending ? 'checking' : phaseOf(proof)}
   <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={`/rapport?id=${encodeURIComponent(reportId ?? '')}`}>{site.label || site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>
-  <section class="khero" id="st" data-st={phase === 'checking' ? 'run' : phase} aria-labelledby="h1">
+  <section class="khero" id="st" data-st={phase === 'checking' ? 'scan' : phase} aria-labelledby="h1">
     <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="hgrid">
       <div>
@@ -258,9 +266,27 @@ async function onCopy(value: string): Promise<void> {
         <p class="lede">{t('preuve.lede')}</p>
         <p>{t('verify.consent')}</p>
         <p>{t('verify.legal_law')}</p>
-        <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a></div>
+        <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a>{#if reportId}<a class="btn btn-ghost" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('preuve.report')}</a>{/if}</div>
       </div>
-      <div class="gpanel">
+      <div class="orbx">
+        <span class="fchip c1" aria-hidden="true"><i class="pulse"></i>{t('preuve.sondes')}</span>
+        {#if token}<span class="fchip c2" aria-hidden="true"><b>TXT</b> {token.slice(0, 16)}…</span>{/if}
+        <div class="gpanel orbw">
+        <div class="orb" aria-hidden="true"><svg viewBox="0 0 300 300">
+          <defs>
+            <linearGradient id="shg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7091E6"/><stop offset="1" stop-color="#3D52A0"/></linearGradient>
+            <linearGradient id="sho" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4CC48A"/><stop offset="1" stop-color="#1F7F52"/></linearGradient>
+            <linearGradient id="shf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9895A"/><stop offset="1" stop-color="#B54708"/></linearGradient>
+            <radialGradient id="sw" cx="0" cy="1" r="1"><stop offset="0" stop-color="#7091E6" stop-opacity=".55"/><stop offset="1" stop-color="#7091E6" stop-opacity="0"/></radialGradient>
+          </defs>
+          <circle class="ring" cx="150" cy="150" r="140"/><circle class="ring d" cx="150" cy="150" r="110"/><circle class="ring" cx="150" cy="150" r="80"/>
+          <path class="sweep" d="M150 150 L150 10 A140 140 0 0 1 271 80 Z" fill="url(#sw)"/>
+          <circle class="ping" cx="150" cy="150" r="140"/><circle class="ping" cx="150" cy="150" r="140"/>
+          <g class="sat"><circle cx="150" cy="10" r="5"/><circle cx="260" cy="150" r="3.5" opacity=".6"/><circle cx="72" cy="240" r="4" opacity=".8"/></g>
+          <path class="shield" d="M150 92l46 17v38c0 33-25 52-46 61-21-9-46-28-46-61v-38z"/>
+          <text class="q" x="150" y="166" text-anchor="middle">?</text>
+          <path class="mk ok" d="M130 151l14 14 27-30"/><path class="mk no" d="M134 134l32 32M166 134l-32 32"/>
+        </svg></div>
         <h2 class="stl" id="orbt">
           {#if phase === 'checking'}{t('verify.state.checking.title')}
           {:else if phase === 'ok'}{t('verify.state.ok.title')}
@@ -273,6 +299,8 @@ async function onCopy(value: string): Promise<void> {
             {:else}{t('verify.state.idle.body')}{/if}
           </small>
         </h2>
+        <ol class="steps" aria-label={t('preuve.steps')}><li class="on"><b>1</b>{t('preuve.step.1')}</li><li><b>2</b>{t('preuve.step.2')}</li><li><b>3</b>{t('preuve.step.3')}</li></ol>
+        </div>
       </div>
     </div>
   </section>
@@ -300,7 +328,7 @@ async function onCopy(value: string): Promise<void> {
     {/if}
     <div class="tabs rv" role="tablist" aria-label={t('verify.method')}>
       {#each METHODS as item (item)}
-        <button class="tab" type="button" role="tab" aria-selected={method === item} onclick={() => { method = item; }}>{methodLabel(item)}</button>
+        <button class="tab" type="button" role="tab" aria-selected={method === item} onclick={() => { method = item; }}>{methodLabel(item)}<small>{methodHint(item)}</small></button>
       {/each}
     </div>
     {#if method === 'dns_txt' && site.host.endsWith('.github.io')}
@@ -310,12 +338,16 @@ async function onCopy(value: string): Promise<void> {
       <p>{t('verify.gsc.later')}</p>
     {:else}
       {#each guidesFor(method) as guide (guide.title)}
-        <section class="panel">
-          <h3>{t(guide.title)}</h3>
-          <ol class="steps">{#each guide.steps as step, index (step + String(index))}<li>{t(step)}</li>{/each}</ol>
+        <section class="card panel">
+          <h3>{t(guide.title)} <span class="tag">{t('preuve.selected')}</span></h3>
+          <ol class="guide">{#each guide.steps as step, index (step + String(index))}<li>{t(step)}</li>{/each}</ol>
         </section>
       {/each}
       {#if challenge}
+        {#if method === 'meta'}
+          <div class="code"><div class="hd"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>{t('preuve.code.title')}</span><span class="ready">{t('preuve.code.ready')}</span></div><pre>{challenge.metaTag}</pre></div>
+          <button type="button" class="btn btn-ghost btn-sm" onclick={() => onCopy(challenge.metaTag)}>{t('verify.copy')}</button>
+        {:else}
         <dl class="kv">
           {#if method === 'dns_txt'}
             <div><dt>{t('verify.record_name')}</dt><dd>{challenge.dnsName}</dd></div>
@@ -326,10 +358,9 @@ async function onCopy(value: string): Promise<void> {
             <div><dt>{t('verify.well_known_url')}</dt><dd>{challenge.wellKnownUrl}</dd></div>
           {:else if method === 'file'}
             <div><dt>{t('verify.file_url')}</dt><dd>{challenge.fileUrl}</dd></div>
-          {:else}
-            <div><dt>{t('verify.meta_tag')}</dt><dd>{challenge.metaTag}</dd><button type="button" class="btn btn-ghost btn-sm" onclick={() => onCopy(challenge.metaTag)}>{t('verify.copy')}</button></div>
           {/if}
         </dl>
+        {/if}
         <div class="prow">
           <button class="btn btn-primary" type="button" disabled={pending} onclick={onCheck}>{pending ? t('verify.checking') : phase === 'fail' ? t('verify.retry') : t('verify.now')}</button>
         </div>
@@ -345,7 +376,12 @@ async function onCopy(value: string): Promise<void> {
     </div>
   </section>
   <div class="dock" role="region" aria-label={t('preuve.choose')}>
-    <p>{site.host}</p>
-    <div class="r"><a class="btn btn-ghost btn-sm" href="/sites">{t('verify.back')}</a></div>
+    <p>{t('preuve.dock', { host: site.host, method: methodLabel(method) })}</p>
+    <div class="r">
+      <a class="btn btn-ghost btn-sm" href="/sites">{t('verify.back')}</a>
+      {#if challenge && method !== 'search_console'}
+        <button class="btn btn-primary btn-sm" type="button" disabled={pending} onclick={onCheck}>{pending ? t('verify.checking') : t('verify.now')}</button>
+      {/if}
+    </div>
   </div>
 {/if}

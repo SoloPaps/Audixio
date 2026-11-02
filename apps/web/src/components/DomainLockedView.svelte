@@ -59,13 +59,14 @@ onMount(() => {
         <div>
           <p class="status-pill rv"><i aria-hidden="true"></i><span>{t('restreint.unverified', { host })}</span></p>
           <div class="title-row">
+            <span class="dom-tile" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/></svg></span>
             <h1 id="h1">{name}</h1>
             <span class="tag lock-tag"><span>{t('domain.locked.badge')}</span></span>
           </div>
           <p class="subtitle rv">{t('domain.locked.teaser')}</p>
           <p class="hero-p rv">{t('restreint.sub')}</p>
           <div class="hero-cta rv">
-            <a class="btn btn-primary" href="#debloquer">{t('restreint.cta')}</a>
+            <a class="btn btn-primary" href="#debloquer"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>{t('restreint.cta')}<svg class="ico down" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
           </div>
         </div>
         <div class="scene-wrap rv from-right">
@@ -78,11 +79,12 @@ onMount(() => {
                 <div class="shield3d" id="shield3d">
                   <div class="face" aria-hidden="true"><img src="/marque/bouclier-restreint.svg" alt="" width="200" height="240" /></div>
                 </div>
-                <div class="chip3d c1">{t('restreint.point')}</div>
-                <div class="chip3d c2">{t('restreint.point')}</div>
-                <div class="chip3d c3">{t('restreint.point')}</div>
+                <div class="chip3d c1"><svg class="ico lk" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><svg class="ico ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('restreint.point')}</div>
+                <div class="chip3d c2"><svg class="ico lk" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><svg class="ico ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('restreint.point')}</div>
+                <div class="chip3d c3"><svg class="ico lk" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><svg class="ico ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('restreint.point')}</div>
               </div>
             </div>
+            <div class="scene-badges"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>{t('restreint.tested')}<em>{t('restreint.reserved')}</em></div>
           </div>
         </div>
       </div>
@@ -92,7 +94,7 @@ onMount(() => {
   <section class="section" aria-labelledby="why-title">
     <div class="wrap why">
       <div>
-        <div class="sec-title rv"><h2 class="h2" id="why-title">{t('restreint.why')}</h2></div>
+        <div class="sec-title rv"><span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span><h2 class="h2" id="why-title">{t('restreint.why')}</h2></div>
         <div class="copy">
           <p class="rv">{t('restreint.why.1')}</p>
           <p class="rv">{t('restreint.why.2')}</p>

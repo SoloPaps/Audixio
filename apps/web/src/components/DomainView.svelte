@@ -117,6 +117,7 @@ const ladder = ['D', 'C', 'B', 'A'] as const;
 function ladderLabel(id: string): string {
   if (id === letter) return t('domaine.now');
   if (id === 'D') return t('domaine.slow');
+  if (id === 'C') return t('domaine.mid');
   if (id === 'B') return t('domaine.fast');
   if (id === 'A') return t('domaine.goal');
   return id;
@@ -243,7 +244,7 @@ onMount(() => {
         <div class="gbar" aria-hidden="true"><i style={`--v:${Math.max(0, Math.min(100, score ?? 0)) / 100}`}></i></div>
         <ol class="ladder rv" aria-label={t('domaine.ladder')}>
           {#each ladder as step (step)}
-            <li class={`g-${step.toLowerCase()}`} class:now={step === letter} aria-current={step === letter ? 'step' : undefined}><span class="gchip">{step}</span>{ladderLabel(step)}</li>
+            <li class={`g-${step.toLowerCase()}`} class:now={step === letter} class:goal={step === 'A'} aria-current={step === letter ? 'step' : undefined}><span class="gchip">{step}</span>{ladderLabel(step)}</li>
           {/each}
         </ol>
       </section>
