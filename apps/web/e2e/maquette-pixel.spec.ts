@@ -1,52 +1,345 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { expect, type Page, test } from '@playwright/test';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
 const ROOT = '/workspace/docs/design/maquettes/finales';
 const OUT = '/opt/cursor/artifacts/pixel';
+const MARKER = 'maquette-marker:audixio-finales-7f3c';
+const MAX_RATIO = 0.01;
+const AUDIT_ID = '00000000-0000-4000-8000-0000000000aa';
+const SITE_ID = '00000000-0000-4000-8000-0000000000bb';
+
+const session = {
+  access_token: 'header.payload.signature',
+  refresh_token: 'refresh-token-placeholder-value',
+  expires_in: 3600,
+  expires_at: 2_000_000_000,
+  token_type: 'bearer',
+  user: {
+    id: '11111111-1111-4111-8111-111111111111',
+    aud: 'authenticated',
+    role: 'authenticated',
+    email: 'ada@exemple.fr',
+    app_metadata: { provider: 'email', providers: ['email'] },
+    user_metadata: {},
+    created_at: '2026-10-23T00:00:00.000Z',
+  },
+};
 
 const PAGES = [
   {
     id: 'hub',
     mock: `${ROOT}/page_rapport_hub/page_rapport_hub.html`,
-    live: '/rapport?visuel=1',
+    live: `/rapport?id=${AUDIT_ID}&theme=light`,
+    ready: 'Audit de atelier-martin.fr',
   },
   {
-    id: 'domaine-ouvert',
+    id: 'domaine',
     mock: `${ROOT}/page_rapport_domaine/page_rapport_domaine.html`,
-    live: '/domaine?visuel=ouvert',
+    live: `/domaine?id=${AUDIT_ID}&domaine=performance&theme=light`,
+    ready: 'Votre site est ralenti',
   },
   {
-    id: 'domaine-restreint',
+    id: 'restreint',
     mock: `${ROOT}/page_domaine_restreint/page_domaine_restreint.html`,
-    live: '/domaine?visuel=restreint',
+    live: `/domaine?id=${AUDIT_ID}&domaine=securite&theme=light`,
+    ready: 'Sécurité',
   },
   {
     id: 'preuve',
     mock: `${ROOT}/page_verifier_propriete/page_verifier_propriete.html`,
-    live: '/verifier?visuel=1',
+    live: `/verifier?site=${SITE_ID}&theme=light`,
+    ready: 'Vérifier la propriété',
+  },
+  {
+    id: 'partager',
+    mock: `${ROOT}/interface_partager/interface_partager.html`,
+    live: `/rapport?id=${AUDIT_ID}&theme=light`,
+    ready: 'Partager le rapport',
   },
 ] as const;
 
 const WIDTHS = [1280, 330] as const;
-const MAX_RATIO = 0.01;
 
-test.use({ javaScriptEnabled: false });
-
-async function silenceFonts(page: Page): Promise<void> {
-  await page.route('https://fonts.googleapis.com/**', (route) => route.abort());
-  await page.route('https://fonts.gstatic.com/**', (route) => route.abort());
+function finding(input: {
+  domain: string;
+  checkId: string;
+  status: string;
+  severity: number;
+  impact: number;
+  messageKey: string;
+  reason?: string;
+  minutes: number;
+}): unknown {
+  return {
+    domain: input.domain,
+    checkId: input.checkId,
+    status: input.status,
+    severity: input.severity,
+    impact: input.impact,
+    score: input.status === 'pass' ? 100 : 0,
+    measured: {},
+    messageKey: input.messageKey,
+    params: {},
+    fixKey: null,
+    effortMinutes: input.minutes,
+    reason: input.reason ?? null,
+  };
 }
 
-async function shoot(page: Page, url: string, width: number): Promise<Buffer> {
-  await silenceFonts(page);
-  await page.setViewportSize({ width, height: 900 });
-  await page.goto(url, { waitUntil: 'load' });
-  return page.screenshot({
-    fullPage: true,
-    animations: 'disabled',
-    caret: 'hide',
+function audit(kind: 'hub' | 'domaine' | 'restreint'): unknown {
+  const host = kind === 'restreint' ? 'exemple.fr' : 'atelier-martin.fr';
+  const locked = kind === 'restreint';
+  const domains = [
+    ['performance', kind === 'domaine' ? 58 : 58],
+    ['seo', 78],
+    ['securite', locked ? null : 62],
+    ['ecologie', 60],
+    ['accessibilite', 81],
+    ['qualite', 84],
+    ['vie_privee', null],
+    ['dns_email', 95],
+  ] as const;
+  const hubFindings = [
+    finding({
+      domain: 'performance',
+      checkId: 'px.1',
+      status: 'fail',
+      severity: 4,
+      impact: 3,
+      messageKey: 'hub.px.t1',
+      minutes: 15,
+    }),
+    finding({
+      domain: 'seo',
+      checkId: 'px.2',
+      status: 'fail',
+      severity: 3,
+      impact: 3,
+      messageKey: 'hub.px.t2',
+      minutes: 30,
+    }),
+    finding({
+      domain: 'securite',
+      checkId: 'px.3',
+      status: 'warn',
+      severity: 3,
+      impact: 3,
+      messageKey: 'hub.px.t3',
+      minutes: 20,
+    }),
+    finding({
+      domain: 'accessibilite',
+      checkId: 'px.4',
+      status: 'warn',
+      severity: 2,
+      impact: 3,
+      messageKey: 'hub.px.t4',
+      minutes: 30,
+    }),
+    finding({
+      domain: 'ecologie',
+      checkId: 'px.5',
+      status: 'warn',
+      severity: 2,
+      impact: 2,
+      messageKey: 'hub.px.t5',
+      minutes: 18,
+    }),
+    finding({
+      domain: 'seo',
+      checkId: 'px.6',
+      status: 'warn',
+      severity: 2,
+      impact: 2,
+      messageKey: 'hub.px.t6',
+      minutes: 11,
+    }),
+    finding({
+      domain: 'qualite',
+      checkId: 'px.7',
+      status: 'warn',
+      severity: 2,
+      impact: 2,
+      messageKey: 'hub.px.t7',
+      minutes: 33,
+    }),
+    finding({
+      domain: 'accessibilite',
+      checkId: 'px.8',
+      status: 'warn',
+      severity: 2,
+      impact: 2,
+      messageKey: 'hub.px.t8',
+      minutes: 20,
+    }),
+    finding({
+      domain: 'dns_email',
+      checkId: 'px.9',
+      status: 'warn',
+      severity: 2,
+      impact: 1,
+      messageKey: 'hub.px.t9',
+      minutes: 10,
+    }),
+    finding({
+      domain: 'qualite',
+      checkId: 'px.10',
+      status: 'warn',
+      severity: 1,
+      impact: 2,
+      messageKey: 'hub.px.t10',
+      minutes: 20,
+    }),
+  ];
+  const domainFindings = [1, 2, 3, 4, 5].map((n) =>
+    finding({
+      domain: 'performance',
+      checkId: `dom.${n}`,
+      status: n <= 2 ? 'fail' : n === 3 ? 'warn' : 'pass',
+      severity: n <= 2 ? 4 : 2,
+      impact: 2,
+      messageKey: `domaine.px.t${n}`,
+      reason: `domaine.px.w${n}`,
+      minutes: 20,
+    }),
+  );
+  return {
+    audit: {
+      id: AUDIT_ID,
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '2026.1',
+      engineVersion: '0.1.0',
+      globalScore: locked ? null : 74,
+      siteVerified: !locked,
+      partialLabel: locked ? 'partielle · 7 domaines · site non vérifié' : null,
+      coverage: 1,
+      createdAt: '2026-10-28T10:00:00.000Z',
+      startedAt: '2026-10-28T10:00:01.000Z',
+      finishedAt: '2026-10-28T10:05:00.000Z',
+      error: null,
+      site: {
+        id: SITE_ID,
+        url: `https://${host}`,
+        label: host,
+        scope: 'origin',
+        hosting: 'other',
+      },
+    },
+    domains: domains.map(([domain, score]) => ({
+      domain,
+      score,
+      coverage: 1,
+      level: score === null ? 'untested' : 'improve',
+      locked: locked && domain === 'securite',
+    })),
+    findings: kind === 'domaine' ? domainFindings : locked ? [] : hubFindings,
+  };
+}
+
+async function install(
+  page: Page,
+  kind: 'hub' | 'domaine' | 'restreint' | 'preuve' | 'partager',
+): Promise<void> {
+  const css = readFileSync(
+    '/workspace/apps/web/src/styles/polices.css',
+    'utf8',
+  ).replaceAll('url(/fonts/', 'url(http://127.0.0.1:4321/fonts/');
+  await page.route('https://fonts.googleapis.com/**', async (route) => {
+    await route.fulfill({ status: 200, contentType: 'text/css', body: css });
+  });
+  await page.route('https://fonts.gstatic.com/**', async (route) => {
+    await route.abort();
+  });
+  await page.route('**/api/auth/session', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        access_token: session.access_token,
+        expires_at: session.expires_at,
+        expires_in: session.expires_in,
+        user: session.user,
+      }),
+    });
+  });
+  await page.route('**/auth/v1/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(session.user),
+    });
+  });
+  await page.route('**/api/audits/**', async (route) => {
+    const bodyKind =
+      kind === 'domaine'
+        ? 'domaine'
+        : kind === 'restreint'
+          ? 'restreint'
+          : 'hub';
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(audit(bodyKind)),
+    });
+  });
+  await page.route('http://127.0.0.1:54321/**', async (route) => {
+    const url = route.request().url();
+    if (route.request().method() === 'OPTIONS') {
+      await route.fulfill({ status: 204 });
+      return;
+    }
+    if (url.includes('/rest/v1/sites')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: SITE_ID,
+          url: 'https://exemple.fr',
+          label: 'exemple.fr',
+          host: 'exemple.fr',
+          scope: 'origin',
+          path_prefix: null,
+        }),
+      });
+      return;
+    }
+    if (url.includes('site_verifications')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            id: '00000000-0000-4000-8000-0000000000cc',
+            method: 'meta',
+            status: 'pending',
+            token: 'abc123exemple',
+            created_at: '2026-10-28T10:00:00.000Z',
+          },
+        ]),
+      });
+      return;
+    }
+    if (url.includes('/rest/v1/reports')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          { share_token: 'k7Qm2xVa', visibility: 'link', revoked_at: null },
+        ]),
+      });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body:
+        url.includes('action_plan') || url.includes('/audits') ? '[]' : 'null',
+    });
   });
 }
 
@@ -61,12 +354,69 @@ function pad(src: PNG, width: number, height: number): PNG {
   return out;
 }
 
+async function shoot(page: Page, url: string, width: number): Promise<Buffer> {
+  await page.setViewportSize({ width, height: 900 });
+  await page.goto(url, { waitUntil: 'load' });
+  await page.addStyleTag({ content: 'html{scrollbar-width:none}' });
+  return page.screenshot({
+    fullPage: true,
+    animations: 'disabled',
+    caret: 'hide',
+  });
+}
+
 test.describe('maquettes finales, écart inférieur à 1 %', () => {
   for (const item of PAGES) {
     for (const width of WIDTHS) {
       test(`${item.id} ${width}px`, async ({ page }) => {
+        test.setTimeout(120_000);
+        await page.emulateMedia({
+          reducedMotion: 'reduce',
+          colorScheme: 'light',
+        });
+        const leaks: string[] = [];
+        page.on('request', (req) => {
+          const url = req.url();
+          if (
+            !url.startsWith('http://127.0.0.1') &&
+            !url.startsWith('http://localhost')
+          )
+            return;
+          const ported = url.includes('/styles/maquettes/');
+          if (
+            url.includes('docs/design') ||
+            url.includes('maquettes/finales') ||
+            (url.includes('maquettes') && !ported)
+          )
+            leaks.push(url);
+        });
+        await install(page, item.id === 'partager' ? 'partager' : item.id);
         const mock = parse(await shoot(page, `file://${item.mock}`, width));
-        const live = parse(await shoot(page, item.live, width));
+        leaks.length = 0;
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(item.live, { waitUntil: 'load' });
+        if (item.id === 'partager') {
+          await expect(
+            page.getByRole('heading', { name: 'Audit de atelier-martin.fr' }),
+          ).toBeVisible();
+          await page.getByRole('link', { name: 'Partager' }).click();
+        }
+        await expect(
+          page.getByRole('heading', { name: item.ready }).first(),
+        ).toBeVisible();
+        const html = await page.content();
+        expect(
+          html,
+          'marqueur de maquette présent dans l’application',
+        ).not.toContain(MARKER);
+        expect(leaks, `requête interdite : ${leaks.join(' ')}`).toEqual([]);
+        await page.addStyleTag({ content: 'html{scrollbar-width:none}' });
+        const liveBuffer = await page.screenshot({
+          fullPage: true,
+          animations: 'disabled',
+          caret: 'hide',
+        });
+        const live = parse(liveBuffer);
         const w = Math.max(mock.width, live.width);
         const h = Math.max(mock.height, live.height);
         const a = pad(mock, w, h);
@@ -79,13 +429,28 @@ test.describe('maquettes finales, écart inférieur à 1 %', () => {
         const ratio = mismatched / (w * h);
         mkdirSync(OUT, { recursive: true });
         const stem = `${item.id}-${width}`;
-        writeFileSync(`${OUT}/${stem}-maquette.png`, PNG.sync.write(a));
-        writeFileSync(`${OUT}/${stem}-page.png`, PNG.sync.write(b));
+        const mockPng = PNG.sync.write(a);
+        const pagePng = PNG.sync.write(b);
+        writeFileSync(`${OUT}/${stem}-maquette.png`, mockPng);
+        writeFileSync(`${OUT}/${stem}-page.png`, pagePng);
         writeFileSync(`${OUT}/${stem}-diff.png`, PNG.sync.write(diff));
-        expect(
-          ratio,
-          `${stem} : ${(ratio * 100).toFixed(2)} % de pixels différents`,
-        ).toBeLessThan(MAX_RATIO);
+        const mockMd5 = createHash('md5').update(mockPng).digest('hex');
+        const pageMd5 = createHash('md5').update(pagePng).digest('hex');
+        writeFileSync(
+          `${OUT}/${stem}.json`,
+          JSON.stringify({
+            ratio,
+            percent: Number((ratio * 100).toFixed(4)),
+            mockMd5,
+            pageMd5,
+            w,
+            h,
+          }),
+        );
+        expect(pageMd5, `${stem} md5 identiques`).not.toBe(mockMd5);
+        expect(ratio, `${stem} : ${(ratio * 100).toFixed(2)} %`).toBeLessThan(
+          MAX_RATIO,
+        );
       });
     }
   }
