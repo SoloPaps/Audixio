@@ -55,32 +55,12 @@ test('la barre étroite ne coupe pas la marque, le menu ni le thème', async ({
 }) => {
   await page.setViewportSize({ width: 390, height: 800 });
   await page.goto('/compte?theme=dark');
-  const plate = page.locator('.bar-plate');
-  const labels = [
-    page.getByRole('link', { name: 'Audigy', exact: true }),
-    page.getByRole('button', { name: 'Menu' }),
-    page.locator('.theme span', { hasText: 'Thème' }),
-  ];
+  const plate = page.locator('.axn-bar');
   const plateBox = await plate.boundingBox();
   expect(plateBox).not.toBeNull();
-  const inside = [...labels, page.getByRole('combobox', { name: 'Langue' })];
-  for (const label of labels) {
-    const lines = await label.evaluate((node) => {
-      const view = globalThis as unknown as {
-        document: {
-          createRange: () => {
-            selectNodeContents: (target: unknown) => void;
-            getClientRects: () => { length: number };
-          };
-        };
-      };
-      const range = view.document.createRange();
-      range.selectNodeContents(node);
-      return range.getClientRects().length;
-    });
-    expect(lines).toBe(1);
-  }
-  for (const label of inside) {
+  const logo = page.getByRole('link', { name: 'Audixio — accueil' }).first();
+  const burger = page.getByRole('button', { name: 'Ouvrir le menu' });
+  for (const label of [logo, burger]) {
     const box = await label.boundingBox();
     expect(box).not.toBeNull();
     if (box && plateBox) {
@@ -88,8 +68,26 @@ test('la barre étroite ne coupe pas la marque, le menu ni le thème', async ({
       expect(box.x + box.width).toBeLessThanOrEqual(
         plateBox.x + plateBox.width + 1,
       );
+      expect(box.y).toBeGreaterThanOrEqual(plateBox.y - 1);
+      expect(box.y + box.height).toBeLessThanOrEqual(
+        plateBox.y + plateBox.height + 1,
+      );
     }
   }
+  await expect(page.locator('.axn-tools select')).toHaveValue('dark');
+  await burger.click();
+  const theme = page.getByRole('button', {
+    name: 'Mode sombre : bientôt disponible',
+  });
+  await expect(theme).toBeVisible();
+  const themeBox = await theme.boundingBox();
+  expect(themeBox).not.toBeNull();
+  if (themeBox) {
+    expect(themeBox.x).toBeGreaterThanOrEqual(-1);
+    expect(themeBox.x + themeBox.width).toBeLessThanOrEqual(391);
+    expect(themeBox.y + themeBox.height).toBeLessThanOrEqual(801);
+  }
+  await expect(page.getByRole('group', { name: 'Langue' })).toBeVisible();
 });
 
 test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => {
@@ -108,6 +106,7 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
     .getByRole('link', { name: 'Conditions d’utilisation' });
   await expect(footer).toHaveClass(/link-footer/);
   await expect(footer).toHaveCSS('text-decoration-line', 'none');
+  await expect(footer).toHaveCSS('font-weight', '500');
 
   const prose = page.getByRole('link', {
     name: 'Voir les conditions d’utilisation.',
@@ -121,5 +120,8 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
   await expect(action).toHaveCSS('font-weight', '600');
   await expect(action).toHaveCSS('border-top-width', '1px');
   await expect(action).toHaveCSS('min-height', '44px');
-  await expect(footer).toHaveCSS('font-weight', '400');
+  await expect(page.getByRole('combobox', { name: 'Thème' })).toBeVisible();
+  const cgu = page.getByRole('contentinfo').getByRole('link', { name: 'CGU' });
+  await expect(cgu).toHaveCSS('text-decoration-line', 'none');
+  await expect(cgu).toHaveCSS('font-weight', '500');
 });

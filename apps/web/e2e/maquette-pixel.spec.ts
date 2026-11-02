@@ -392,23 +392,55 @@ function audit(
   };
 }
 
-async function install(
-  page: Page,
-  kind:
-    | 'hub'
-    | 'domaine'
-    | 'restreint'
-    | 'preuve'
-    | 'partager'
-    | 'constat'
-    | 'plan'
-    | 'brief'
-    | 'badge'
-    | 'accueil'
-    | 'methode'
-    | 'exemple'
-    | 'progression',
-): Promise<void> {
+type PixelKind =
+  | 'hub'
+  | 'domaine'
+  | 'restreint'
+  | 'preuve'
+  | 'partager'
+  | 'constat'
+  | 'plan'
+  | 'brief'
+  | 'badge'
+  | 'accueil'
+  | 'methode'
+  | 'exemple'
+  | 'progression'
+  | 'sites-vide'
+  | 'sites-liste'
+  | 'historique'
+  | 'compte'
+  | 'alertes'
+  | 'bienvenue';
+
+function sessionFor(kind: PixelKind) {
+  if (kind === 'compte') {
+    return {
+      ...session,
+      user: { ...session.user, email: 'alexis95120@gmail.com' },
+    };
+  }
+  if (kind === 'alertes') {
+    return {
+      ...session,
+      user: { ...session.user, email: 'camille@exemple.fr' },
+    };
+  }
+  if (kind === 'bienvenue') {
+    return {
+      ...session,
+      user: {
+        ...session.user,
+        email: 'camille@exemple.fr',
+        user_metadata: { full_name: 'Camille' },
+      },
+    };
+  }
+  return session;
+}
+
+async function install(page: Page, kind: PixelKind): Promise<void> {
+  const active = sessionFor(kind);
   const css = readFileSync(FONTS, 'utf8').replaceAll(
     'url(/fonts/',
     'url(http://127.0.0.1:4321/fonts/',
@@ -424,10 +456,10 @@ async function install(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        access_token: session.access_token,
-        expires_at: session.expires_at,
-        expires_in: session.expires_in,
-        user: session.user,
+        access_token: active.access_token,
+        expires_at: active.expires_at,
+        expires_in: active.expires_in,
+        user: active.user,
       }),
     });
   });
@@ -435,7 +467,7 @@ async function install(
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(session.user),
+      body: JSON.stringify(active.user),
     });
   });
   await page.route('**/api/audits/**', async (route) => {
@@ -461,17 +493,44 @@ async function install(
       return;
     }
     if (url.includes('/rest/v1/sites')) {
+      const listed =
+        kind === 'sites-liste'
+          ? [
+              {
+                id: SITE_ID,
+                url: 'https://monsite-exemple.fr',
+                label: 'monsite-exemple.fr',
+                host: 'monsite-exemple.fr',
+                owner_id: session.user.id,
+                is_public: true,
+                public_slug: 'exemple',
+                expose_security: false,
+              },
+              {
+                id: '00000000-0000-4000-8000-0000000000cc',
+                url: 'https://boutique.exemple.fr',
+                label: 'boutique.exemple.fr',
+                host: 'boutique.exemple.fr',
+                owner_id: session.user.id,
+                is_public: false,
+                public_slug: null,
+                expose_security: false,
+              },
+            ]
+          : kind === 'sites-vide'
+            ? []
+            : {
+                id: SITE_ID,
+                url: 'https://exemple.fr',
+                label: 'exemple.fr',
+                host: 'exemple.fr',
+                scope: 'origin',
+                path_prefix: null,
+              };
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({
-          id: SITE_ID,
-          url: 'https://exemple.fr',
-          label: 'exemple.fr',
-          host: 'exemple.fr',
-          scope: 'origin',
-          path_prefix: null,
-        }),
+        body: JSON.stringify(listed),
       });
       return;
     }
@@ -873,6 +932,163 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
         writeFileSync(`${OUT}/${stem}-diff.png`, PNG.sync.write(diff));
         const mockMd5 = createHash('md5').update(mockPng).digest('hex');
         const pageMd5 = createHash('md5').update(pagePng).digest('hex');
+        writeFileSync(
+          `${OUT}/${stem}.json`,
+          JSON.stringify({
+            ratio,
+            percent: Number((ratio * 100).toFixed(4)),
+            mockMd5,
+            pageMd5,
+            w,
+            h,
+          }),
+        );
+        expect(pageMd5, `${stem} md5 identiques`).not.toBe(mockMd5);
+        expect(ratio, `${stem} : ${(ratio * 100).toFixed(2)} %`).toBeLessThan(
+          MAX_RATIO,
+        );
+      });
+    }
+  }
+});
+
+const ESPACE = [
+  {
+    id: 'sites-vide',
+    kind: 'sites-vide' as const,
+    mock: `${ROOT}/page_sites_suivis_vide/page_sites_suivis_vide.html`,
+    live: '/sites?theme=light',
+    ready: 'Suivez votre premier site',
+    sections: ['Comment ça marche', 'Pour aller plus loin'],
+  },
+  {
+    id: 'sites-liste',
+    kind: 'sites-liste' as const,
+    mock: `${ROOT}/page_site_suivi/page_site_suivi.html`,
+    live: '/sites?theme=light',
+    ready: 'Sites suivis',
+    sections: [
+      'Domaines sous surveillance',
+      'Pourquoi surveiller vos domaines',
+      'Calcul souverain & normes',
+      'Allez plus loin dans le suivi',
+    ],
+  },
+  {
+    id: 'historique',
+    kind: 'historique' as const,
+    mock: `${ROOT}/pages_historique_monsite/pages_historique_monsite.html`,
+    live: '/historique?theme=light',
+    ready: 'monsite-exemple.fr',
+    sections: ['Évolution de la note globale', 'Les 8 domaines audités'],
+  },
+  {
+    id: 'compte',
+    kind: 'compte' as const,
+    mock: `${ROOT}/page_compte/page_compte.html`,
+    live: '/compte?theme=light',
+    ready: 'Votre compte',
+    sections: ['Google Search Console', 'Accès partagés'],
+  },
+  {
+    id: 'alertes',
+    kind: 'alertes' as const,
+    mock: `${ROOT}/page_reglages_alertes/page_reglages_alertes.html`,
+    live: '/compte/alertes?theme=light',
+    ready: 'Réglages des alertes',
+    sections: ['Alertes incluses', 'Alertes sur mesure'],
+    prep: stripDemo,
+  },
+  {
+    id: 'bienvenue',
+    kind: 'bienvenue' as const,
+    mock: `${ROOT}/page_bienvenue/page_bienvenue.html`,
+    live: '/bienvenue?theme=light',
+    ready: 'Bienvenue sur Audixio',
+    sections: ['Checklist de démarrage', 'Comprendre avant de commencer'],
+  },
+] as const;
+
+test.describe('espace connecté, garde visuelle à 30 %', () => {
+  for (const item of ESPACE) {
+    for (const width of WIDTHS) {
+      test(`${item.id} ${width}px`, async ({ page }) => {
+        test.setTimeout(120_000);
+        await page.emulateMedia({
+          reducedMotion: 'reduce',
+          colorScheme: 'light',
+        });
+        const leaks: string[] = [];
+        page.on('request', (req) => {
+          const url = req.url();
+          if (
+            !url.startsWith('http://127.0.0.1') &&
+            !url.startsWith('http://localhost')
+          )
+            return;
+          const ported = url.includes('/styles/maquettes/');
+          if (
+            url.includes('docs/design') ||
+            url.includes('maquettes/finales') ||
+            (url.includes('maquettes') && !ported)
+          )
+            leaks.push(url);
+        });
+        await install(page, item.kind);
+        const prep = 'prep' in item ? item.prep : undefined;
+        const mock = parse(
+          await shoot(page, `file://${item.mock}`, width, prep),
+        );
+        leaks.length = 0;
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(item.live, { waitUntil: 'load' });
+        await expect(
+          page.getByRole('heading', { name: item.ready }).first(),
+        ).toBeVisible();
+        for (const name of item.sections) {
+          await expect(
+            page.getByRole('heading', { name }).first(),
+          ).toBeVisible();
+        }
+        if (item.id === 'bienvenue') {
+          await expect(
+            page.getByText('Pour aller plus loin').first(),
+          ).toBeVisible();
+        }
+        const html = await page.content();
+        expect(html).not.toContain(MARKER);
+        expect(leaks, `requête interdite : ${leaks.join(' ')}`).toEqual([]);
+        await page.addStyleTag({ content: 'html{scrollbar-width:none}' });
+        const liveBuffer = await page.screenshot({
+          fullPage: true,
+          animations: 'disabled',
+          caret: 'hide',
+        });
+        const live = parse(liveBuffer);
+        const w = Math.max(mock.width, live.width);
+        const h = Math.max(mock.height, live.height);
+        const a = pad(mock, w, h);
+        const b = pad(live, w, h);
+        const diff = new PNG({ width: w, height: h });
+        const mismatched = pixelmatch(a.data, b.data, diff.data, w, h, {
+          threshold: 0.1,
+          includeAA: false,
+        });
+        const ratio = mismatched / (w * h);
+        mkdirSync(OUT, { recursive: true });
+        const stem = `${item.id}-${width}`;
+        writeFileSync(`${OUT}/${stem}-maquette.png`, PNG.sync.write(a));
+        writeFileSync(`${OUT}/${stem}-page.png`, PNG.sync.write(b));
+        writeFileSync(`${OUT}/${stem}-diff.png`, PNG.sync.write(diff));
+        const side = PNG.sync.write(sideBySide(a, b));
+        writeFileSync(`${OUT}/${stem}-cote-a-cote.png`, side);
+        writeFileSync(`/opt/cursor/artifacts/${stem}-cote-a-cote.png`, side);
+        const mockMd5 = createHash('md5')
+          .update(PNG.sync.write(a))
+          .digest('hex');
+        const pageMd5 = createHash('md5')
+          .update(PNG.sync.write(b))
+          .digest('hex');
         writeFileSync(
           `${OUT}/${stem}.json`,
           JSON.stringify({

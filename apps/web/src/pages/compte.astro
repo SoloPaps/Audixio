@@ -1,13 +1,15 @@
 ---
-import AccountPanel from '../components/AccountPanel.svelte';
+import AccountBoard from '../components/AccountBoard.svelte';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
+import '../styles/maquettes/compte.css';
 ---
 
-<Base title={t('meta.account.title')} description={t('meta.account.description')}>
-  <div class="reading">
-    <h1>{t('account.title')}</h1>
-    <p class="prose">{t('account.lead')}</p>
-    <AccountPanel client:load />
-  </div>
-</Base>
+<Canon
+  vue="compte"
+  title={t('meta.account.title')}
+  description={t('meta.account.description')}
+  robots="noindex, nofollow"
+>
+  <AccountBoard client:load />
+</Canon>

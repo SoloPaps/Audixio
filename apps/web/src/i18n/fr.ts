@@ -2,6 +2,8 @@
  * Dictionnaire français. Une clé absente de cet objet
  * ne peut pas être passée à `t()` (erreur de typage).
  */
+import { espaceFr } from './espace-fr.js';
+import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
 
 const frCore = {
@@ -2780,6 +2782,6 @@ const frCore = {
   'badge.unavailable': 'non disponible',
 } as const satisfies Record<string, string>;
 
-export const fr = { ...frCore, ...mqFr };
+export const fr = { ...frCore, ...mqFr, ...espaceFr, ...espaceUiFr };
 
 export type MessageKey = keyof typeof fr;

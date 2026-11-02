@@ -1,13 +1,16 @@
 ---
-import SitesPanel from '../components/SitesPanel.svelte';
+import SitesBoard from '../components/SitesBoard.svelte';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
+import '../styles/maquettes/sites-liste.css';
+import '../styles/maquettes/sites-vide.css';
 ---
 
-<Base title={t('meta.sites.title')} description={t('meta.sites.description')}>
-  <div class="reading">
-    <h1>{t('sites.title')}</h1>
-    <p class="prose">{t('sites.lead')}</p>
-    <SitesPanel client:load />
-  </div>
-</Base>
+<Canon
+  vue="sites"
+  title={t('meta.sites.title')}
+  description={t('meta.sites.description')}
+  robots="noindex, nofollow"
+>
+  <SitesBoard client:load />
+</Canon>
