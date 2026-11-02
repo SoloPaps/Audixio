@@ -23,15 +23,50 @@ test.describe('animations Pro et accès', () => {
     await expect(card).toHaveClass(/play/);
     const button = page.locator('#wbtn');
     const before = await button.evaluate(
-      (el) => getComputedStyle(el).transform,
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).transform,
     );
     await button.hover();
-    const after = await button.evaluate((el) => getComputedStyle(el).transform);
+    const after = await button.evaluate(
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).transform,
+    );
     expect(after).not.toBe(before);
     const input = page.locator('#email-input');
     await input.focus();
     const outline = await input.evaluate(
-      (el) => getComputedStyle(el).outlineStyle,
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).outlineStyle,
     );
     expect(
       outline === 'auto' || outline === 'solid' || outline === 'none',
@@ -57,7 +92,17 @@ test.describe('animations Pro et accès', () => {
   test('pro : mouvement réduit fige les animations', async ({ page }) => {
     await open(page, '/pro?theme=light', 'reduce');
     const duration = await page.locator('.eyebrow .dot').evaluate((el) => {
-      const raw = getComputedStyle(el).animationDuration;
+      const raw = (
+        globalThis as unknown as {
+          getComputedStyle(node: unknown): {
+            transform: string;
+            outlineStyle: string;
+            animationDuration: string;
+            boxShadow: string;
+            backgroundColor: string;
+          };
+        }
+      ).getComputedStyle(el).animationDuration;
       if (raw.endsWith('ms')) return Number.parseFloat(raw);
       if (raw.endsWith('s')) return Number.parseFloat(raw) * 1000;
       return 9999;
@@ -74,11 +119,37 @@ test.describe('animations Pro et accès', () => {
     await expect(page.locator('#pm-d')).toContainText('2 sites');
     const close = page.locator('.pm-x');
     await close.hover();
-    const turn = await close.evaluate((el) => getComputedStyle(el).transform);
+    const turn = await close.evaluate(
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).transform,
+    );
     expect(turn).not.toBe('none');
     const email = page.locator('#pm-email');
     await email.focus();
-    const shadow = await email.evaluate((el) => getComputedStyle(el).boxShadow);
+    const shadow = await email.evaluate(
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).boxShadow,
+    );
     expect(shadow).not.toBe('none');
     await email.fill('non');
     await page.locator('#pm-form').evaluate((form) => {
@@ -111,7 +182,20 @@ test.describe('animations Pro et accès', () => {
     await open(page, '/demande-acces?theme=light', 'no-preference');
     const icon = page.locator('.input-wrap .material-symbols-outlined').first();
     await page.locator('#owner-email').focus();
-    const scale = await icon.evaluate((el) => getComputedStyle(el).transform);
+    const scale = await icon.evaluate(
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).transform,
+    );
     expect(scale).not.toBe('none');
     await page.locator('#copy-btn').click();
     await expect(page.locator('#copy-btn')).toContainText('Copié');
@@ -181,16 +265,51 @@ test.describe('animations Pro et accès', () => {
     );
     const chip = page.locator('.chip').first();
     const before = await chip.evaluate(
-      (el) => getComputedStyle(el).backgroundColor,
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).backgroundColor,
     );
     await chip.hover();
     const after = await chip.evaluate(
-      (el) => getComputedStyle(el).backgroundColor,
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).backgroundColor,
     );
     expect(after === before || after !== '').toBe(true);
     const role = page.locator('.role').first();
     await role.hover();
-    const shadow = await role.evaluate((el) => getComputedStyle(el).boxShadow);
+    const shadow = await role.evaluate(
+      (el) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle(node: unknown): {
+              transform: string;
+              outlineStyle: string;
+              animationDuration: string;
+              boxShadow: string;
+              backgroundColor: string;
+            };
+          }
+        ).getComputedStyle(el).boxShadow,
+    );
     expect(shadow).not.toBe('none');
   });
 });
