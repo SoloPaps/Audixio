@@ -43,6 +43,7 @@ const canonical = Astro.url.pathname || '/';
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#EDE8F5" />
     <link rel="canonical" href={canonical} />
+    <script is:inline src="/theme-init.js"></script>
     <script is:inline>
       (function () {
         var d = document.documentElement;

@@ -2122,7 +2122,7 @@ const frCore = {
   'nav.mobile': 'Navigation principale (mobile)',
   'locale.en.short': 'EN — English',
   'locale.fr.short': 'FR — Français',
-  'theme.dark.later': 'Thème sombre : bientôt disponible',
+  'theme.dark.later': 'Mode sombre : bientôt disponible',
   'domain.performance.short': 'Performance',
   'domain.seo.short': 'SEO',
   'domain.securite.short': 'Sécurité',
