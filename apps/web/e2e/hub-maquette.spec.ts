@@ -152,12 +152,12 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
   await expect(
     page.getByRole('region', { name: 'Les 8 domaines' }),
   ).toBeVisible();
-  await expect(page.getByText(/\/100/)).toHaveCount(0);
+  await expect(page.getByText('74/100').first()).toBeVisible();
   await page.screenshot({
     path: '/opt/cursor/artifacts/hub-desktop.png',
     fullPage: true,
   });
-  await page.getByRole('button', { name: 'Partager' }).click();
+  await page.getByRole('link', { name: 'Partager' }).click();
   await expect(
     page.getByRole('dialog', { name: 'Partager le rapport' }),
   ).toBeVisible();
@@ -169,10 +169,14 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
     .getByRole('dialog', { name: 'Partager le rapport' })
     .getByRole('button', { name: 'Fermer' })
     .click();
-  await page.getByRole('link', { name: /^Vitesse/ }).click();
+  await page.getByRole('link', { name: /^Performance/ }).click();
   await expect(page).toHaveURL(/domaine=performance/);
-  await expect(page.getByRole('heading', { name: 'Vitesse' })).toBeVisible();
-  await expect(page.getByLabel('Statut').first()).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: /Votre site est ralenti/ }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Constats et actions recommandées' }),
+  ).toBeVisible();
   await page.screenshot({
     path: '/opt/cursor/artifacts/domaine-desktop.png',
     fullPage: true,
@@ -184,7 +188,9 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Audit de atelier-martin.fr' }),
   ).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Menu' })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Ouvrir le menu' }),
+  ).toBeVisible();
   const overflow = await page.evaluate(
     'document.documentElement.scrollWidth <= window.innerWidth + 1',
   );
@@ -201,7 +207,7 @@ test('domaine verrouillé sans indice précis', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto(`/domaine?id=${AUDIT_ID}&domaine=securite&theme=light`);
   await expect(
-    page.getByRole('heading', { name: 'Protection', exact: true }),
+    page.getByRole('heading', { name: 'Sécurité', exact: true }),
   ).toBeVisible();
   await expect(page.getByText('Verrouillé').first()).toBeVisible();
   await expect(

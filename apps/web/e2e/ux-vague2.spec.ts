@@ -123,7 +123,10 @@ test('markdown local et limite repliée', async ({ page }) => {
   await install(page);
   const calls: string[] = [];
   await page.goto(`/rapport?id=${AUDIT_ID}`);
-  await expect(page.getByRole('link', { name: 'Imprimer' })).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Exporter en PDF' }),
+  ).toHaveAttribute('href', new RegExp(`/rapport/${AUDIT_ID}/imprimer`));
+  await page.goto(`/plan?id=${AUDIT_ID}`);
   await expect(
     page.getByRole('link', { name: 'Télécharger en Markdown' }),
   ).toBeVisible();
@@ -149,15 +152,19 @@ test('markdown local et limite repliée', async ({ page }) => {
   expect(calls.some((url) => /openai|anthropic|gemini/iu.test(url))).toBe(
     false,
   );
+  await page.setViewportSize({ width: 390, height: 800 });
+  await expect(
+    page.getByRole('link', { name: 'Télécharger en Markdown' }),
+  ).toBeVisible();
 
-  await page.getByRole('link', { name: /^Impact écologique/ }).click();
+  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=ecologie`);
   await expect(page).toHaveURL(/domaine=ecologie/);
   const limit = page.locator('details.finding-limit');
   await expect(limit).toHaveCount(1);
   await expect(limit).not.toHaveJSProperty('open', true);
   await expect(
     page.getByRole('heading', {
-      level: 4,
+      level: 3,
       name: 'L’annuaire indique un hébergeur à électricité renouvelable.',
     }),
   ).toBeVisible();
@@ -168,13 +175,25 @@ test('markdown local et limite repliée', async ({ page }) => {
   await page.keyboard.press('Enter');
   await expect(limit).toHaveJSProperty('open', true);
   await expect(
-    page.getByRole('button', { name: 'Copier le prompt' }),
+    limit.getByRole('button', { name: 'Copier le prompt' }),
   ).toHaveCount(0);
 
   await page.setViewportSize({ width: 390, height: 800 });
-  await expect(
-    page.getByRole('link', { name: 'Télécharger en Markdown' }),
-  ).toBeVisible();
+  await page.evaluate(async () => {
+    const view = globalThis as unknown as {
+      document: {
+        getAnimations: () => Array<{
+          effect: { getTiming: () => { iterations: number } } | null;
+          finished: Promise<unknown>;
+        }>;
+      };
+    };
+    const pending = view.document.getAnimations().filter((item) => {
+      const iterations = item.effect?.getTiming().iterations ?? 1;
+      return Number.isFinite(iterations);
+    });
+    await Promise.all(pending.map((item) => item.finished));
+  });
   const violations = await new AxeBuilder({ page }).analyze();
   expect(violations.violations).toEqual([]);
 });
@@ -267,7 +286,9 @@ test('captures clair et sombre', async ({ page }) => {
       ).toBeVisible();
     } else {
       await page.goto(`/rapport?id=${AUDIT_ID}&theme=${shot.theme}`);
-      await page.getByText('Voir comment corriger').first().click();
+      await expect(
+        page.getByRole('heading', { name: /Audit de/ }),
+      ).toBeVisible();
       await expect(
         page.getByRole('button', { name: 'Copier le prompt' }),
       ).toHaveCount(0);

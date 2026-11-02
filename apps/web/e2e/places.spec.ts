@@ -261,7 +261,12 @@ test('la confirmation affiche la note et le score à part', async ({ page }) => 
   await waitForIslands(page);
   await expect(page.getByRole('heading', { name: 'Avis' })).toBeVisible();
   await expect(page.getByText('Note publique : 4,6 sur 5.')).toBeVisible();
-  await expect(page.getByText(/\/100/)).toHaveCount(0);
+  await expect(page.getByText('Score des avis : 92 sur 100.')).toBeVisible();
+  await expect(
+    page.getByText('Ce score reste en dehors du score global.'),
+  ).toBeVisible();
+  await expect(page.getByText('72/100').first()).toBeVisible();
+  await expect(page.getByText('92/100')).toHaveCount(0);
   await settleFiniteAnimations(page);
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);

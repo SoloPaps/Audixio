@@ -317,6 +317,9 @@ test('preuve de propriété : guides, création, vérification', async ({
   await expectNoViolations(page);
 
   await page.goto(`/verifier?site=${SITE_ID}&theme=light`);
-  await expect(page.getByRole('button', { name: 'FR' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(
+    page.locator('.axn-lang [aria-current="true"]').first(),
+  ).toHaveText('FR');
   await expectNoViolations(page);
 });

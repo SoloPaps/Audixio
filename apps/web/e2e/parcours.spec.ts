@@ -320,40 +320,17 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
       name: 'Audit de exemple.fr',
     }),
   ).toBeVisible();
-  await expect(page.getByText('Note C', { exact: true })).toBeVisible();
-  await expect(page.getByText(/\/100/)).toHaveCount(0);
-  await expect(page.getByRole('link', { name: /^Protection/ })).toBeVisible();
-  await page.getByRole('link', { name: /^Protection/ }).click();
+  await expect(page.getByText('72/100').first()).toBeVisible();
+  await expect(page.getByRole('link', { name: /^Sécurité/ })).toBeVisible();
+  await page.getByRole('link', { name: /^Sécurité/ }).click();
   await expect(page).toHaveURL(/domaine=securite/);
-  await page.getByRole('button', { name: /Problèmes/ }).click();
   await expect(
-    page.getByRole('heading', { level: 4, name: "Forcer l'adresse chiffrée" }),
+    page.getByRole('heading', { name: "Forcer l'adresse chiffrée" }),
   ).toBeVisible();
   await expect(page.getByText('Aucun traceur connu')).toBeHidden();
-  await page.getByText('Voir comment corriger').click();
+  await page.getByRole('button', { name: 'Détails' }).first().click();
   await expect(
-    page.getByText('Activez le certificat de votre hébergeur.'),
-  ).toBeVisible();
-  await expect(page.getByText(/Méthode 2026\.1/)).toBeVisible();
-  await expect(page.getByText(`Identifiant ${AUDIT_ID}`)).toBeVisible();
-  await expect(
-    page.getByRole('link', { name: 'Vérifier ce rapport' }),
-  ).toBeVisible();
-  await page.locator('details.preuve-mentions summary').click();
-  await expect(
-    page.getByText(
-      'Ce rapport n’est pas un constat de commissaire de justice.',
-    ),
-  ).toBeVisible();
-  await expectNoViolations(page);
-
-  await expect(
-    page.getByRole('heading', { level: 1, name: 'Protection' }),
-  ).toBeVisible();
-  await expect(page.getByText('Note E', { exact: true })).toBeVisible();
-  await expect(page.getByText(/\/100/)).toHaveCount(0);
-  await expect(
-    page.getByRole('link', { name: 'Retour au rapport' }),
+    page.getByRole('link', { name: 'Vue d’ensemble du rapport' }),
   ).toBeVisible();
   await expectNoViolations(page);
 
@@ -404,17 +381,16 @@ test('le rapport donne la note, trois priorités et le pont vers le brief', asyn
     storage.setItem('audigy-auth', JSON.stringify(value));
   }, session);
   await page.goto(`/rapport?id=${AUDIT_ID}`);
-  await expect(page.getByText('Note C', { exact: true })).toBeVisible();
-  await expect(page.getByText(/\/100/)).toHaveCount(0);
+  await expect(page.getByText('72/100').first()).toBeVisible();
   const section = page.getByRole('region', { name: 'Priorités' });
   await expect(section).toBeVisible();
   await expect(section.getByRole('listitem')).toHaveCount(2);
   await expect(
-    page.getByRole('link', { name: 'Ouvrir le plan d’action' }),
-  ).toBeVisible();
+    page.getByRole('link', { name: 'Ouvrir le brief IA' }),
+  ).toHaveAttribute('href', new RegExp(`/plan\\?id=${AUDIT_ID}`));
   await section.getByRole('link').first().click();
   await expect(page).toHaveURL(/domaine=securite#finding-/);
-  await page.getByText('Voir comment corriger').first().click();
+  await page.getByRole('button', { name: 'Détails' }).first().click();
   await expect(
     page.getByText('Activez le certificat de votre hébergeur.'),
   ).toBeVisible();
@@ -438,7 +414,9 @@ test('rapport sombre sans violation', async ({ page }) => {
       name: 'Audit de exemple.fr',
     }),
   ).toBeVisible();
-  await expect(page.getByRole('button', { name: 'FR' })).toBeVisible();
+  await expect(
+    page.locator('.axn-lang [aria-current="true"]').first(),
+  ).toHaveText('FR');
   await expectNoViolations(page);
 });
 
