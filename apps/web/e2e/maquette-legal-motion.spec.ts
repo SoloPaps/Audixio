@@ -54,7 +54,9 @@ test('le survol incline une tuile et le compteur atteint sa cible', async ({
   await card.hover();
   await expect
     .poll(() =>
-      page.evaluate('(() => document.querySelector(".tilt").style.transform)()'),
+      page.evaluate(
+        '(() => document.querySelector(".tilt").style.transform)()',
+      ),
     )
     .toContain('rotateX');
   await card.dispatchEvent('pointerleave');
