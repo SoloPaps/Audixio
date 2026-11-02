@@ -1,19 +1,35 @@
 ---
+import '../styles/maquettes/auth.css';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base
-  title={t('meta.confirmed.title')}
-  description={t('meta.confirmed.description')}
-  robots="noindex"
->
-  <div class="reading">
-    <h1>{t('confirmed.title')}</h1>
-    <p class="prose">{t('confirmed.lead')}</p>
-    <p class="page-links">
-      <a class="button button-primary" href="/#audit-form">{t('confirmed.audit')}</a>
-      <a class="button button-bordered" href="/bienvenue">{t('confirmed.discover')}</a>
-    </p>
-  </div>
-</Base>
+<Canon vue="auth" title={t('meta.confirmed.title')} description={t('meta.confirmed.description')}>
+  <main id="contenu" class="auth-doc" tabindex="-1">
+    <nav class="crumbs fade" aria-label={t('auth.crumbs')}>
+      <ol>
+        <li><a href="/">{t('nav.home')}</a></li>
+        <li aria-current="page">{t('confirmed.crumb')}</li>
+      </ol>
+    </nav>
+    <section class="hero" aria-labelledby="t">
+      <div class="badge-ic ok" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <span class="chip ok fade"><i aria-hidden="true"></i>{t('confirmed.chip')}</span>
+      <h1 id="t" class="fade" style="--d:.1s">{t('confirmed.before')} <span class="grad">{t('confirmed.em')}</span></h1>
+      <p class="lead fade" style="--d:.2s">{t('confirmed.lead')}</p>
+      <div class="acts fade" style="--d:.3s">
+        <a class="btn btn-primary" href="/#audit-form">{t('confirmed.audit')} <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn btn-ghost" href="/bienvenue">{t('confirmed.discover')}</a>
+      </div>
+    </section>
+    <section class="sec" aria-labelledby="h-suite">
+      <h2 id="h-suite">{t('confirmed.next')}</h2>
+      <p class="sub">{t('confirmed.next.lead')}</p>
+      <ul class="lk-grid">
+        <li><a class="lk" href="/sites"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="lk-tx"><span class="lk-t">{t('confirmed.sites')}</span><span class="lk-d">{t('confirmed.sites.hint')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        <li><a class="lk" href="/compte"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="lk-tx"><span class="lk-t">{t('confirmed.account')}</span><span class="lk-d">{t('confirmed.account.hint')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        <li><a class="lk" href="/methode"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M19 19v2H6M8 7h7"/></svg></span><span class="lk-tx"><span class="lk-t">{t('confirmed.method')}</span><span class="lk-d">{t('confirmed.method.hint')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+      </ul>
+    </section>
+  </main>
+</Canon>

@@ -504,14 +504,43 @@ function pad(src: PNG, width: number, height: number): PNG {
   return out;
 }
 
-async function shoot(page: Page, url: string, width: number): Promise<Buffer> {
+async function shoot(
+  page: Page,
+  url: string,
+  width: number,
+  prep?: (page: Page) => Promise<void>,
+): Promise<Buffer> {
   await page.setViewportSize({ width, height: 900 });
   await page.goto(url, { waitUntil: 'load' });
+  if (prep) await prep(page);
   await page.addStyleTag({ content: 'html{scrollbar-width:none}' });
   return page.screenshot({
     fullPage: true,
     animations: 'disabled',
     caret: 'hide',
+  });
+}
+
+function sideBySide(left: PNG, right: PNG): PNG {
+  const gap = 24;
+  const width = left.width + gap + right.width;
+  const height = Math.max(left.height, right.height);
+  const out = new PNG({ width, height });
+  out.data.fill(255);
+  PNG.bitblt(left, out, 0, 0, left.width, left.height, 0, 0);
+  PNG.bitblt(right, out, 0, 0, right.width, right.height, left.width + gap, 0);
+  return out;
+}
+
+async function stripDemo(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const root = globalThis as unknown as {
+      document: {
+        querySelector: (selector: string) => { remove: () => void } | null;
+      };
+    };
+    root.document.querySelector('.backdrop iframe')?.remove();
+    root.document.querySelector('.seg-wrap')?.remove();
   });
 }
 
@@ -753,6 +782,277 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
         writeFileSync(`${OUT}/${stem}-diff.png`, PNG.sync.write(diff));
         const mockMd5 = createHash('md5').update(mockPng).digest('hex');
         const pageMd5 = createHash('md5').update(pagePng).digest('hex');
+        writeFileSync(
+          `${OUT}/${stem}.json`,
+          JSON.stringify({
+            ratio,
+            percent: Number((ratio * 100).toFixed(4)),
+            mockMd5,
+            pageMd5,
+            w,
+            h,
+          }),
+        );
+        expect(pageMd5, `${stem} md5 identiques`).not.toBe(mockMd5);
+        expect(ratio, `${stem} : ${(ratio * 100).toFixed(2)} %`).toBeLessThan(
+          MAX_RATIO,
+        );
+      });
+    }
+  }
+});
+
+const AUTH = [
+  {
+    id: 'connexion',
+    mock: `${ROOT}/interface_connexion/interface_connexion.html`,
+    live: '/connexion?theme=light',
+    ready: 'Connexion',
+    prep: stripDemo,
+    check: async (page: Page) => {
+      await expect(
+        page.getByRole('link', { name: 'Fermer et revenir à l’accueil' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Se connecter' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Créer un compte' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Continuer avec Google' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Continuer avec GitHub' }),
+      ).toBeVisible();
+      await expect(page.getByText('ou avec votre e-mail')).toBeVisible();
+      await expect(page.getByLabel('Adresse e-mail')).toBeVisible();
+      await expect(page.getByLabel('Mot de passe')).toBeVisible();
+      await expect(page.getByText('Rester connecté')).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Mot de passe oublié ?' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Se connecter' }),
+      ).toBeVisible();
+      await expect(page.getByRole('link', { name: 'CGU' })).toBeVisible();
+      await expect(page.getByText('Aucun traceur.')).toBeVisible();
+    },
+  },
+  {
+    id: 'inscription',
+    mock: `${ROOT}/interface_connexion/interface_connexion.html`,
+    live: '/inscription?theme=light',
+    ready: 'Créer un compte',
+    prep: async (page: Page) => {
+      await page.getByRole('tab', { name: 'Créer un compte' }).click();
+      await page.waitForFunction(
+        "document.querySelector('#v-signup')?.classList.contains('vin')",
+      );
+      await stripDemo(page);
+    },
+    check: async (page: Page) => {
+      await expect(
+        page.getByRole('link', { name: 'Continuer avec Google' }),
+      ).toBeVisible();
+      await expect(page.getByText('ou avec votre e-mail')).toBeVisible();
+      await expect(page.getByText('Saisissez un mot de passe')).toBeVisible();
+      await expect(page.getByRole('checkbox')).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'politique de confidentialité' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Créer mon compte' }),
+      ).toBeVisible();
+    },
+  },
+  {
+    id: 'lien',
+    mock: `${ROOT}/interface_connexion/interface_connexion.html`,
+    live: '/connexion?erreur=lien&theme=light',
+    ready: 'Connexion',
+    prep: stripDemo,
+    check: async (page: Page) => {
+      await expect(
+        page.getByText('Ce lien n’est plus valable. Demandez-en un nouveau.'),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Renvoyer le lien' }),
+      ).toBeVisible();
+      await expect(
+        page.getByText(
+          'Le lien a expiré. Indiquez votre adresse pour en recevoir un nouveau.',
+        ),
+      ).toBeVisible();
+    },
+  },
+  {
+    id: 'reinitialisation',
+    mock: `${ROOT}/page_reinitialisation_mot_de_passe/page_reinitialisation_mot_de_passe.html`,
+    live: '/reinitialisation?theme=light',
+    ready: 'Mot de passe oublié ?',
+    prep: stripDemo,
+    check: async (page: Page) => {
+      await expect(
+        page.getByRole('navigation', { name: 'Fil d’Ariane' }),
+      ).toBeVisible();
+      await expect(page.getByLabel('Adresse e-mail')).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Recevoir le lien' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: 'Besoin d’aide ?' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: /Retour à la connexion/ }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: /Contacter l’équipe/ }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: /Sécurité et confidentialité/ }),
+      ).toBeVisible();
+    },
+  },
+  {
+    id: 'nouveau-mot-de-passe',
+    mock: `${ROOT}/page_reinitialisation_mot_de_passe/page_reinitialisation_mot_de_passe.html`,
+    live: '/reinitialisation?etape=nouveau&theme=light',
+    ready: 'Choisissez un nouveau mot de passe',
+    prep: async (page: Page) => {
+      await page
+        .getByRole('button', { name: '2. Nouveau mot de passe' })
+        .click();
+      await page.locator('[data-view="nouveau"]').waitFor({ state: 'visible' });
+      await stripDemo(page);
+    },
+    check: async (page: Page) => {
+      await expect(
+        page.getByRole('textbox', { name: 'Nouveau mot de passe' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('textbox', { name: 'Confirmer le mot de passe' }),
+      ).toBeVisible();
+      await expect(
+        page.getByText('10 caractères minimum').first(),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Enregistrer le mot de passe' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: 'Besoin d’aide ?' }),
+      ).toBeVisible();
+    },
+  },
+  {
+    id: 'email-confirme',
+    mock: `${ROOT}/page_email_confirme/page_email_confirme.html`,
+    live: '/email-confirme?theme=light',
+    ready: 'Adresse e-mail confirmée',
+    prep: async (page: Page) => {
+      await stripDemo(page);
+    },
+    check: async (page: Page) => {
+      await expect(page.getByText('Compte activé')).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: 'Lancer mon premier audit' }),
+      ).toHaveAttribute('href', '/#audit-form');
+      await expect(
+        page.getByRole('link', { name: 'Découvrir Audixio' }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: 'Et ensuite ?' }),
+      ).toBeVisible();
+      await expect(
+        page.getByText('Trois façons de bien démarrer.'),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: /Mes sites suivis/ }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: /Mon compte/ }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('link', { name: /La méthode/ }),
+      ).toBeVisible();
+    },
+  },
+] as const;
+
+test.describe('maquettes auth, garde visuelle à 30 %', () => {
+  for (const item of AUTH) {
+    for (const width of WIDTHS) {
+      test(`${item.id} ${width}px`, async ({ page }) => {
+        test.setTimeout(120_000);
+        await page.emulateMedia({
+          reducedMotion: 'reduce',
+          colorScheme: 'light',
+        });
+        const leaks: string[] = [];
+        page.on('request', (req) => {
+          const url = req.url();
+          if (
+            !url.startsWith('http://127.0.0.1') &&
+            !url.startsWith('http://localhost')
+          )
+            return;
+          const ported = url.includes('/styles/maquettes/');
+          if (
+            url.includes('docs/design') ||
+            url.includes('maquettes/finales') ||
+            (url.includes('maquettes') && !ported)
+          )
+            leaks.push(url);
+        });
+        await install(page, 'hub');
+        const mock = parse(
+          await shoot(page, `file://${item.mock}`, width, item.prep),
+        );
+        leaks.length = 0;
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(item.live, { waitUntil: 'load' });
+        await expect(
+          page.getByRole('heading', { name: item.ready }).first(),
+        ).toBeVisible();
+        await item.check(page);
+        const html = await page.content();
+        expect(
+          html,
+          'marqueur de maquette présent dans l’application',
+        ).not.toContain(MARKER);
+        expect(leaks, `requête interdite : ${leaks.join(' ')}`).toEqual([]);
+        await page.addStyleTag({ content: 'html{scrollbar-width:none}' });
+        const liveBuffer = await page.screenshot({
+          fullPage: true,
+          animations: 'disabled',
+          caret: 'hide',
+        });
+        const live = parse(liveBuffer);
+        const w = Math.max(mock.width, live.width);
+        const h = Math.max(mock.height, live.height);
+        const a = pad(mock, w, h);
+        const b = pad(live, w, h);
+        const diff = new PNG({ width: w, height: h });
+        const mismatched = pixelmatch(a.data, b.data, diff.data, w, h, {
+          threshold: 0.1,
+          includeAA: false,
+        });
+        const ratio = mismatched / (w * h);
+        mkdirSync(OUT, { recursive: true });
+        const stem = `${item.id}-${width}`;
+        writeFileSync(`${OUT}/${stem}-maquette.png`, PNG.sync.write(a));
+        writeFileSync(`${OUT}/${stem}-page.png`, PNG.sync.write(b));
+        writeFileSync(`${OUT}/${stem}-diff.png`, PNG.sync.write(diff));
+        writeFileSync(
+          `${OUT}/${stem}-cote-a-cote.png`,
+          PNG.sync.write(sideBySide(a, b)),
+        );
+        const mockMd5 = createHash('md5')
+          .update(PNG.sync.write(a))
+          .digest('hex');
+        const pageMd5 = createHash('md5')
+          .update(PNG.sync.write(b))
+          .digest('hex');
         writeFileSync(
           `${OUT}/${stem}.json`,
           JSON.stringify({

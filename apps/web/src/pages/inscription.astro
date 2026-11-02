@@ -1,13 +1,9 @@
 ---
 import LoginForm from '../components/LoginForm.svelte';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import AuthGate from '../layouts/AuthGate.astro';
 ---
 
-<Base
-  title={t('meta.signup.title')}
-  description={t('meta.signup.description')}
-  robots="noindex"
->
+<AuthGate title={t('meta.signup.title')} description={t('meta.signup.description')}>
   <LoginForm mode="signup" client:load />
-</Base>
+</AuthGate>
