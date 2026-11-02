@@ -1,13 +1,127 @@
 ---
+import '../styles/maquettes/pro.css';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
-import '../styles/chrome.css';
-import '../styles/polices.css';
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base shell="canon" title={t('nav.pricing')} description={t('pro.later')}>
-  <section class="plan-card">
-    <h1>{t('nav.pricing')}</h1>
-    <p>{t('pro.later')}</p>
-  </section>
-</Base>
+<Canon vue="pro" title={t('mq.pro.meta.title')} description={t('mq.pro.meta.desc')} robots="index, follow">
+<p hidden id="mq.pr.err.bad">{t('mq.pr.err.bad')}</p><p hidden id="mq.pr.err.empty">{t('mq.pr.err.empty')}</p><p hidden id="mq.ax.copied">{t('mq.ax.copied')}</p><p hidden id="mq.ax.copied.long">{t('mq.ax.copied.long')}</p>
+
+
+
+<main id="contenu" tabindex="-1">
+
+<section class="khero" aria-labelledby="h1" id="hero"><div class="aurora" aria-hidden="true" data-depth="-.6"><i></i><i></i><i></i><i></i></div>
+<div class="hgrid"><div>
+<nav class="crumbs" aria-label={t('mq.pro.001')}><ol><li><a href="/">{t('mq.pro.002')}</a></li><li><a href="/sites">{t('mq.pro.003')}</a></li><li><span aria-current="page">{t('mq.pro.004')}</span></li></ol></nav>
+<p class="eyebrow"><span class="dot" aria-hidden="true"></span>{t('mq.pro.005')}</p>
+<h1 id="h1">{t('mq.pro.006')} <span class="grad-txt">{t('mq.pro.007')}</span></h1>
+<p class="lede">{t('mq.pro.008')}</p>
+<div class="wl" id="wl"><div>
+<form id="waitlist-form" novalidate><label for="email-input">{t('mq.pro.009')}</label>
+<div class="wrow"><input id="email-input" name="email" type="email" autocomplete="email" inputmode="email" placeholder={t('mq.pro.010')} required aria-describedby="werr whint"><button type="submit" class="pbtn" id="wbtn"><svg class="bel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="spin" aria-hidden="true"></span><span class="bl">{t('mq.pro.011')}</span></button></div>
+<p class="err" id="werr" aria-live="polite"></p>
+<p class="hint" id="whint">{t('mq.pro.012')}</p></form>
+<div class="ok" id="waitlist-success" role="status" tabindex="-1"><span class="okc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><p>{t('mq.pro.013')}<small>{t('mq.pro.014')}</small></p></div>
+</div></div></div>
+<div class="cons rv" aria-hidden="true"><div>
+<div class="cbar"><span class="lg"></span><b>{t('mq.pro.015')}</b><span class="sp1"></span><span class="pbadge">{t('mq.pro.016')}</span></div>
+<div class="crow"><span class="gs"><span class="gk g1" style="background:#fbe8c8;color:#8a4b08">{t('mq.pro.017')}</span><span class="gk g2" style="background:#dde4f8;color:#2b3b85">{t('mq.pro.018')}</span></span><span class="dm">{t('mq.pro.019')}<br><span class="st">{t('mq.pro.020')}</span></span><span></span><svg viewBox="0 0 90 28" preserveAspectRatio="none"><path pathLength="1" stroke="#7091e6" d="M0 22 L22 18 L45 14 L68 9 L90 4"/></svg></div><div class="crow"><span class="gs"><span class="gk g1" style="background:#dde4f8;color:#2b3b85">{t('mq.pro.018')}</span><span class="gk g2" style="background:#d6f2e3;color:#065f3a">{t('mq.pro.021')}</span></span><span class="dm">{t('mq.pro.022')}<br><span class="st">{t('mq.pro.020')}</span></span><span></span><svg viewBox="0 0 90 28" preserveAspectRatio="none"><path pathLength="1" stroke="#2fa36b" d="M0 18 L22 16 L45 10 L68 8 L90 3"/></svg></div><div class="crow"><span class="gs"><span class="gk g1" style="background:#fce3d6;color:#9a3a0c">{t('mq.pro.023')}</span><span class="gk g2" style="background:#fbe8c8;color:#8a4b08">{t('mq.pro.017')}</span></span><span class="dm">{t('mq.pro.024')}<br><span class="st">{t('mq.pro.020')}</span></span><span></span><svg viewBox="0 0 90 28" preserveAspectRatio="none"><path pathLength="1" stroke="#e0a63a" d="M0 26 L22 24 L45 22 L68 15 L90 12"/></svg></div>
+<div class="ctoast"><i></i>{t('mq.pro.025')}</div>
+</div></div>
+</div></section>
+
+<section class="blk" aria-labelledby="pro-features-heading"><div class="pz rv" id="pz"><div class="pin">
+<div class="pau" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="ptop"><div><span class="pbadge">{t('mq.pro.016')}</span><span class="psoon">{t('mq.pro.026')}</span>
+<h2 id="pro-features-heading">{t('mq.pro.027')} <em>{t('mq.pro.028')}</em> {t('mq.pro.029')}</h2>
+<p class="pl">{t('mq.pro.030')}</p></div></div>
+<div class="pgrid">
+<article class="pf wide"><div class="ill" aria-hidden="true"><div><span class="tl1"></span><div class="hc h0"><span class="gk" style="background:#fbe8c8;color:#8a4b08">{t('mq.pro.017')}</span><span class="ln"></span><span>{t('mq.pro.031')}</span></div><div class="hc h1"><span class="gk" style="background:#dde4f8;color:#2b3b85">{t('mq.pro.018')}</span><span class="ln"></span><span>{t('mq.pro.032')}</span></div><div class="hc h2"><span class="gk" style="background:#d6f2e3;color:#065f3a">{t('mq.pro.021')}</span><span class="ln"></span><span>{t('mq.pro.033')}</span></div></div><div><div class="ch"><svg viewBox="0 0 300 120" preserveAspectRatio="none"><defs><linearGradient id="par" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2fa36b" stop-opacity=".35"/><stop offset="1" stop-color="#2fa36b" stop-opacity="0"/></linearGradient></defs><path class="gl" d="M0 30H300M0 60H300M0 90H300"/><path class="ar" d="M0 96 L60 84 L120 70 L180 52 L240 34 L300 18 V120 H0Z"/><path class="tr" pathLength="1" stroke="#2fa36b" d="M0 96 L60 84 L120 70 L180 52 L240 34 L300 18"/><path class="tr" pathLength="1" stroke="#7091e6" d="M0 70 L60 74 L120 58 L180 62 L240 46 L300 40"/><path class="tr" pathLength="1" stroke="#e0a63a" d="M0 104 L60 98 L120 100 L180 86 L240 80 L300 70"/></svg></div></div></div>
+<h3>{t('mq.pro.034')} <b>{t('mq.pro.035')}</b></h3><p>{t('mq.pro.036')}</p><span class="st2">{t('mq.pro.037')}</span></article>
+<article class="pf caps"><div class="ill" aria-hidden="true"><div class="mt"><span class="mpro">{t('mq.pro.016')}</span><div class="tk"><span class="fl"></span></div><span class="cap"><span>{t('mq.pro.038')}</span></span></div><span class="ql">{t('mq.pro.039')}</span><div class="q"><i></i><i></i><i></i></div></div>
+<h3>{t('mq.pro.040')} <b>{t('mq.pro.041')}</b></h3><p>{t('mq.pro.042')}</p><span class="st2">{t('mq.pro.043')}</span></article>
+<article class="pf"><div class="ill" aria-hidden="true"><div class="ex"><span class="fm" style="background:#9ee6bf;--x:-92px;--y:-46px;animation-delay:0.0s">{t('mq.pro.044')}</span><span class="fm" style="background:#adbbda;--x:92px;--y:-46px;animation-delay:0.25s">{t('mq.pro.045')}</span><span class="fm" style="background:#9fb4ff;--x:-112px;--y:10px;animation-delay:0.5s">{t('mq.pro.046')}</span><span class="fm" style="background:#f3dfa8;--x:112px;--y:10px;animation-delay:0.75s">{t('mq.pro.047')}</span><span class="fm" style="background:#dde4f8;--x:-80px;--y:58px;animation-delay:1.0s">{t('mq.pro.048')}</span><span class="fm" style="background:#f7c9b0;--x:80px;--y:58px;animation-delay:1.25s">{t('mq.pro.049')}</span><div class="doc"><b><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5"/></svg></b></div></div></div>
+<h3>{t('mq.pro.050')} <b>{t('mq.pro.051')}</b></h3><p>{t('mq.pro.052')}</p><span class="st2">{t('mq.pro.053')}</span></article>
+<article class="pf"><div class="ill" aria-hidden="true"><div class="env"><b>{t('mq.pro.054')}</b></div><div class="tst t1"><i style="background:#e1763f"></i><span>{t('mq.pro.055')}</span></div><div class="tst t2"><i style="background:#e0a63a"></i><span>{t('mq.pro.056')}</span></div><div class="tst t3"><i style="background:#2fa36b"></i><span>{t('mq.pro.057')}</span></div></div>
+<h3>{t('mq.pro.058')} <b>{t('mq.pro.059')}</b></h3><p>{t('mq.pro.060')}</p><span class="st2">{t('mq.pro.061')}</span></article>
+<article class="pf"><div class="ill" aria-hidden="true"><div class="bm"><span class="lg"></span>{t('mq.pro.015')}<span class="ln2"></span><span class="sp1"></span><span class="pbadge">{t('mq.pro.016')}</span></div></div>
+<h3>{t('mq.pro.062')} <b>{t('mq.pro.063')}</b></h3><p>{t('mq.pro.064')}</p></article>
+</div></div></div></section>
+
+<section class="blk cmp" aria-labelledby="hcmp"><h2 class="sec" id="hcmp">{t('mq.pro.065')}</h2>
+<table><caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{t('mq.pro.066')}</caption>
+<thead><tr><th scope="col">{t('mq.pro.067')}</th><th scope="col">{t('mq.pro.068')}</th><th scope="col" class="p">{t('mq.pro.069')}</th></tr></thead>
+<tbody>
+<tr><th scope="row">{t('mq.pro.070')}</th><td>{t('mq.pro.071')}</td><td>{t('mq.pro.072')}</td></tr>
+<tr><th scope="row">{t('mq.pro.073')}</th><td>{t('mq.pro.074')}</td><td>{t('mq.pro.075')}</td></tr>
+<tr><th scope="row">{t('mq.pro.076')}</th><td>{t('mq.pro.077')}</td><td>{t('mq.pro.078')}</td></tr>
+<tr><th scope="row">{t('mq.pro.079')}</th><td>{t('mq.pro.080')}</td><td>{t('mq.pro.081')}</td></tr>
+<tr><th scope="row">{t('mq.pro.082')}</th><td>{t('mq.pro.083')}</td><td>{t('mq.pro.083')}</td></tr>
+<tr><th scope="row">{t('mq.pro.084')}</th><td>{t('mq.pro.038')}</td><td>{t('mq.pro.040')}</td></tr>
+</tbody></table>
+<a class="cta" href="#hero">{t('mq.pro.085')}</a>
+</section>
+
+<section class="blk" aria-labelledby="hfree" style="margin-top:var(--s6)"><div class="card free rv"><span class="ic"><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><div>
+<h2 class="sec" id="hfree" style="margin-top:0">{t('mq.pro.086')}</h2>
+<p class="lede" style="font-size:16px">{t('mq.pro.087')}</p>
+<ul class="fl2"><li><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.pro.088')}</li><li><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.pro.089')}</li><li><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.pro.090')}</li><li><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.pro.091')}</li><li><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.pro.092')}</li></ul></div></div>
+<p style="margin-top:var(--s4)"><a class="back lk-pill" href="/sites"><svg  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>{t('mq.pro.093')}</a></p></section>
+
+</main>
+
+<div class="toast" id="toast" aria-hidden="true"></div><p class="sr-only" id="live" role="status" aria-live="polite"></p>
+
+
+
+<script is:inline>
+function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typeof line==='string'&&line)return line;var node=document.getElementById(key);return node?node.textContent:'';}
+(function(){var d=document,h=d.documentElement;h.classList.add('js');
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;window.AX={reduce:reduce};
+/* stagger index within groups */
+d.querySelectorAll('[data-stagger]').forEach(function(g){Array.prototype.forEach.call(g.querySelectorAll(':scope > .rv'),function(el,i){el.style.setProperty('--i',i)})});
+function countUp(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.count,dur=reduce?0:1600,t0=performance.now(),dec=+(el.dataset.dec||0);
+ function f(t){var p=dur?Math.min(1,(t-t0)/dur):1,e=1-Math.pow(1-p,4);el.textContent=(to*e).toFixed(dec).replace('.',',');if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+window.AX.countUp=countUp;
+var io='IntersectionObserver' in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var t=e.target;t.classList.add('in');t.querySelectorAll('[data-count]').forEach(countUp);if(t.dataset.count)countUp(t);io.unobserve(t)}})},{threshold:0,rootMargin:'0px 0px -6% 0px'}):null;
+d.querySelectorAll('.rv,.sheen,[data-count],.gbar').forEach(function(el){io?io.observe(el):el.classList.add('in')});
+if(!io)d.querySelectorAll('[data-count]').forEach(countUp);
+/* safety: never leave content hidden (passed-by, print, slow IO) */
+function revealAll(){d.querySelectorAll('.rv,.sheen,.gbar').forEach(function(el){el.classList.add('in')});d.querySelectorAll('[data-count]').forEach(countUp)}
+window.AX.revealAll=revealAll;addEventListener('beforeprint',revealAll);
+setTimeout(function(){d.querySelectorAll('.rv:not(.in),.gbar:not(.in)').forEach(function(el){if(el.getBoundingClientRect().top<innerHeight){el.classList.add('in');el.querySelectorAll('[data-count]').forEach(countUp)}})},2500);
+/* subtle tilt */
+if(!reduce&&matchMedia('(hover:hover)').matches)d.querySelectorAll('.tilt').forEach(function(c){var raf;c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;cancelAnimationFrame(raf);raf=requestAnimationFrame(function(){c.style.transform='perspective(900px) rotateX('+(-y*3)+'deg) rotateY('+(x*4)+'deg) translateY(-4px)'})});c.addEventListener('pointerleave',function(){cancelAnimationFrame(raf);c.style.transform=''})});
+var tt;window.AX.say=function(msg,toast){var l=d.getElementById('live');l.textContent='';setTimeout(function(){l.textContent=msg},50);if(toast){var t=d.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},2600)}};
+})();
+(function(){var d=document,R=AX.reduce;
+/* ripple on every button */
+d.addEventListener('pointerdown',function(e){var b=e.target.closest('.btn');if(!b||R)return;var r=b.getBoundingClientRect(),s=Math.max(r.width,r.height),i=d.createElement('span');i.className='rip';i.style.cssText='width:'+s+'px;height:'+s+'px;left:'+(e.clientX-r.left-s/2)+'px;top:'+(e.clientY-r.top-s/2)+'px';b.appendChild(i);setTimeout(function(){i.remove()},700)});
+/* parallax: pointer + scroll on [data-depth] */
+if(!R&&matchMedia('(hover:hover) and (min-width:900px)').matches){var mx=0,my=0,sy=0,raf;function ap(){d.querySelectorAll('[data-depth]').forEach(function(l){var k=+l.dataset.depth;l.style.transform='translate3d('+(mx*k*18)+'px,'+(my*k*14-sy*k*.12)+'px,0)'});raf=0}
+ function q(){if(!raf)raf=requestAnimationFrame(ap)}
+ addEventListener('pointermove',function(e){mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;q()},{passive:true});addEventListener('scroll',function(){sy=Math.min(scrollY,700);q()},{passive:true})}
+/* copy helper */
+AX.copy=function(btn,txt,msg){function done(){btn.classList.add('ok');var l=btn.querySelector('.bl'),o=l.textContent;l.textContent=tr('mq.ax.copied');AX.say(msg||tr('mq.ax.copied.long'),true);setTimeout(function(){l.textContent=o;btn.classList.remove('ok')},1800)}
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,done);else done()};
+d.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){AX.copy(b,b.dataset.copy,b.dataset.msg)})});
+AX.busy=function(b,ms,cb){b.setAttribute('aria-busy','true');setTimeout(function(){b.removeAttribute('aria-busy');cb&&cb()},R?150:ms)};
+/* skeletons resolve */
+setTimeout(function(){d.querySelectorAll('.sk').forEach(function(s){s.classList.remove('sk');s.removeAttribute('aria-busy')})},R?0:900);
+})();
+(function(){var d=document,R=AX.reduce;
+function io(el,c){if('IntersectionObserver' in window)new IntersectionObserver(function(e){el.classList.toggle(c,e[0].isIntersecting)}).observe(el);else el.classList.add(c)}
+io(d.getElementById('pz'),'play');io(d.getElementById('hero'),'hplay');
+setTimeout(function(){d.querySelectorAll('.rv').forEach(function(e){e.classList.add('in')})},2500);
+if(!R&&matchMedia('(hover:hover)').matches)d.querySelectorAll('.pf').forEach(function(c){c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--x',e.clientX-r.left+'px');c.style.setProperty('--y',e.clientY-r.top+'px')})});
+var f=d.getElementById('waitlist-form'),i=d.getElementById('email-input'),b=d.getElementById('wbtn'),er=d.getElementById('werr'),w=d.getElementById('wl');
+i.addEventListener('input',function(){if(i.getAttribute('aria-invalid')){i.removeAttribute('aria-invalid');er.textContent=''}});
+f.addEventListener('submit',function(e){e.preventDefault();var v=i.value.trim();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){i.setAttribute('aria-invalid','true');er.textContent=v?tr('mq.pr.err.bad'):tr('mq.pr.err.empty');i.focus();return}
+ b.setAttribute('aria-busy','true');setTimeout(function(){b.removeAttribute('aria-busy');w.classList.add('done');var s=d.getElementById('waitlist-success');s.focus();
+ if(R)return;var C=['#3d52a0','#7091e6','#adbbda','#e8c77a','#2fa36b'],bx=d.createElement('span');bx.className='burst';w.appendChild(bx);
+ for(var k=0;k<22;k++){var p=d.createElement('span'),a=k/22*Math.PI*2,r=70+Math.random()*70;p.className='cf';p.style.cssText='background:'+C[k%5]+';--x:'+Math.cos(a)*r+'px;--y:'+Math.sin(a)*r+'px;--r:'+(Math.random()*540-270)+'deg';bx.appendChild(p)}setTimeout(function(){bx.remove()},1000)},R?100:700)});
+})();
+</script>
+</Canon>

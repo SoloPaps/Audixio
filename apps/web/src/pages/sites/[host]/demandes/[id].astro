@@ -1,0 +1,507 @@
+---
+import '../../../../styles/maquettes/acces.css';
+import { t } from '../../../../i18n/index.js';
+import Canon from '../../../../layouts/Canon.astro';
+
+export function getStaticPaths() {
+  return [{ params: { host: 'exemple.fr', id: 'req_948f2a1b7e' } }];
+}
+---
+
+<Canon vue="acces" title={t('mq.acces.meta.title')} description={t('mq.acces.meta.desc')} robots="noindex, nofollow">
+<p hidden id="mq.ac.sending">{t('mq.ac.sending')}</p><p hidden id="mq.ac.refused.word">{t('mq.ac.refused.word')}</p><p hidden id="mq.ac.refused.title">{t('mq.ac.refused.title')}</p><p hidden id="mq.ac.granted.title">{t('mq.ac.granted.title')}</p><p hidden id="mq.ac.granted.say">{t('mq.ac.granted.say')}</p><p hidden id="mq.ac.granted.status">{t('mq.ac.granted.status')}</p><p hidden id="mq.ac.refused.say">{t('mq.ac.refused.say')}</p><p hidden id="mq.ac.refused.status">{t('mq.ac.refused.status')}</p><p hidden id="mq.ac.pending">{t('mq.ac.pending')}</p><p hidden id="mq.ac.pending.eyebrow">{t('mq.ac.pending.eyebrow')}</p><p hidden id="mq.ac.undone">{t('mq.ac.undone')}</p>
+
+
+
+<canvas id="vault-bg" aria-hidden="true"></canvas>
+<div class="vault-grid" aria-hidden="true"></div>
+<div class="vault-halo a" aria-hidden="true"></div>
+<div class="vault-halo b" aria-hidden="true"></div>
+<div class="scan-bar" aria-hidden="true"></div>
+<div class="radar" aria-hidden="true">
+  <svg viewBox="0 0 220 220" fill="none">
+    <circle cx="110" cy="110" r="100"/>
+    <circle cx="110" cy="110" r="72"/>
+    <circle cx="110" cy="110" r="44"/>
+    <circle cx="110" cy="110" r="16"/>
+    <line x1="110" y1="10" x2="110" y2="210" stroke="rgba(61,82,160,.18)" stroke-width="1"/>
+    <line x1="10" y1="110" x2="210" y2="110" stroke="rgba(61,82,160,.18)" stroke-width="1"/>
+    <g class="rng">
+      <path d="M110 110 L110 10 A100 100 0 0 1 195 63 Z" fill="url(#rg)"/>
+    </g>
+    <defs>
+      <radialGradient id="rg" cx="110" cy="110" r="100" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="rgba(112,145,230,.4)"/>
+        <stop offset="1" stop-color="rgba(112,145,230,0)"/>
+      </radialGradient>
+    </defs>
+  </svg>
+</div>
+
+
+
+<main id="contenu" tabindex="-1">
+  <nav class="crumbs rise" style="--d:0" aria-label={t('mq.acces.001')}>
+    <ol><li><a href="/sites">{t('mq.acces.002')}</a></li><li><a href="/rapport">{t('mq.acces.003')}</a></li><li><span aria-current="page">{t('mq.acces.004')}</span></li></ol>
+  </nav>
+
+  <div class="head">
+    <p class="eyebrow rise" style="--d:1"><span class="dot" aria-hidden="true"></span><span id="eb">{t('mq.ac.pending.eyebrow')}</span></p>
+    <h1 class="rise" style="--d:1.4">
+      <span class="word"><span style="--i:0">{t('mq.acces.005')}</span></span>
+      <span class="word"><span style="--i:1">{t('mq.acces.006')}</span></span>
+      <span class="word"><span style="--i:2">{t('mq.acces.007')}</span></span>
+      <span class="word"><span style="--i:3">{t('mq.acces.008')}</span></span>
+      <span class="word"><span style="--i:4">{t('mq.acces.009')}</span></span>
+      <span class="word"><span style="--i:5">{t('mq.acces.010')}</span></span>
+      <span class="word"><span><em style="--i:6">{t('mq.acces.011')}</em></span></span>
+    </h1>
+    <p class="lede rise" style="--d:2"><strong>{t('mq.acces.012')}</strong> {t('mq.acces.013')}<strong>{t('mq.acces.003')}</strong>{t('mq.acces.014')}</p>
+    <div class="chips rise" style="--d:2.4">
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>{t('mq.acces.003')}</span>
+      <span class="chip own"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>{t('mq.acces.015')}</span>
+      <span class="chip tech">{t('mq.acces.016')}</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="card card--scan rise" style="--d:3" aria-labelledby="t-decision">
+      <h2 id="t-decision" class="sr-only">{t('mq.acces.017')}</h2>
+
+      <div id="pane-form" class="pad">
+        <div class="who">
+          <div class="avatar" aria-hidden="true">
+            <svg class="ring" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(112,145,230,.25)" stroke-width="1.5" stroke-dasharray="4 8"/>
+              <circle cx="32" cy="32" r="28" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="40 140" stroke-linecap="round"/>
+            </svg>
+            <b>{t('mq.acces.018')}</b>
+            <span class="status-dot" aria-label={t('mq.acces.019')}></span>
+          </div>
+          <div class="who-main">
+            <span class="label">{t('mq.acces.020')}</span>
+            <p class="who-mail">{t('mq.acces.012')} <span class="tag">{t('mq.acces.021')}</span></p>
+          </div>
+          <p class="when"><span class="label">{t('mq.acces.022')}</span><time datetime="2026-10-27T21:15+01:00">{t('mq.acces.023')}</time></p>
+        </div>
+
+        <figure class="quote">
+          <span class="label" id="msg-l">{t('mq.acces.024')}</span>
+          <blockquote aria-labelledby="msg-l"><p>{t('mq.acces.025')}</p></blockquote>
+          <figcaption>{t('mq.acces.026')}</figcaption>
+        </figure>
+
+        <form id="f" novalidate>
+          <fieldset>
+            <legend>{t('mq.acces.027')}</legend>
+            <p class="help" id="roles-help">{t('mq.acces.028')} <strong>{t('mq.acces.029')}</strong>{t('mq.acces.030')}</p>
+            <div class="roles" aria-describedby="roles-help">
+              <label class="role">
+                <input type="radio" name="role" value="rapport" aria-describedby="r1d">
+                <span>
+                  <span class="role-t">{t('mq.acces.031')}</span>
+                  <span class="role-d" id="r1d">{t('mq.acces.032')}</span>
+                  <ul class="perm">
+                    <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.acces.033')}</li>
+                    <li class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>{t('mq.acces.034')}</li>
+                  </ul>
+                </span>
+              </label>
+              <label class="role">
+                <input type="radio" name="role" value="rapport-brief" checked aria-describedby="r2d">
+                <span>
+                  <span class="role-t">{t('mq.acces.035')} <span class="reco">{t('mq.acces.036')}</span></span>
+                  <span class="role-d" id="r2d">{t('mq.acces.037')}</span>
+                  <ul class="perm">
+                    <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.acces.033')}</li>
+                    <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.acces.038')}</li>
+                  </ul>
+                </span>
+              </label>
+            </div>
+            <p class="never"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><strong>{t('mq.acces.039')}</strong> {t('mq.acces.040')}</span></p>
+          </fieldset>
+
+          <div class="field">
+            <label for="dur">{t('mq.acces.041')}</label>
+            <select id="dur" name="dur" aria-describedby="dur-h">
+              <option value="7">{t('mq.acces.042')}</option>
+              <option value="30" selected>{t('mq.acces.043')}</option>
+              <option value="90">{t('mq.acces.044')}</option>
+              <option value="0">{t('mq.acces.045')}</option>
+            </select>
+            <p class="hint" id="dur-h">{t('mq.acces.046')}</p>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" id="ok" type="submit"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span class="lbl">{t('mq.acces.047')}</span><span class="spin" aria-hidden="true"></span></button>
+            <button class="btn btn-danger" id="no" type="button" aria-expanded="false" aria-controls="confirm"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg><span class="lbl">{t('mq.acces.048')}</span></button>
+            <span class="spacer"></span>
+            <a class="btn btn-ghost" href="/sites">{t('mq.acces.049')}</a>
+          </div>
+
+          <div class="confirm" id="confirm" role="region" aria-labelledby="c-t" hidden>
+            <h3 id="c-t">{t('mq.acces.050')}</h3>
+            <p>{t('mq.acces.051')}</p>
+            <div class="field">
+              <label for="why">{t('mq.acces.052')} <span class="hint" style="display:inline-flex;font-weight:400;font-size:12.5px">{t('mq.acces.053')}</span></label>
+              <textarea id="why" rows="3" maxlength="300" placeholder={t('mq.acces.054')}></textarea>
+            </div>
+            <div class="row">
+              <button class="btn btn-danger solid" id="no-ok" type="button"><span class="lbl">{t('mq.acces.055')}</span><span class="spin" aria-hidden="true"></span></button>
+              <button class="btn btn-ghost" id="no-cancel" type="button">{t('mq.acces.056')}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="pane-ok" class="result ok" tabindex="-1" hidden>
+        <div class="badge-big" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path class="draw" d="M5 12.5l4.5 4.5L19 7.5"/>
+          </svg>
+        </div>
+        <h2>{t('mq.ac.granted.status')}</h2>
+        <p>{t('mq.acces.057')}</p>
+        <div class="sum">
+          <span><strong>{t('mq.acces.058')}</strong><span id="s-role"></span></span>
+          <span><strong>{t('mq.acces.059')}</strong><span id="s-dur"></span></span>
+        </div>
+        <div class="row">
+          <a class="btn btn-primary" href="/sites">{t('mq.acces.060')}</a>
+          <button class="btn btn-ghost" type="button" id="undo">{t('mq.acces.061')}</button>
+        </div>
+      </div>
+
+      <div id="pane-no" class="result no" tabindex="-1" hidden>
+        <div class="badge-big" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+            <path class="draw" d="M17 7 7 17M7 7l10 10"/>
+          </svg>
+        </div>
+        <h2>{t('mq.ac.refused.title')}</h2>
+        <p>{t('mq.acces.062')}</p>
+        <div class="row"><a class="btn btn-primary" href="/sites">{t('mq.acces.063')}</a></div>
+      </div>
+    </section>
+
+    <aside aria-label={t('mq.acces.064')}>
+      <section class="card rise" style="--d:3.4" aria-labelledby="t-sum">
+        <h2 id="t-sum"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 11h6M9 15h4M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/></svg>{t('mq.acces.065')}</h2>
+        <dl class="sum">
+          <dt>{t('mq.acces.066')}</dt><dd>{t('mq.acces.012')}</dd>
+          <dt>{t('mq.acces.067')}</dt><dd>{t('mq.acces.003')}</dd>
+          <dt>{t('mq.acces.068')}</dt><dd>{t('mq.acces.069')}</dd>
+          <dt>{t('mq.acces.070')}</dt><dd>{t('mq.acces.071')}</dd>
+          <dt>{t('mq.acces.072')}</dt><dd id="status" class="status">{t('mq.ac.pending')}</dd>
+        </dl>
+      </section>
+      <section class="card rise" style="--d:3.8" aria-labelledby="t-sec">
+        <h2 id="t-sec"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>{t('mq.acces.073')}</h2>
+        <ul class="notes">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span><strong>{t('mq.acces.074')}</strong> {t('mq.acces.075')}</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span><strong>{t('mq.acces.076')}</strong> {t('mq.acces.077')}</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span><strong>{t('mq.acces.078')}</strong> {t('mq.acces.079')}</span></li>
+        </ul>
+        <p class="ref">{t('mq.acces.080')} <code>{t('mq.acces.081')}</code></p>
+      </section>
+      <section class="card rise" style="--d:4.2" aria-labelledby="t-var">
+        <h2 id="t-var"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>{t('mq.acces.082')}</h2>
+        <p class="var">{t('mq.acces.083')} <strong>{t('mq.acces.084')}</strong> {t('mq.acces.085')}</p>
+        <div class="var-next"><a class="lk" href="/verifier"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3l7 3v5c0 4.5-3 8.4-7 9.5-4-1.1-7-5-7-9.5V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.acces.086')}</span><span class="lk-d">{t('mq.acces.087')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </section>
+    </aside>
+  </div>
+  <p id="live" class="sr-only" aria-live="polite" role="status"></p>
+</main>
+
+
+
+
+
+
+<script is:inline>
+function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typeof line==='string'&&line)return line;var node=document.getElementById(key);return node?node.textContent:'';}
+(function(){
+  'use strict';
+  var d=document,b=d.body;
+  var $=function(s){return d.querySelector(s)};
+  var $$=function(s){return [].slice.call(d.querySelectorAll(s))};
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  b.classList.remove('no-js');
+
+  /* ============================================================
+     ✨ REFLET AU CHARGEMENT — injecte un sheen dans chaque carte
+     ============================================================ */
+  function initSheen(){
+    if(reduce) return;
+    var cards=$$('.card');
+    cards.forEach(function(card, i){
+      if(card.querySelector(':scope > .card-sheen')) return;
+      var s=d.createElement('span');
+      s.className='card-sheen';
+      s.setAttribute('aria-hidden','true');
+      card.appendChild(s);
+      /* Cascade douce : chaque carte démarre 260ms après la précédente */
+      var base=600 + i*260;
+      setTimeout(function(){
+        s.classList.add('go');
+        /* Nettoyage après la fin de l'animation (durée 4.6s + marge) */
+        setTimeout(function(){
+          s.remove();
+        }, 5200);
+      }, base);
+    });
+  }
+
+  /* ============================================================
+     RÉVÉLATIONS PROGRESSIVES
+     ============================================================ */
+  function initReveal(){
+    var els=$$('.rise');
+    if(reduce || !('IntersectionObserver' in window)){
+      els.forEach(function(el){el.classList.add('in')});
+      return;
+    }
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}
+      });
+    },{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){io.observe(el)});
+  }
+  initReveal();
+
+  /* ============================================================
+     CANVAS — constellation de nœuds
+     ============================================================ */
+  function initVaultCanvas(){
+    if(reduce) return;
+    var cv=$('#vault-bg'); if(!cv || !cv.getContext) return;
+    var ctx=cv.getContext('2d'); if(!ctx) return;
+    var dpr=Math.min(devicePixelRatio||1,2);
+    var W=0,H=0,nodes=[],N=0,pulses=[];
+    function resize(){
+      W=cv.width=innerWidth*dpr;
+      H=cv.height=innerHeight*dpr;
+      cv.style.width=innerWidth+'px';
+      cv.style.height=innerHeight+'px';
+      N=Math.max(20,Math.min(50,Math.floor(W*H/(120000))));
+      nodes=[];
+      for(var i=0;i<N;i++){
+        nodes.push({
+          x:Math.random()*W,y:Math.random()*H,
+          r:(Math.random()*1.3+.6)*dpr,
+          vx:(Math.random()-.5)*.15*dpr,
+          vy:(Math.random()-.5)*.15*dpr,
+          tw:Math.random()*Math.PI*2,
+          hue:Math.random()
+        });
+      }
+    }
+    resize();
+    addEventListener('resize',resize);
+
+    function spawnPulse(){
+      if(nodes.length<2) return;
+      var a=Math.floor(Math.random()*nodes.length);
+      var bb=Math.floor(Math.random()*nodes.length);
+      if(a===bb) return;
+      pulses.push({a:a,b:bb,t:0,speed:.008+Math.random()*.006});
+      if(pulses.length>6) pulses.shift();
+    }
+    var pulseTimer=setInterval(spawnPulse,1600);
+
+    var t=0;
+    function draw(){
+      t+=.008;
+      ctx.clearRect(0,0,W,H);
+      for(var i=0;i<nodes.length;i++){
+        var n=nodes[i];
+        n.x+=n.vx; n.y+=n.vy;
+        if(n.x<0||n.x>W) n.vx*=-1;
+        if(n.y<0||n.y>H) n.vy*=-1;
+        var alpha=.25+.35*Math.sin(t*2+n.tw);
+        var g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r*6);
+        g.addColorStop(0,'rgba(112,145,230,'+(alpha*.55)+')');
+        g.addColorStop(1,'rgba(112,145,230,0)');
+        ctx.fillStyle=g;
+        ctx.beginPath();ctx.arc(n.x,n.y,n.r*6,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();
+        ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(61,82,160,'+(alpha*.85)+')';
+        ctx.fill();
+      }
+      var DIST=130*dpr;
+      for(var i=0;i<nodes.length;i++){
+        for(var j=i+1;j<nodes.length;j++){
+          var dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+          var d2=dx*dx+dy*dy;
+          if(d2<DIST*DIST){
+            var o=1-Math.sqrt(d2)/DIST;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x,nodes[i].y);
+            ctx.lineTo(nodes[j].x,nodes[j].y);
+            ctx.strokeStyle='rgba(112,145,230,'+(o*.13)+')';
+            ctx.lineWidth=.6*dpr;
+            ctx.stroke();
+          }
+        }
+      }
+      for(var p=pulses.length-1;p>=0;p--){
+        var pl=pulses[p];
+        pl.t+=pl.speed;
+        if(pl.t>=1){pulses.splice(p,1);continue}
+        var na=nodes[pl.a], nb=nodes[pl.b];
+        if(!na||!nb){pulses.splice(p,1);continue}
+        var px=na.x+(nb.x-na.x)*pl.t;
+        var py=na.y+(nb.y-na.y)*pl.t;
+        var gg=ctx.createRadialGradient(px,py,0,px,py,18*dpr);
+        gg.addColorStop(0,'rgba(255,255,255,.95)');
+        gg.addColorStop(.4,'rgba(112,145,230,.7)');
+        gg.addColorStop(1,'rgba(112,145,230,0)');
+        ctx.fillStyle=gg;
+        ctx.beginPath();ctx.arc(px,py,18*dpr,0,Math.PI*2);ctx.fill();
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+    addEventListener('beforeunload',function(){clearInterval(pulseTimer)});
+  }
+  initVaultCanvas();
+
+  /* Lancement du reflet après rendu initial */
+  requestAnimationFrame(function(){
+    setTimeout(initSheen, 600);
+  });
+
+  /* Hover magnétique des boutons */
+  if(!reduce){
+    $$('.btn').forEach(function(btn){
+      btn.addEventListener('mousemove',function(e){
+        var r=btn.getBoundingClientRect();
+        var mx=e.clientX-r.left-r.width/2;
+        var my=e.clientY-r.top-r.height/2;
+        var dx=mx*0.08, dy=my*0.08;
+        btn.style.transform='translate('+dx+'px,'+(dy-2)+'px)';
+      });
+      btn.addEventListener('mouseleave',function(){
+        btn.style.transform='';
+      });
+    });
+  }
+
+  /* Burst de particules sur sélection de rôle */
+  var roles=$$('.role input');
+  roles.forEach(function(inp){
+    inp.addEventListener('change',function(){
+      if(reduce) return;
+      var role=inp.closest('.role');
+      if(!role) return;
+      var r=role.getBoundingClientRect();
+      var br=inp.getBoundingClientRect();
+      var cx=br.left+br.width/2-r.left;
+      var cy=br.top+br.height/2-r.top;
+      for(var i=0;i<8;i++){
+        var p=d.createElement('span');
+        var angle=(Math.PI*2*i)/8;
+        p.style.cssText=
+          'position:absolute;left:'+cx+'px;top:'+cy+'px;width:5px;height:5px;'+
+          'border-radius:50%;background:var(--primary);pointer-events:none;'+
+          'z-index:5;opacity:1;'+
+          'transition:transform .65s cubic-bezier(.16,1,.3,1),opacity .65s;';
+        role.appendChild(p);
+        requestAnimationFrame(function(){
+          p.style.transform='translate('+(Math.cos(angle)*32)+'px,'+(Math.sin(angle)*32)+'px) scale(.3)';
+          p.style.opacity='0';
+        });
+        (function(el){setTimeout(function(){el.remove()},700)})(p);
+      }
+    });
+  });
+
+  /* Décision */
+  var live=$('#live'),f=$('#f'),ok=$('#ok'),no=$('#no'),cf=$('#confirm'),st=$('#status');
+  function say(t){live.textContent='';setTimeout(function(){live.textContent=t},60)}
+  function finish(btn,pane,msg,status){
+    btn.classList.add('loading');
+    btn.setAttribute('aria-busy','true');
+    say(tr('mq.ac.sending'));
+    var delay=reduce?180:1200;
+    setTimeout(function(){
+      $('#pane-form').hidden=true;
+      var p=$(pane);p.hidden=false;p.focus({preventScroll:true});
+      st.textContent=status;
+      st.classList.remove('status');
+      $('#eb').textContent=status===tr('mq.ac.refused.word')?tr('mq.ac.refused.title'):tr('mq.ac.granted.title');
+      say(msg);
+      if(!reduce){burstOnBadge(p)}
+    },delay);
+  }
+  function burstOnBadge(pane){
+    var badge=pane.querySelector('.badge-big');
+    if(!badge) return;
+    var rect=badge.getBoundingClientRect();
+    var cx=rect.left+rect.width/2;
+    var cy=rect.top+rect.height/2;
+    var isOk=pane.classList.contains('ok');
+    var color=isOk?'#067647':'#3d52a0';
+    for(var i=0;i<18;i++){
+      var s=d.createElement('span');
+      var size=3+Math.random()*4;
+      s.style.cssText=
+        'position:fixed;left:'+cx+'px;top:'+cy+'px;width:'+size+'px;height:'+size+'px;'+
+        'border-radius:50%;background:'+color+';pointer-events:none;z-index:9999;opacity:1;'+
+        'transition:transform 1s cubic-bezier(.16,1,.3,1),opacity 1s;';
+      d.body.appendChild(s);
+      var angle=(Math.PI*2*i)/18+Math.random()*.5;
+      var dist=80+Math.random()*70;
+      (function(el,ang,ds){
+        requestAnimationFrame(function(){
+          el.style.transform='translate('+(Math.cos(ang)*ds)+'px,'+(Math.sin(ang)*ds)+'px) scale(.2)';
+          el.style.opacity='0';
+        });
+        setTimeout(function(){el.remove()},1100);
+      })(s,angle,dist);
+    }
+  }
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var r=f.querySelector('input[name=role]:checked'),dur=$('#dur');
+    $('#s-role').textContent=r.closest('.role').querySelector('.role-t').firstChild.textContent.trim();
+    $('#s-dur').textContent=dur.options[dur.selectedIndex].text;
+    finish(ok,'#pane-ok',tr('mq.ac.granted.say'),tr('mq.ac.granted.status'));
+  });
+  no.addEventListener('click',function(){
+    var open=cf.hidden;
+    cf.hidden=!open;
+    no.setAttribute('aria-expanded',open?'true':'false');
+    if(open)$('#why').focus();
+  });
+  $('#no-cancel').addEventListener('click',function(){
+    cf.hidden=true;
+    no.setAttribute('aria-expanded','false');
+    no.focus();
+  });
+  cf.addEventListener('keydown',function(e){
+    if(e.key==='Escape')$('#no-cancel').click();
+  });
+  $('#no-ok').addEventListener('click',function(){
+    finish($('#no-ok'),'#pane-no',tr('mq.ac.refused.say'),tr('mq.ac.refused.status'));
+  });
+  $('#undo').addEventListener('click',function(){
+    $('#pane-ok').hidden=true;
+    $('#pane-form').hidden=false;
+    ok.classList.remove('loading');
+    ok.removeAttribute('aria-busy');
+    st.textContent=tr('mq.ac.pending');
+    st.classList.add('status');
+    $('#eb').textContent=tr('mq.ac.pending.eyebrow');
+    say(tr('mq.ac.undone'));
+    ok.focus();
+  });
+  if(location.hash==='#ok'){ok.click()}
+})();
+</script>
+</Canon>

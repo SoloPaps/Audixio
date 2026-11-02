@@ -5,6 +5,7 @@
 import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
+import { mqGatesFr } from './mq-gates-fr.js';
 
 const frCore = {
   'skip.content': 'Aller au contenu',
@@ -2782,6 +2783,12 @@ const frCore = {
   'badge.unavailable': 'non disponible',
 } as const satisfies Record<string, string>;
 
-export const fr = { ...frCore, ...mqFr, ...espaceFr, ...espaceUiFr };
+export const fr = {
+  ...frCore,
+  ...mqFr,
+  ...espaceFr,
+  ...espaceUiFr,
+  ...mqGatesFr,
+};
 
 export type MessageKey = keyof typeof fr;

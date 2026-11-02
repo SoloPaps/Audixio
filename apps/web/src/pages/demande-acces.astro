@@ -1,0 +1,352 @@
+---
+import '../styles/maquettes/demande.css';
+import { t } from '../i18n/index.js';
+import Canon from '../layouts/Canon.astro';
+---
+
+<Canon vue="demande" title={t('mq.demande.meta.title')} description={t('mq.demande.meta.desc')} robots="noindex, nofollow">
+<p hidden id="mq.dm.copied">{t('mq.dm.copied')}</p><p hidden id="mq.dm.copied.long">{t('mq.dm.copied.long')}</p><p hidden id="mq.dm.refresh">{t('mq.dm.refresh')}</p><p hidden id="mq.dm.need">{t('mq.dm.need')}</p><p hidden id="mq.dm.sent">{t('mq.dm.sent')}</p>
+
+
+<div class="scroll-progress" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+<canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+
+
+<main id="contenu" tabindex="-1">
+  <nav class="crumbs" aria-label={t('mq.demande.001')}>
+    <ol>
+      <li><a href="/rapport">{t('mq.demande.002')}</a></li>
+      <li><a href="/domaine?domaine=securite">{t('mq.demande.003')}</a></li>
+      <li><span aria-current="page">{t('mq.demande.004')}</span></li>
+    </ol>
+  </nav>
+
+  <div class="hero">
+    <div class="floating-orb o1" aria-hidden="true"></div>
+    <div class="floating-orb o2" aria-hidden="true"></div>
+    <div class="hero-top">
+      <a class="back-link" href="/rapport">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        <span>{t('mq.demande.005')}</span>
+      </a>
+      <div class="hero-meta">
+        <span class="tag">{t('mq.demande.006')}</span>
+        <span class="tag warn">{t('mq.demande.007')}</span>
+      </div>
+    </div>
+    <h1>
+      <span class="word"><span style="--i:0">{t('mq.demande.008')}</span></span>
+      <span class="word"><span style="--i:1">{t('mq.demande.009')}</span></span>
+      <span class="word"><span class="grad" style="--i:2">{t('mq.demande.010')}</span></span>
+    </h1>
+    <p class="hero-lede rv" style="--i:0">
+      {t('mq.demande.011')}
+    </p>
+    <div class="hero-actions rv" style="--i:1">
+      <a href="#formulaire" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+        {t('mq.demande.012')}
+      </a>
+    </div>
+  </div>
+
+  <div class="report-preview rv rv-scale" aria-hidden="true">
+    <div class="report-preview-inner">
+      <div class="report-score-row">
+        <div class="score-ring">
+          <svg width="88" height="88" viewBox="0 0 88 88">
+            <circle class="bg-c" cx="44" cy="44" r="40"></circle>
+            <circle class="fg-c" cx="44" cy="44" r="40"></circle>
+          </svg>
+          <div class="score-val">{t('mq.demande.013')}</div>
+        </div>
+        <div class="report-score-meta">
+          <h2>{t('mq.demande.006')}</h2>
+          <p>{t('mq.demande.014')}</p>
+        </div>
+      </div>
+      <div class="report-domains">
+        <div class="report-domain"><span>{t('mq.demande.015')}</span><b>{t('mq.demande.016')}</b></div>
+        <div class="report-domain"><span>{t('mq.demande.017')}</span><b>{t('mq.demande.018')}</b></div>
+        <div class="report-domain"><span>{t('mq.demande.019')}</span><b>{t('mq.demande.020')}</b></div>
+        <div class="report-domain"><span>{t('mq.demande.021')}</span><b>{t('mq.demande.022')}</b></div>
+        <div class="report-domain"><span>{t('mq.demande.023')}</span><b>{t('mq.demande.024')}</b></div>
+        <div class="report-domain"><span>{t('mq.demande.025')}</span><b>{t('mq.demande.026')}</b></div>
+        <div class="report-domain"><span>{t('mq.demande.027')}</span><b>{t('mq.demande.028')}</b></div>
+        <div class="report-domain"><span>{t('mq.demande.029')}</span><b>{t('mq.demande.030')}</b></div>
+      </div>
+    </div>
+    <div class="lock-overlay">
+      <div class="lock-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <p>{t('mq.demande.031')}</p>
+    </div>
+  </div>
+
+  <section id="formulaire" class="request-section" aria-labelledby="form-title">
+    <div class="request-card rv rv-left">
+      <h2 id="form-title">{t('mq.demande.032')}<span class="title-line"></span></h2>
+      <p class="sub">
+        {t('mq.demande.011')}
+      </p>
+
+      <form id="access-form" novalidate>
+        <div class="form-group rv" style="--i:0">
+          <label class="form-label" for="owner-email">
+            <span>{t('mq.demande.033')} <span class="req" aria-hidden="true">{t('mq.demande.034')}</span></span>
+            <span class="opt">{t('mq.demande.035')}</span>
+          </label>
+          <div class="input-wrap">
+            <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>
+            <input type="email" id="owner-email" name="owner-email" placeholder={t('mq.demande.036')} required autocomplete="email" aria-describedby="email-hint">
+          </div>
+          <p class="form-hint" id="email-hint">{t('mq.demande.037')}</p>
+        </div>
+
+        <div class="form-group rv" style="--i:1">
+          <label class="form-label" for="request-message">
+            <span>{t('mq.demande.038')}</span>
+            <span class="opt">{t('mq.demande.039')}</span>
+          </label>
+          <div class="input-wrap">
+            <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 6h14v9H8l-3 3z"/></svg>
+            <textarea id="request-message" name="request-message" rows="3" placeholder={t('mq.demande.040')}></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary submit-btn rv" style="--i:2" id="submit-btn">
+          <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12 20 4l-6 16-2-7z"/></svg>
+          <span>{t('mq.demande.041')}</span>
+        </button>
+      </form>
+      <p style="margin:12px 0 0;font-size:14px;line-height:1.5;color:#4a5585">{t('mq.demande.042')} <a href="/sites/exemple.fr/demandes/req_948f2a1b7e" style="color:#3d52a0;font-weight:600;text-decoration:underline;text-underline-offset:3px">{t('mq.demande.043')}</a>{t('mq.demande.044')}</p>
+
+      <div class="invite-block rv" style="--i:3">
+        <label class="form-label" for="share-link">
+          <span>{t('mq.demande.045')}</span>
+        </label>
+        <div class="invite-row">
+          <input type="text" id="share-link" value="https://audixio.fr/demande/req_948f2a1b7e" readonly aria-label={t('mq.demande.045')}>
+          <button type="button" class="copy-btn" id="copy-btn" aria-label={t('mq.demande.046')}>
+            <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V4h12"/></svg>
+            <span>{t('mq.demande.047')}</span>
+          </button>
+        </div>
+        <p class="form-hint">{t('mq.demande.048')}</p>
+      </div>
+
+      <div class="status-block rv" style="--i:4" role="status" aria-live="polite">
+        <div class="status-left">
+          <span class="status-dot" aria-hidden="true"></span>
+          <div>
+            <div class="status-label">{t('mq.demande.049')}</div>
+            <p class="status-desc">{t('mq.demande.050')}</p>
+          </div>
+        </div>
+        <button type="button" class="refresh-btn" id="refresh-btn">
+          <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg>
+          <span>{t('mq.demande.051')}</span>
+        </button>
+      </div>
+    </div>
+
+    <aside class="side-panel">
+      <div class="info-card rv rv-right" style="--i:0">
+        <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 8h.01"/></svg>
+        <h3>{t('mq.demande.052')}</h3>
+        <p>{t('mq.demande.053')}</p>
+      </div>
+      <div class="info-card rv rv-right" style="--i:1">
+        <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3 5 6v6c0 4 3 7 7 8 4-1 7-4 7-8V6z"/></svg>
+        <h3>{t('mq.demande.054')}</h3>
+        <ul>
+          <li>{t('mq.demande.055')}</li>
+          <li>{t('mq.demande.056')}</li>
+          <li>{t('mq.demande.057')}</li>
+        </ul>
+      </div>
+      <div class="info-card rv rv-right" style="--i:2">
+        <svg class="material-symbols-outlined" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></svg>
+        <h3>{t('mq.demande.058')}</h3>
+        <p>{t('mq.demande.059')}</p>
+      </div>
+    </aside>
+  </section>
+</main>
+
+
+
+<div class="toast" id="toast" aria-hidden="true"></div>
+<p class="sr-only" id="live" role="status" aria-live="polite"></p>
+
+
+
+
+<script is:inline>
+function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typeof line==='string'&&line)return line;var node=document.getElementById(key);return node?node.textContent:'';}
+(function(){
+  var d=document;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Curseur personnalisé */
+  if(!reduce && matchMedia('(hover:hover) and (pointer:fine) and (min-width:769px)').matches){
+    var dot=d.querySelector('.cursor-dot'),ring=d.querySelector('.cursor-ring');
+    var mx=0,my=0,rx=0,ry=0;
+    d.addEventListener('mousemove',function(e){
+      mx=e.clientX;my=e.clientY;
+      dot.style.transform='translate('+(mx-3)+'px,'+(my-3)+'px)';
+    });
+    (function loop(){
+      rx+=(mx-rx)*0.15;ry+=(my-ry)*0.15;
+      ring.style.transform='translate('+(rx-17)+'px,'+(ry-17)+'px)';
+      requestAnimationFrame(loop);
+    })();
+    d.querySelectorAll('a,button,input,textarea,.info-card,.report-preview').forEach(function(el){
+      el.addEventListener('mouseenter',function(){ring.classList.add('hovering')});
+      el.addEventListener('mouseleave',function(){ring.classList.remove('hovering')});
+    });
+  }
+
+  /* Barre de progression */
+  var prog=d.querySelector('.scroll-progress');
+  addEventListener('scroll',function(){
+    var h=d.documentElement.scrollHeight-innerHeight;
+    prog.style.width=(scrollY/h*100)+'%';
+  },{passive:true});
+
+  /* Particules */
+  if(!reduce){
+    var cv=d.getElementById('particles-canvas'),ctx=cv.getContext('2d');
+    var parts=[],W,H,dpr=Math.min(devicePixelRatio||1,2);
+    function resize(){W=cv.width=innerWidth*dpr;H=cv.height=innerHeight*dpr;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px'}
+    resize();addEventListener('resize',resize);
+    for(var i=0;i<40;i++)parts.push({x:Math.random()*W,y:Math.random()*H,r:(Math.random()*2+1)*dpr,vx:(Math.random()-.5)*.3*dpr,vy:(Math.random()-.5)*.3*dpr,a:Math.random()*.5+.2});
+    function drawParts(){
+      ctx.clearRect(0,0,W,H);
+      for(var i=0;i<parts.length;i++){
+        var p=parts[i];p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(112,145,230,'+p.a+')';ctx.fill();
+      }
+      for(var i=0;i<parts.length;i++)for(var j=i+1;j<parts.length;j++){
+        var dx=parts[i].x-parts[j].x,dy=parts[i].y-parts[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<120*dpr){
+          ctx.beginPath();ctx.moveTo(parts[i].x,parts[i].y);ctx.lineTo(parts[j].x,parts[j].y);
+          ctx.strokeStyle='rgba(112,145,230,'+(0.12*(1-dist/(120*dpr)))+')';ctx.lineWidth=0.6;ctx.stroke();
+        }
+      }
+      requestAnimationFrame(drawParts);
+    }
+    drawParts();
+  }
+
+  /* Reveal au scroll */
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}});
+    },{threshold:0.1,rootMargin:'0px 0px -8% 0px'});
+    d.querySelectorAll('.rv,.score-ring').forEach(function(el){io.observe(el)});
+  }else{d.querySelectorAll('.rv,.score-ring').forEach(function(el){el.classList.add('in')})}
+
+  /* Toast + live */
+  var tt;
+  function say(msg,toast){
+    var l=d.getElementById('live');l.textContent='';
+    setTimeout(function(){l.textContent=msg},50);
+    if(toast){var t=d.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},2600)}
+  }
+
+  /* Ripple */
+  d.addEventListener('pointerdown',function(e){
+    var b=e.target.closest('.btn');if(!b||reduce)return;
+    var r=b.getBoundingClientRect(),s=Math.max(r.width,r.height);
+    var i=d.createElement('span');i.className='rip';
+    i.style.cssText='width:'+s+'px;height:'+s+'px;left:'+(e.clientX-r.left-s/2)+'px;top:'+(e.clientY-r.top-s/2)+'px';
+    b.appendChild(i);setTimeout(function(){i.remove()},700);
+  });
+
+  /* Bouton magnétique */
+  if(!reduce && matchMedia('(hover:hover)').matches){
+    d.querySelectorAll('.btn-primary').forEach(function(btn){
+      btn.addEventListener('mousemove',function(e){
+        var r=btn.getBoundingClientRect();
+        var x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;
+        btn.style.transform='translate('+(x*.15)+'px,'+(y*.25-3)+'px) scale(1.02)';
+      });
+      btn.addEventListener('mouseleave',function(){btn.style.transform=''});
+    });
+  }
+
+  /* Tilt 3D */
+  if(!reduce && matchMedia('(hover:hover)').matches){
+    d.querySelectorAll('.info-card,.report-preview').forEach(function(c){
+      var raf;
+      c.addEventListener('pointermove',function(e){
+        var r=c.getBoundingClientRect();
+        var x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+        cancelAnimationFrame(raf);
+        raf=requestAnimationFrame(function(){
+          c.style.transform='perspective(900px) rotateX('+(-y*4)+'deg) rotateY('+(x*6)+'deg) translateY(-4px)';
+        });
+      });
+      c.addEventListener('pointerleave',function(){cancelAnimationFrame(raf);c.style.transform=''});
+    });
+  }
+
+  /* Parallaxe orbes */
+  if(!reduce){
+    var orbs=d.querySelectorAll('.floating-orb');
+    addEventListener('scroll',function(){
+      var s=Math.min(scrollY,800);
+      orbs.forEach(function(o,i){o.style.transform='translateY('+(s*(i?-0.15:0.2))+'px)'});
+    },{passive:true});
+  }
+
+  /* Copie */
+  var copyBtn=d.getElementById('copy-btn'),shareInput=d.getElementById('share-link');
+  if(copyBtn&&shareInput){
+    copyBtn.addEventListener('click',function(){
+      shareInput.select();
+      var done=function(){
+        copyBtn.classList.add('ok');
+        var txt=copyBtn.querySelector('span:last-child'),orig=txt.textContent;
+        txt.textContent=tr('mq.dm.copied');
+        say(tr('mq.dm.copied.long'),true);
+        setTimeout(function(){txt.textContent=orig;copyBtn.classList.remove('ok')},1800);
+      };
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(shareInput.value).then(done,done);else done();
+    });
+  }
+
+  /* Refresh */
+  var refreshBtn=d.getElementById('refresh-btn');
+  if(refreshBtn){
+    refreshBtn.addEventListener('click',function(){
+      refreshBtn.classList.add('spinning');
+      setTimeout(function(){refreshBtn.classList.remove('spinning')},700);
+      say(tr('mq.dm.refresh'),true);
+    });
+  }
+
+  /* Formulaire */
+  var form=d.getElementById('access-form'),submitBtn=d.getElementById('submit-btn');
+  if(form){
+    form.addEventListener('submit',function(e){
+      e.preventDefault();
+      var email=d.getElementById('owner-email');
+      if(!email.value||!email.checkValidity()){email.focus();say(tr('mq.dm.need'),true);return}
+      submitBtn.disabled=true;submitBtn.style.opacity='.7';
+      setTimeout(function(){
+        submitBtn.disabled=false;submitBtn.style.opacity='';
+        say(tr('mq.dm.sent'),true);
+        form.reset();
+      },900);
+    });
+  }
+})();
+</script>
+</Canon>

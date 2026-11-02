@@ -22,6 +22,10 @@ const MAQUETTE_PORT = [
   'apps/web/src/pages/methode.astro',
   'apps/web/src/pages/exemple-rapport.astro',
   'apps/web/src/pages/progression.astro',
+  'apps/web/src/pages/pro.astro',
+  'apps/web/src/pages/passer-pro.astro',
+  'apps/web/src/pages/demande-acces.astro',
+  'apps/web/src/pages/sites/[host]/demandes/[id].astro',
 ];
 
 function isMaquettePort(relative: string): boolean {
@@ -238,6 +242,12 @@ describe('couleurs des CSS', () => {
       true,
     );
     expect(isMaquettePort('apps/web/src/pages/progression.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/pro.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/passer-pro.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/demande-acces.astro')).toBe(true);
+    expect(
+      isMaquettePort('apps/web/src/pages/sites/[host]/demandes/[id].astro'),
+    ).toBe(true);
     expect(isMaquettePort('apps/web/src/pages/connexion.astro')).toBe(false);
     expect(isMaquettePort(ARC_FILE)).toBe(false);
     expect(isMaquettePort('apps/web/src/styles/tokens.css')).toBe(false);
