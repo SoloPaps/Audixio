@@ -7,7 +7,6 @@ import Canon from '../layouts/Canon.astro';
 <Canon vue="methode" title={t('meta.method.title')} description={t('meta.method.description')} robots="index, follow">
 
 <main id="contenu" tabindex="-1"><div class="blob-petrol" hidden></div><p class="chip">{t('method.version')}</p>
-<nav aria-label={t('toc.label')}><a class="link-inline" href="#method-status">{t('method.status.title')}</a></nav>
 <p><a class="chip" href="#method-repro">{t('method.repro.title')}</a></p><nav class="crumbs" aria-label={t('mq.m.003')}><ol><li><a href="/">{t('mq.m.004')}</a></li><li><span aria-current="page">{t('mq.m.005')}</span></li></ol></nav>
 <div class="mhero" data-stagger>
  <p class="eyebrow rv in"><span class="dot" aria-hidden="true"></span>{t('mq.m.006')}</p>
@@ -63,16 +62,6 @@ import Canon from '../layouts/Canon.astro';
  <div class="qa" data-stagger><details class="card rv"><summary><h3>{t('mq.m.149')}</h3><span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>{t('mq.m.150')} <strong>{t('mq.m.151')}</strong> {t('mq.m.152')} <strong>{t('mq.m.153')}</strong> {t('mq.m.154')}</p></div></details><details class="card rv"><summary><h3>{t('mq.m.155')}</h3><span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>{t('mq.m.156')} <strong>{t('mq.m.157')}</strong> {t('mq.m.158')}</p></div></details><details class="card rv"><summary><h3>{t('mq.m.159')}</h3><span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>{t('mq.m.160')} <strong>2026.1</strong>{t('mq.m.161')}</p></div></details></div>
 </section>
 
-<section class="block" id="method-status" aria-labelledby="method-status-title">
- <h2 class="sec" id="method-status-title">{t('method.status.title')}</h2>
- <p>{t('method.status.body')}</p>
- <ul>
-  <li>{t('method.pass')}</li>
-  <li>{t('method.warn')}</li>
-  <li>{t('method.fail')}</li>
-  <li>{t('method.untested')}</li>
- </ul>
-</section>
 <nav class="block next rv" aria-labelledby="s8"><h2 class="sec" id="s8">{t('mq.m.162')}</h2><ul class="lk-grid"><li><a class="lk" href="/"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6M11 8v6"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.m.146')}</span><span class="lk-d">{t('mq.m.163')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a class="lk" href="/exemple-rapport"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.m.164')}</span><span class="lk-d">{t('mq.m.165')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li></ul></nav>
 </main>
 
