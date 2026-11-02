@@ -1,11 +1,17 @@
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { expect, type Page, test } from '@playwright/test';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-const ROOT = '/workspace/docs/design/maquettes/finales';
-const OUT = '/opt/cursor/artifacts/pixel';
+const REPO = join(dirname(fileURLToPath(import.meta.url)), '../../..');
+const ROOT = join(REPO, 'docs/design/maquettes/finales');
+const FONTS = join(REPO, 'apps/web/src/styles/polices.css');
+const OUT = existsSync('/opt/cursor/artifacts')
+  ? '/opt/cursor/artifacts/pixel'
+  : join(REPO, 'apps/web/test-results/pixel');
 const MARKER = 'maquette-marker:audixio-finales-7f3c';
 const MAX_RATIO = 0.3;
 const AUDIT_ID = '00000000-0000-4000-8000-0000000000aa';
@@ -245,10 +251,10 @@ async function install(
   page: Page,
   kind: 'hub' | 'domaine' | 'restreint' | 'preuve' | 'partager',
 ): Promise<void> {
-  const css = readFileSync(
-    '/workspace/apps/web/src/styles/polices.css',
-    'utf8',
-  ).replaceAll('url(/fonts/', 'url(http://127.0.0.1:4321/fonts/');
+  const css = readFileSync(FONTS, 'utf8').replaceAll(
+    'url(/fonts/',
+    'url(http://127.0.0.1:4321/fonts/',
+  );
   await page.route('https://fonts.googleapis.com/**', async (route) => {
     await route.fulfill({ status: 200, contentType: 'text/css', body: css });
   });
