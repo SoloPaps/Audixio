@@ -58,9 +58,16 @@ test('le pied de page ouvre les pages légales', async ({ page }) => {
 
   await page.goto('/mentions-legales?theme=dark');
   await waitForIslands(page);
-  await expect(page.getByText('Audixio@outlook.fr')).toBeVisible();
-  await expect(page.getByText('audigyweb.fr')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Hébergeur' })).toBeVisible();
+  await expect(page.getByText('Audixio@outlook.fr').first()).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Audixio@outlook.fr' }),
+  ).toBeVisible();
+  await expect(page.getByText('audixio.fr').first()).toBeVisible();
+  await expect(
+    page.getByRole('heading', {
+      name: 'Hébergement et localisation des données',
+    }),
+  ).toBeVisible();
   await expectNoViolations(page);
 
   await page.goto('/confidentialite?theme=light');
@@ -69,7 +76,7 @@ test('le pied de page ouvre les pages légales', async ({ page }) => {
 
   await page.goto('/accessibilite');
   await waitForIslands(page);
-  await expect(page.getByText('audit formel non réalisé')).toBeVisible();
+  await expect(page.getByText('l’audit reste à faire')).toBeVisible();
   await expectNoViolations(page);
 
   await page.goto('/methode');

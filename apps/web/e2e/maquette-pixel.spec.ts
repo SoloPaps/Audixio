@@ -113,6 +113,72 @@ const PAGES = [
     live: '/progression?theme=light',
     ready: 'Avancement de l’audit',
   },
+  {
+    id: 'mentions',
+    mock: `${ROOT}/page_mentions_legales/page_mentions_legales.html`,
+    live: '/mentions-legales?theme=light',
+    ready: 'Mentions légales',
+  },
+  {
+    id: 'cgu',
+    mock: `${ROOT}/page_conditions_utilisation/page_conditions_utilisation.html`,
+    live: '/cgu?theme=light',
+    ready: 'Conditions d’utilisation',
+  },
+  {
+    id: 'confidentialite',
+    mock: `${ROOT}/page_politique_confidentialite/page_politique_confidentialite.html`,
+    live: '/confidentialite?theme=light',
+    ready: 'Politique de confidentialité',
+  },
+  {
+    id: 'accessibilite',
+    mock: `${ROOT}/page_accessibilite/page_accessibilite.html`,
+    live: '/accessibilite?theme=light',
+    ready: 'Déclaration d’accessibilité',
+  },
+  {
+    id: 'ecologie',
+    mock: `${ROOT}/page_ecologie/page_ecologie.html`,
+    live: '/ecoconception?theme=light',
+    ready: 'Questionnaire éco-conception',
+  },
+  {
+    id: 'robot',
+    mock: `${ROOT}/page_robot_audixio/page_robot_audixio.html`,
+    live: '/robot?theme=light',
+    ready: 'Robot Audixio',
+  },
+  {
+    id: 'e404',
+    mock: `${ROOT}/page_404/page_404.html`,
+    live: '/404?theme=light',
+    ready: 'évaporée',
+  },
+  {
+    id: 'e500',
+    mock: `${ROOT}/page_500/page_500.html`,
+    live: '/500?theme=light',
+    ready: 'perdu',
+  },
+  {
+    id: 'maintenance',
+    mock: `${ROOT}/page_maintenance/page_maintenance.html`,
+    live: '/maintenance?theme=light',
+    ready: 'peaufine',
+  },
+  {
+    id: 'cookies',
+    mock: `${ROOT}/interface_bandeau_cookies/interface_bandeau_cookies.html`,
+    live: '/cookies?theme=light',
+    ready: 'Vos choix sur les cookies',
+  },
+  {
+    id: 'audit',
+    mock: `${ROOT}/page_audit_echoue/page_audit_echoue.html`,
+    live: '/audit-echoue?theme=light',
+    ready: 'n’a pas abouti',
+  },
 ] as const;
 
 const WIDTHS = [1280, 330] as const;
@@ -661,7 +727,18 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
           item.id === 'accueil' ||
             item.id === 'methode' ||
             item.id === 'exemple' ||
-            item.id === 'progression'
+            item.id === 'progression' ||
+            item.id === 'mentions' ||
+            item.id === 'cgu' ||
+            item.id === 'confidentialite' ||
+            item.id === 'accessibilite' ||
+            item.id === 'ecologie' ||
+            item.id === 'robot' ||
+            item.id === 'e404' ||
+            item.id === 'e500' ||
+            item.id === 'maintenance' ||
+            item.id === 'cookies' ||
+            item.id === 'audit'
             ? 'hub'
             : item.id === 'partager'
               ? 'partager'
