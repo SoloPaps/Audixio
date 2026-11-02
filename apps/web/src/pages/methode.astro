@@ -1,116 +1,86 @@
 ---
-import PageToc from '../components/PageToc.astro';
+import '../styles/maquettes/methode.css';
 import { t } from '../i18n/index.js';
-import { tReport } from '../i18n/report-fr.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base still title={t('meta.method.title')} description={t('meta.method.description')}>
-  <h1>{t('footer.method.nav')}</h1>
-  <p class="prose">{t('method.lead')}</p>
-  <p class="prose">{t('method.version')}</p>
-  <p class="prose">{t('method.change')}</p>
-  <p class="prose">{t('method.recorded')}</p>
-  <PageToc
-    items={[
-      { id: 'method-status', label: t('method.status.title') },
-      { id: 'method-skip', label: t('method.skip.title') },
-      { id: 'method-domain', label: t('method.domain.title') },
-      { id: 'method-global', label: t('method.global.title') },
-      { id: 'method-level', label: t('method.level.title') },
-      { id: 'method-order', label: t('method.order.title') },
-      { id: 'method-never', label: t('method.never.title') },
-      { id: 'method-self', label: t('method.self.title') },
-      { id: 'method-repro', label: t('method.repro.title') },
-      { id: 'method-observatory', label: tReport('card.observatory') },
-      { id: 'method-lighthouse', label: tReport('card.lighthouse') },
-      { id: 'method-ecoindex', label: tReport('card.ecoindex') },
-      { id: 'method-trackers', label: tReport('card.trackers') },
-      { id: 'method-doh', label: tReport('card.doh') },
-    ]}
-  />
+<Canon vue="methode" title={t('meta.method.title')} description={t('meta.method.description')} robots="index, follow">
 
-  <h2 id="method-status">{t('method.status.title')}</h2>
-  <p class="prose">{t('method.status.body')}</p>
-  <ul class="prose-list">
-    <li>{t('method.pass')}</li>
-    <li>{t('method.warn')}</li>
-    <li>{t('method.fail')}</li>
-    <li>{t('method.untested')}</li>
-    <li>{t('method.na')}</li>
-  </ul>
-  <p class="prose">{t('method.partial')}</p>
-  <p class="prose">{t('method.weight')}</p>
-  <p class="prose">{t('method.lighthouse')}</p>
+<main id="contenu" tabindex="-1"><div class="blob-petrol" hidden></div><p class="chip">{t('method.version')}</p>
+<p><a class="chip" href="#method-repro">{t('method.repro.title')}</a></p><nav class="crumbs" aria-label={t('mq.m.003')}><ol><li><a href="/">{t('mq.m.004')}</a></li><li><span aria-current="page">{t('mq.m.005')}</span></li></ol></nav>
+<div class="mhero" data-stagger>
+ <p class="eyebrow rv in"><span class="dot" aria-hidden="true"></span>{t('mq.m.006')}</p>
+ <h1 class="rv in">{t('mq.m.007')}</h1>
+ <p class="lede rv in">{t('mq.m.008')}</p>
+ <div class="chips rv in"><span class="chip">{t('mq.m.009')}</span><span class="chip">{t('mq.m.010')}</span><span class="badge b-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.m.011')}</span></div>
+</div>
 
-  <h2 id="method-skip">{t('method.skip.title')}</h2>
-  <p class="prose">{t('method.skip.lead')}</p>
-  <ul class="prose-list">
-    <li>{t('method.skip.active')}</li>
-    <li>{t('method.skip.source')}</li>
-    <li>{t('method.skip.timeout')}</li>
-    <li>{t('method.skip.error')}</li>
-  </ul>
-  <p class="prose">{t('method.passive')}</p>
-  <p class="prose">{t('method.active')}</p>
-  <p class="prose">
-    {t('method.penal')}{' '}
-    <a class="link-inline" href="/cgu">{t('method.penal.link')}</a>
-  </p>
+<section class="block" aria-labelledby="s1">
+ <div class="rv"><p class="kicker">{t('mq.m.012')}</p><h2 class="sec" id="s1">{t('mq.m.013')}</h2></div>
+ <ol class="process" data-stagger><li class="card pad rv tilt"><span class="num" aria-hidden="true">1</span><h3><span class="sr-only">{t('mq.m.014')} </span>{t('mq.m.015')}</h3><p>{t('mq.m.016')}</p><span class="chip">{t('mq.m.017')}</span></li><li class="card pad rv tilt"><span class="num" aria-hidden="true">2</span><h3><span class="sr-only">{t('mq.m.018')} </span>{t('mq.m.019')}</h3><p>{t('mq.m.020')}</p><span class="chip">{t('mq.m.021')}</span></li><li class="card pad rv tilt"><span class="num" aria-hidden="true">3</span><h3><span class="sr-only">{t('mq.m.022')} </span>{t('mq.m.023')}</h3><p>{t('mq.m.024')}</p><span class="chip">{t('mq.m.025')}</span></li></ol>
+ <svg class="flow" viewBox="0 0 1000 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 H1000"/></svg>
+</section>
 
-  <h2 id="method-domain">{t('method.domain.title')}</h2>
-  <p class="prose">{t('method.domain.formula')}</p>
-  <p class="prose">{t('method.coverage')}</p>
-  <p class="prose">{t('method.coverage.low')}</p>
-  <p class="prose">{t('method.coverage.why')}</p>
+<section class="block" aria-labelledby="s2">
+ <div class="rv"><p class="kicker">{t('mq.m.026')}</p><h2 class="sec" id="s2">{t('mq.m.027')}</h2><p class="sec-lede">{t('mq.m.028')}</p></div>
+ <ul class="grades" data-stagger><li class="card gcard rv tilt g-a"><div class="gtop"><span class="gchip big">{t('mq.m.029')}</span><span class="glvl">{t('mq.m.030')}</span></div><p class="grange"><strong>{t('mq.m.031')}</strong> / 100</p><span class="gbar"><i style="--v:0.95"></i></span><p class="gdesc">{t('mq.m.032')}</p><p class="gact"><span>{t('mq.m.033')}</span> {t('mq.m.034')}</p></li><li class="card gcard rv tilt g-b"><div class="gtop"><span class="gchip big">{t('mq.m.035')}</span><span class="glvl">{t('mq.m.030')}</span></div><p class="grange"><strong>{t('mq.m.036')}</strong> / 100</p><span class="gbar"><i style="--v:0.8"></i></span><p class="gdesc">{t('mq.m.037')}</p><p class="gact"><span>{t('mq.m.033')}</span> {t('mq.m.034')}</p></li><li class="card gcard rv tilt g-c"><div class="gtop"><span class="gchip big">{t('mq.m.038')}</span><span class="glvl">{t('mq.m.039')}</span></div><p class="grange"><strong>{t('mq.m.040')}</strong> / 100</p><span class="gbar"><i style="--v:0.6"></i></span><p class="gdesc">{t('mq.m.041')}</p><p class="gact"><span>{t('mq.m.033')}</span> {t('mq.m.042')}</p></li><li class="card gcard rv tilt g-d"><div class="gtop"><span class="gchip big">{t('mq.m.043')}</span><span class="glvl">{t('mq.m.044')}</span></div><p class="grange"><strong>{t('mq.m.045')}</strong> / 100</p><span class="gbar"><i style="--v:0.3"></i></span><p class="gdesc">{t('mq.m.046')}</p><p class="gact"><span>{t('mq.m.033')}</span> {t('mq.m.047')}</p></li>
+ <li class="card gcard rv tilt nt"><div class="gtop"><span class="gchip big ntc">—</span><span class="glvl">{t('mq.m.048')}</span></div><p class="grange"><strong>{t('mq.m.049')}</strong> {t('mq.m.050')}</p><span class="gbar"><i style="--v:0"></i></span><p class="gdesc">{t('mq.m.051')}</p><p class="gact"><span>{t('mq.m.052')}</span> {t('mq.m.053')}</p></li></ul>
+</section>
 
-  <h2 id="method-global">{t('method.global.title')}</h2>
-  <p class="prose">{t('method.global.body')}</p>
-  <p class="prose">{t('method.global.eight')}</p>
-  <p class="prose">{t('method.global.aside')}</p>
-  <p class="prose">{t('method.global.empty')}</p>
+<section class="block card pad never sheen rv" aria-labelledby="s3">
+ <p class="kicker">{t('mq.m.054')}</p><h2 class="sec" id="s3">{t('mq.m.055')}</h2>
+ <blockquote class="rule"><p>{t('mq.m.056')}</p></blockquote><p><a class="link-inline" href="/cgu">{t('method.penal.link')}</a></p>
+ <ul class="nev" data-stagger><li class="rv"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><div><h3>{t('mq.m.058')}</h3><p>{t('mq.m.059')}</p></div></li><li class="rv"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><div><h3>{t('mq.m.060')}</h3><p>{t('mq.m.061')}</p></div></li><li class="rv"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><div><h3>{t('mq.m.062')}</h3><p>{t('mq.m.063')}</p></div></li><li class="rv"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><div><h3>{t('mq.m.064')}</h3><p>{t('mq.m.065')}</p></div></li></ul>
+</section>
 
-  <h2 id="method-level">{t('method.level.title')}</h2>
-  <ul class="prose-list">
-    <li>{t('method.level.good')}</li>
-    <li>{t('method.level.improve')}</li>
-    <li>{t('method.level.problem')}</li>
-    <li>{t('method.level.none')}</li>
-  </ul>
+<section class="block" aria-labelledby="s4">
+ <div class="rv"><p class="kicker">{t('mq.m.066')}</p><h2 class="sec" id="s4">{t('mq.m.067')}</h2><p class="sec-lede">{t('mq.m.068')}</p></div>
+ <ol class="domains" data-stagger><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">01</span><h3>{t('mq.m.069')}</h3><span class="w"><span data-count="20">20</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:1.0"></i></span><p class="dd">{t('mq.m.071')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.072')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.073')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.074')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.076')}</p></li><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">02</span><h3>{t('mq.m.077')}</h3><span class="w"><span data-count="15">15</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:0.75"></i></span><p class="dd">{t('mq.m.078')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.079')} &lt; 2,5 s)</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.080')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.081')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.082')}</p></li><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">03</span><h3>{t('mq.m.083')}</h3><span class="w"><span data-count="15">15</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:0.75"></i></span><p class="dd">{t('mq.m.084')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.085')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.086')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.087')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.088')}</p></li><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">04</span><h3>{t('mq.m.089')}</h3><span class="w"><span data-count="15">15</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:0.75"></i></span><p class="dd">{t('mq.m.090')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.091')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.092')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.093')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.094')}</p></li><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">05</span><h3>{t('mq.m.095')}</h3><span class="w"><span data-count="15">15</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:0.75"></i></span><p class="dd">{t('mq.m.096')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.097')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.098')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.099')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.100')}</p></li><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">06</span><h3>{t('mq.m.101')}</h3><span class="w"><span data-count="10">10</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:0.5"></i></span><p class="dd">{t('mq.m.102')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.103')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.104')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.105')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.106')}</p></li><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">07</span><h3>{t('mq.m.107')}</h3><span class="w"><span data-count="10">10</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:0.5"></i></span><p class="dd">{t('mq.m.108')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.109')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.110')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.111')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.112')}</p></li><li class="card dcard rv tilt"><div class="dhead"><span class="dn" aria-hidden="true">08</span><h3>{t('mq.m.113')}</h3><span class="w"><span data-count="10">10</span>&nbsp;%<span class="sr-only"> {t('mq.m.070')}</span></span></div><span class="wbar"><i style="--v:0.5"></i></span><p class="dd">{t('mq.m.114')}</p><ul><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.115')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.116')}</span></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg><span>{t('mq.m.117')}</span></li></ul><p class="eng"><span>{t('mq.m.075')}</span> {t('mq.m.118')}</p></li></ol>
+ <div class="card pad off rv"><p class="kicker">{t('mq.m.119')}</p><h3>{t('mq.m.120')}</h3><p>{t('mq.m.121')} <strong>{t('mq.m.122')}</strong> {t('mq.m.123')}</p><div class="chips"><span class="badge b-nt">{t('mq.m.124')}</span><span class="badge b-nt">{t('mq.m.125')}</span></div></div>
+</section>
 
-  <h2 id="method-order">{t('method.order.title')}</h2>
-  <p class="prose">{t('method.order.body')}</p>
-  <p class="prose">{t('method.order.tie')}</p>
+<section class="block formula-grid" aria-labelledby="s5">
+ <div class="rv"><p class="kicker">{t('mq.m.126')}</p><h2 class="sec" id="method-repro">{t('mq.m.127')}</h2><p class="sec-lede">{t('mq.m.128')}</p></div>
+ <figure class="card formula sheen rv"><figcaption>{t('mq.m.129')}</figcaption>
+  <p class="eq" aria-label={t('mq.m.130')}><span>{t('mq.m.131')}</span> = <span class="frac"><span>{t('mq.m.132')}<sub>{t('mq.m.133')}</sub> {t('mq.m.134')}<sub>{t('mq.m.133')}</sub>)</span><span>{t('mq.m.135')}</span></span></p>
+  <p class="fn">{t('mq.m.136')} <em>{t('mq.m.137')}</em> {t('mq.m.138')} <span class="badge b-nt">{t('mq.m.048')}</span>{t('mq.m.139')}</p>
+ </figure>
+ <div class="pair" data-stagger>
+  <div class="card pad rv tilt"><h3>{t('mq.m.140')}</h3><p>{t('mq.m.141')}</p></div>
+  <div class="card pad rv tilt"><h3>{t('mq.m.142')}</h3><p>{t('mq.m.143')}</p></div>
+ </div>
+</section>
 
-  <h2 id="method-never">{t('method.never.title')}</h2>
-  <p class="prose">{t('method.never.lead')}</p>
-  <ul class="prose-list">
-    <li>{t('method.never.exploit')}</li>
-    <li>{t('method.never.bruteforce')}</li>
-    <li>{t('method.never.submit')}</li>
-    <li>{t('method.never.sell')}</li>
-  </ul>
+<section class="block cta-band card pad rv" aria-labelledby="s6">
+ <h2 class="sec" id="s6">{t('mq.m.144')}</h2>
+ <p>{t('mq.m.145')}</p>
+ <div class="cta"><a class="btn btn-primary" href="/">{t('mq.m.146')}<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+</section>
 
-  <h2 id="method-self">{t('method.self.title')}</h2>
-  <p class="prose">{t('method.self.lead')}</p>
-  <ul class="prose-list">
-    <li>{t('method.self.csp')}</li>
-    <li>{t('method.self.privacy')}</li>
-    <li>{t('method.self.a11y')}</li>
-  </ul>
+<section class="block faq" aria-labelledby="s7">
+ <div class="rv"><p class="kicker">{t('mq.m.147')}</p><h2 class="sec" id="s7">{t('mq.m.148')}</h2></div>
+ <div class="qa" data-stagger><details class="card rv"><summary><h3>{t('mq.m.149')}</h3><span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>{t('mq.m.150')} <strong>{t('mq.m.151')}</strong> {t('mq.m.152')} <strong>{t('mq.m.153')}</strong> {t('mq.m.154')}</p></div></details><details class="card rv"><summary><h3>{t('mq.m.155')}</h3><span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>{t('mq.m.156')} <strong>{t('mq.m.157')}</strong> {t('mq.m.158')}</p></div></details><details class="card rv"><summary><h3>{t('mq.m.159')}</h3><span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>{t('mq.m.160')} <strong>2026.1</strong>{t('mq.m.161')}</p></div></details></div>
+</section>
 
-  <h2 id="method-observatory">{tReport('card.observatory')}</h2>
-  <h2 id="method-lighthouse">{tReport('card.lighthouse')}</h2>
-  <h2 id="method-ecoindex">{tReport('card.ecoindex')}</h2>
-  <h2 id="method-trackers">{tReport('card.trackers')}</h2>
-  <h2 id="method-doh">{tReport('card.doh')}</h2>
+<nav class="block next rv" aria-labelledby="s8"><h2 class="sec" id="s8">{t('mq.m.162')}</h2><ul class="lk-grid"><li><a class="lk" href="/"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6M11 8v6"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.m.146')}</span><span class="lk-d">{t('mq.m.163')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li><li><a class="lk" href="/exemple-rapport"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.m.164')}</span><span class="lk-d">{t('mq.m.165')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li></ul></nav>
+</main>
 
-  <p class="prose">
-    <a class="link-inline" href="/ecoconception">{tReport('rgesn.screen.title')}</a>
-  </p>
+<script is:inline>
+(function(){var d=document,h=d.documentElement;h.classList.add('js');
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;window.AX={reduce:reduce};
+d.querySelectorAll('.lang-btn').forEach(function(x,_,all){x.addEventListener('click',function(){all.forEach(function(y){y.setAttribute('aria-pressed',y===x)})})});
+/* stagger index within groups */
+d.querySelectorAll('[data-stagger]').forEach(function(g){Array.prototype.forEach.call(g.querySelectorAll(':scope > .rv'),function(el,i){el.style.setProperty('--i',i)})});
+function countUp(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.count,dur=reduce?0:1600,t0=performance.now(),dec=+(el.dataset.dec||0);
+ function f(t){var p=dur?Math.min(1,(t-t0)/dur):1,e=1-Math.pow(1-p,4);el.textContent=(to*e).toFixed(dec).replace('.',',');if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+window.AX.countUp=countUp;
+var io='IntersectionObserver' in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var t=e.target;t.classList.add('in');t.querySelectorAll('[data-count]').forEach(countUp);if(t.dataset.count)countUp(t);io.unobserve(t)}})},{threshold:.15,rootMargin:'0px 0px -6% 0px'}):null;
+d.querySelectorAll('.rv,.sheen,[data-count],.gbar').forEach(function(el){io?io.observe(el):el.classList.add('in')});
+if(!io)d.querySelectorAll('[data-count]').forEach(countUp);
+/* subtle tilt */
+if(!reduce&&matchMedia('(hover:hover)').matches)d.querySelectorAll('.tilt').forEach(function(c){var raf;c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;cancelAnimationFrame(raf);raf=requestAnimationFrame(function(){c.style.transform='perspective(900px) rotateX('+(-y*3)+'deg) rotateY('+(x*4)+'deg) translateY(-4px)'})});c.addEventListener('pointerleave',function(){cancelAnimationFrame(raf);c.style.transform=''})});
+var tt;window.AX.say=function(msg,toast){var l=d.getElementById('live');if(l){l.textContent='';setTimeout(function(){l.textContent=msg},50);}if(toast){var t=d.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},2600)}};
+})();
 
-  <h2 id="method-repro">{t('method.repro.title')}</h2>
-  <p class="prose">{t('method.repro.body')}</p>
-  <p class="prose">{t('method.proof')}</p>
-  <p class="prose"><a class="link-inline" href="/verifier">{t('method.proof.link')}</a></p>
-</Base>
+</script>
+</Canon>

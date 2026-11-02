@@ -89,6 +89,30 @@ const PAGES = [
     live: `/badge?id=${AUDIT_ID}&theme=light`,
     ready: 'Afficher votre note sur votre site',
   },
+  {
+    id: 'accueil',
+    mock: `${ROOT}/page_accueil/page_accueil.html`,
+    live: '/?theme=light',
+    ready: 'Vérifiez la santé',
+  },
+  {
+    id: 'methode',
+    mock: `${ROOT}/page_methode_bareme/page_methode_bareme.html`,
+    live: '/methode?theme=light',
+    ready: 'Comment Audixio mesure',
+  },
+  {
+    id: 'exemple',
+    mock: `${ROOT}/page_exemple_rapport/page_exemple_rapport.html`,
+    live: '/exemple-rapport?theme=light',
+    ready: 'Du rapport global',
+  },
+  {
+    id: 'progression',
+    mock: `${ROOT}/page_progression/page_progression.html`,
+    live: '/progression?theme=light',
+    ready: 'Avancement de l’audit',
+  },
 ] as const;
 
 const WIDTHS = [1280, 330] as const;
@@ -379,7 +403,11 @@ async function install(
     | 'constat'
     | 'plan'
     | 'brief'
-    | 'badge',
+    | 'badge'
+    | 'accueil'
+    | 'methode'
+    | 'exemple'
+    | 'progression',
 ): Promise<void> {
   const css = readFileSync(FONTS, 'utf8').replaceAll(
     'url(/fonts/',
@@ -569,7 +597,17 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
           )
             leaks.push(url);
         });
-        await install(page, item.id === 'partager' ? 'partager' : item.id);
+        await install(
+          page,
+          item.id === 'accueil' ||
+            item.id === 'methode' ||
+            item.id === 'exemple' ||
+            item.id === 'progression'
+            ? 'hub'
+            : item.id === 'partager'
+              ? 'partager'
+              : item.id,
+        );
         const mock = parse(await shoot(page, `file://${item.mock}`, width));
         leaks.length = 0;
         await page.setViewportSize({ width, height: 900 });
@@ -749,6 +787,59 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
               name: 'Une preuve sans accès à votre serveur',
             }),
           ).toBeVisible();
+        }
+        if (item.id === 'accueil') {
+          for (const name of [
+            'Ce que vous obtenez',
+            'Questions fréquentes',
+            'Explorer Audixio',
+            'Prêt à évaluer la santé de votre site ?',
+            'Les 8 domaines Audixio',
+            'Trois étapes, aucune inscription',
+          ]) {
+            await expect(
+              page.getByRole('heading', { name }).first(),
+            ).toBeVisible();
+          }
+          await expect(page.locator('#bg-canvas')).toBeVisible();
+          await expect(page.locator('#ecg')).toBeVisible();
+          await expect(page.locator('#audit-form')).toBeVisible();
+        }
+        if (item.id === 'methode') {
+          for (const name of [
+            'Un audit passif en 3 étapes',
+            'Ce que signifie chaque note',
+            'Ce que nous ne faisons jamais',
+            'Les 8 domaines analysés et leur poids',
+            'La formule, et pourquoi elle est reproductible',
+            'Questions fréquentes',
+          ]) {
+            await expect(
+              page.getByRole('heading', { name }).first(),
+            ).toBeVisible();
+          }
+        }
+        if (item.id === 'exemple') {
+          for (const name of [
+            'Le rapport : tout votre site d’un coup d’œil',
+            'Le domaine : Performance en détail',
+            'Le constat : du problème au correctif',
+            'Recevez ce parcours pour votre propre site',
+          ]) {
+            await expect(
+              page.getByRole('heading', { name }).first(),
+            ).toBeVisible();
+          }
+          await expect(page.locator('#rose')).toBeVisible();
+          await expect(page.locator('#net')).toBeVisible();
+        }
+        if (item.id === 'progression') {
+          await expect(page.locator('#notify')).toHaveCount(1);
+          await expect(
+            page.getByRole('heading', { name: 'Périmètres sous examen' }),
+          ).toBeVisible();
+          await expect(page.locator('#pbar')).toBeVisible();
+          await expect(page.locator('#stage')).toBeVisible();
         }
         const html = await page.content();
         expect(

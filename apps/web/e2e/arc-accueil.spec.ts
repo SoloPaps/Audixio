@@ -37,13 +37,13 @@ test('l’accueil montre l’exemple avant de demander l’adresse', async ({
     page.getByRole('heading', { level: 2, name: 'Ce que vous obtenez' }),
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', {
-      level: 2,
-      name: 'Gratuit pour les particuliers',
-    }),
+    page.getByRole('heading', { level: 3, name: 'Sans compte' }),
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', { level: 2, name: 'Comment lire le score' }),
+    page.getByRole('heading', { level: 3, name: 'Avec un compte gratuit' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Les 8 domaines Audixio' }),
   ).toBeVisible();
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);

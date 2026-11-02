@@ -134,6 +134,21 @@ async function install(page: Page, locked = false): Promise<void> {
 }
 
 async function axe(page: Page): Promise<void> {
+  await page.evaluate(async () => {
+    const view = globalThis as unknown as {
+      document: {
+        getAnimations: () => Array<{
+          effect: { getTiming: () => { iterations: number } } | null;
+          finished: Promise<unknown>;
+        }>;
+      };
+    };
+    const pending = view.document.getAnimations().filter((item) => {
+      const iterations = item.effect?.getTiming().iterations ?? 1;
+      return Number.isFinite(iterations);
+    });
+    await Promise.all(pending.map((item) => item.finished));
+  });
   const results = await new AxeBuilder({ page }).analyze();
   expect(
     results.violations,

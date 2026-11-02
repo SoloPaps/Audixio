@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import { t } from '../i18n/index.js';
+import { t } from '../i18n/slim.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
 
 interface Props {
@@ -17,6 +17,7 @@ let locale = $state<'fr' | 'en'>('fr');
 let header: HTMLElement | undefined = $state();
 let burger: HTMLButtonElement | undefined = $state();
 let sheet: HTMLDivElement | undefined = $state();
+let themeSel: HTMLSelectElement | undefined = $state();
 
 const REPORT_PATHS = [
   '/rapport',
@@ -120,8 +121,35 @@ async function setLocale(event: MouseEvent, next: 'fr' | 'en'): Promise<void> {
   }
 }
 
+function applyTheme(next: string, persist: boolean): void {
+  const root = document.documentElement;
+  if (next === 'light' || next === 'dark') {
+    if (persist) localStorage.setItem('audigy-theme', next);
+    root.setAttribute('data-theme', next);
+    return;
+  }
+  if (persist) localStorage.removeItem('audigy-theme');
+  root.removeAttribute('data-theme');
+}
+
+function onTheme(event: Event): void {
+  applyTheme((event.currentTarget as HTMLSelectElement).value, true);
+}
+
 onMount(() => {
-  document.documentElement.setAttribute('data-theme', 'light');
+  const query = new URLSearchParams(location.search).get('theme');
+  let saved: string | null = null;
+  try {
+    saved = localStorage.getItem('audigy-theme');
+  } catch {
+    saved = null;
+  }
+  const choice = query === 'light' || query === 'dark' ? query : saved;
+  if (themeSel) {
+    themeSel.value =
+      choice === 'light' || choice === 'dark' ? choice : 'system';
+  }
+  if (choice === 'light' || choice === 'dark') applyTheme(choice, false);
   loggedIn = storedSessionPresent();
   if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
   onScroll();
@@ -152,15 +180,25 @@ onMount(() => {
   </div>
 {/snippet}
 
-{#snippet theme()}
-  <button class="axn-theme" type="button" aria-label={t('theme.dark.later')} aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+{#snippet theme(live: boolean)}
+  {#if live}
+    <label class="axn-theme">
+      <select class="axn-theme-select" aria-label={t('theme.label')} bind:this={themeSel} onchange={onTheme}>
+        <option value="system">{t('theme.system')}</option>
+        <option value="light">{t('theme.light')}</option>
+        <option value="dark">{t('theme.dark')}</option>
+      </select>
+    </label>
+  {:else}
+    <button class="axn-theme" type="button" aria-label={t('theme.dark.later')} aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  {/if}
 {/snippet}
 
 {#snippet person()}
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
 {/snippet}
 
-<header class="axn" class:is-open={open} class:is-scrolled={scrolled} id="top" bind:this={header}>
+<header class="axn site-bar" class:is-open={open} class:is-scrolled={scrolled} id="top" bind:this={header}>
   <div class="axn-bar">
     <a class="axn-logo" href="/" aria-label={t('footer.home')}><img class="axn-logo-d" src="/marque/logo-pc.svg" alt="" width="107" height="34" decoding="async"><img class="axn-logo-m" src="/marque/logo-mobile.svg" alt="" width="36" height="36" decoding="async"></a>
     <nav aria-label={t('nav.bottom')}>
@@ -172,7 +210,7 @@ onMount(() => {
     </nav>
     <div class="axn-tools">
       {@render lang()}
-      {@render theme()}
+      {@render theme(true)}
       <a class="axn-cta" href={loggedIn ? '/compte' : '/connexion'}>{@render person()}<span class="axn-cta-txt">{loggedIn ? t('nav.account') : t('nav.login')}</span></a>
     </div>
     <button class="axn-burger" type="button" aria-expanded={open} aria-controls="axn-menu" aria-label={open ? t('nav.close') : t('nav.open')} bind:this={burger} onclick={() => setMenu(!open, true)}><i aria-hidden="true"><b></b><b></b><b></b></i></button>
@@ -180,7 +218,7 @@ onMount(() => {
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <div class="axn-scrim" aria-hidden="true" onclick={() => setMenu(false, true)}></div>
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-  <div class="axn-sheet" id="axn-menu" role="dialog" aria-modal="true" aria-label={t('nav.menu')} inert={!open} bind:this={sheet} onclick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenu(false, false); }}>
+  <div class="axn-sheet" id="axn-menu" role="dialog" aria-modal={open ? 'true' : 'false'} aria-label={t('nav.menu')} inert={!open} bind:this={sheet} onclick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenu(false, false); }}>
     <nav aria-label={t('nav.mobile')}>
       <ul>
         {#each items as item, index (item.href)}
@@ -190,7 +228,7 @@ onMount(() => {
     </nav>
     <div class="axn-row" style="--i:4">
       {@render lang()}
-      {@render theme()}
+      {@render theme(false)}
     </div>
     <div class="axn-cta-wrap"><a class="axn-cta" style="--i:5" href={loggedIn ? '/compte' : '/connexion'}>{@render person()}<span>{loggedIn ? t('nav.account') : t('nav.login')}</span></a></div>
   </div>

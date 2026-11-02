@@ -30,6 +30,12 @@ const MARKUP_EXT = new Set(['.astro', '.svelte', '.html']);
 /** Sigles attendus dans l'interface. Le reste en capitales est un titre crié. */
 const ACRONYMS = new Set([
   'ANSSI',
+  'ARIA',
+  'DINUM',
+  'HEAD',
+  'IETF',
+  'NIST',
+  'TTFB',
   'AVIF',
   'CISA',
   'CNIL',

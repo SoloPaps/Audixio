@@ -225,14 +225,28 @@ test('méthode, conditions, confidentialité et mentions ont un sommaire', async
   page,
 }) => {
   await page.goto('/methode');
-  const toc = page.getByRole('navigation', { name: 'Sommaire' });
   await expect(
-    toc.getByRole('link', { name: 'Résultat d’un test' }),
+    page.getByRole('heading', {
+      level: 2,
+      name: 'Un audit passif en 3 étapes',
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', {
+      level: 2,
+      name: 'Ce que signifie chaque note',
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Voir les conditions d’utilisation.' }),
   ).toHaveClass(/link-inline/);
-  await toc.getByRole('link', { name: 'Résultat d’un test' }).click();
-  await expect(page).toHaveURL(/#method-status$/);
+  await page.locator('a[href="#method-repro"]').click();
+  await expect(page).toHaveURL(/#method-repro$/);
   await expect(
-    page.getByRole('heading', { level: 2, name: 'Résultat d’un test' }),
+    page.getByRole('heading', {
+      level: 2,
+      name: 'La formule, et pourquoi elle est reproductible',
+    }),
   ).toBeVisible();
 
   await page.goto('/cgu');

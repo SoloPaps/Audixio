@@ -2,7 +2,9 @@
  * Dictionnaire français. Une clé absente de cet objet
  * ne peut pas être passée à `t()` (erreur de typage).
  */
-export const fr = {
+import { mqFr } from './mq-fr.js';
+
+const frCore = {
   'skip.content': 'Aller au contenu',
   'brand.name': 'Audigy',
   'meta.home.title': 'Audigy',
@@ -25,6 +27,9 @@ export const fr = {
   'home.scope':
     'Nous regardons la vitesse, la visibilité, la protection, l’écologie, l’accès, la solidité, la vie privée et le courrier.',
   'home.url': 'Adresse du site',
+  'home.url.long': 'Adresse du site web à analyser',
+  'home.submit.free': "Lancer l'audit gratuit",
+  'home.url.format': 'Format attendu : https://domaine.fr',
   'home.url.hint': 'Par exemple, exemple.fr',
   'home.account':
     'La connexion se fait par e-mail et mot de passe, ou avec Google et GitHub.',
@@ -423,6 +428,15 @@ export const fr = {
   'progress.ready': 'Rapport prêt.',
   'progress.home': 'Revenir à l’accueil',
   'progress.report': 'Voir le rapport',
+  'progress.notify.title': 'Recevoir les résultats dès finalisation',
+  'progress.notify.body':
+    'Le diagnostic se termine dans quelques instants. Vous recevrez une synthèse directe et le lien d’accès.',
+  'progress.notify.email': 'Votre adresse e-mail',
+  'progress.notify.invalid': 'Merci de saisir une adresse e-mail valide.',
+  'progress.notify.submit': 'Enregistrer ma notification',
+  'progress.notify.ok': 'Notification activée. Vous pouvez fermer cette page.',
+  'progress.notify.close': 'Fermer',
+  'progress.notify.done': 'Notification activée',
   'progress.retry': 'Relancer l’audit',
   'progress.missing': 'Cet audit est introuvable.',
   'progress.need_login': 'Connectez-vous pour suivre cet audit.',
@@ -2025,6 +2039,7 @@ export const fr = {
   'nav.pricing': 'Tarifs',
   'nav.backtop': 'Remonter en haut',
   'nav.bottom': 'Navigation principale',
+  'nav.pages': 'Pages',
   'footer.version': 'V3.4',
   'footer.about':
     'Observatoire indépendant de l’hygiène web. Aucune donnée commerciale stockée.',
@@ -2107,7 +2122,7 @@ export const fr = {
   'nav.mobile': 'Navigation principale (mobile)',
   'locale.en.short': 'EN — English',
   'locale.fr.short': 'FR — Français',
-  'theme.dark.later': 'Thème sombre : bientôt disponible',
+  'theme.dark.later': 'Mode sombre : bientôt disponible',
   'domain.performance.short': 'Performance',
   'domain.seo.short': 'SEO',
   'domain.securite.short': 'Sécurité',
@@ -2764,5 +2779,7 @@ export const fr = {
   'badge.close': 'Fermer et revenir au rapport',
   'badge.unavailable': 'non disponible',
 } as const satisfies Record<string, string>;
+
+export const fr = { ...frCore, ...mqFr };
 
 export type MessageKey = keyof typeof fr;

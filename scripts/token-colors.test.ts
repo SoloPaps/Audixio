@@ -12,6 +12,11 @@ const MAQUETTE_PORT = [
   'apps/web/src/styles/canon.css',
   'apps/web/src/styles/chrome.css',
   'apps/web/src/components/ShareSheet.svelte',
+  'apps/web/src/lib/motion/accueil.js',
+  'apps/web/src/pages/index.astro',
+  'apps/web/src/pages/methode.astro',
+  'apps/web/src/pages/exemple-rapport.astro',
+  'apps/web/src/pages/progression.astro',
 ];
 
 function isMaquettePort(relative: string): boolean {
@@ -215,6 +220,14 @@ describe('couleurs des CSS', () => {
     expect(isMaquettePort('apps/web/src/components/ShareSheet.svelte')).toBe(
       true,
     );
+    expect(isMaquettePort('apps/web/src/lib/motion/accueil.js')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/index.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/methode.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/exemple-rapport.astro')).toBe(
+      true,
+    );
+    expect(isMaquettePort('apps/web/src/pages/progression.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/connexion.astro')).toBe(false);
     expect(isMaquettePort(ARC_FILE)).toBe(false);
     expect(isMaquettePort('apps/web/src/styles/tokens.css')).toBe(false);
     expect(isMaquettePort('apps/web/src/components/HubView.svelte')).toBe(
