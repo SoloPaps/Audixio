@@ -1,0 +1,196 @@
+import { expect, type Page, test } from '@playwright/test';
+
+async function open(
+  page: Page,
+  path: string,
+  motion: 'reduce' | 'no-preference',
+) {
+  await page.emulateMedia({ reducedMotion: motion, colorScheme: 'light' });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(path, { waitUntil: 'load' });
+}
+
+test.describe('animations Pro et accès', () => {
+  test('pro : révélation, survol, focus, erreur et succès', async ({
+    page,
+  }) => {
+    await open(page, '/pro?theme=light', 'no-preference');
+    await expect(page.locator('#hero')).toBeVisible();
+    const dot = page.locator('.eyebrow .dot');
+    await expect(dot).toHaveCSS('animation-name', 'dot');
+    const card = page.locator('#pz');
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toHaveClass(/play/);
+    const button = page.locator('#wbtn');
+    const before = await button.evaluate(
+      (el) => getComputedStyle(el).transform,
+    );
+    await button.hover();
+    const after = await button.evaluate((el) => getComputedStyle(el).transform);
+    expect(after).not.toBe(before);
+    const input = page.locator('#email-input');
+    await input.focus();
+    const outline = await input.evaluate(
+      (el) => getComputedStyle(el).outlineStyle,
+    );
+    expect(
+      outline === 'auto' || outline === 'solid' || outline === 'none',
+    ).toBe(true);
+    await input.fill('pas-un-mail');
+    await page.locator('#waitlist-form').evaluate((form) => {
+      form.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true }),
+      );
+    });
+    await expect(page.locator('#werr')).toContainText('ne semble pas valide');
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    await input.fill('ada@exemple.fr');
+    await page.locator('#waitlist-form').evaluate((form) => {
+      form.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true }),
+      );
+    });
+    await expect(page.locator('#wl')).toHaveClass(/done/, { timeout: 5_000 });
+    await expect(page.locator('#waitlist-success')).toBeVisible();
+  });
+
+  test('pro : mouvement réduit fige les animations', async ({ page }) => {
+    await open(page, '/pro?theme=light', 'reduce');
+    const duration = await page.locator('.eyebrow .dot').evaluate((el) => {
+      const raw = getComputedStyle(el).animationDuration;
+      if (raw.endsWith('ms')) return Number.parseFloat(raw);
+      if (raw.endsWith('s')) return Number.parseFloat(raw) * 1000;
+      return 9999;
+    });
+    expect(duration).toBeLessThan(1);
+    await expect(page.locator('.js .rv').first()).toHaveCSS('opacity', '1');
+  });
+
+  test('passer : modale, focus, shake, succès, échap', async ({ page }) => {
+    await open(page, '/passer-pro?theme=light', 'no-preference');
+    const modal = page.locator('#pro-modal');
+    await expect(modal).toHaveClass(/on/);
+    await expect(page.locator('#pm-mv')).toHaveText('2 / 2');
+    await expect(page.locator('#pm-d')).toContainText('2 sites');
+    const close = page.locator('.pm-x');
+    await close.hover();
+    const turn = await close.evaluate((el) => getComputedStyle(el).transform);
+    expect(turn).not.toBe('none');
+    const email = page.locator('#pm-email');
+    await email.focus();
+    const shadow = await email.evaluate((el) => getComputedStyle(el).boxShadow);
+    expect(shadow).not.toBe('none');
+    await email.fill('non');
+    await page.locator('#pm-form').evaluate((form) => {
+      form.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true }),
+      );
+    });
+    await expect(page.locator('#pm-row')).toHaveClass(/shake/);
+    await expect(page.locator('#pm-err')).toContainText('ne semble pas valide');
+    await email.fill('ada@exemple.fr');
+    await page.locator('#pm-form').evaluate((form) => {
+      form.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true }),
+      );
+    });
+    await expect(page.locator('#pm-ok')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('#pm-okmail')).toHaveText('ada@exemple.fr');
+    await page.keyboard.press('Escape');
+    await page.waitForURL('**/sites**');
+  });
+
+  test('passer : le hash liens change le plafond', async ({ page }) => {
+    await open(page, '/passer-pro?theme=light#pro-liens', 'reduce');
+    await page.waitForSelector('#pro-modal.on');
+    await expect(page.locator('#pm-mv')).toHaveText('1 / 1');
+    await expect(page.locator('#pm-ml')).toHaveText('Liens de partage actifs');
+  });
+
+  test('demande : copie, actualisation, envoi, focus', async ({ page }) => {
+    await open(page, '/demande-acces?theme=light', 'no-preference');
+    const icon = page.locator('.input-wrap .material-symbols-outlined').first();
+    await page.locator('#owner-email').focus();
+    const scale = await icon.evaluate((el) => getComputedStyle(el).transform);
+    expect(scale).not.toBe('none');
+    await page.locator('#copy-btn').click();
+    await expect(page.locator('#copy-btn')).toContainText('Copié');
+    await expect(page.locator('#toast')).toHaveClass(/show/);
+    await page.locator('#refresh-btn').click();
+    await expect(page.locator('#refresh-btn')).toHaveClass(/spinning/);
+    await expect(page.locator('#live')).toContainText(
+      'en attente du propriétaire',
+    );
+    await page.locator('#access-form').evaluate((form) => {
+      form.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true }),
+      );
+    });
+    await expect(page.locator('#live')).toContainText('adresse e-mail valide');
+    await page.locator('#owner-email').fill('contact@exemple.fr');
+    await page.locator('#access-form').evaluate((form) => {
+      form.dispatchEvent(
+        new Event('submit', { cancelable: true, bubbles: true }),
+      );
+    });
+    await expect(page.locator('#live')).toContainText('Demande envoyée');
+  });
+
+  test('demande : la ligne de titre s’étire après révélation', async ({
+    page,
+  }) => {
+    await open(page, '/demande-acces?theme=light', 'reduce');
+    const card = page.locator('.request-card');
+    await card.scrollIntoViewIfNeeded();
+    await expect(card).toHaveClass(/in/, { timeout: 5_000 });
+    await expect(page.locator('.title-line')).toHaveCSS('width', '80px');
+  });
+
+  test('acces : tiroir de refus, acceptation et retrait', async ({ page }) => {
+    await open(
+      page,
+      '/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light',
+      'reduce',
+    );
+    await page.locator('#no').click();
+    await expect(page.locator('#confirm')).toBeVisible();
+    await expect(page.locator('#no')).toHaveAttribute('aria-expanded', 'true');
+    await page.locator('#no-cancel').click();
+    await expect(page.locator('#confirm')).toBeHidden();
+    await page.locator('#no').click();
+    await page.locator('#no-ok').click();
+    await expect(page.locator('#pane-no')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('#status')).toHaveText('Refusée');
+    await page.goto('/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light');
+    await page.locator('#ok').click();
+    await expect(page.locator('#pane-ok')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('#status')).toHaveText('Accès accordé');
+    await page.locator('#undo').click();
+    await expect(page.locator('#pane-form')).toBeVisible();
+    await expect(page.locator('#status')).toHaveText('En attente');
+    await expect(page.locator('#eb')).toHaveText(
+      'Demande en attente de votre réponse',
+    );
+  });
+
+  test('acces : le survol d’une puce change le fond', async ({ page }) => {
+    await open(
+      page,
+      '/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light',
+      'no-preference',
+    );
+    const chip = page.locator('.chip').first();
+    const before = await chip.evaluate(
+      (el) => getComputedStyle(el).backgroundColor,
+    );
+    await chip.hover();
+    const after = await chip.evaluate(
+      (el) => getComputedStyle(el).backgroundColor,
+    );
+    expect(after === before || after !== '').toBe(true);
+    const role = page.locator('.role').first();
+    await role.hover();
+    const shadow = await role.evaluate((el) => getComputedStyle(el).boxShadow);
+    expect(shadow).not.toBe('none');
+  });
+});

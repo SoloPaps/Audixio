@@ -1379,3 +1379,134 @@ test.describe('maquettes auth, garde visuelle à 30 %', () => {
     }
   }
 });
+
+const GATES = [
+  {
+    id: 'pro',
+    mock: `${ROOT}/page_pro/page_pro.html`,
+    live: '/pro?theme=light',
+    ready: 'bientôt disponible',
+    sections: ['Les fonctionnalités', 'Gratuit ou Pro', 'entièrement gratuite'],
+  },
+  {
+    id: 'passer',
+    mock: `${ROOT}/interface_passer_pro/interface_passer_pro.html`,
+    live: '/passer-pro?theme=light',
+    ready: 'limite du plan gratuit',
+    sections: ['Ce que Pro débloquera'],
+    prep: async (page: Page) => {
+      await page.waitForSelector('#pro-modal.on');
+    },
+  },
+  {
+    id: 'demande',
+    mock: `${ROOT}/page_demande_acces/page_demande_acces.html`,
+    live: '/demande-acces?theme=light',
+    ready: 'au propriétaire',
+    sections: ['Souveraineté et vérification', 'Ce que la demande accorde'],
+  },
+  {
+    id: 'acces',
+    mock: `${ROOT}/page_acceptation_acces/page_acceptation_acces.html`,
+    live: '/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light',
+    ready: 'votre rapport',
+    sections: ['Votre décision', 'En résumé', 'Sécurité & contrôle'],
+  },
+] as const;
+
+test.describe('portes Pro et accès, garde visuelle à 30 %', () => {
+  for (const item of GATES) {
+    for (const width of WIDTHS) {
+      test(`${item.id} ${width}px`, async ({ page }) => {
+        test.setTimeout(120_000);
+        await page.emulateMedia({
+          reducedMotion: 'reduce',
+          colorScheme: 'light',
+        });
+        const leaks: string[] = [];
+        page.on('request', (req) => {
+          const url = req.url();
+          if (
+            !url.startsWith('http://127.0.0.1') &&
+            !url.startsWith('http://localhost')
+          )
+            return;
+          const ported = url.includes('/styles/maquettes/');
+          if (
+            url.includes('docs/design') ||
+            url.includes('maquettes/finales') ||
+            (url.includes('maquettes') && !ported)
+          )
+            leaks.push(url);
+        });
+        await install(page, 'hub');
+        const prep = 'prep' in item ? item.prep : undefined;
+        const mock = parse(
+          await shoot(page, `file://${item.mock}`, width, prep),
+        );
+        leaks.length = 0;
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(item.live, { waitUntil: 'load' });
+        if (prep) await prep(page);
+        await expect(
+          page.getByRole('heading', { name: item.ready }).first(),
+        ).toBeVisible();
+        for (const name of item.sections) {
+          await expect(
+            page.getByRole('heading', { name }).first(),
+          ).toBeVisible();
+        }
+        const html = await page.content();
+        expect(html).not.toContain(MARKER);
+        expect(leaks, `requête interdite : ${leaks.join(' ')}`).toEqual([]);
+        await page.addStyleTag({ content: 'html{scrollbar-width:none}' });
+        const liveBuffer = await page.screenshot({
+          fullPage: true,
+          animations: 'disabled',
+          caret: 'hide',
+        });
+        const live = parse(liveBuffer);
+        const w = Math.max(mock.width, live.width);
+        const h = Math.max(mock.height, live.height);
+        const a = pad(mock, w, h);
+        const b = pad(live, w, h);
+        const diff = new PNG({ width: w, height: h });
+        const mismatched = pixelmatch(a.data, b.data, diff.data, w, h, {
+          threshold: 0.1,
+          includeAA: false,
+        });
+        const ratio = mismatched / (w * h);
+        mkdirSync(OUT, { recursive: true });
+        mkdirSync('/opt/cursor/artifacts', { recursive: true });
+        const stem = `${item.id}-${width}`;
+        writeFileSync(`${OUT}/${stem}-maquette.png`, PNG.sync.write(a));
+        writeFileSync(`${OUT}/${stem}-page.png`, PNG.sync.write(b));
+        writeFileSync(`${OUT}/${stem}-diff.png`, PNG.sync.write(diff));
+        const side = PNG.sync.write(sideBySide(a, b));
+        writeFileSync(`${OUT}/${stem}-cote-a-cote.png`, side);
+        writeFileSync(`/opt/cursor/artifacts/${stem}-cote-a-cote.png`, side);
+        const mockMd5 = createHash('md5')
+          .update(PNG.sync.write(a))
+          .digest('hex');
+        const pageMd5 = createHash('md5')
+          .update(PNG.sync.write(b))
+          .digest('hex');
+        writeFileSync(
+          `${OUT}/${stem}.json`,
+          JSON.stringify({
+            ratio,
+            percent: Number((ratio * 100).toFixed(4)),
+            mockMd5,
+            pageMd5,
+            w,
+            h,
+          }),
+        );
+        expect(pageMd5, `${stem} md5 identiques`).not.toBe(mockMd5);
+        expect(ratio, `${stem} : ${(ratio * 100).toFixed(2)} %`).toBeLessThan(
+          MAX_RATIO,
+        );
+      });
+    }
+  }
+});
