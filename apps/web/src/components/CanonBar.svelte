@@ -25,6 +25,7 @@ const REPORT_PATHS = [
   '/plan',
   '/constat',
   '/badge',
+  '/brief',
 ];
 
 function normalize(path: string): string {

@@ -16,6 +16,7 @@
     "**/dist",
     "**/.astro",
     "apps/web/src/lib/rose.ts",
-    "apps/web/src/lib/motion.ts"
+    "apps/web/src/lib/motion.ts",
+    "apps/web/src/lib/constat-stage.ts"
   ]
 }

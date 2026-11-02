@@ -248,6 +248,7 @@ export interface ReportRow extends Finding {
   domain?: string;
   minutes?: number | null;
   fixKey?: string | null;
+  messageKey?: string;
 }
 
 function catalogStatusOf(
@@ -292,6 +293,7 @@ export function reportRows(
         domain: row.domain,
         minutes: row.effortMinutes ?? fix?.effortMinutes ?? null,
         fixKey: row.fixKey,
+        messageKey: row.messageKey,
       },
     ];
   });

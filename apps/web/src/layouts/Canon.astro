@@ -5,7 +5,15 @@ import { t } from '../i18n/index.js';
 import '../styles/polices.css';
 import '../styles/chrome.css';
 
-export type Vue = 'hub' | 'domaine' | 'restreint' | 'preuve';
+export type Vue =
+  | 'hub'
+  | 'domaine'
+  | 'restreint'
+  | 'preuve'
+  | 'constat'
+  | 'plan'
+  | 'brief'
+  | 'badge';
 
 interface Props {
   title: string;

@@ -1,0 +1,1183 @@
+/* Styles de la vue « badge », portés de la maquette finale, limités à html[data-vue=badge]. */
+
+:where(html[data-vue="badge"]) {
+  --bg: #ede8f5;
+  --surface: rgba(255, 255, 255, 0.8);
+  --solid: #fff;
+  --line: #adbbda;
+  --soft: rgba(61, 82, 160, 0.13);
+  --primary: #3d52a0;
+  --accent: #7091e6;
+  --lav: #8697c4;
+  --text: #1e2a55;
+  --muted: #4a5585;
+  --tint: rgba(61, 82, 160, 0.06);
+  --pill: rgba(61, 82, 160, 0.08);
+  --shadow:
+    0 30px 60px -30px rgba(61, 82, 160, 0.3),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  --crit: #b42318;
+  --crit-bg: #fef3f2;
+  --crit-bd: #fecdca;
+  --fix: #b54708;
+  --fix-bg: #fff6ed;
+  --fix-bd: #fec84b;
+  --chk: #854a0e;
+  --chk-bg: #fefbe8;
+  --chk-bd: #fde272;
+  --minor: #475467;
+  --ok: #067647;
+  --ok-bg: #ecfdf3;
+  --ok-bd: #abefc6;
+  --own: #155e75;
+  --own-bg: #ecfdff;
+  --own-bd: #67d4e8;
+  --nt: #475467;
+  --nt-bg: #f2f4f7;
+  --nt-bd: #d0d5dd;
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 72px;
+  --s7: 112px;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+:where(html[data-vue="badge"]) *,
+:where(html[data-vue="badge"]) *::before,
+:where(html[data-vue="badge"]) *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+:where(html[data-vue="badge"]) body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(html[data-vue="badge"]) a {
+  color: var(--primary);
+}
+:where(html[data-vue="badge"]) :focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+:where(html[data-vue="badge"]) .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+:where(html[data-vue="badge"]) .skip {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 2000;
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 99px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+:where(html[data-vue="badge"]) .skip:focus {
+  top: 12px;
+}
+:where(html[data-vue="badge"]) [hidden] {
+  display: none !important;
+}
+/* nav */
+
+/* layout */
+:where(html[data-vue="badge"]) main {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--s6) 32px var(--s5);
+  flex: 1;
+}
+@media (max-width: 600px) {
+  :where(html[data-vue="badge"]) main {
+    padding: var(--s5) 20px var(--s4);
+  }
+}
+:where(html[data-vue="badge"]) .crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+:where(html[data-vue="badge"]) .crumbs li + li::before {
+  content: "/";
+  margin-right: 8px;
+  opacity: 0.55;
+}
+:where(html[data-vue="badge"]) .crumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+:where(html[data-vue="badge"]) .crumbs a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+:where(html[data-vue="badge"]) .crumbs [aria-current] {
+  color: var(--text);
+  font-weight: 600;
+}
+:where(html[data-vue="badge"]) .hero {
+  margin: var(--s4) 0 var(--s6);
+}
+:where(html[data-vue="badge"]) .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+:where(html[data-vue="badge"]) .eyebrow .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: dot 2.4s ease-out infinite;
+}
+@keyframes dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(112, 145, 230, 0.6);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 9px rgba(112, 145, 230, 0);
+  }
+}
+:where(html[data-vue="badge"]) h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+  margin: var(--s2) 0 var(--s3);
+  max-width: 20ch;
+}
+:where(html[data-vue="badge"]) .lede {
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+:where(html[data-vue="badge"]) .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+:where(html[data-vue="badge"]) .chip svg,
+:where(html[data-vue="badge"]) .badge svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+:where(html[data-vue="badge"]) .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1px solid;
+}
+:where(html[data-vue="badge"]) .b-crit {
+  color: var(--crit);
+  background: var(--crit-bg);
+  border-color: var(--crit-bd);
+}
+:where(html[data-vue="badge"]) .b-fix {
+  color: var(--fix);
+  background: var(--fix-bg);
+  border-color: var(--fix-bd);
+}
+:where(html[data-vue="badge"]) .b-chk {
+  color: var(--chk);
+  background: var(--chk-bg);
+  border-color: var(--chk-bd);
+}
+:where(html[data-vue="badge"]) .b-ok {
+  color: var(--ok);
+  background: var(--ok-bg);
+  border-color: var(--ok-bd);
+}
+:where(html[data-vue="badge"]) .b-own {
+  color: var(--own);
+  background: var(--own-bg);
+  border-color: var(--own-bd);
+}
+:where(html[data-vue="badge"]) .b-nt {
+  color: var(--nt);
+  background: var(--nt-bg);
+  border-color: var(--nt-bd);
+}
+:where(html[data-vue="badge"]) .b-minor {
+  color: var(--minor);
+  background: #fff;
+  border-color: #d0d5dd;
+}
+:where(html[data-vue="badge"]) section.block {
+  margin-top: var(--s7);
+}
+@media (max-width: 600px) {
+  :where(html[data-vue="badge"]) section.block {
+    margin-top: var(--s6);
+  }
+  :where(html[data-vue="badge"]) .hero {
+    margin-bottom: var(--s5);
+  }
+}
+:where(html[data-vue="badge"]) .kicker {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  filter: saturate(1.1);
+}
+:where(html[data-vue="badge"]) .kicker {
+  color: #3d52a0;
+}
+
+:where(html[data-vue="badge"]) .card {
+  position: relative;
+  background: var(--surface);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  border: 1px solid var(--soft);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+:where(html[data-vue="badge"]) .card.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+:where(html[data-vue="badge"]) .card.sheen.in::after {
+  animation: sheen 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.35s 1;
+}
+@keyframes sheen {
+  to {
+    transform: translateX(120%);
+  }
+}
+:where(html[data-vue="badge"]) .pad {
+  padding: var(--s5);
+}
+@media (max-width: 600px) {
+  :where(html[data-vue="badge"]) .pad {
+    padding: var(--s3);
+  }
+}
+:where(html[data-vue="badge"]) .tilt {
+  transition:
+    transform 0.5s var(--out),
+    box-shadow 0.5s var(--out);
+  will-change: transform;
+}
+:where(html[data-vue="badge"]) .tilt:hover {
+  box-shadow:
+    0 40px 70px -30px rgba(61, 82, 160, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+:where(html[data-vue="badge"]) .btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 0 24px;
+  border-radius: 99px;
+  font:
+    600 15px Inter,
+    sans-serif;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  transition:
+    transform 0.4s var(--spring),
+    box-shadow 0.3s,
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+:where(html[data-vue="badge"]) .btn svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+:where(html[data-vue="badge"]) .btn:active {
+  transform: scale(0.96);
+}
+:where(html[data-vue="badge"]) .btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 12px 26px -12px rgba(61, 82, 160, 0.75);
+}
+:where(html[data-vue="badge"]) .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(61, 82, 160, 0.8);
+}
+:where(html[data-vue="badge"]) .btn-ghost {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--primary);
+  border-color: var(--line);
+}
+:where(html[data-vue="badge"]) .btn-ghost:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+:where(html[data-vue="badge"]) .g-a {
+  --g: #2fa36b;
+  --gt: #d6f2e3;
+  --gi: #065f3a;
+  --gr: 47, 163, 107;
+}
+:where(html[data-vue="badge"]) .g-b {
+  --g: #7091e6;
+  --gt: #dde4f8;
+  --gi: #2b3b85;
+  --gr: 112, 145, 230;
+}
+:where(html[data-vue="badge"]) .g-c {
+  --g: #e0a63a;
+  --gt: #fbe8c8;
+  --gi: #8a4b08;
+  --gr: 224, 166, 58;
+}
+:where(html[data-vue="badge"]) .g-d {
+  --g: #e1763f;
+  --gt: #fadbc9;
+  --gi: #a23b0a;
+  --gr: 225, 118, 63;
+}
+:where(html[data-vue="badge"]) .gchip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 11px;
+  background: var(--gt);
+  color: var(--gi);
+  font-weight: 800;
+  font-size: 16px;
+}
+:where(html[data-vue="badge"]) .gbar {
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(61, 82, 160, 0.1);
+  overflow: hidden;
+}
+:where(html[data-vue="badge"]) .gbar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: var(--g);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 1.4s var(--out) 0.2s;
+}
+:where(html[data-vue="badge"]) .in .gbar i,
+:where(html[data-vue="badge"]) .gbar.in i {
+  transform: scaleX(var(--v));
+}
+:where(html[data-vue="badge"]) .glass {
+  background:
+    radial-gradient(
+      130% 80% at 28% -10%,
+      rgba(255, 255, 255, 0.85),
+      rgba(255, 255, 255, 0) 55%
+    ),
+    linear-gradient(150deg, rgba(var(--gr), 0.4), rgba(var(--gr), 0.2));
+  color: var(--gi);
+  border: 1px solid rgba(var(--gr), 0.38);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -6px 12px -6px rgba(var(--gr), 0.3),
+    0 10px 22px -10px rgba(var(--gr), 0.65),
+    0 2px 6px -2px rgba(var(--gr), 0.25);
+  backdrop-filter: blur(12px) saturate(1.5);
+}
+/* reveal */
+:where(html[data-vue="badge"]) .js .rv {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  transition:
+    opacity 0.9s var(--out),
+    transform 1s var(--spring);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+:where(html[data-vue="badge"]) .js .rv.in {
+  opacity: 1;
+  transform: none;
+}
+@media print {
+  :where(html[data-vue="badge"]) .js .rv {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+:where(html[data-vue="badge"]) .toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 1500;
+  transform: translate(-50%, 30px);
+  opacity: 0;
+  background: #1e2a55;
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 20px 40px -15px rgba(30, 42, 85, 0.6);
+  transition:
+    opacity 0.35s,
+    transform 0.5s var(--spring);
+  pointer-events: none;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+:where(html[data-vue="badge"]) .toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(html[data-vue="badge"]) *,
+  :where(html[data-vue="badge"]) *::before,
+  :where(html[data-vue="badge"]) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+  :where(html[data-vue="badge"]) .js .rv {
+    opacity: 1;
+    transform: none;
+  }
+  :where(html[data-vue="badge"]) .card.sheen::after {
+    display: none;
+  }
+}
+
+:where(html[data-vue="badge"]) .progress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  transform-origin: left;
+  transform: scaleX(var(--p, 0));
+  z-index: 1100;
+}
+/* AX-COMMON (pages ajoutées 30/10) */
+:where(html[data-vue="badge"]) .panel {
+  position: relative;
+  isolation: isolate;
+  margin: 0 0 var(--s5);
+  padding: clamp(20px, 4.5vw, 48px);
+  border-radius: var(--ax-r, 28px);
+  border: 1px solid rgba(173, 187, 218, 0.7);
+  background:
+    radial-gradient(
+      60% 80% at 15% 0%,
+      rgba(112, 145, 230, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      50% 70% at 95% 0%,
+      rgba(134, 151, 196, 0.22),
+      transparent 70%
+    ),
+    linear-gradient(180deg, #ede8f5, #f7f5fc);
+}
+@media (max-width: 600px) {
+  :where(html[data-vue="badge"]) .panel {
+    padding: 24px 16px;
+  }
+}
+:where(html[data-vue="badge"]) .sec {
+  margin-top: var(--s6);
+}
+@media (max-width: 600px) {
+  :where(html[data-vue="badge"]) .sec {
+    margin-top: var(--s5);
+  }
+}
+:where(html[data-vue="badge"]) .sec > h2,
+:where(html[data-vue="badge"]) .h2 {
+  font-size: clamp(22px, 2.6vw, 28px);
+  letter-spacing: -0.022em;
+  line-height: 1.2;
+  font-weight: 800;
+  margin: 8px 0 var(--s3);
+}
+:where(html[data-vue="badge"]) .muted {
+  color: var(--muted);
+}
+:where(html[data-vue="badge"]) .gr {
+  display: inline-grid;
+  place-items: center;
+  font-weight: 800;
+  border-radius: 14px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  font-size: 20px;
+}
+:where(html[data-vue="badge"]) .gr-a {
+  background: #d6f2e3;
+  color: #065f3a;
+}
+:where(html[data-vue="badge"]) .gr-b {
+  background: #dde4f8;
+  color: #2b3b85;
+}
+:where(html[data-vue="badge"]) .gr-c {
+  background: #fbe8c8;
+  color: #7a4206;
+}
+:where(html[data-vue="badge"]) .gr-d {
+  background: #fadbc9;
+  color: #8f3408;
+}
+:where(html[data-vue="badge"]) .gr-f {
+  background: #f8d4d4;
+  color: #9b1c1c;
+}
+:where(html[data-vue="badge"]) .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-top: var(--s4);
+}
+:where(html[data-vue="badge"]) .acts .btn {
+  flex: 0 1 auto;
+}
+@media (max-width: 420px) {
+  :where(html[data-vue="badge"]) .acts .btn {
+    flex: 1 1 100%;
+  }
+}
+:where(html[data-vue="badge"]) .btn-primary:hover {
+  background: #1e2a55;
+}
+:where(html[data-vue="badge"]) .btn {
+  min-height: 48px;
+}
+:where(html[data-vue="badge"]) .chip {
+  min-height: 32px;
+}
+
+:where(html[data-vue="badge"]) body {
+  min-height: 100vh;
+}
+:where(html[data-vue="badge"]) .bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  padding: clamp(12px, 3vw, 32px);
+  pointer-events: none;
+}
+:where(html[data-vue="badge"]) .bg .fk {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 24px;
+  filter: blur(3px);
+}
+:where(html[data-vue="badge"]) .fk .bar {
+  height: 64px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid #adbbda;
+}
+:where(html[data-vue="badge"]) .fk .hero {
+  height: 320px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ede8f5, #f7f5fc);
+  border: 1px solid #adbbda;
+}
+:where(html[data-vue="badge"]) .fk .row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+:where(html[data-vue="badge"]) .fk .row i {
+  height: 160px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid #adbbda;
+}
+:where(html[data-vue="badge"]) .scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 42, 85, 0.42);
+  backdrop-filter: blur(10px) saturate(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  animation: fade 0.35s var(--out);
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+:where(html[data-vue="badge"]) .wrap {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vw, 32px);
+}
+:where(html[data-vue="badge"]) .dlg {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  background: #fff;
+  border-radius: 28px;
+  border: 1px solid #adbbda;
+  box-shadow: 0 40px 80px -30px rgba(30, 42, 85, 0.55);
+  padding: clamp(20px, 4vw, 40px);
+  animation: rise 0.6s var(--spring);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+}
+:where(html[data-vue="badge"]) .x {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: #3d52a0;
+  border: 1px solid #adbbda;
+  background: #fff;
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    transform 0.3s var(--spring);
+}
+:where(html[data-vue="badge"]) .x:hover {
+  background: #ede8f5;
+  transform: rotate(90deg);
+}
+:where(html[data-vue="badge"]) .x svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+:where(html[data-vue="badge"]) .dlg h1 {
+  font-size: clamp(24px, 3.4vw, 30px);
+  margin: 8px 56px var(--s1) 0;
+  max-width: none;
+  line-height: 1.15;
+}
+:where(html[data-vue="badge"]) .dlg .lede {
+  font-size: 16px;
+}
+:where(html[data-vue="badge"]) .vars {
+  border: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: var(--s4);
+}
+:where(html[data-vue="badge"]) .vars legend {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
+}
+:where(html[data-vue="badge"]) .vo {
+  position: relative;
+}
+:where(html[data-vue="badge"]) .vo input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+:where(html[data-vue="badge"]) .vo label {
+  display: grid;
+  gap: 4px;
+  min-height: 64px;
+  padding: 12px 16px;
+  border-radius: 18px;
+  border: 1.5px solid #adbbda;
+  background: #fff;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s,
+    box-shadow 0.2s;
+}
+:where(html[data-vue="badge"]) .vo label b {
+  font-size: 15px;
+}
+:where(html[data-vue="badge"]) .vo label span {
+  font-size: 13px;
+  color: var(--muted);
+}
+:where(html[data-vue="badge"]) .vo input:checked + label {
+  border-color: #3d52a0;
+  background: #eef2fc;
+  box-shadow: 0 0 0 3px rgba(112, 145, 230, 0.25);
+}
+:where(html[data-vue="badge"]) .vo input:focus-visible + label {
+  outline: 3px solid #3d52a0;
+  outline-offset: 3px;
+}
+@media (max-width: 560px) {
+  :where(html[data-vue="badge"]) .vars {
+    grid-template-columns: 1fr;
+  }
+}
+:where(html[data-vue="badge"]) .stage {
+  margin-top: var(--s3);
+  padding: var(--s4) var(--s2);
+  border-radius: 22px;
+  background: repeating-linear-gradient(45deg, #f7f5fc 0 12px, #fff 12px 24px);
+  border: 1px dashed #adbbda;
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+}
+:where(html[data-vue="badge"]) .bdg {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: Inter, sans-serif;
+  box-shadow: 0 10px 24px -14px rgba(30, 42, 85, 0.5);
+  border: 1px solid #adbbda;
+  background: #fff;
+  color: #1e2a55;
+  text-decoration: none;
+  animation: pop 0.5s var(--spring);
+}
+@keyframes pop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+:where(html[data-vue="badge"]) .bdg .l {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+}
+:where(html[data-vue="badge"]) .bdg .l img {
+  width: 28px;
+  height: 28px;
+}
+:where(html[data-vue="badge"]) .bdg .t {
+  display: grid;
+  line-height: 1.2;
+}
+:where(html[data-vue="badge"]) .bdg .t small {
+  font-size: 11.5px;
+  color: #4a5585;
+  font-weight: 600;
+}
+:where(html[data-vue="badge"]) .bdg .t b {
+  font-size: 14px;
+}
+:where(html[data-vue="badge"]) .bdg .g {
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  padding: 0 12px;
+  font-size: 28px;
+  font-weight: 800;
+  background: #dde4f8;
+  color: #2b3b85;
+}
+:where(html[data-vue="badge"]) .bdg.compact .t small {
+  display: none;
+}
+:where(html[data-vue="badge"]) .bdg.compact .l {
+  padding: 8px 12px;
+}
+:where(html[data-vue="badge"]) .bdg.compact .g {
+  min-width: 44px;
+  font-size: 22px;
+}
+:where(html[data-vue="badge"]) .bdg.pastille {
+  border-radius: 99px;
+}
+:where(html[data-vue="badge"]) .bdg.pastille .t {
+  display: none;
+}
+:where(html[data-vue="badge"]) .bdg.pastille .l {
+  padding: 8px 8px 8px 12px;
+}
+:where(html[data-vue="badge"]) .bdg.pastille .g {
+  border-radius: 99px;
+  margin: 6px;
+  min-width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+:where(html[data-vue="badge"]) .fld {
+  margin-top: var(--s3);
+}
+:where(html[data-vue="badge"]) .fld label {
+  display: block;
+  font-weight: 700;
+  font-size: 14.5px;
+  margin-bottom: 8px;
+}
+:where(html[data-vue="badge"]) .cp {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+:where(html[data-vue="badge"]) .cp textarea,
+:where(html[data-vue="badge"]) .cp input {
+  flex: 1;
+  min-width: 0;
+  border: 1.5px solid #adbbda;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font:
+    500 13px ui-monospace,
+    Menlo,
+    monospace;
+  color: #1e2a55;
+  background: #f7f5fc;
+  resize: none;
+}
+:where(html[data-vue="badge"]) .cp textarea {
+  height: 88px;
+}
+:where(html[data-vue="badge"]) .cp input {
+  min-height: 48px;
+}
+:where(html[data-vue="badge"]) .cp .btn {
+  flex: none;
+}
+@media (max-width: 560px) {
+  :where(html[data-vue="badge"]) .cp {
+    flex-direction: column;
+  }
+  :where(html[data-vue="badge"]) .cp .btn {
+    width: 100%;
+  }
+}
+:where(html[data-vue="badge"]) .btn.ok {
+  background: #065f3a;
+}
+:where(html[data-vue="badge"]) .foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--s4);
+  padding-top: var(--s3);
+  border-top: 1px solid #adbbda;
+}
+:where(html[data-vue="badge"]) .dlg:focus {
+  outline: none;
+}
+:where(html[data-vue="badge"]) .dlg > .kicker {
+  padding-right: 56px;
+}
+:where(html[data-vue="badge"]) .cp:has(textarea) {
+  align-items: flex-start;
+}
+:where(html[data-vue="badge"]) .foot p {
+  font-size: 13.5px;
+  color: var(--muted);
+  max-width: 44ch;
+}
+:where(html[data-vue="badge"]) .foot .acts {
+  margin: 0;
+}
+
+:where(html[data-vue="badge"]) {
+  --ax-edge: clamp(12px, 3vw, 32px);
+  --ax-r: 28px;
+  --ax-max: 1240px;
+  --ax-bd: #adbbda;
+  --ax-sf: #ede8f5;
+}
+
+/* AX-SURFACE: fond integre, hero en panneau arrondi en retrait */
+:where(html[data-vue="badge"]) body::before {
+  display: none;
+}
+:where(html[data-vue="badge"]) main {
+  padding-top: var(--s4);
+}
+@media (max-width: 900px) {
+  :where(html[data-vue="badge"]) main {
+    padding-top: var(--s3);
+  }
+}
+:where(html[data-vue="badge"]) .crumbs {
+  margin-bottom: var(--s3);
+}
+:where(html[data-vue="badge"]) .l-hero {
+  position: relative;
+  isolation: isolate;
+  margin: 0 0 var(--s5);
+  padding: clamp(24px, 5vw, 48px);
+  border-radius: var(--ax-r);
+  border: 1px solid rgba(173, 187, 218, 0.7);
+  background:
+    radial-gradient(
+      60% 80% at 15% 0%,
+      rgba(112, 145, 230, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      50% 70% at 95% 0%,
+      rgba(134, 151, 196, 0.22),
+      transparent 70%
+    ),
+    linear-gradient(180deg, #ede8f5, #f7f5fc);
+  box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
+}
+:where(html[data-vue="badge"]) .l-hero {
+  padding: clamp(24px, 4.5vw, 48px);
+}
+:where(html[data-vue="badge"]) .crumbs ol {
+  align-items: center;
+}
+:where(html[data-vue="badge"]) .crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+:where(html[data-vue="badge"]) .end .rel a,
+:where(html[data-vue="badge"]) .mail .addr,
+:where(html[data-vue="badge"]) .recap h3 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+@media (max-width: 600px) {
+  :where(html[data-vue="badge"]) .l-hero {
+    padding: 20px 16px;
+  }
+}
+
+/* AX-LINKS: liens designes (cartes / pilules) */
+:where(html[data-vue="badge"]) .lk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+:where(html[data-vue="badge"]) .lk-grid li {
+  display: flex;
+  min-width: 0;
+}
+:where(html[data-vue="badge"]) .lk {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  padding: 16px 16px 16px 16px;
+  border: 1px solid #adbbda;
+  border-radius: 20px;
+  background: #fff;
+  color: #1e2a55;
+  text-decoration: none;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
+:where(html[data-vue="badge"]) .lk:hover,
+:where(html[data-vue="badge"]) .lk:focus-visible {
+  transform: translateY(-3px);
+  border-color: #7091e6;
+  box-shadow: 0 16px 32px -16px rgba(61, 82, 160, 0.45);
+}
+:where(html[data-vue="badge"]) .lk:focus-visible {
+  outline: 2px solid #3d52a0;
+  outline-offset: 3px;
+}
+:where(html[data-vue="badge"]) .lk-ico {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #ede8f5;
+  color: #3d52a0;
+  display: grid;
+  place-items: center;
+}
+:where(html[data-vue="badge"]) .lk-ico svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+:where(html[data-vue="badge"]) .lk-tx {
+  min-width: 0;
+  flex: 1;
+}
+:where(html[data-vue="badge"]) .lk-t {
+  display: block;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #1e2a55;
+}
+:where(html[data-vue="badge"]) .lk-d {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 400;
+  color: #4a5585;
+}
+:where(html[data-vue="badge"]) .lk-ar {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: #3d52a0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+:where(html[data-vue="badge"]) .lk:hover .lk-ar,
+:where(html[data-vue="badge"]) .lk:focus-visible .lk-ar {
+  transform: translateX(4px);
+  color: #1e2a55;
+}
+:where(html[data-vue="badge"]) .lk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px 8px 18px;
+  border: 1px solid #adbbda;
+  border-radius: 999px;
+  background: #fff;
+  color: #3d52a0;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s,
+    border-color 0.25s,
+    background 0.25s;
+}
+:where(html[data-vue="badge"]) .lk-pill:hover,
+:where(html[data-vue="badge"]) .lk-pill:focus-visible {
+  transform: translateY(-2px);
+  border-color: #7091e6;
+  background: #ede8f5;
+  color: #1e2a55;
+  box-shadow: 0 10px 24px -14px rgba(61, 82, 160, 0.5);
+  text-decoration: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(html[data-vue="badge"]) .lk,
+  :where(html[data-vue="badge"]) .lk-ar,
+  :where(html[data-vue="badge"]) .lk-pill {
+    transition: none;
+  }
+  :where(html[data-vue="badge"]) .lk:hover,
+  :where(html[data-vue="badge"]) .lk:focus-visible,
+  :where(html[data-vue="badge"]) .lk-pill:hover,
+  :where(html[data-vue="badge"]) .lk-pill:focus-visible {
+    transform: none;
+  }
+}
+
+html[data-vue="badge"] .axn,
+html[data-vue="badge"] .axn-top,
+html[data-vue="badge"] .axf {
+  display: none;
+}
+html[data-vue="badge"] .scrim {
+  z-index: 30;
+}
+html[data-vue="badge"] .wrap {
+  z-index: 31;
+}

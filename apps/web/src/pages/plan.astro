@@ -1,11 +1,12 @@
 ---
+import '../styles/maquettes/plan.css';
 import ReportView from '../components/ReportView.svelte';
-import '../styles/chrome.css';
-import '../styles/polices.css';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base shell="canon" title={t('hub.plan.title')} description={t('hub.plan.lead')}>
-  <ReportView mode="plan" client:load />
-</Base>
+<Canon vue="plan" title={t('hub.plan.title')} description={t('plan.lede')}>
+  <main id="contenu" tabindex="-1">
+    <ReportView mode="plan" client:load />
+  </main>
+</Canon>

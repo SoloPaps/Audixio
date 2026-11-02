@@ -387,7 +387,7 @@ test('le rapport donne la note, trois priorités et le pont vers le brief', asyn
   await expect(section.getByRole('listitem')).toHaveCount(2);
   await expect(
     page.getByRole('link', { name: 'Ouvrir le brief IA' }),
-  ).toHaveAttribute('href', new RegExp(`/plan\\?id=${AUDIT_ID}`));
+  ).toHaveAttribute('href', new RegExp(`/brief\\?id=${AUDIT_ID}`));
   await section.getByRole('link').first().click();
   await expect(page).toHaveURL(/domaine=securite#finding-/);
   await page.getByRole('button', { name: 'Détails' }).first().click();

@@ -6,6 +6,7 @@ import type { AuditPayload } from '../lib/audit-api.js';
 import { domainShort, domainSymbol } from '../lib/domains.js';
 import {
   badgeHref,
+  briefHref,
   domainLetter,
   planHref,
   priorityHref,
@@ -328,7 +329,7 @@ onMount(() => {
         <p class="d">{t('hub.brief.lead')}</p>
       </div>
     </div>
-    <a class="btn btn-w" href={planHref(auditId)}><svg class="ico" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>{t('hub.brief.cta')}</a>
+    <a class="btn btn-w" href={briefHref(auditId)}><svg class="ico" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>{t('hub.brief.cta')}</a>
   </section>
   {#if avis && avis.rating !== null && avis.score !== null}
     <section aria-labelledby="t-avis">
