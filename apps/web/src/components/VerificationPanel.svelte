@@ -233,21 +233,22 @@ async function onCopy(value: string): Promise<void> {
 {:else if needLogin}
   <section class="khero" data-st="idle" aria-labelledby="h1">
     <h1 id="h1">{t('verify.title')}</h1>
+    <p>{t('verify.consent')}</p>
     <p role="status">{t('verify.need_login')}</p>
     <p><a class="btn btn-primary" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a></p>
   </section>
 {:else if missing}
-  <p role="status">{t('verify.missing')}</p>
+  <h1>{t('verify.missing')}</h1>
   <p><a class="btn btn-ghost" href="/sites">{t('verify.back')}</a></p>
 {:else if notFound || !site}
-  <p role="status">{t('verify.not_found')}</p>
+  <h1>{t('verify.not_found')}</h1>
   <p><a class="btn btn-ghost" href="/sites">{t('verify.back')}</a></p>
 {:else}
   {@const proof = current()}
   {@const token = sharedToken()}
   {@const challenge = token ? localChallenge(site, token) : null}
   {@const phase = pending ? 'checking' : phaseOf(proof)}
-  <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={`/rapport?id=${encodeURIComponent(reportId ?? '')}`}>{site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>
+  <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={`/rapport?id=${encodeURIComponent(reportId ?? '')}`}>{site.label || site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>
   <section class="khero" id="st" data-st={phase === 'checking' ? 'run' : phase} aria-labelledby="h1">
     <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="hgrid">
@@ -260,7 +261,7 @@ async function onCopy(value: string): Promise<void> {
         <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a></div>
       </div>
       <div class="gpanel">
-        <p class="stl" id="orbt">
+        <h2 class="stl" id="orbt">
           {#if phase === 'checking'}{t('verify.state.checking.title')}
           {:else if phase === 'ok'}{t('verify.state.ok.title')}
           {:else if phase === 'fail'}{t('verify.state.fail.title')}
@@ -271,7 +272,7 @@ async function onCopy(value: string): Promise<void> {
             {:else if phase === 'fail'}{t('verify.state.fail.body')}
             {:else}{t('verify.state.idle.body')}{/if}
           </small>
-        </p>
+        </h2>
       </div>
     </div>
   </section>
@@ -281,6 +282,12 @@ async function onCopy(value: string): Promise<void> {
     <p class="kicker">{t('preuve.why.kicker')}</p>
     <h2 class="sec" id="hw">{t('preuve.why.title')}</h2>
     <p class="sec-lede">{t('preuve.why.lead')}</p>
+    <div class="unl">
+      <div class="ut rv"><h3>{t('preuve.unlock.1')}</h3><p>{t('preuve.unlock.1b')}</p></div>
+      <div class="ut rv"><h3>{t('preuve.unlock.2')}</h3><p>{t('preuve.unlock.2b')}</p></div>
+      <div class="ut rv"><h3>{t('preuve.unlock.3')}</h3><p>{t('preuve.unlock.3b')}</p></div>
+      <div class="ut rv"><h3>{t('preuve.unlock.4')}</h3><p>{t('preuve.unlock.4b')}</p><span class="soon">{t('preuve.later')}</span></div>
+    </div>
   </section>
   <section class="blk" id="methodes" aria-labelledby="hm">
     <p class="kicker">{t('preuve.methods.kicker')}</p>

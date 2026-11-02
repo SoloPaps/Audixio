@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
-import { formatDate } from '../i18n/format.js';
+import { formatDate, formatNumber } from '../i18n/format.js';
 import { type MessageKey, t } from '../i18n/index.js';
 import type { AuditPayload } from '../lib/audit-api.js';
 import { domainShort, domainSymbol } from '../lib/domains.js';
@@ -14,8 +14,13 @@ import {
   shareGesture,
 } from '../lib/hub-view.js';
 import { linkPins, revealAll } from '../lib/motion.js';
+import { formatRating } from '../lib/places-api.js';
 import { relaunchHref } from '../lib/relaunch.js';
-import type { CategoryItem, ReportRow } from '../lib/report-model.js';
+import {
+  type CategoryItem,
+  type ReportRow,
+  reputationAside,
+} from '../lib/report-model.js';
 import { rose } from '../lib/rose.js';
 import ShareSheet from './ShareSheet.svelte';
 
@@ -55,6 +60,7 @@ let root: HTMLElement | undefined = $state();
 let roseHost: HTMLDivElement | undefined = $state();
 
 const auditId = $derived(payload.audit.id);
+const avis = $derived(reputationAside(payload));
 const global = $derived(payload.audit.globalScore);
 const scored = $derived(items.filter((item) => item.score !== null).length);
 const PIN_SPOTS = [
@@ -324,6 +330,15 @@ onMount(() => {
     </div>
     <a class="btn btn-w" href={planHref(auditId)}><svg class="ico" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>{t('hub.brief.cta')}</a>
   </section>
+  {#if avis && avis.rating !== null && avis.score !== null}
+    <section aria-labelledby="t-avis">
+      <h2 id="t-avis">{t('places.aside.title')}</h2>
+      <p>{t('places.rating', { rating: formatRating(avis.rating) })}</p>
+      {#if avis.reviewCount !== null}<p>{t('places.count', { count: formatNumber(avis.reviewCount) })}</p>{/if}
+      <p>{t('places.score', { score: avis.score })}</p>
+      <p>{t('places.aside.note')}</p>
+    </section>
+  {/if}
   <p class="eco-line">{t('hub.eco.lead')} <a href="/ecoconception">{t('hub.eco.link')}</a>.</p>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

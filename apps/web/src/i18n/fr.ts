@@ -2188,6 +2188,42 @@ export const fr = {
   'preuve.methods.kicker': 'Choisissez une méthode de vérification',
   'preuve.methods.lead':
     'Une seule méthode est active à la fois. Elles utilisent le même jeton.',
+  'preuve.unlock.1': 'Le détail complet du rapport',
+  'preuve.unlock.1b': 'Chaque constat, ses preuves et les fichiers concernés.',
+  'preuve.unlock.2': 'Le brief IA de correction',
+  'preuve.unlock.2b': 'Un plan d’action prêt à transmettre à votre prestataire.',
+  'preuve.unlock.3': 'Le partage public ou équipe',
+  'preuve.unlock.3b': 'Un lien propre, sans exposer de donnée sensible.',
+  'preuve.unlock.4': 'Les tests actifs',
+  'preuve.unlock.4b':
+    'Sondes approfondies, lancées seulement sur un domaine prouvé.',
+  'preuve.later': 'Plus tard',
+  'hub.px.t1': 'Images trop lourdes',
+  'hub.px.t2': 'Description manquante pour Google',
+  'hub.px.t3': 'Protection de base incomplète',
+  'hub.px.t4': 'Contrastes de texte insuffisants',
+  'hub.px.t5': 'Pages trop lourdes pour l’écologie',
+  'hub.px.t6': 'Titres de page trop génériques',
+  'hub.px.t7': 'Erreurs techniques mineures',
+  'hub.px.t8': 'Textes d’images incomplets',
+  'hub.px.t9': 'Configuration e-mail à renforcer',
+  'hub.px.t10': 'Petites améliorations de structure',
+  'domaine.px.t1': 'Images trop volumineuses à l’ouverture',
+  'domaine.px.w1':
+    'Des photos haute définition se chargent en pleine taille, même sur smartphone.',
+  'domaine.px.t2': 'Scripts qui s’exécutent trop tôt',
+  'domaine.px.w2':
+    'Le navigateur bloque l’affichage tant que des widgets annexes n’ont pas fini de tourner.',
+  'domaine.px.t3': 'Trop de styles d’écriture téléchargés',
+  'domaine.px.w3':
+    '4 familles de polices sont appelées, avec 8 variantes d’épaisseur superflues.',
+  'domaine.px.t4':
+    'Compression des fichiers de code activée (Gzip / Brotli)',
+  'domaine.px.w4':
+    'Les pages et les feuilles de style sont compactées avant l’envoi.',
+  'domaine.px.t5': 'Mise en cache du navigateur configurée',
+  'domaine.px.w5':
+    'Les éléments fixes ne sont pas re-téléchargés à chaque nouvelle page visitée.',
   'hub.note.sub': 'Moyenne des {n} domaines testés sur 8',
   'hub.prio.sub': 'Du plus urgent au moins urgent · {n} points',
   'hub.untested': 'Non testé',

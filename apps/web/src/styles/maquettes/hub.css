@@ -1788,6 +1788,7 @@ html:where([data-vue="hub"]) {
   transform: none;
 }
 @media (prefers-reduced-motion: reduce) {
+  :where(html[data-vue="hub"]),
   :where(html[data-vue="hub"]) *,
   :where(html[data-vue="hub"]) *::before,
   :where(html[data-vue="hub"]) *::after {

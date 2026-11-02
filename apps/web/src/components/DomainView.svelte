@@ -7,7 +7,7 @@ import type { CategoryItem } from '../lib/categories.js';
 import { domainSentence, domainShort, REPORT_DOMAINS } from '../lib/domains.js';
 import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
-import { revealAll, say } from '../lib/motion.js';
+import { countUp, revealAll, say } from '../lib/motion.js';
 import { saveTextFile } from '../lib/report-export.js';
 import { levelForScore } from '../lib/score.js';
 
@@ -203,6 +203,7 @@ onMount(() => {
     if (!root) return;
     placeInd(root);
     stop = revealAll(root, '.rv,.gbar');
+    countUp(root);
   });
   const onResize = (): void => {
     if (root) placeInd(root);
@@ -256,7 +257,7 @@ onMount(() => {
         <legend class="sr-only">{t('domaine.filter')}</legend>
         <div class="seg" id="flt"><span class="ind" aria-hidden="true"></span>
           {#each ['all', 'crit', 'fix', 'ok'] as key (key)}
-            <label><input type="radio" name="f" value={key} checked={filter === key} onchange={() => { filter = key as Filter; }}>{key === 'all' ? t('domaine.filter.all') : key === 'crit' ? t('domaine.filter.crit') : key === 'fix' ? t('domaine.filter.mod') : t('domaine.filter.ok')} <span class="n">{counted[key as Filter]}</span></label>
+            <label><input type="radio" name="f" value={key} checked={filter === key} onchange={() => { filter = key as Filter; }}>{key === 'all' ? t('domaine.filter.all') : key === 'crit' ? t('domaine.filter.crit') : key === 'fix' ? t('domaine.filter.mod') : t('domaine.filter.ok')} <span class="n" data-to={counted[key as Filter]}>{counted[key as Filter]}</span></label>
           {/each}
         </div>
       </fieldset>
@@ -281,6 +282,12 @@ onMount(() => {
               </div>
               <h3>{item.title}</h3>
               <p class="cd">{item.why}</p>
+              {#if item.limit}
+                <details class="finding-limit">
+                  <summary>{t('finding.limit')}</summary>
+                  <p>{item.limit}</p>
+                </details>
+              {/if}
               <div class="cst-f">
                 {#if sev !== 'ok'}
                   <fieldset class="choice">

@@ -41,7 +41,7 @@ onMount(() => {
           <li><span aria-current="page">{name}</span></li>
         </ol>
       </nav>
-      <a class="back" href={hubHref}><span class="t">{t('restreint.back')}</span></a>
+      <a class="back" href={hubHref} aria-label={t('restreint.back')}><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span class="t">{t('restreint.back')}</span></a>
     </div>
   </div>
 
@@ -75,7 +75,9 @@ onMount(() => {
               <div class="floaty">
                 <div class="ring r1"><span class="bead"></span></div>
                 <div class="ring r2"><span class="bead"></span></div>
-                <div class="shield3d"><div class="face" aria-hidden="true"></div></div>
+                <div class="shield3d" id="shield3d">
+                  <div class="face" aria-hidden="true"><img src="/marque/bouclier-restreint.svg" alt="" width="200" height="240" /></div>
+                </div>
                 <div class="chip3d c1">{t('restreint.point')}</div>
                 <div class="chip3d c2">{t('restreint.point')}</div>
                 <div class="chip3d c3">{t('restreint.point')}</div>
