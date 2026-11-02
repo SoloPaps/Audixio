@@ -14,7 +14,11 @@ export type Vue =
   | 'plan'
   | 'brief'
   | 'badge'
-  | 'auth';
+  | 'auth'
+  | 'accueil'
+  | 'methode'
+  | 'exemple'
+  | 'progression';
 
 interface Props {
   title: string;
@@ -50,8 +54,14 @@ const canonical = Astro.url.pathname || '/';
   </head>
   <body>
     <a class="skip" href="#contenu">{t('skip.main')}</a>
+    {(vue === 'accueil' || vue === 'methode') ? (
+      <nav class="legacy-pages" aria-label={t('nav.pages')}>
+        <a class="link-nav" href="/methode" aria-current={Astro.url.pathname === '/methode' ? 'page' : undefined}>{t('nav.method')}</a>
+        <a class="link-nav" href="/connexion">{t('nav.login')}</a>
+      </nav>
+    ) : null}
     <CanonBar pathname={Astro.url.pathname} client:load />
     <slot />
-    <CanonFooter />
+    <CanonFooter classic={vue === 'accueil' || vue === 'methode'} />
   </body>
 </html>

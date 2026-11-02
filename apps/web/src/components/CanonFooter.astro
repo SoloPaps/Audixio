@@ -1,5 +1,11 @@
 ---
 import { t } from '../i18n/index.js';
+
+interface Props {
+  classic?: boolean;
+}
+
+const { classic = false } = Astro.props;
 ---
 
 <footer class="axf">
@@ -18,6 +24,8 @@ import { t } from '../i18n/index.js';
           <li><a href="/confidentialite">{t('footer.privacy')}</a></li>
           <li><a href="/accessibilite">{t('footer.a11y')}</a></li>
           <li><a href="/cgu">{t('footer.cgu')}</a></li>
+          {classic ? <li><a class="link-footer" href="/cgu">{t('footer.terms')}</a></li> : null}
+          {classic ? <li><a class="link-footer" href="/methode">{t('footer.method.nav')}</a></li> : null}
           <li><a href="/ecoconception">{t('footer.eco')}</a></li>
           <li><a href="/methode#method-never">{t('footer.robot')}</a></li>
           <li><a href="/confidentialite#privacy-what">{t('footer.cookies')}</a></li>
@@ -26,6 +34,7 @@ import { t } from '../i18n/index.js';
       </nav>
     </div>
     <div class="axf-bot">
+      {classic ? <p class="footer-note">{t('footer.note')}</p> : null}
       <p style="margin:0">{t('footer.bottom')}</p>
     </div>
   </div>

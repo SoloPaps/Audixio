@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import { t } from '../i18n/index.js';
+import { t } from '../i18n/slim.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
 
 interface Props {
@@ -160,7 +160,7 @@ onMount(() => {
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
 {/snippet}
 
-<header class="axn" class:is-open={open} class:is-scrolled={scrolled} id="top" bind:this={header}>
+<header class="axn site-bar" class:is-open={open} class:is-scrolled={scrolled} id="top" bind:this={header}>
   <div class="axn-bar">
     <a class="axn-logo" href="/" aria-label={t('footer.home')}><img class="axn-logo-d" src="/marque/logo-pc.svg" alt="" width="107" height="34" decoding="async"><img class="axn-logo-m" src="/marque/logo-mobile.svg" alt="" width="36" height="36" decoding="async"></a>
     <nav aria-label={t('nav.bottom')}>
@@ -180,7 +180,7 @@ onMount(() => {
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
   <div class="axn-scrim" aria-hidden="true" onclick={() => setMenu(false, true)}></div>
   <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-  <div class="axn-sheet" id="axn-menu" role="dialog" aria-modal="true" aria-label={t('nav.menu')} inert={!open} bind:this={sheet} onclick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenu(false, false); }}>
+  <div class="axn-sheet" id="axn-menu" role="dialog" aria-modal={open ? 'true' : 'false'} aria-label={t('nav.menu')} inert={!open} bind:this={sheet} onclick={(event) => { if ((event.target as HTMLElement).closest('a')) setMenu(false, false); }}>
     <nav aria-label={t('nav.mobile')}>
       <ul>
         {#each items as item, index (item.href)}

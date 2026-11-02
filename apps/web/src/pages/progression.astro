@@ -1,16 +1,260 @@
 ---
-import ProgressPanel from '../components/ProgressPanel.svelte';
+import '../styles/maquettes/progression.css';
+import ProgressLive from '../components/ProgressLive.svelte';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base title={t('meta.progress.title')} description={t('meta.progress.description')}>
-  <div class="reading">
-    <section class="glass glass-module">
-      <div class="glass-plate">
-        <h1>{t('progress.title')}</h1>
-        <ProgressPanel client:load />
+<Canon vue="progression" title={t('meta.progress.title')} description={t('meta.progress.description')} robots="noindex, nofollow">
+
+<main id="contenu" class="wrap"><div class="glass-plate">
+  <div class="statusbar"><span class="site"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><b class="mono">{t('mq.p.001')}</b></span><span class="live"><i aria-hidden="true"></i><span id="liveT" role="status">{t('mq.p.002')}</span></span></div>
+  <div class="ax-hero">
+  <p class="eyebrow intro">{t('mq.p.003')}</p>
+  <h1 class="intro" id="t-h1" aria-label={t('progress.title')}><span id="h1T">{t('mq.p.004')}</span> <span class="grad mono" style="font-size:.82em;letter-spacing:-.04em">{t('mq.p.001')}</span></h1>
+  <p class="lead intro" id="leadT">{t('mq.p.005')}</p>
+
+  <!-- SCÈNE : site en cours de radiographie -->
+  <div class="stage intro" id="stage">
+    <div class="scene">
+      <div class="mock" id="mock" aria-hidden="true">
+        <div class="mock-bar">
+          <span class="lights"><i></i><i></i><i></i></span>
+          <div class="url"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>{t('mq.p.001')}
+            <span class="chip p-sec" data-key="sec" data-state="done"><span class="ic"></span>{t('mq.p.006')}</span>
+          </div>
+        </div>
+        <div class="mock-body">
+          <div class="clip"><div class="beam"></div></div>
+          <div class="sk nav" style="--d:.1"><span class="logo"></span><span class="grow"></span><span class="sk" style="width:46px;--d:.15"></span><span class="sk" style="width:46px;--d:.2"></span><span class="sk" style="width:46px;--d:.25"></span>
+            <span class="chip p-code" data-key="code" data-state="wait"><span class="ic"></span>{t('mq.p.007')}</span></div>
+          <div class="sk hero-img" style="--d:.5"><span class="chip p-perf" data-key="perf" data-state="active"><span class="ic"></span>{t('mq.p.008')}</span></div>
+          <div class="hero-txt">
+            <div class="sk h1b" style="--d:1.35"><span class="chip p-seo" data-key="seo" data-state="done"><span class="ic"></span>{t('mq.p.009')}</span></div>
+            <div class="sk line" style="--d:1.6;width:92%"><span class="chip p-a11y" data-key="a11y" data-state="next"><span class="ic"></span>{t('mq.p.010')}</span></div>
+            <div class="sk line" style="--d:1.75;width:78%"></div>
+          </div>
+          <div class="cards">
+            <div class="sk card" style="--d:2.3"></div><div class="sk card" style="--d:2.4"></div>
+            <div class="sk card" style="--d:2.5"><span class="chip p-eco" data-key="eco" data-state="done"><span class="ic"></span>{t('mq.p.011')}</span></div>
+          </div>
+          <div class="sk cookie" style="--d:3"><span class="chip p-rgpd" data-key="rgpd" data-state="off"><span class="ic"></span>{t('mq.p.012')}</span></div>
+          <div class="sk foot" style="--d:3.2"><span class="chip p-dns" data-key="dns" data-state="done"><span class="ic"></span>{t('mq.p.013')}</span></div>
+        </div>
+        <div class="glare" aria-hidden="true"></div>
+        <div class="stage-done"><span class="big-ok"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></div>
+        <div class="burst" id="burst"></div>
       </div>
-    </section>
+    </div>
   </div>
-</Base>
+
+  </div>
+
+  <!-- PROGRESSION -->
+  <div class="prog intro">
+    <div class="prog-top">
+      <div class="pct" aria-hidden="true"><span id="pct">70</span><small>%</small></div>
+      <div class="prog-info">
+        <p class="task"><i aria-hidden="true"></i><span id="task" class="caret">{t('mq.p.014')}</span></p>
+        <p class="eta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="eta">{t('mq.p.015')} <strong id="timeLeft">{t('mq.p.016')}</strong></span></p>
+      </div>
+    </div>
+    <div class="track" role="progressbar" id="pbar" aria-label={t('mq.p.017')} aria-valuemin="0" aria-valuemax="100" aria-valuenow="70"><div class="fill" id="fill"></div></div>
+    <div class="actions">
+      <button type="button" class="btn btn-ghost cta-wait" id="notifyBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>{t('mq.p.018')}</button>
+      <a class="btn btn-primary cta-done" href="/rapport" id="reportBtn">{t('mq.p.019')}
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+  </div>
+
+  <!-- DOMAINES -->
+  <section aria-labelledby="t-dom" class="intro">
+    <div class="sec-h">
+      <h2 id="t-dom">{t('mq.p.020')}</h2>
+      <span class="counts" id="counts"></span>
+    </div>
+    <ul class="grid">
+      <li class="cap" data-key="seo" data-state="done"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><span class="st"><span class="stt">{t('mq.p.021')}</span></span></div><div><h3>{t('mq.p.022')}</h3><p>{t('mq.p.023')}</p></div></li>
+      <li class="cap" data-key="sec" data-state="done"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/></svg><span class="st"><span class="stt">{t('mq.p.021')}</span></span></div><div><h3>{t('mq.p.024')}</h3><p>{t('mq.p.025')}</p></div></li>
+      <li class="cap" data-key="eco" data-state="done"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 20A7 7 0 0 1 4 13c0-6 6-9 16-9 0 10-3 16-9 16z"/><path d="M4 21c3-6 6-9 11-11"/></svg><span class="st"><span class="stt">{t('mq.p.021')}</span></span></div><div><h3>{t('mq.p.026')}</h3><p>{t('mq.p.027')}</p></div></li>
+      <li class="cap" data-key="dns" data-state="done"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span class="st"><span class="stt">{t('mq.p.021')}</span></span></div><div><h3>{t('mq.p.028')}</h3><p>{t('mq.p.029')}</p></div></li>
+      <li class="cap" data-key="perf" data-state="active"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 14l4-4"/><path d="M3.3 17a9 9 0 1 1 17.4 0"/></svg><span class="st"><span class="stt">{t('mq.p.030')}</span></span></div><div><h3>{t('mq.p.031')}</h3><p>{t('mq.p.032')}</p></div></li>
+      <li class="cap" data-key="a11y" data-state="next"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M5 8l7 1.5L19 8M12 9.5V14l-3 6M12 14l3 6"/></svg><span class="st"><span class="stt">{t('mq.p.033')}</span></span></div><div><h3>{t('mq.p.034')}</h3><p>{t('mq.p.035')}</p></div></li>
+      <li class="cap" data-key="code" data-state="wait"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 8l-5 4 5 4M16 8l5 4-5 4M14 5l-4 14"/></svg><span class="st"><span class="stt">{t('mq.p.036')}</span></span></div><div><h3>{t('mq.p.037')}</h3><p>{t('mq.p.038')}</p></div></li>
+      <li class="cap" data-key="rgpd" data-state="off"><div class="cap-top"><svg class="cap-ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14l2 2 4-4"/></svg><span class="st"><span class="stt">{t('mq.p.039')}</span></span></div><div><h3>{t('mq.p.040')}</h3><p>{t('mq.p.041')}</p></div></li>
+    </ul>
+  </section>
+</div><p id="home-back" hidden><a href="/">{t('progress.home')}</a></p><p id="report-back" hidden><a id="report-link" href="/rapport">{t('progress.report')}</a></p></main>
+<dialog id="notify" aria-labelledby="dlgT">
+  <div class="dlg" id="dlg">
+    <div class="dlg-top">
+      <span class="dlg-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span>
+      <button type="button" class="x" id="closeDlg" aria-label={t('progress.notify.close')}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <h3 id="dlgT">{t('progress.notify.title')}</h3>
+    <p>{t('progress.notify.body')}</p>
+    <form id="notifyForm" novalidate>
+      <label for="email">{t('progress.notify.email')}</label>
+      <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="vous@exemple.fr" required aria-describedby="emailErr">
+      <p id="emailErr" role="alert">{t('progress.notify.invalid')}</p>
+      <button class="btn btn-primary" type="submit">{t('progress.notify.submit')}</button>
+    </form>
+    <p class="ok-msg">{t('progress.notify.ok')}</p>
+  </div>
+</dialog>
+<ProgressLive client:load />
+<script is:inline>
+
+document.addEventListener('DOMContentLoaded',function(){
+'use strict';
+var $=function(s,c){return (c||document).querySelector(s);};
+var $$=function(s,c){return [].slice.call((c||document).querySelectorAll(s));};
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var hasG=!!window.gsap;
+var STATUS={done:'Analysé',active:'En cours',next:'Prochain',wait:'En attente',off:'Non testé'};
+
+/* ===== API d'intégration : branchez votre back-end ici =====
+   window.audixioProgress.set(72)                      // pourcentage 0-100
+   window.audixioProgress.domain('perf','done')        // done | active | next | wait | off
+   window.audixioProgress.phrase('Texte de l'étape')    // phrase affichée
+   window.audixioProgress.finish()                     // diagnostic terminé            */
+
+var pctEl=$('#pct'),fill=$('#fill'),pbar=$('#pbar'),timeEl=$('#timeLeft'),taskEl=$('#task'),liveEl=$('#live');
+var percent=70,typeTimer=null,finished=false,PER_TICK=.5,TICK=400;
+
+function counts(){
+  var c=$$('.cap'),d=0,a=0;
+  c.forEach(function(el){if(el.dataset.state==='done')d++;if(el.dataset.state==='active')a++;});
+  $('#counts').innerHTML='<b>'+a+' en cours</b> · '+d+' terminé'+(d>1?'s':'')+' · '+(c.length-a-d)+' en attente';
+}
+function setDomain(key,state){
+  $$('[data-key="'+key+'"]').forEach(function(el){
+    el.dataset.state=state;
+    var t=$('.stt',el);if(t)t.textContent=STATUS[state];
+  });
+  counts();
+}
+function setPercent(p){
+  percent=Math.max(0,Math.min(100,p));
+  var r=Math.round(percent);
+  pctEl.textContent=r;fill.style.width=percent+'%';pbar.setAttribute('aria-valuenow',r);
+  var s=Math.max(0,Math.ceil((100-percent)/PER_TICK*TICK/1000));
+  timeEl.textContent=s<=0?'quelques instants':'~'+s+' seconde'+(s>1?'s':'');
+}
+function setPhrase(txt){
+  clearInterval(typeTimer);
+  if(liveEl)liveEl.textContent=txt;
+  if(reduce){taskEl.textContent=txt;taskEl.classList.remove('caret');return;}
+  taskEl.classList.add('caret');taskEl.textContent='';
+  var i=0;
+  typeTimer=setInterval(function(){
+    taskEl.textContent=txt.slice(0,++i);
+    if(i>=txt.length){clearInterval(typeTimer);setTimeout(function(){taskEl.classList.remove('caret');},900);}
+  },18);
+}
+function burst(){
+  if(!hasG||reduce)return;
+  var host=$('#burst'),cols=['#7091E6','#adbbda','#7091E6','#3D52A0'];
+  for(var i=0;i<34;i++){
+    var d=document.createElement('i');d.style.background=cols[i%4];host.appendChild(d);
+    var a=Math.random()*Math.PI*2,r=140+Math.random()*190;
+    gsap.fromTo(d,{x:0,y:0,scale:0,opacity:1},{x:Math.cos(a)*r,y:Math.sin(a)*r+40,scale:.6+Math.random()*1.2,rotation:Math.random()*360,duration:1.6+Math.random()*.8,ease:'expo.out',onComplete:(function(n){return function(){n.remove();};})(d)});
+    gsap.to(d,{opacity:0,delay:.9,duration:1,ease:'power1.in'});
+  }
+}
+function finish(){
+  if(finished)return;finished=true;
+  clearInterval(sim);
+  ['perf','a11y','code'].forEach(function(k){setDomain(k,'done');});
+  setPercent(100);
+  document.body.classList.add('done');
+  $('#h1T').textContent='Votre diagnostic est prêt pour';
+  $('#leadT').textContent="L'analyse est terminée. Votre rapport complet, avec les priorités et le plan d'action, vous attend.";
+  $('#liveT').textContent='Analyse terminée';
+  setPhrase('Diagnostic terminé : votre rapport est disponible');
+  if($('#notify').open)$('#notify').close();
+  burst();
+  if(hasG&&!reduce)gsap.fromTo('.big-ok',{rotate:-30},{rotate:0,duration:1,ease:'elastic.out(1,.5)'});
+}
+window.audixioProgress={set:setPercent,domain:setDomain,phrase:setPhrase,finish:finish};
+
+/* ===== simulation de démonstration (à remplacer par vos vraies données) ===== */
+var stages=[
+  {key:'perf',until:82,next:'a11y',phrases:['Analyse de la compression des images et du poids global','Vérification de la fluidité et du confort de lecture sur smartphone']},
+  {key:'a11y',until:91,next:'code',phrases:['Contrôle des contrastes et de la navigation au clavier']},
+  {key:'code',until:99,next:null,phrases:['Lecture du code source et recherche des erreurs','Génération de la synthèse finale et des recommandations']}
+];
+var si=0,spoke=0,sim=null;
+function tick(){
+  var st=stages[si];
+  setPercent(percent+PER_TICK);
+  var mid=(st.until-(si?stages[si-1].until:70))/2+(si?stages[si-1].until:70);
+  if(st.phrases.length>1&&spoke===0&&percent>=mid){spoke=1;setPhrase(st.phrases[1]);}
+  if(percent>=st.until){
+    setDomain(st.key,'done');
+    si++;spoke=0;
+    if(si>=stages.length||percent>=99.5){finish();return;}
+    setDomain(stages[si].key,'active');
+    if(stages[si+1])setDomain(stages[si+1].key,'next');
+    setPhrase(stages[si].phrases[0]);
+  }
+}
+counts();setPercent(70);
+/* simulation retirée : la page reste sur l'état illustratif à 70 %. */
+
+/* ===== modale e-mail ===== */
+var dlg=$('#notify'),form=$('#notifyForm'),mail=$('#email'),err=$('#emailErr');
+$('#notifyBtn').addEventListener('click',function(){
+  if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','');
+  mail.focus();
+});
+$('#closeDlg').addEventListener('click',function(){dlg.close();});
+dlg.addEventListener('click',function(e){if(e.target===dlg)dlg.close();});
+form.addEventListener('submit',function(e){
+  e.preventDefault();
+  var ok=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail.value.trim());
+  err.style.display=ok?'none':'block';mail.setAttribute('aria-invalid',!ok);
+  if(!ok){mail.focus();return;}
+  /* TODO : envoyer mail.value à votre back-end (ex. fetch('/api/notify',{method:'POST',...})) */
+  $('#dlg').classList.add('sent');$('#dlgT').textContent='C’est noté !';
+  $('#notifyBtn').textContent='Notification activée';
+  setTimeout(function(){if(dlg.open)dlg.close();},1600);
+});
+
+/* ===== animations GSAP ===== */
+if(hasG&&!reduce){
+  gsap.from('.intro',{y:34,opacity:0,duration:1,stagger:.12,ease:'power3.out',delay:.1,clearProps:'transform,opacity'});
+}
+
+/* ===== inclinaison 3D fluide (sans GSAP, sans conflit) ===== */
+(function(){
+  var mk=$('#mock'),stg=$('#stage');
+  if(!mk||!stg||reduce||!window.matchMedia('(hover: hover) and (pointer: fine)').matches)return;
+  var tx=0,ty=0,cx=0,cy=0,tg=0,g=0,raf=0,inside=false;
+  var clamp=function(v){return Math.max(-1,Math.min(1,v));};
+  function frame(){
+    cx+=(tx-cx)*.11;cy+=(ty-cy)*.11;g+=(tg-g)*.11;
+    mk.style.setProperty('--rx',(-cy*8).toFixed(2)+'deg');
+    mk.style.setProperty('--ry',(cx*11).toFixed(2)+'deg');
+    mk.style.setProperty('--sc',(1+g*.018).toFixed(4));
+    mk.style.setProperty('--px',cx.toFixed(3));
+    mk.style.setProperty('--py',cy.toFixed(3));
+    mk.style.setProperty('--gx',(50+cx*50).toFixed(1)+'%');
+    mk.style.setProperty('--gy',(50+cy*50).toFixed(1)+'%');
+    mk.style.setProperty('--go',(g*.75).toFixed(3));
+    var moving=inside||Math.abs(cx)>.002||Math.abs(cy)>.002||g>.002;
+    raf=moving?requestAnimationFrame(frame):0;
+  }
+  function wake(){if(!raf)raf=requestAnimationFrame(frame);}
+  stg.addEventListener('pointermove',function(e){
+    var r=stg.getBoundingClientRect();
+    tx=clamp((e.clientX-r.left)/r.width*2-1);ty=clamp((e.clientY-r.top)/r.height*2-1);
+    tg=1;inside=true;wake();
+  });
+  stg.addEventListener('pointerleave',function(){tx=0;ty=0;tg=0;inside=false;wake();});
+})();
+});
+
+</script>
+</Canon>
