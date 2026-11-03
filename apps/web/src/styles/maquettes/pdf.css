@@ -1,0 +1,830 @@
+/* Page d’impression du rapport. Limité à html[data-vue=pdf]. */
+html[data-vue="pdf"] {
+  --bg: #ede8f5;
+  --primary: #3d52a0;
+  --accent: #7091e6;
+  --text: #1e2a55;
+  --muted: #4a5585;
+  --line: #adbbda;
+  --s1: 8px;
+  --s2: 16px;
+  --s3: 24px;
+  --s4: 32px;
+  --s5: 48px;
+  --s6: 72px;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --out: cubic-bezier(0.16, 1, 0.3, 1);
+  --crit: #b42318;
+  --crit-bg: #fef3f2;
+  --crit-bd: #fecdca;
+  --fix: #b54708;
+  --fix-bg: #fff6ed;
+  --fix-bd: #fec84b;
+  --chk: #854a0e;
+  --chk-bg: #fefbe8;
+  --chk-bd: #fde272;
+  --minor: #475467;
+  --nt: #475467;
+  --nt-bg: #f2f4f7;
+  --nt-bd: #d0d5dd;
+}
+
+html[data-vue="pdf"] body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+html[data-vue="pdf"] main {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: var(--s4) 32px var(--s5);
+  flex: 1;
+}
+
+html[data-vue="pdf"] .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+html[data-vue="pdf"] .crumbs {
+  margin-bottom: var(--s3);
+}
+
+html[data-vue="pdf"] .crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+html[data-vue="pdf"] .crumbs li + li::before {
+  content: "/";
+  margin-right: 8px;
+  opacity: 0.55;
+}
+
+html[data-vue="pdf"] .crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+html[data-vue="pdf"] .crumbs a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+html[data-vue="pdf"] .crumbs [aria-current] {
+  color: var(--text);
+  font-weight: 600;
+}
+
+html[data-vue="pdf"] .kicker {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #3d52a0;
+}
+
+html[data-vue="pdf"] .muted {
+  color: var(--muted);
+}
+
+html[data-vue="pdf"] .progress {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  transform-origin: left;
+  transform: scaleX(var(--p, 0));
+  z-index: 1100;
+}
+
+html[data-vue="pdf"] .btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 99px;
+  font:
+    600 15px Inter,
+    sans-serif;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  text-decoration: none;
+  transition:
+    transform 0.4s var(--spring),
+    box-shadow 0.3s,
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+html[data-vue="pdf"] .btn svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+html[data-vue="pdf"] .btn:active {
+  transform: scale(0.96);
+}
+
+html[data-vue="pdf"] .btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 12px 26px -12px rgba(61, 82, 160, 0.75);
+}
+
+html[data-vue="pdf"] .btn-primary:hover {
+  background: #1e2a55;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(61, 82, 160, 0.8);
+}
+
+html[data-vue="pdf"] .btn-ghost {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--primary);
+  border-color: var(--line);
+}
+
+html[data-vue="pdf"] .btn-ghost:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+html[data-vue="pdf"] .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 700;
+  border: 1px solid;
+}
+
+html[data-vue="pdf"] .b-crit {
+  color: var(--crit);
+  background: var(--crit-bg);
+  border-color: var(--crit-bd);
+}
+
+html[data-vue="pdf"] .b-fix {
+  color: var(--fix);
+  background: var(--fix-bg);
+  border-color: var(--fix-bd);
+}
+
+html[data-vue="pdf"] .b-check {
+  color: var(--chk);
+  background: var(--chk-bg);
+  border-color: var(--chk-bd);
+}
+
+html[data-vue="pdf"] .b-minor {
+  color: var(--minor);
+  background: #fff;
+  border-color: #d0d5dd;
+}
+
+html[data-vue="pdf"] .b-nt {
+  color: var(--nt);
+  background: var(--nt-bg);
+  border-color: var(--nt-bd);
+}
+
+html[data-vue="pdf"].js .rv {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  transition:
+    opacity 0.9s var(--out),
+    transform 1s var(--spring);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+html[data-vue="pdf"].js .rv.in {
+  opacity: 1;
+  transform: none;
+}
+
+html[data-vue="pdf"] .tb {
+  position: sticky;
+  top: 88px;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 12px 12px 24px;
+  margin-bottom: var(--s4);
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid #adbbda;
+  box-shadow: 0 16px 32px -24px rgba(61, 82, 160, 0.5);
+}
+
+html[data-vue="pdf"] .tb p {
+  font-weight: 600;
+  font-size: 14.5px;
+  margin: 0;
+}
+
+html[data-vue="pdf"] .tb .acts {
+  margin: 0;
+  gap: 8px;
+}
+
+html[data-vue="pdf"] .acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+html[data-vue="pdf"] .sheets {
+  display: grid;
+  gap: var(--s5);
+  justify-items: center;
+  padding: var(--s4) clamp(8px, 3vw, 32px);
+  border-radius: 28px;
+  background: linear-gradient(180deg, #e3ddf0, #ede8f5);
+  border: 1px solid rgba(173, 187, 218, 0.7);
+}
+
+html[data-vue="pdf"] .sheet {
+  position: relative;
+  width: 100%;
+  max-width: 794px;
+  aspect-ratio: 210 / 297;
+  background: #fff;
+  color: #1e2a55;
+  border-radius: 6px;
+  box-shadow:
+    0 30px 60px -30px rgba(30, 42, 85, 0.45),
+    0 0 0 1px rgba(173, 187, 218, 0.6);
+  padding: 56px 60px 72px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+html[data-vue="pdf"] .sheet .pf {
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 11.5px;
+  color: #4a5585;
+  border-top: 1px solid #adbbda;
+  padding-top: 10px;
+}
+
+html[data-vue="pdf"] .cov-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+html[data-vue="pdf"] .cov-top img {
+  height: 34px;
+  width: auto;
+}
+
+html[data-vue="pdf"] .cov-tag {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #3d52a0;
+}
+
+html[data-vue="pdf"] .cov-mid {
+  flex: 1;
+  display: grid;
+  align-content: center;
+  gap: var(--s3);
+  padding: var(--s5) 0;
+}
+
+html[data-vue="pdf"] .cov-h {
+  font-size: clamp(28px, 4.5vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+html[data-vue="pdf"] .dom {
+  font:
+    700 clamp(18px, 3vw, 24px) ui-monospace,
+    Menlo,
+    monospace;
+  color: #3d52a0;
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+
+html[data-vue="pdf"] .bigg {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin-top: var(--s3);
+  padding: var(--s3);
+  border-radius: 24px;
+  background: #f7f5fc;
+  border: 1px solid #adbbda;
+}
+
+html[data-vue="pdf"] .bigg .gr {
+  width: 112px;
+  height: 112px;
+  font-size: 64px;
+  border-radius: 28px;
+  flex: none;
+}
+
+html[data-vue="pdf"] .bigg p {
+  color: #4a5585;
+  font-size: 15px;
+  margin: 0;
+}
+
+html[data-vue="pdf"] .bigg strong {
+  display: block;
+  color: #1e2a55;
+  font-size: 19px;
+  margin-bottom: 4px;
+}
+
+html[data-vue="pdf"] .meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s2);
+  margin: 0;
+  font-size: 13.5px;
+}
+
+html[data-vue="pdf"] .meta div {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #ede8f5;
+}
+
+html[data-vue="pdf"] .meta dt {
+  color: #4a5585;
+  font-weight: 600;
+}
+
+html[data-vue="pdf"] .meta dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+html[data-vue="pdf"] .sh {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 8px 0 var(--s3);
+}
+
+html[data-vue="pdf"] .lede {
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0 0 var(--s3);
+}
+
+html[data-vue="pdf"] .pri {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  counter-reset: p;
+  margin: 0;
+  padding: 0;
+}
+
+html[data-vue="pdf"] .pri li {
+  counter-increment: p;
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 12px 16px;
+  padding: 14px 16px;
+  border: 1px solid #adbbda;
+  border-radius: 16px;
+  break-inside: avoid;
+}
+
+html[data-vue="pdf"] .pri li::before {
+  content: counter(p);
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: #3d52a0;
+  color: #fff;
+  font-weight: 800;
+}
+
+html[data-vue="pdf"] .pri h3 {
+  font-size: 15.5px;
+  line-height: 1.35;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  margin: 0;
+}
+
+html[data-vue="pdf"] .pri p {
+  font-size: 13.5px;
+  color: #4a5585;
+  margin: 4px 0 0;
+}
+
+html[data-vue="pdf"] .gr {
+  display: inline-grid;
+  place-items: center;
+  font-weight: 800;
+  border-radius: 14px;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 10px;
+  font-size: 20px;
+}
+
+html[data-vue="pdf"] .gr-a {
+  background: #d6f2e3;
+  color: #065f3a;
+}
+
+html[data-vue="pdf"] .gr-b {
+  background: #dde4f8;
+  color: #2b3b85;
+}
+
+html[data-vue="pdf"] .gr-c {
+  background: #fbe8c8;
+  color: #7a4206;
+}
+
+html[data-vue="pdf"] .gr-d {
+  background: #fadbc9;
+  color: #8f3408;
+}
+
+html[data-vue="pdf"] .gr-e {
+  background: #f8d4c4;
+  color: #8a2e12;
+}
+
+html[data-vue="pdf"] .gr-f {
+  background: #f8d4d4;
+  color: #9b1c1c;
+}
+
+html[data-vue="pdf"] .gr-none {
+  background: #f2f4f7;
+  color: #475467;
+}
+
+html[data-vue="pdf"] .tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+html[data-vue="pdf"] .tbl th,
+html[data-vue="pdf"] .tbl td {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid #adbbda;
+  vertical-align: middle;
+}
+
+html[data-vue="pdf"] .tbl th {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #4a5585;
+}
+
+html[data-vue="pdf"] .tbl .gr {
+  min-width: 36px;
+  height: 36px;
+  font-size: 16px;
+  border-radius: 10px;
+}
+
+html[data-vue="pdf"] .tbl td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+html[data-vue="pdf"] .leg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: var(--s3);
+  font-size: 12.5px;
+  color: #4a5585;
+}
+
+html[data-vue="pdf"] .leg > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+html[data-vue="pdf"] .leg .gr {
+  min-width: 28px;
+  height: 28px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+html[data-vue="pdf"] .method {
+  font-size: 13px;
+  margin-top: var(--s3);
+}
+
+html[data-vue="pdf"] .after {
+  margin-top: var(--s5);
+}
+
+html[data-vue="pdf"] .h2 {
+  font-size: clamp(22px, 2.6vw, 28px);
+  letter-spacing: -0.022em;
+  line-height: 1.2;
+  font-weight: 800;
+  margin: 8px 0 var(--s3);
+}
+
+html[data-vue="pdf"] .lk-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+
+html[data-vue="pdf"] .lk-grid li {
+  display: flex;
+  min-width: 0;
+}
+
+html[data-vue="pdf"] .lk {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  padding: 16px;
+  border: 1px solid #adbbda;
+  border-radius: 20px;
+  background: #fff;
+  color: #1e2a55;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
+  transition:
+    transform 0.25s var(--out),
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
+
+html[data-vue="pdf"] .lk:hover,
+html[data-vue="pdf"] .lk:focus-visible {
+  transform: translateY(-3px);
+  border-color: #7091e6;
+  box-shadow: 0 16px 32px -16px rgba(61, 82, 160, 0.45);
+}
+
+html[data-vue="pdf"] .lk-ico {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #ede8f5;
+  color: #3d52a0;
+  display: grid;
+  place-items: center;
+}
+
+html[data-vue="pdf"] .lk-ico svg,
+html[data-vue="pdf"] .lk-ar {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+html[data-vue="pdf"] .lk-ar {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: #3d52a0;
+  transition: transform 0.25s var(--out);
+}
+
+html[data-vue="pdf"] .lk:hover .lk-ar,
+html[data-vue="pdf"] .lk:focus-visible .lk-ar {
+  transform: translateX(4px);
+  color: #1e2a55;
+}
+
+html[data-vue="pdf"] .lk-t {
+  display: block;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+html[data-vue="pdf"] .lk-d {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #4a5585;
+}
+
+@media (max-width: 820px) {
+  html[data-vue="pdf"] .sheet {
+    aspect-ratio: auto;
+    padding: 32px 24px 64px;
+  }
+
+  html[data-vue="pdf"] .sheet .pf {
+    left: 24px;
+    right: 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  html[data-vue="pdf"] main {
+    padding: var(--s5) 20px var(--s4);
+  }
+
+  html[data-vue="pdf"] .tb {
+    position: static;
+    border-radius: 24px;
+    padding: var(--s2);
+  }
+
+  html[data-vue="pdf"] .tb .acts {
+    width: 100%;
+  }
+
+  html[data-vue="pdf"] .tb .btn {
+    flex: 1 1 140px;
+  }
+}
+
+@media (max-width: 600px) {
+  html[data-vue="pdf"] .meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  html[data-vue="pdf"] .bigg {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  html[data-vue="pdf"] .bigg .gr {
+    width: 88px;
+    height: 88px;
+    font-size: 48px;
+  }
+
+  html[data-vue="pdf"] .tbl .hide-s {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  html[data-vue="pdf"] .acts .btn {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-vue="pdf"] *,
+  html[data-vue="pdf"] *::before,
+  html[data-vue="pdf"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+
+  html[data-vue="pdf"].js .rv {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html[data-vue="pdf"] body {
+    background: #fff !important;
+    color: #1e2a55 !important;
+  }
+
+  html[data-vue="pdf"].js .rv {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  html[data-vue="pdf"] .axn,
+  html[data-vue="pdf"] .axn-top,
+  html[data-vue="pdf"] .axf,
+  html[data-vue="pdf"] .crumbs,
+  html[data-vue="pdf"] .tb,
+  html[data-vue="pdf"] .after,
+  html[data-vue="pdf"] .progress,
+  html[data-vue="pdf"] .skip {
+    display: none !important;
+  }
+
+  html[data-vue="pdf"] main {
+    padding: 0 !important;
+    max-width: none;
+  }
+
+  html[data-vue="pdf"] .sheets {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 0;
+  }
+
+  html[data-vue="pdf"] .sheet {
+    width: 210mm;
+    height: 297mm;
+    max-width: none;
+    aspect-ratio: auto;
+    box-shadow: none;
+    border-radius: 0;
+    page-break-after: always;
+    break-after: page;
+    padding: 18mm 18mm 22mm;
+  }
+
+  html[data-vue="pdf"] .sheet .pf {
+    left: 18mm;
+    right: 18mm;
+    bottom: 10mm;
+  }
+
+  html[data-vue="pdf"] * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

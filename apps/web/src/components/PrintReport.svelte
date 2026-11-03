@@ -1,69 +1,46 @@
 <script lang="ts">
-import QRCode from 'qrcode';
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { type AuditPayload, readAudit } from '../lib/audit-api.js';
 import { currentSession } from '../lib/browser-session.js';
-import { REPORT_DOMAINS } from '../lib/domains.js';
-import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
-import { formatReportStamp } from '../lib/format-report-stamp.js';
+import { revealAll } from '../lib/motion.js';
 import { loginHref } from '../lib/nav.js';
-import { printAuditId, proofFromPayload } from '../lib/print-proof.js';
-import {
-  categoryItems,
-  reportFindings,
-  scoredDomainCount,
-} from '../lib/report-model.js';
-import { verdictCopy } from '../lib/verdict.js';
-import CategoryList from './CategoryList.svelte';
-import FindingList from './FindingList.svelte';
-import PreuveMentions from './PreuveMentions.svelte';
-import ScoreGauge from './ScoreGauge.svelte';
+import { buildPdfReport, type PdfReport } from '../lib/pdf-report.js';
+import { printAuditId } from '../lib/print-proof.js';
+
+const scales = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 
 let phase = $state<'loading' | 'message' | 'ready'>('loading');
 let message = $state(t('report.loading'));
 let needLogin = $state(false);
 let payload = $state<AuditPayload | null>(null);
-let qr = $state('');
-let auditId = '';
+let root = $state<HTMLElement | null>(null);
 
-const proof = $derived(proofFromPayload(payload));
-const items = $derived(
-  payload
-    ? categoryItems(payload.domains, payload.audit.id, payload.findings)
-    : [],
+const view = $derived<PdfReport | null>(
+  payload ? buildPdfReport(payload) : null,
 );
-const shown = $derived.by(() => {
-  if (!payload) return [];
-  return reportFindings(
-    payload,
-    fixesFor(hostingOf(payload.audit.site.hosting)),
-  );
-});
-const global = $derived(payload?.audit.globalScore ?? null);
-const verdict = $derived(verdictCopy(global, shown));
-const observed = $derived.by(() => {
-  const raw = payload?.audit.finishedAt ?? payload?.audit.createdAt;
-  const date = raw ? new Date(raw) : new Date();
-  return Number.isNaN(date.getTime()) ? new Date() : date;
-});
-const verifyHref = $derived(
-  auditId === '' ? '' : `${location.origin}/verifier/${auditId}`,
+const reportHref = $derived(
+  payload ? `/rapport?id=${encodeURIComponent(payload.audit.id)}` : '/sites',
 );
-const captures = $derived.by(() => {
-  const rows =
-    proof.captures.length > 0
-      ? proof.captures
-      : [
-          { viewport: 'desktop' as const, capturedAt: observed.toISOString() },
-          { viewport: 'mobile' as const, capturedAt: observed.toISOString() },
-        ];
-  return rows.map((row) => {
-    const date = formatReportStamp(new Date(row.capturedAt));
-    return row.viewport === 'desktop'
-      ? t('print.capture.desktop', { date })
-      : t('print.capture.mobile', { date });
-  });
+
+$effect(() => {
+  if (phase !== 'ready' || !root) return;
+  const stop = revealAll(root);
+  const bar = root.querySelector<HTMLElement>('.progress');
+  const onScroll = (): void => {
+    if (!bar) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.setProperty(
+      '--p',
+      max > 0 ? String(Math.min(1, window.scrollY / max)) : '0',
+    );
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  return () => {
+    stop();
+    window.removeEventListener('scroll', onScroll);
+  };
 });
 
 onMount(() => {
@@ -71,7 +48,7 @@ onMount(() => {
 });
 
 async function load(): Promise<void> {
-  auditId = printAuditId(location.pathname, location.search) ?? '';
+  const auditId = printAuditId(location.pathname, location.search) ?? '';
   if (auditId === '') {
     phase = 'message';
     message = t('report.missing');
@@ -98,135 +75,179 @@ async function load(): Promise<void> {
   }
   payload = result.payload;
   phase = 'ready';
-  try {
-    const href = `${location.origin}/verifier/${auditId}`;
-    const svg = await QRCode.toString(href, {
-      type: 'svg',
-      margin: 0,
-      errorCorrectionLevel: 'M',
-      color: { dark: '#1b1f24', light: '#ffffff' },
-    });
-    qr = svg.replace('<svg ', '<svg aria-hidden="true" ');
-  } catch {
-    qr = '';
-  }
-  window.print();
 }
 
-function onPrint(event: MouseEvent): void {
-  event.preventDefault();
+function onPrint(): void {
+  root?.querySelectorAll('.rv').forEach((node) => {
+    node.classList.add('in');
+  });
   window.print();
 }
 </script>
 
-<h1>{t('print.heading')}</h1>
-
-{#if phase === 'loading'}
-  <p role="status" aria-live="polite">{message}</p>
-{:else if phase === 'message'}
-  <p role="status">{message}</p>
-  {#if needLogin}
-    <p>
-      <a class="link-action" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a>
-    </p>
-  {:else}
-    <p><a class="link-action" href="/sites">{t('nav.sites')}</a></p>
-  {/if}
-{:else if payload}
-  <p class="no-print export-links">
-    <a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('report.back')}</a>
-    <a class="link-action" href={`/rapport/${payload.audit.id}/imprimer`} onclick={onPrint}>{t('print.link')}</a>
-  </p>
-  <p class="no-print hint">{t('print.pdf')}</p>
-  <header class="verdict">
-    <ScoreGauge domain={t('domain.global')} score={global} size="hero" />
-    <div>
-      <p class="kicker">{payload.audit.site.url}</p>
-      <h2>{verdict.headline}</h2>
-      <p class="detail">{verdict.detail}</p>
-      <p class="hint">
-        {t('report.coverage', {
-          scored: scoredDomainCount(items),
-          total: REPORT_DOMAINS.length,
-        })}
+<main id="contenu" tabindex="-1" bind:this={root}>
+  {#if phase === 'loading'}
+    <p role="status" aria-live="polite">{message}</p>
+  {:else if phase === 'message'}
+    <p role="status">{message}</p>
+    {#if needLogin}
+      <p>
+        <a class="btn btn-primary" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a>
       </p>
+    {:else}
+      <p><a class="btn btn-ghost" href="/sites">{t('nav.sites.long')}</a></p>
+    {/if}
+  {:else if view && payload}
+    <div class="progress" aria-hidden="true"></div>
+    <nav class="crumbs" aria-label={t('nav.pages')}>
+      <ol>
+        <li><a href="/sites">{t('nav.sites.long')}</a></li>
+        <li><a href={reportHref}>{view.host}</a></li>
+        <li><span aria-current="page">{t('pdf.crumb')}</span></li>
+      </ol>
+    </nav>
+    <h1 class="sr-only">{t('pdf.h1', { host: view.host })}</h1>
+    <div class="tb rv" role="region" aria-label={t('pdf.preview')}>
+      <p>{t('pdf.preview')}</p>
+      <div class="acts">
+        <a class="btn btn-ghost" href={reportHref}>{t('pdf.back')}</a>
+        <button class="btn btn-primary" type="button" id="printBtn" onclick={onPrint}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/></svg>
+          {t('pdf.print')}
+        </button>
+      </div>
     </div>
-  </header>
-  <h2>{t('section.categories')}</h2>
-  <CategoryList {items} />
-  <h2>{t('section.findings')}</h2>
-  <FindingList findings={shown} />
-  <h2>{t('section.verify')}</h2>
-  <dl class="proof">
-    <dt>{t('print.id')}</dt>
-    <dd class="mono">{payload.audit.id}</dd>
-    <dt>{t('print.results')}</dt>
-    <dd class="mono">{proof.resultsSha256 ?? t('print.pending')}</dd>
-    <dt>{t('print.date')}</dt>
-    <dd><time datetime={observed.toISOString()}>{formatReportStamp(observed)}</time></dd>
-    <dt>{t('print.verify')}</dt>
-    <dd class="mono">{verifyHref}</dd>
-  </dl>
-  {#if qr}
-    <div class="qr" role="img" aria-label={t('print.qr')}>{@html qr}</div>
+    <div class="sheets">
+      <article class="sheet rv" style="--i:0" aria-label={t('pdf.pager', { page: 1 })}>
+        <div class="cov-top">
+          <img src="/marque/logo-pc.svg" alt={t('pdf.brand')} width="107" height="34" />
+          <span class="cov-tag">{t('pdf.tag')}</span>
+        </div>
+        <div class="cov-mid">
+          <p class="kicker">{t('pdf.kicker.cover')}</p>
+          <p class="dom">{view.host}</p>
+          <h2 class="cov-h">{t('pdf.cover')}</h2>
+          <div class="bigg">
+            {#if view.grade}
+              <span class={`gr big gr-${view.grade.toLowerCase()}`} aria-label={t('pdf.grade.letter', { grade: view.grade })}>{view.grade}</span>
+            {:else}
+              <span class="gr big gr-none" aria-label={t('pdf.band.none')}>–</span>
+            {/if}
+            <div>
+              <strong>{t(`pdf.band.${view.grade ?? 'none'}`)}</strong>
+              <p>{t(`pdf.hint.${view.grade ?? 'none'}`)}</p>
+            </div>
+          </div>
+        </div>
+        <dl class="meta">
+          <div>
+            <dt>{t('pdf.meta.date')}</dt>
+            <dd><time datetime={view.dateTime}>{view.dateLabel}</time></dd>
+          </div>
+          <div>
+            <dt>{t('pdf.meta.owner')}</dt>
+            <dd>{view.verified ? t('pdf.owner.yes') : t('pdf.owner.no')}</dd>
+          </div>
+          <div>
+            <dt>{t('pdf.meta.crit')}</dt>
+            <dd>{view.critical}</dd>
+          </div>
+        </dl>
+        <div class="pf">
+          <span>{t('pdf.foot', { host: view.host, date: view.dateLabel })}</span>
+          <span>{t('pdf.pager', { page: 1 })}</span>
+        </div>
+      </article>
+      <article class="sheet rv" style="--i:1" aria-label={t('pdf.pager', { page: 2 })}>
+        <p class="kicker">{t('pdf.prio.kicker')}</p>
+        <h2 class="sh">{t('pdf.prio.title')}</h2>
+        <p class="lede muted">{t('pdf.prio.lede')}</p>
+        {#if view.priorities.length === 0}
+          <p>{t('pdf.prio.empty')}</p>
+        {:else}
+          <ol class="pri">
+            {#each view.priorities as row, index (index)}
+              <li>
+                <div>
+                  <h3>{row.title} <span class={`badge b-${row.tone}`}>{t(`pdf.badge.${row.tone}`)}</span></h3>
+                  <p>{row.detail}</p>
+                </div>
+              </li>
+            {/each}
+          </ol>
+        {/if}
+        <div class="pf">
+          <span>{t('pdf.foot', { host: view.host, date: view.dateLabel })}</span>
+          <span>{t('pdf.pager', { page: 2 })}</span>
+        </div>
+      </article>
+      <article class="sheet rv" style="--i:2" aria-label={t('pdf.pager', { page: 3 })}>
+        <p class="kicker">{t('pdf.dom.kicker')}</p>
+        <h2 class="sh">{t('pdf.dom.title')}</h2>
+        <table class="tbl">
+          <caption class="sr-only">{t('pdf.caption')}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{t('pdf.col.domain')}</th>
+              <th scope="col">{t('pdf.col.grade')}</th>
+              <th scope="col" class="hide-s">{t('pdf.col.note')}</th>
+              <th scope="col">{t('pdf.col.open')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each view.domains as row (row.id)}
+              <tr>
+                <td><strong>{row.label}</strong></td>
+                <td>
+                  {#if row.locked || !row.grade}
+                    <span class="badge b-nt">{t('pdf.locked')}</span>
+                  {:else}
+                    <span class={`gr gr-${row.grade.toLowerCase()}`} aria-label={t('pdf.grade.letter', { grade: row.grade })}>{row.grade}</span>
+                  {/if}
+                </td>
+                <td class="hide-s">{row.locked ? t('pdf.locked') : row.note}</td>
+                <td>{row.open}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+        <div class="leg" aria-label={t('pdf.scale.label')}>
+          {#each scales as grade (grade)}
+            <span><span class={`gr gr-${grade.toLowerCase()}`} aria-label={t('pdf.grade.letter', { grade })}>{grade}</span> {t(`pdf.scale.${grade}`)}</span>
+          {/each}
+        </div>
+        <p class="muted method">{t('pdf.method')}</p>
+        <div class="pf">
+          <span>{t('pdf.foot', { host: view.host, date: view.dateLabel })}</span>
+          <span>{t('pdf.pager', { page: 3 })}</span>
+        </div>
+      </article>
+    </div>
+    <section class="after" aria-labelledby="t-after">
+      <h2 id="t-after" class="h2">{t('pdf.more')}</h2>
+      <ul class="lk-grid">
+        <li>
+          <a class="lk" href={`/brief?id=${encodeURIComponent(payload.audit.id)}`}>
+            <span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
+            <span class="lk-tx"><span class="lk-t">{t('pdf.brief')}</span><span class="lk-d">{t('pdf.brief.d')}</span></span>
+            <svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </li>
+        <li>
+          <a class="lk" href={`/plan?id=${encodeURIComponent(payload.audit.id)}`}>
+            <span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg></span>
+            <span class="lk-tx"><span class="lk-t">{t('pdf.plan')}</span><span class="lk-d">{t('pdf.plan.d')}</span></span>
+            <svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </li>
+        <li>
+          <a class="lk" href={`/badge?id=${encodeURIComponent(payload.audit.id)}`}>
+            <span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg></span>
+            <span class="lk-tx"><span class="lk-t">{t('pdf.badge')}</span><span class="lk-d">{t('pdf.badge.d')}</span></span>
+            <svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </li>
+      </ul>
+    </section>
   {/if}
-  <h2>{t('print.captures')}</h2>
-  <ul>
-    {#each captures as line (line)}
-      <li>{line}</li>
-    {/each}
-  </ul>
-  <PreuveMentions />
-{/if}
-
-<style>
-  .verdict {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-6) var(--space-7);
-    align-items: center;
-    padding-bottom: var(--space-6);
-    border-bottom: var(--border) solid var(--line);
-  }
-
-  .detail {
-    max-width: var(--line-length);
-    font-size: var(--text-lg);
-  }
-
-  .export-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-
-  .proof {
-    display: grid;
-    grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
-    gap: var(--space-2) var(--space-4);
-  }
-
-  .mono {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    overflow-wrap: anywhere;
-  }
-
-  .qr {
-    width: 8rem;
-    height: 8rem;
-    margin-top: var(--space-4);
-  }
-
-  .qr :global(svg) {
-    width: 100%;
-    height: 100%;
-  }
-
-  @media (max-width: 768px) {
-    .verdict,
-    .proof {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-</style>
+</main>

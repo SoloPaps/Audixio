@@ -234,9 +234,10 @@ test('la note de pied est sous les liens et absente à l’impression du rapport
   expect(noteBox && linksBox ? noteBox.y : 0).toBeGreaterThan(linksBox?.y ?? 0);
 
   await page.goto('/rapport/imprimer/');
-  await expect(note).toBeVisible();
+  const printFooter = page.getByRole('contentinfo');
+  await expect(printFooter).toBeVisible();
   await page.emulateMedia({ media: 'print' });
-  await expect(note).toBeHidden();
+  await expect(printFooter).toBeHidden();
 });
 
 test('la liste des sites garde une tuile et replie les actions', async ({

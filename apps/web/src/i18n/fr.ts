@@ -6,6 +6,7 @@ import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
 import { mqGatesFr } from './mq-gates-fr.js';
+import { pdfFr } from './pdf-fr.js';
 
 const frCore = {
   'skip.content': 'Aller au contenu',
@@ -94,8 +95,9 @@ const frCore = {
   'meta.progress.description': 'Suivez l’avancement de l’audit.',
   'meta.report.title': 'Rapport — Audigy',
   'meta.report.description': 'Le résultat de l’audit et les corrections.',
-  'meta.print.title': 'Impression du rapport — Audigy',
-  'meta.print.description': 'Version à imprimer, avec la date et l’empreinte.',
+  'meta.print.title': 'Rapport PDF — Audixio',
+  'meta.print.description':
+    'Version imprimable du rapport d’audit : couverture avec la note, priorités et résumé par domaine.',
   'meta.domain.title': 'Domaine du rapport — Audigy',
   'meta.domain.description': 'Le détail d’un domaine de l’audit.',
   'meta.verifier.title': 'Vérifier un rapport — Audigy',
@@ -2789,6 +2791,7 @@ export const fr = {
   ...espaceFr,
   ...espaceUiFr,
   ...mqGatesFr,
+  ...pdfFr,
 };
 
 export type MessageKey = keyof typeof fr;

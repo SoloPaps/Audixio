@@ -296,7 +296,7 @@ test('captures clair et sombre', async ({ page }) => {
     if (shot.print) {
       await page.goto(`/rapport/${AUDIT_ID}/imprimer?theme=${shot.theme}`);
       await expect(
-        page.getByText('Le navigateur peut l’enregistrer en PDF.'),
+        page.getByRole('button', { name: 'Imprimer / enregistrer en PDF' }),
       ).toBeVisible();
     } else {
       await page.goto(`/rapport?id=${AUDIT_ID}&theme=${shot.theme}`);
