@@ -179,6 +179,13 @@ test.describe('animations Pro et accès', () => {
   });
 
   test('demande : copie, actualisation, envoi, focus', async ({ page }) => {
+    await page.route('**/api/demandes-acces', (route) =>
+      route.fulfill({
+        status: 202,
+        contentType: 'application/json',
+        body: JSON.stringify({ ok: true }),
+      }),
+    );
     await open(page, '/demande-acces?theme=light', 'no-preference');
     const icon = page.locator('.input-wrap .material-symbols-outlined').first();
     await page.locator('#owner-email').focus();

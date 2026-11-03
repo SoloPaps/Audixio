@@ -609,6 +609,9 @@ export const mqLegalFr = {
   'mq.lg.494': 'oo-st ok',
   'mq.lg.495': 'Demande reçue : un e-mail de vérification part vers ',
   'mq.lg.496': ' pour confirmer la propriété de ',
+  'mq.lg.robot.ok':
+    'Demande reçue. Elle sera examinée après une preuve de propriété.',
+  'mq.lg.robot.stop': 'Trop de demandes. Réessayez plus tard.',
   'mq.meta.e404.title': 'Page introuvable (erreur 404) | Audixio',
   'mq.meta.e404.desc':
     "La page demandée n'existe pas ou a été déplacée. Retrouvez l'accueil, la méthode des 8 domaines, vos sites suivis ou contactez le support Audixio.",

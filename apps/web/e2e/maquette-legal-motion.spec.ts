@@ -170,6 +170,13 @@ test('le questionnaire éco compte, enregistre et reporte', async ({ page }) => 
 });
 
 test('le formulaire robot refuse puis confirme', async ({ page }) => {
+  await page.route('**/api/robot', (route) =>
+    route.fulfill({
+      status: 202,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true }),
+    }),
+  );
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/robot?theme=light');
   await ready(page);

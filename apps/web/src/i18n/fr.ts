@@ -807,6 +807,13 @@ const frCore = {
     'Vous avez fait trop de recherches. Réessayez dans une heure.',
   'api.error.account_limit':
     'Vous avez trop sollicité votre compte. Réessayez plus tard.',
+  'api.error.ip_limit':
+    'Trop de lancements depuis ce réseau. Réessayez plus tard.',
+  'api.error.rate_limited': 'Trop de demandes. Réessayez plus tard.',
+  'api.error.unavailable':
+    'La demande n’a pas pu être enregistrée. Réessayez plus tard.',
+  'api.intake.accepted':
+    'Demande reçue. Elle sera examinée après une preuve de propriété.',
   'reputation.avis.pass': 'Les avis publics sont favorables.',
   'reputation.avis.warn': 'Les avis publics sont mitigés.',
   'reputation.avis.fail': 'Les avis publics sont faibles.',

@@ -5,7 +5,7 @@ import Canon from '../layouts/Canon.astro';
 ---
 
 <Canon vue="demande" title={t('mq.demande.meta.title')} description={t('mq.demande.meta.desc')} robots="noindex, nofollow">
-<p hidden id="mq.dm.copied">{t('mq.dm.copied')}</p><p hidden id="mq.dm.copied.long">{t('mq.dm.copied.long')}</p><p hidden id="mq.dm.refresh">{t('mq.dm.refresh')}</p><p hidden id="mq.dm.need">{t('mq.dm.need')}</p><p hidden id="mq.dm.sent">{t('mq.dm.sent')}</p>
+<p hidden id="mq.dm.copied">{t('mq.dm.copied')}</p><p hidden id="mq.dm.copied.long">{t('mq.dm.copied.long')}</p><p hidden id="mq.dm.refresh">{t('mq.dm.refresh')}</p><p hidden id="mq.dm.need">{t('mq.dm.need')}</p><p hidden id="mq.dm.sent">{t('mq.dm.sent')}</p><p hidden id="mq.dm.limited">{t('mq.dm.limited')}</p><p hidden id="mq.dm.error">{t('mq.dm.error')}</p>
 
 
 <div class="scroll-progress" aria-hidden="true"></div>
@@ -338,13 +338,19 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     form.addEventListener('submit',function(e){
       e.preventDefault();
       var email=d.getElementById('owner-email');
+      var message=d.getElementById('request-message');
       if(!email.value||!email.checkValidity()){email.focus();say(tr('mq.dm.need'),true);return}
       submitBtn.disabled=true;submitBtn.style.opacity='.7';
-      setTimeout(function(){
+      fetch('/api/demandes-acces',{method:'post',headers:{'content-type':'application/json','accept':'application/json'},credentials:'same-origin',body:JSON.stringify({email:email.value.trim(),message:message?message.value.trim():''})}).then(function(res){
         submitBtn.disabled=false;submitBtn.style.opacity='';
+        if(res.status===429){say(tr('mq.dm.limited'),true);return}
+        if(!res.ok){say(tr('mq.dm.error'),true);return}
         say(tr('mq.dm.sent'),true);
         form.reset();
-      },900);
+      }).catch(function(){
+        submitBtn.disabled=false;submitBtn.style.opacity='';
+        say(tr('mq.dm.error'),true);
+      });
     });
   }
 })();

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   authGuardActive,
+  authRateParts,
   landingPath,
   protectedPath,
   safeNextPath,
@@ -11,6 +12,12 @@ import {
 } from '../src/auth-policy.js';
 
 describe('politique de connexion', () => {
+  it('compte l’inscription par IP et par e-mail', () => {
+    expect(authRateParts('signup')).toEqual(['ip', 'mail']);
+    expect(authRateParts('signin')).toEqual(['ip', 'mail']);
+    expect(authRateParts('reset')).toEqual(['ip', 'mail']);
+  });
+
   it('refuse une redirection ouverte', () => {
     expect(safeNextPath('/sites?x=1')).toBe('/sites?x=1');
     expect(safeNextPath('https://exemple.fr')).toBe('/sites');
