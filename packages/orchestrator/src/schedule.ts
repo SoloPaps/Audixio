@@ -18,6 +18,7 @@ import {
   siteLabel,
   unsubscribeUrl,
 } from './mail.js';
+import { mailGrade } from './mail-templates.js';
 
 /** Le cron Netlify coupe à 30 s. On s'arrête avant. */
 export const TICK_BUDGET_MS = 25_000;
@@ -56,6 +57,23 @@ export interface RosterAudit {
   certUntil: string | null;
 }
 
+export type Cadence = 'daily' | 'weekly' | 'monthly';
+export type PlanTier = 'free' | 'pro';
+
+/** Réglages lus dans `alert_settings`, ou les défauts de `ensure_alert_settings`. */
+export interface SiteAlertPrefs {
+  plan: PlanTier;
+  cadence: Cadence;
+  sslWarnDays: number;
+  /** 0 = la lettre baisse. 1 à 40 = baisse en points. */
+  scoreDropPoints: number;
+  alertsEnabled: boolean;
+  verified: boolean;
+  /** Un audit est déjà en file : on n'en crée pas un deuxième. */
+  auditOpen: boolean;
+  lastAuditAt: string | null;
+}
+
 export interface RosterSite {
   id: string;
   ownerId: string;
@@ -67,12 +85,14 @@ export interface RosterSite {
   lastCheckedAt: string | null;
   incidentId: string | null;
   audits: RosterAudit[];
+  /** Absent : anciens seuils (10 points, certificat < 21 j), pour les tests déjà en place. */
+  prefs?: SiteAlertPrefs;
 }
 
 export interface DueSchedule {
   siteId: string;
   ownerId: string;
-  cadence: 'weekly' | 'monthly';
+  cadence: Cadence;
   mode: 'passive' | 'active';
   nextRunAt: string;
 }
@@ -250,11 +270,297 @@ function shiftDays(
   return `${y}-${m}-${d}`;
 }
 
-export function nextRunAt(cadence: 'weekly' | 'monthly', now: Date): string {
+export function nextRunAt(cadence: Cadence, now: Date): string {
   const next = new Date(now.getTime());
-  if (cadence === 'weekly') next.setUTCDate(next.getUTCDate() + 7);
+  if (cadence === 'daily') next.setUTCDate(next.getUTCDate() + 1);
+  else if (cadence === 'weekly') next.setUTCDate(next.getUTCDate() + 7);
   else next.setUTCMonth(next.getUTCMonth() + 1);
   return next.toISOString();
+}
+
+const GRADE_RANK: Readonly<Record<string, number>> = {
+  A: 0,
+  B: 1,
+  C: 2,
+  D: 3,
+  E: 4,
+  F: 5,
+};
+
+export function parseCadence(value: string): Cadence {
+  if (value === 'daily' || value === 'weekly' || value === 'monthly') {
+    return value;
+  }
+  return 'monthly';
+}
+
+function clampNum(
+  value: number,
+  min: number,
+  max: number,
+  fallback: number,
+): number {
+  if (!Number.isInteger(value)) return fallback;
+  if (value < min || value > max) return fallback;
+  return value;
+}
+
+/** Mêmes défauts que `ensure_alert_settings` : gratuit mensuel, Pro hebdo, certificat 14 j. */
+export function defaultsForPlan(plan: PlanTier): SiteAlertPrefs {
+  return {
+    plan,
+    cadence: plan === 'pro' ? 'weekly' : 'monthly',
+    sslWarnDays: 14,
+    scoreDropPoints: 0,
+    alertsEnabled: true,
+    verified: false,
+    auditOpen: false,
+    lastAuditAt: null,
+  };
+}
+
+/** Le gratuit reste figé. Le Pro garde daily / weekly / monthly, 1–90 j, 0–40 pts. */
+export function clampAlertPrefs(prefs: SiteAlertPrefs): SiteAlertPrefs {
+  if (prefs.plan === 'pro') {
+    return {
+      ...prefs,
+      cadence: parseCadence(prefs.cadence),
+      sslWarnDays: clampNum(prefs.sslWarnDays, 1, 90, 14),
+      scoreDropPoints: clampNum(prefs.scoreDropPoints, 0, 40, 0),
+    };
+  }
+  return {
+    ...prefs,
+    plan: 'free',
+    cadence: 'monthly',
+    sslWarnDays: 14,
+    scoreDropPoints: 0,
+  };
+}
+
+export function reauditDue(prefs: SiteAlertPrefs, now: Date): boolean {
+  const rules = clampAlertPrefs(prefs);
+  if (!rules.verified || rules.auditOpen) return false;
+  if (!rules.lastAuditAt) return true;
+  const last = Date.parse(rules.lastAuditAt);
+  if (Number.isNaN(last)) return true;
+  return now.getTime() >= Date.parse(nextRunAt(rules.cadence, new Date(last)));
+}
+
+/** 0 point = la lettre baisse (B vers C). Sinon, baisse d'au moins N points. */
+export function scoreDropped(
+  before: number,
+  after: number,
+  points: number,
+): boolean {
+  if (!Number.isFinite(before) || !Number.isFinite(after) || after >= before) {
+    return false;
+  }
+  if (points <= 0) {
+    const from = mailGrade(before);
+    const to = mailGrade(after);
+    if (!from || !to) return false;
+    return (GRADE_RANK[to] ?? 0) > (GRADE_RANK[from] ?? 0);
+  }
+  return before - after >= points;
+}
+
+export function findingDelta(
+  previous: readonly string[],
+  latest: readonly string[],
+): { fresh: string[]; fixed: string[] } {
+  const before = new Set(previous);
+  const after = new Set(latest);
+  return {
+    fresh: [...after].filter((id) => !before.has(id)),
+    fixed: [...before].filter((id) => !after.has(id)),
+  };
+}
+
+export interface DigestAuditFact {
+  siteId: string;
+  score: number | null;
+  finishedAt: string | null;
+  failed: readonly string[];
+  graves: number;
+  certDays: number | null;
+}
+
+export interface DigestFacts {
+  now: Date;
+  users: readonly {
+    id: string;
+    weeklyDigest: boolean;
+    emailOptOut: boolean;
+  }[];
+  sites: readonly {
+    id: string;
+    ownerId: string;
+    label: string;
+    host: string;
+    verified: boolean;
+  }[];
+  audits: readonly DigestAuditFact[];
+  uptime: readonly {
+    siteId: string;
+    day: string;
+    checks: number;
+    failures: number;
+  }[];
+  openIncidents: readonly string[];
+  sslWarnDays: readonly { siteId: string; days: number }[];
+}
+
+/** Récap du lundi : sites vérifiés, semaine de Paris, un envoi par personne plus loin. */
+export function assembleDigest(facts: DigestFacts): DigestRecipient[] {
+  const week = parisWeek(facts.now).week;
+  const open = new Set(facts.openIncidents);
+  const warn = new Map(facts.sslWarnDays.map((row) => [row.siteId, row.days]));
+  const people: DigestRecipient[] = [];
+  for (const user of facts.users) {
+    if (!user.weeklyDigest || user.emailOptOut) continue;
+    const owned = facts.sites
+      .filter((site) => site.ownerId === user.id && site.verified)
+      .slice()
+      .sort((a, b) => a.host.localeCompare(b.host, 'fr'));
+    if (owned.length === 0) continue;
+    const sites: DigestSite[] = owned.map((site) => {
+      const audits = facts.audits
+        .filter((audit) => audit.siteId === site.id)
+        .slice()
+        .sort((a, b) => (b.finishedAt ?? '').localeCompare(a.finishedAt ?? ''));
+      const latest = audits[0];
+      const previous = audits[1];
+      const baseline =
+        audits.find(
+          (audit) =>
+            audit !== latest &&
+            audit.finishedAt !== null &&
+            parisDay(audit.finishedAt) < week,
+        ) ?? previous;
+      const delta = previous
+        ? findingDelta(previous.failed, latest?.failed ?? [])
+        : { fresh: [], fixed: [] };
+      let checks = 0;
+      let failures = 0;
+      for (const day of facts.uptime) {
+        if (day.siteId !== site.id || day.day < week) continue;
+        checks += day.checks;
+        failures += day.failures;
+      }
+      const card: DigestSite = {
+        label: site.label,
+        host: site.host,
+        score: latest?.score ?? null,
+        checks,
+        failures,
+        openIncident: open.has(site.id),
+        newFindings: delta.fresh.length,
+        fixedFindings: delta.fixed.length,
+        openProblems: latest?.graves ?? 0,
+        certDays: latest?.certDays ?? null,
+        sslWarnDays: warn.get(site.id) ?? 14,
+      };
+      if (baseline?.score !== null && baseline?.score !== undefined) {
+        card.previousScore = baseline.score;
+      }
+      return card;
+    });
+    people.push({ userId: user.id, sites });
+  }
+  return people;
+}
+
+export interface AlertSettingRow {
+  siteId: string;
+  userId: string;
+  cadence: string;
+  sslWarnDays: number;
+  scoreDropPoints: number;
+  alertsEnabled: boolean;
+}
+
+export interface AlertRosterInput {
+  plans: readonly { userId: string; plan: string }[];
+  settings: readonly AlertSettingRow[];
+  verifiedSiteIds: readonly string[];
+  openSiteIds: readonly string[];
+}
+
+function latestFinished(site: RosterSite): string | null {
+  const dates = site.audits
+    .map((audit) => audit.finishedAt)
+    .filter((value): value is string => Boolean(value))
+    .slice()
+    .sort();
+  return dates.at(-1) ?? null;
+}
+
+function asPlan(value: string | undefined): PlanTier {
+  return value === 'pro' ? 'pro' : 'free';
+}
+
+/**
+ * Pose les prefs de chaque site. Sans ligne `alert_settings`, mêmes défauts
+ * que `ensure_alert_settings` (le cron n'a pas de `auth.uid()` pour l'appeler).
+ * L'échéance vient de ces prefs, plus de la table `schedules`.
+ */
+export function applyAlertSettings(
+  roster: Roster,
+  input: AlertRosterInput,
+  now: Date,
+): Roster {
+  const plans = new Map(input.plans.map((row) => [row.userId, row.plan]));
+  const settings = new Map(
+    input.settings.map((row) => [`${row.userId}:${row.siteId}`, row]),
+  );
+  const verified = new Set(input.verifiedSiteIds);
+  const open = new Set(input.openSiteIds);
+  const sites = roster.sites.map((site) => {
+    const plan = asPlan(plans.get(site.ownerId));
+    const row = settings.get(`${site.ownerId}:${site.id}`);
+    const base = defaultsForPlan(plan);
+    const prefs = clampAlertPrefs({
+      ...base,
+      verified: verified.has(site.id),
+      auditOpen: open.has(site.id),
+      lastAuditAt: latestFinished(site),
+      ...(row
+        ? {
+            cadence: parseCadence(row.cadence),
+            sslWarnDays: row.sslWarnDays,
+            scoreDropPoints: row.scoreDropPoints,
+            alertsEnabled: row.alertsEnabled,
+          }
+        : {}),
+    });
+    prefs.verified = verified.has(site.id);
+    prefs.auditOpen = open.has(site.id);
+    prefs.lastAuditAt = latestFinished(site);
+    return { ...site, prefs };
+  });
+  return { sites, due: dueAudits({ sites, due: [] }, now) };
+}
+
+/** Échéances `alert_settings`. Sans prefs, on garde la file `schedules`. */
+export function dueAudits(roster: Roster, now: Date): DueSchedule[] {
+  const managed = new Set(
+    roster.sites.filter((site) => site.prefs).map((site) => site.id),
+  );
+  const legacy = roster.due.filter((item) => !managed.has(item.siteId));
+  const fresh: DueSchedule[] = [];
+  for (const site of roster.sites) {
+    if (!site.prefs || !reauditDue(site.prefs, now)) continue;
+    const rules = clampAlertPrefs(site.prefs);
+    fresh.push({
+      siteId: site.id,
+      ownerId: site.ownerId,
+      cadence: rules.cadence,
+      mode: 'passive',
+      nextRunAt: now.toISOString(),
+    });
+  }
+  return [...legacy, ...fresh];
 }
 
 export function digestRateKey(userId: string, week: string): string {
@@ -444,7 +750,15 @@ interface PlannedAlert {
   payload: AlertPayload;
 }
 
+function acceptsAlerts(site: RosterSite): boolean {
+  if (!site.prefs) return true;
+  const rules = clampAlertPrefs(site.prefs);
+  return rules.verified && rules.alertsEnabled;
+}
+
 function plannedAudits(site: RosterSite): PlannedAlert[] {
+  if (!acceptsAlerts(site)) return [];
+  const rules = site.prefs ? clampAlertPrefs(site.prefs) : null;
   const audits = site.audits.slice().sort((a, b) => {
     return (b.finishedAt ?? '').localeCompare(a.finishedAt ?? '');
   });
@@ -452,12 +766,15 @@ function plannedAudits(site: RosterSite): PlannedAlert[] {
   const previous = audits[1];
   const planned: PlannedAlert[] = [];
   const name = siteLabel(site.label, site.host);
+  const points = rules ? rules.scoreDropPoints : 10;
   if (
     latest &&
     previous &&
     latest.score !== null &&
     previous.score !== null &&
-    previous.score - latest.score >= 10
+    (rules
+      ? scoreDropped(previous.score, latest.score, points)
+      : previous.score - latest.score >= 10)
   ) {
     planned.push({
       kind: 'score_drop',
@@ -483,7 +800,11 @@ function plannedAudits(site: RosterSite): PlannedAlert[] {
       });
     }
   }
-  if (latest && latest.certDays !== null && latest.certDays < 21) {
+  const certHit =
+    latest?.certDays !== null &&
+    latest?.certDays !== undefined &&
+    (rules ? latest.certDays <= rules.sslWarnDays : latest.certDays < 21);
+  if (latest && certHit && latest.certDays !== null) {
     planned.push({
       kind: 'cert_expiring',
       payload: {
@@ -502,6 +823,7 @@ async function raise(
   planned: PlannedAlert,
   at: string,
 ): Promise<number> {
+  if (!acceptsAlerts(site)) return 0;
   const known = await store.findAlert(
     site.ownerId,
     site.id,
@@ -578,7 +900,7 @@ export async function runScheduleTick(deps: ScheduleDeps): Promise<TickResult> {
   let enqueued = 0;
   let wake = false;
 
-  for (const due of roster.due) {
+  for (const due of dueAudits(roster, now)) {
     const outcome = await deps.store.enqueue({
       userId: due.ownerId,
       siteId: due.siteId,
@@ -590,8 +912,8 @@ export async function runScheduleTick(deps: ScheduleDeps): Promise<TickResult> {
       now,
       nextRunAt(due.cadence, now),
     );
-    if (outcome === 'created' && advanced) enqueued += 1;
-    if (advanced) wake = true;
+    if (outcome === 'created') enqueued += 1;
+    if (outcome === 'created' || advanced) wake = true;
   }
 
   let alerts = 0;
@@ -607,6 +929,7 @@ export async function runScheduleTick(deps: ScheduleDeps): Promise<TickResult> {
     roster.sites,
     PROBE_CONCURRENCY,
     async (site) => {
+      if (site.prefs && !clampAlertPrefs(site.prefs).verified) return null;
       if (expired() || isRecent(site.lastCheckedAt, now)) return null;
       try {
         const sample = await deps.probe(site.url);

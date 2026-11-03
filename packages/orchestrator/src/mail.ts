@@ -58,9 +58,32 @@ export interface DigestSite {
   label: string;
   host: string;
   score: number | null;
+  previousScore?: number | null;
   checks: number;
   failures: number;
   openIncident: boolean;
+  newFindings?: number;
+  fixedFindings?: number;
+  openProblems?: number;
+  certDays?: number | null;
+  sslWarnDays?: number;
+}
+
+/** Changement réel. Un problème déjà ouvert ne suffit pas : le récap calme le rappelle quand même. */
+export function digestSiteChanged(site: DigestSite): boolean {
+  if (site.openIncident) return true;
+  if ((site.newFindings ?? 0) > 0 || (site.fixedFindings ?? 0) > 0) return true;
+  if (
+    typeof site.previousScore === 'number' &&
+    typeof site.score === 'number' &&
+    site.score !== site.previousScore
+  ) {
+    return true;
+  }
+  return (
+    typeof site.certDays === 'number' &&
+    site.certDays <= (site.sslWarnDays ?? 14)
+  );
 }
 
 export function siteLabel(label: string, host: string): string {
@@ -259,6 +282,42 @@ export function renderAlert(input: {
   };
 }
 
+function digestDelta(
+  site: DigestSite,
+): { label: string; tone: 'up' | 'dn' | 'eq' } | undefined {
+  if (
+    typeof site.previousScore !== 'number' ||
+    typeof site.score !== 'number'
+  ) {
+    return undefined;
+  }
+  const diff = site.score - site.previousScore;
+  if (diff > 0) {
+    return { label: t('mail.digest.delta.up', { points: diff }), tone: 'up' };
+  }
+  if (diff < 0) {
+    return {
+      label: t('mail.digest.delta.down', { points: -diff }),
+      tone: 'dn',
+    };
+  }
+  return { label: t('mail.digest.delta.same'), tone: 'eq' };
+}
+
+function countLine(
+  count: number,
+  none: 'mail.digest.open.none',
+  one: 'mail.digest.open.one' | 'mail.digest.new.one' | 'mail.digest.fixed.one',
+  many:
+    | 'mail.digest.open.many'
+    | 'mail.digest.new.many'
+    | 'mail.digest.fixed.many',
+): string {
+  if (count <= 0) return t(none);
+  if (count === 1) return t(one);
+  return t(many, { count });
+}
+
 export function renderDigest(input: {
   sites: readonly DigestSite[];
   appUrl: string;
@@ -276,15 +335,49 @@ export function renderDigest(input: {
         uptime: formatUptime(site.checks, site.failures),
       }),
     ];
+    if (typeof site.openProblems === 'number') {
+      items.push(
+        countLine(
+          site.openProblems,
+          'mail.digest.open.none',
+          'mail.digest.open.one',
+          'mail.digest.open.many',
+        ),
+      );
+    }
+    if ((site.newFindings ?? 0) > 0) {
+      items.push(
+        (site.newFindings ?? 0) === 1
+          ? t('mail.digest.new.one')
+          : t('mail.digest.new.many', { count: site.newFindings ?? 0 }),
+      );
+    }
+    if ((site.fixedFindings ?? 0) > 0) {
+      items.push(
+        (site.fixedFindings ?? 0) === 1
+          ? t('mail.digest.fixed.one')
+          : t('mail.digest.fixed.many', { count: site.fixedFindings ?? 0 }),
+      );
+    }
     if (site.openIncident) items.push(t('mail.digest.incident'));
+    const delta = digestDelta(site);
+    const ssl =
+      typeof site.certDays === 'number' &&
+      site.certDays <= (site.sslWarnDays ?? 14)
+        ? t('mail.digest.ssl', { jours: site.certDays })
+        : undefined;
     return {
       grade: mailGrade(site.score) ?? '–',
       host: name,
       items,
+      ...(delta ? { delta } : {}),
+      ...(ssl ? { ssl } : {}),
     };
   });
   return renderRecapMail({
-    mode: input.sites.some((site) => site.openIncident) ? 'change' : 'steady',
+    mode: input.sites.some((site) => digestSiteChanged(site))
+      ? 'change'
+      : 'steady',
     cards,
     reportUrl: input.appUrl,
     prefsUrl: `${origin}/compte/alertes`,

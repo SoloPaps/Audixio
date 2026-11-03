@@ -8,6 +8,7 @@ import {
 
 /**
  * Lundi 8 h Paris. 6 h UTC (été) et 7 h UTC (hiver) ; le handler ignore l’autre.
+ * Activation : docs/dev/PLANIFICATEUR-ALERTES.md
  * En dev : `netlify functions:invoke digest-weekly --query run=1`.
  */
 export default async (req: Request): Promise<Response> => {

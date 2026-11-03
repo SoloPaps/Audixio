@@ -17,16 +17,24 @@ import {
   type UnsubscribeDeps,
 } from './mail.js';
 import {
+  type AlertRosterInput,
+  applyAlertSettings,
+  assembleDigest,
   checksToPurge,
+  clampAlertPrefs,
   createUptimeProbe,
   type DailyFold,
+  type DigestAuditFact,
   type DigestDeps,
+  type DigestFacts,
   type DigestRecipient,
   type DigestStore,
+  defaultsForPlan,
   digestRateKey,
   foldUptime,
   mergeDaily,
   type PendingAlert,
+  parisWeek,
   type RawCheck,
   type Roster,
   type ScheduleDeps,
@@ -63,7 +71,7 @@ const siteSchema = z.strictObject({
 const dueSchema = z.strictObject({
   siteId: z.uuid(),
   ownerId: z.uuid(),
-  cadence: z.enum(['weekly', 'monthly']),
+  cadence: z.enum(['daily', 'weekly', 'monthly']),
   mode: z.enum(['passive', 'active']),
   nextRunAt: z.string(),
 });
@@ -110,6 +118,271 @@ function fail(error: { message: string } | null, code: string): void {
 }
 
 const ROLLUP_BATCH = 500;
+const IN_CHUNK = 80;
+
+async function inChunks<T>(
+  ids: readonly string[],
+  run: (slice: string[]) => Promise<T[]>,
+): Promise<T[]> {
+  const out: T[] = [];
+  for (let index = 0; index < ids.length; index += IN_CHUNK) {
+    out.push(...(await run(ids.slice(index, index + IN_CHUNK))));
+  }
+  return out;
+}
+
+function certDaysOf(measured: unknown): number | null {
+  if (!measured || typeof measured !== 'object') return null;
+  const raw = (measured as { daysRemaining?: unknown }).daysRemaining;
+  const value =
+    typeof raw === 'number'
+      ? raw
+      : typeof raw === 'string'
+        ? Number(raw)
+        : Number.NaN;
+  if (!Number.isFinite(value)) return null;
+  return Math.round(value);
+}
+
+async function readAlertRoster(
+  service: Client,
+  roster: Roster,
+): Promise<AlertRosterInput> {
+  const siteIds = roster.sites.map((site) => site.id);
+  const userIds = [...new Set(roster.sites.map((site) => site.ownerId))];
+  const [settings, plans, verified, open] = await Promise.all([
+    inChunks(siteIds, async (slice) => {
+      const { data, error } = await service
+        .from('alert_settings')
+        .select(
+          'site_id, user_id, reaudit_cadence, ssl_warn_days, score_drop_points, alerts_enabled',
+        )
+        .in('site_id', slice);
+      fail(error, 'alert_settings_failed');
+      return data ?? [];
+    }),
+    inChunks(userIds, async (slice) => {
+      const { data, error } = await service
+        .from('profiles')
+        .select('id, plan')
+        .in('id', slice);
+      fail(error, 'profile_lookup_failed');
+      return data ?? [];
+    }),
+    inChunks(siteIds, async (slice) => {
+      const { data, error } = await service
+        .from('site_verifications')
+        .select('site_id')
+        .in('site_id', slice)
+        .eq('status', 'verified');
+      fail(error, 'schedule_roster_failed');
+      return data ?? [];
+    }),
+    inChunks(siteIds, async (slice) => {
+      const { data, error } = await service
+        .from('audits')
+        .select('site_id')
+        .in('site_id', slice)
+        .in('status', ['queued', 'running', 'partial']);
+      fail(error, 'schedule_roster_failed');
+      return data ?? [];
+    }),
+  ]);
+  return {
+    plans: plans.map((row) => ({ userId: row.id, plan: row.plan })),
+    settings: settings.map((row) => ({
+      siteId: row.site_id,
+      userId: row.user_id,
+      cadence: row.reaudit_cadence,
+      sslWarnDays: row.ssl_warn_days,
+      scoreDropPoints: row.score_drop_points,
+      alertsEnabled: row.alerts_enabled,
+    })),
+    verifiedSiteIds: [...new Set(verified.map((row) => row.site_id))],
+    openSiteIds: [...new Set(open.map((row) => row.site_id))],
+  };
+}
+
+async function loadAuditFacts(
+  service: Client,
+  siteIds: readonly string[],
+): Promise<DigestAuditFact[]> {
+  const pairs: {
+    id: string;
+    site_id: string;
+    global_score: number | null;
+    finished_at: string | null;
+  }[] = [];
+  let cursor = 0;
+  const width = Math.min(8, siteIds.length);
+  if (width > 0) {
+    await Promise.all(
+      Array.from({ length: width }, async () => {
+        while (cursor < siteIds.length) {
+          const siteId = siteIds[cursor];
+          cursor += 1;
+          if (!siteId) return;
+          const { data, error } = await service
+            .from('audits')
+            .select('id, site_id, global_score, finished_at')
+            .eq('site_id', siteId)
+            .eq('status', 'done')
+            .order('finished_at', { ascending: false })
+            .limit(2);
+          fail(error, 'digest_roster_failed');
+          pairs.push(...(data ?? []));
+        }
+      }),
+    );
+  }
+  const ids = pairs.map((row) => row.id);
+  const findings =
+    ids.length === 0
+      ? []
+      : await inChunks(ids, async (slice) => {
+          const { data, error } = await service
+            .from('findings')
+            .select('audit_id, check_id, severity, measured')
+            .in('audit_id', slice)
+            .eq('status', 'fail');
+          fail(error, 'digest_roster_failed');
+          return data ?? [];
+        });
+  return pairs.map((audit) => {
+    const rows = findings.filter((row) => row.audit_id === audit.id);
+    const cert = rows.find((row) => row.check_id === 'securite.certificate');
+    return {
+      siteId: audit.site_id,
+      score: audit.global_score,
+      finishedAt: audit.finished_at,
+      failed: [...new Set(rows.map((row) => row.check_id))],
+      graves: rows.filter((row) => row.severity === 4).length,
+      certDays: certDaysOf(cert?.measured),
+    };
+  });
+}
+
+async function readDigestFacts(
+  service: Client,
+  now: Date,
+): Promise<DigestFacts> {
+  const empty: DigestFacts = {
+    now,
+    users: [],
+    sites: [],
+    audits: [],
+    uptime: [],
+    openIncidents: [],
+    sslWarnDays: [],
+  };
+  const { data: profiles, error } = await service
+    .from('profiles')
+    .select('id, weekly_digest, email_opt_out, plan')
+    .eq('weekly_digest', true)
+    .eq('email_opt_out', false);
+  fail(error, 'digest_roster_failed');
+  const people = profiles ?? [];
+  if (people.length === 0) return empty;
+  const siteRows = await inChunks(
+    people.map((row) => row.id),
+    async (slice) => {
+      const { data, error: siteError } = await service
+        .from('sites')
+        .select('id, owner_id, label, host')
+        .in('owner_id', slice)
+        .is('deleted_at', null);
+      fail(siteError, 'digest_roster_failed');
+      return data ?? [];
+    },
+  );
+  const siteIds = siteRows.map((row) => row.id);
+  if (siteIds.length === 0) {
+    return {
+      ...empty,
+      users: people.map((row) => ({
+        id: row.id,
+        weeklyDigest: row.weekly_digest,
+        emailOptOut: row.email_opt_out,
+      })),
+    };
+  }
+  const [verifiedRows, settingRows, uptimeRows, incidentRows] =
+    await Promise.all([
+      inChunks(siteIds, async (slice) => {
+        const { data, error: verifError } = await service
+          .from('site_verifications')
+          .select('site_id')
+          .in('site_id', slice)
+          .eq('status', 'verified');
+        fail(verifError, 'digest_roster_failed');
+        return data ?? [];
+      }),
+      inChunks(siteIds, async (slice) => {
+        const { data, error: settingError } = await service
+          .from('alert_settings')
+          .select('site_id, user_id, ssl_warn_days')
+          .in('site_id', slice);
+        fail(settingError, 'alert_settings_failed');
+        return data ?? [];
+      }),
+      inChunks(siteIds, async (slice) => {
+        const { data, error: uptimeError } = await service
+          .from('uptime_daily')
+          .select('site_id, day, checks, failures')
+          .in('site_id', slice)
+          .gte('day', parisWeek(now).week);
+        fail(uptimeError, 'digest_roster_failed');
+        return data ?? [];
+      }),
+      inChunks(siteIds, async (slice) => {
+        const { data, error: incidentError } = await service
+          .from('incidents')
+          .select('site_id')
+          .in('site_id', slice)
+          .is('resolved_at', null);
+        fail(incidentError, 'digest_roster_failed');
+        return data ?? [];
+      }),
+    ]);
+  const verified = new Set(verifiedRows.map((row) => row.site_id));
+  const plans = new Map(people.map((row) => [row.id, row.plan]));
+  const audits = await loadAuditFacts(service, [...verified]);
+  return {
+    now,
+    users: people.map((row) => ({
+      id: row.id,
+      weeklyDigest: row.weekly_digest,
+      emailOptOut: row.email_opt_out,
+    })),
+    sites: siteRows.map((row) => ({
+      id: row.id,
+      ownerId: row.owner_id,
+      label: row.label,
+      host: row.host,
+      verified: verified.has(row.id),
+    })),
+    audits,
+    uptime: uptimeRows.map((row) => ({
+      siteId: row.site_id,
+      day: row.day,
+      checks: row.checks,
+      failures: row.failures,
+    })),
+    openIncidents: [...new Set(incidentRows.map((row) => row.site_id))],
+    sslWarnDays: siteRows.map((site) => {
+      const row = settingRows.find(
+        (item) => item.site_id === site.id && item.user_id === site.owner_id,
+      );
+      const plan = plans.get(site.owner_id) === 'pro' ? 'pro' : 'free';
+      const prefs = clampAlertPrefs({
+        ...defaultsForPlan(plan),
+        verified: true,
+        ...(row ? { sslWarnDays: row.ssl_warn_days } : {}),
+      });
+      return { siteId: site.id, days: prefs.sslWarnDays };
+    }),
+  };
+}
 
 async function writeDaily(service: Client, batch: DailyFold): Promise<void> {
   const { data, error } = await service
@@ -146,7 +419,19 @@ export function supabaseScheduleStore(service: Client): ScheduleStore {
         p_now: now.toISOString(),
       });
       fail(error, 'schedule_roster_failed');
-      return parseRoster(data);
+      const base = parseRoster(data);
+      if (base.sites.length === 0) {
+        return applyAlertSettings(
+          base,
+          { plans: [], settings: [], verifiedSiteIds: [], openSiteIds: [] },
+          now,
+        );
+      }
+      return applyAlertSettings(
+        base,
+        await readAlertRoster(service, base),
+        now,
+      );
     },
 
     async insertCheck(input) {
@@ -331,11 +616,7 @@ export function supabaseScheduleStore(service: Client): ScheduleStore {
 export function supabaseDigestStore(service: Client): DigestStore {
   return {
     async recipients(now) {
-      const { data, error } = await service.rpc('digest_roster', {
-        p_now: now.toISOString(),
-      });
-      fail(error, 'digest_roster_failed');
-      return parseDigest(data);
+      return assembleDigest(await readDigestFacts(service, now));
     },
     async claim(userId, week, windowStart) {
       const { error } = await service.from('rate_limits').insert({
