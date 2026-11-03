@@ -124,6 +124,12 @@ export {
   vueLien,
 } from './liens.js';
 export {
+  assertLocalSupabase,
+  GUEST_AUDIT_LOCAL_LIMIT,
+  guestAuditLimit,
+  isLocalSupabaseUrl,
+} from './local-only.js';
+export {
   type PlanChange,
   type PlanItem,
   type PlanMemory,
