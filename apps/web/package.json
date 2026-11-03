@@ -18,6 +18,7 @@
     "@audigy/db": "workspace:*",
     "@audigy/engine": "workspace:*",
     "@audigy/evidence": "workspace:*",
+    "@audigy/orchestrator": "workspace:*",
     "@supabase/supabase-js": "^2.118.0",
     "astro": "^7.4.2",
     "qrcode": "1.5.4",

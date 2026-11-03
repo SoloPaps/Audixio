@@ -69,7 +69,7 @@ function footerBlock(input: {
 }): string {
   const link = (label: string, href: string) =>
     `<a href="${escapeHtml(href)}" style="color:#3D52A0;">${escapeHtml(label)}</a>`;
-  return `${escapeHtml(input.why)}<br>${escapeHtml(t('mail.digest.question'))} ${link(t('mail.digest.contact'), `mailto:${t('mail.digest.contact')}`)}<br>${link(t('mail.digest.prefs'), input.prefsUrl)} · ${link(t('mail.link.unsubscribe'), input.unsubscribeUrl)} · ${link(t('mail.digest.legal'), input.legalUrl)}<br>${escapeHtml(t('mail.digest.copy'))}`;
+  return `${escapeHtml(input.why)}<br>${escapeHtml(t('mail.digest.question'))} ${link(t('mail.digest.contact'), `mailto:${t('mail.digest.contact')}`)}<br>${link(t('mail.digest.prefs'), input.prefsUrl)} · ${link(t('mail.digest.leave'), input.unsubscribeUrl)} · ${link(t('mail.digest.legal'), input.legalUrl)}<br>${escapeHtml(t('mail.digest.copy'))}`;
 }
 
 function card(row: RecapCard): string {
@@ -131,7 +131,7 @@ export function renderRecapMail(input: {
     t('mail.digest.why.change'),
     `${t('mail.digest.question')} ${t('mail.digest.contact')}`,
     `${t('mail.digest.prefs')}\n${input.prefsUrl}`,
-    `${t('mail.link.unsubscribe')}\n${input.unsubscribeUrl}`,
+    `${t('mail.digest.leave')}\n${input.unsubscribeUrl}`,
     `${t('mail.digest.legal')}\n${input.legalUrl}`,
   );
   return { subject, text: lines.join('\n\n'), html };
@@ -171,7 +171,7 @@ export function renderSignupMail(input: {
   if (input.code) lines.push(t('mail.signup.code', { code: input.code }));
   lines.push(
     t('mail.digest.why.signup'),
-    `${t('mail.link.unsubscribe')}\n${input.unsubscribeUrl}`,
+    `${t('mail.digest.leave')}\n${input.unsubscribeUrl}`,
   );
   return { subject, text: lines.join('\n\n'), html };
 }

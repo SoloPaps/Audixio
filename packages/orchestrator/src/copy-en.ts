@@ -34,6 +34,7 @@ export const mailCopyEn: Record<keyof typeof mailCopy, string> = {
   'mail.digest.contact': 'Audixio@outlook.fr',
   'mail.digest.prefs': 'Manage my preferences',
   'mail.digest.legal': 'Legal notice',
+  'mail.digest.leave': 'Unsubscribe',
   'mail.digest.copy': '© 2026 Audixio',
   'mail.digest.why.change':
     'You receive this email because the Monday recap is on for your account.',

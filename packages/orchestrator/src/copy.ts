@@ -37,6 +37,7 @@ export const mailCopy = {
   'mail.digest.contact': 'Audixio@outlook.fr',
   'mail.digest.prefs': 'Gérer mes préférences',
   'mail.digest.legal': 'Mentions légales',
+  'mail.digest.leave': 'Se désabonner',
   'mail.digest.copy': '© 2026 Audixio',
   'mail.digest.why.change':
     'Vous recevez cet e-mail car le récap du lundi est activé sur votre compte.',
