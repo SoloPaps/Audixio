@@ -243,19 +243,23 @@ function bindSites(
   set: (value: EspaceNext) => void,
 ): () => void {
   const off: (() => void)[] = [];
+  let current = next;
+  const publish = (value: EspaceNext): void => {
+    current = value;
+    set(value);
+  };
   const form = root.querySelector<HTMLFormElement>('#addf');
   const field = root.querySelector<HTMLInputElement>('#url');
   const error = root.querySelector<HTMLElement>('#url-e');
   const onSubmit = (event: Event): void => {
     event.preventDefault();
     if (event.target !== form) return;
-    if (
-      !withinSiteQuota(next.plan, next.mode === 'list' ? 2 : next.sites.length)
-    ) {
+    const count = current.mode === 'list' ? 2 : current.sites.length;
+    if (!withinSiteQuota(current.plan, count)) {
       openPro(root, 'sites');
       return;
     }
-    void addSite(root, next, set, field, error);
+    void addSite(root, current, publish, field, error);
   };
   form?.addEventListener('submit', onSubmit);
   if (form) off.push(() => form.removeEventListener('submit', onSubmit));
