@@ -14,6 +14,7 @@ import {
   landingPath,
   normalizeEmail,
   providersOf,
+  readStoredNext,
   safeNextPath,
   validEmail,
   validPassword,
@@ -479,7 +480,7 @@ async function handleCallback(
     kind,
     onboardingVu: kind === 'signup' ? true : profile.onboardingVu,
     providers: providersOf(data.user.app_metadata ?? {}),
-    next: storedNext ? decodeURIComponent(storedNext) : null,
+    next: readStoredNext(storedNext),
   });
   return redirect(new URL(target, url.origin).toString(), 303, pending);
 }

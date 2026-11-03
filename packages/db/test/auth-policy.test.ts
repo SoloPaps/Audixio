@@ -4,6 +4,7 @@ import {
   authRateParts,
   landingPath,
   protectedPath,
+  readStoredNext,
   safeNextPath,
   shouldShowWelcome,
   TEST_ANON_KEY,
@@ -22,6 +23,12 @@ describe('politique de connexion', () => {
     expect(safeNextPath('/sites?x=1')).toBe('/sites?x=1');
     expect(safeNextPath('https://exemple.fr')).toBe('/sites');
     expect(safeNextPath('//exemple.fr')).toBe('/sites');
+    expect(safeNextPath('/%')).toBe('/sites');
+    expect(safeNextPath('/%2F%2Fevil.example')).toBe('/sites');
+    expect(readStoredNext('/%')).toBe('/sites');
+    expect(readStoredNext('%E0%A4%A')).toBe('/sites');
+    expect(readStoredNext('%2F%2Fevil.example')).toBe('/sites');
+    expect(readStoredNext('/compte')).toBe('/compte');
   });
 
   it('protège les pages du compte et laisse le retour de lien', () => {

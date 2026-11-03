@@ -43,7 +43,18 @@ export function safeNextPath(
   if (raw.includes('\\')) return fallback;
   if (raw.includes('://')) return fallback;
   if (raw.includes('\n') || raw.includes('\r')) return fallback;
+  if (raw.includes('%')) return fallback;
   return raw;
+}
+
+/** Cookie `audixio_next`. Un pourcent mal formé ne casse pas le retour OAuth. */
+export function readStoredNext(raw: string | null | undefined): string {
+  if (!raw) return '/sites';
+  try {
+    return safeNextPath(decodeURIComponent(raw));
+  } catch {
+    return '/sites';
+  }
 }
 
 export function validEmail(value: string): boolean {
