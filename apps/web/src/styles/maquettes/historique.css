@@ -44,9 +44,10 @@ html[data-vue="historique"] {
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --out: cubic-bezier(0.16, 1, 0.3, 1);
 }
-html[data-vue="historique"] *,
-html[data-vue="historique"] *::before,
-html[data-vue="historique"] *::after {
+html[data-vue="historique"] main,
+html[data-vue="historique"] main *,
+html[data-vue="historique"] main *::before,
+html[data-vue="historique"] main *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -81,7 +82,7 @@ html[data-vue="historique"] body::before {
   pointer-events: none;
   z-index: -1;
 }
-html[data-vue="historique"] a {
+html[data-vue="historique"] main a {
   color: var(--primary);
 }
 html[data-vue="historique"] :focus-visible {
