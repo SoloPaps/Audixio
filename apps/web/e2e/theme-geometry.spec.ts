@@ -61,11 +61,32 @@ const GROUPS: Record<string, string> = {
 type Box = { x: number; y: number; w: number; h: number };
 type Geometry = Record<string, Box[]>;
 
+type DomNode = {
+  getAttribute: (name: string) => string | null;
+  getBoundingClientRect: () => {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+};
+
+type Browser = {
+  __name?: (target: unknown) => unknown;
+  document: {
+    fonts: { ready: Promise<unknown> };
+    querySelector: (selector: string) => DomNode | null;
+    querySelectorAll: (selector: string) => ArrayLike<DomNode>;
+  };
+  getComputedStyle: (node: DomNode) => { display: string; visibility: string };
+  scrollX: number;
+  scrollY: number;
+};
+
 async function readBoxes(page: Page): Promise<Geometry> {
   return page.evaluate((groups) => {
-    (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
-      target,
-    ) => target;
+    const dom = globalThis as unknown as Browser;
+    dom.__name ??= (target) => target;
     const names = Object.keys(groups);
     const out: Record<
       string,
@@ -73,18 +94,18 @@ async function readBoxes(page: Page): Promise<Geometry> {
     > = {};
     for (let i = 0; i < names.length; i += 1) {
       const name = names[i] ?? '';
-      const nodes = document.querySelectorAll(groups[name] ?? '');
+      const nodes = dom.document.querySelectorAll(groups[name] ?? '');
       const boxes: { x: number; y: number; w: number; h: number }[] = [];
       for (let j = 0; j < nodes.length; j += 1) {
         const el = nodes[j];
-        if (!(el instanceof Element)) continue;
-        const style = getComputedStyle(el);
+        if (!el) continue;
+        const style = dom.getComputedStyle(el);
         if (style.display === 'none' || style.visibility === 'hidden') continue;
         const rect = el.getBoundingClientRect();
         if (rect.width < 1 || rect.height < 1) continue;
         boxes.push({
-          x: Math.round(rect.x + window.scrollX),
-          y: Math.round(rect.y + window.scrollY),
+          x: Math.round(rect.x + dom.scrollX),
+          y: Math.round(rect.y + dom.scrollY),
           w: Math.round(rect.width),
           h: Math.round(rect.height),
         });
@@ -113,14 +134,18 @@ async function geometry(page: Page, path: string, theme: 'light' | 'dark') {
   await page
     .waitForFunction(
       () => {
-        const node = document.querySelector('[data-mode]');
+        const node = (globalThis as unknown as Browser).document.querySelector(
+          '[data-mode]',
+        );
         return node?.getAttribute('data-mode') !== 'pending';
       },
       null,
       { timeout: 8_000 },
     )
     .catch(() => undefined);
-  await page.evaluate(() => document.fonts.ready).catch(() => undefined);
+  await page
+    .evaluate(() => (globalThis as unknown as Browser).document.fonts.ready)
+    .catch(() => undefined);
   let previous = '';
   let current: Geometry = {
     page: [],
