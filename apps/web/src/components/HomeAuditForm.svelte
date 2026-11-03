@@ -3,13 +3,20 @@ import { t } from '../i18n/slim.js';
 import { createAudit, createGuestAudit } from '../lib/audit-api.js';
 import { currentSession } from '../lib/browser-session.js';
 import { saveGuestAudit } from '../lib/guest-store.js';
+import { homeFormAlert } from '../lib/home-audit-notice.js';
 import { progressionHref } from '../lib/relaunch.js';
 import { isCompleteHttpUrl } from '../lib/site-url.js';
 import GuestGate from './GuestGate.svelte';
 
 let invalid = $state(false);
+let apiMessage = $state('');
 let gate = $state(false);
 let busy = $state(false);
+
+function fail(message: string): void {
+  invalid = true;
+  apiMessage = message;
+}
 
 async function onSubmit(event: SubmitEvent): Promise<void> {
   event.preventDefault();
@@ -18,22 +25,24 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
   const raw = String(new FormData(form).get('url') ?? '').trim();
   if (!isCompleteHttpUrl(raw)) {
     invalid = true;
+    apiMessage = '';
     return;
   }
   invalid = false;
+  apiMessage = '';
   busy = true;
   try {
     const session = await currentSession();
     if (session) {
       const result = await createAudit(session.access_token, { url: raw });
       if (result.ok) location.assign(progressionHref(result.auditId));
-      else invalid = true;
+      else fail(result.message);
       return;
     }
     const guest = await createGuestAudit(raw);
     if (!guest.ok) {
       if (guest.limit) gate = true;
-      else invalid = true;
+      else fail(guest.message);
       return;
     }
     saveGuestAudit(guest.payload);
@@ -73,7 +82,11 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
       <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </button>
   </div>
-  <p class="error" id="url-error" role="alert">{invalid ? t('home.url.error') : ''}</p>
+  <p class="error" id="url-error" role="alert">{homeFormAlert({
+    invalidUrl: invalid,
+    apiMessage,
+    urlError: t('home.url.error'),
+  })}</p>
   <p class="hint" id="url-hint">{t('home.url.format')}</p>
 </form>
 <p><a class="link-inline" href="/methode">{t('home.method')}</a></p>
