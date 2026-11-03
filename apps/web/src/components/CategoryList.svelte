@@ -34,7 +34,7 @@ let { items }: Props = $props();
 <ul class="domains stagger">
   {#each items as item (item.id)}
     {@const level = levelForScore(item.score)}
-    <li>
+    <li id={`domaine-${item.id}`}>
       {#if item.href}
         <a class="domain lift" href={item.href}>
           {@render body(item, level)}
