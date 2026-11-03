@@ -1,41 +1,52 @@
 ---
-import PageToc from '../components/PageToc.astro';
+import '../styles/maquettes/mentions.css';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
-
-const email = t('legal.email');
-const site = t('legal.site');
+import Canon from '../layouts/Canon.astro';
 ---
 
-<Base still title={t('meta.mentions.title')} description={t('meta.mentions.description')}>
-  <h1>{t('mentions.title')}</h1>
-  <p class="prose">{t('terms.date')}</p>
-  <p class="prose">{t('legal.review')}</p>
-  <PageToc
-    items={[
-      { id: 'mentions-editor', label: t('mentions.editor.title') },
-      { id: 'mentions-contact', label: t('mentions.contact.title') },
-      { id: 'mentions-host', label: t('mentions.host.title') },
-    ]}
-  />
-
-  <h2 id="mentions-editor">{t('mentions.editor.title')}</h2>
-  <p class="prose">{t('mentions.editor.body')}</p>
-  <p class="prose">{t('mentions.editor.anon')}</p>
-  <p class="prose">{t('mentions.editor.law')}</p>
-  <p class="prose">{t('mentions.director')}</p>
-
-  <h2 id="mentions-contact">{t('mentions.contact.title')}</h2>
-  <p class="prose">
-    {t('mentions.contact.body')}{' '}
-    <a class="link-inline" href={`mailto:${email}`}>{email}</a>
-  </p>
-  <p class="prose">{t('mentions.site', { site })}</p>
-
-  <h2 id="mentions-host">{t('mentions.host.title')}</h2>
-  <p class="prose">{t('mentions.host.body')}</p>
-  <p class="prose">{t('mentions.host.address')}</p>
-  <p class="prose">{t('mentions.host.mail')}</p>
-  <p class="prose">{t('mentions.host.phone')}</p>
-  <p class="prose">{t('mentions.data')}</p>
-</Base>
+<Canon vue="mentions" title={t('mq.meta.mentions.title')} description={t('mq.meta.mentions.desc')} robots="index, follow">
+<main id="contenu" tabindex="-1" data-reading="1" data-copy-prefix={t('mq.lg.111')}>
+<div class="progress" aria-hidden="true"></div>
+<nav class="crumbs" aria-label={t('mq.lg.001')}><ol><li><a href="/">{t('mq.lg.002')}</a></li><li>{t('mq.lg.003')}</li><li><span aria-current="page">{t('mq.lg.004')}</span></li></ol></nav>
+<div class="hero l-hero"><div data-stagger>
+<p class="eyebrow rv"><span class="dot" aria-hidden="true"></span>{t('mq.lg.005')}</p>
+<h1 class="rv">{t('mq.lg.004')}</h1>
+<p class="lede rv">{t('mq.lg.006')}</p>
+<div class="meta rv"><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>{t('mq.lg.007')}<time datetime="2026-10-27">{t('mq.lg.008')}</time>{t('mq.lg.009')}</span></span><span class="badge b-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.lg.010')}</span></div></div>
+<div class="emblem" aria-hidden="true"><svg viewBox="0 0 300 300"><defs><radialGradient id="halo"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#DDE4F8" stop-opacity=".15"/></radialGradient></defs>
+<circle class="halo" cx="150" cy="150" r="128"/><circle class="ring" cx="150" cy="150" r="128"/><circle class="ring" cx="150" cy="150" r="96" stroke-dasharray="3 7"/>
+<g class="orb"><circle cx="150" cy="22" r="6"/><circle cx="278" cy="150" r="4" opacity=".6"/></g><g class="floaty"><path class="draw" d="M150 66v168M98 234h104M86 100h128"/><path class="draw b" d="M108 100l-28 58a28 28 0 0 0 56 0zM192 100l-28 58a28 28 0 0 0 56 0z"/></g></svg></div></div>
+<section aria-labelledby="recap"><h2 id="recap" class="sr-only">{t('mq.lg.011')}</h2><div class="grid2 recap" data-stagger>
+<div class="tile card rv tilt"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/></svg></span><p class="kicker">{t('mq.lg.012')}</p><h3 style="margin-top:8px">{t('mq.lg.013')}</h3><p>{t('mq.lg.014')}</p></div>
+<div class="tile card rv tilt"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M6 20h12M5 8h14M7 8l-3 6a3 3 0 0 0 6 0zM17 8l-3 6a3 3 0 0 0 6 0z"/></svg></span><p class="kicker">{t('mq.lg.015')}</p><h3 style="margin-top:8px">{t('mq.lg.016')}</h3><p>{t('mq.lg.017')}</p></div>
+<div class="tile card rv tilt"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></span><p class="kicker">{t('mq.lg.018')}</p><h3 style="margin-top:8px">{t('mq.lg.019')}</h3><p>{t('mq.lg.020')}</p></div>
+<div class="tile card rv tilt"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg></span><p class="kicker">{t('mq.lg.021')}</p><h3 style="margin-top:8px;font-size:15.5px"><a href="mailto:Audixio@outlook.fr">{t('mq.lg.022')}<wbr>{t('mq.lg.023')}</a></h3><p>{t('mq.lg.024')}<strong data-count="48">{t('mq.lg.025')}</strong>{t('mq.lg.026')}</p></div></div></section><div class="layout"><nav class="toc card rv" aria-label={t('mq.lg.027')}><p class="kicker">{t('mq.lg.028')}</p><ol><li><a href="#edition"><span class="n">{t('mq.lg.029')}</span>{t('mq.lg.030')}</a></li><li><a href="#hebergement"><span class="n">{t('mq.lg.031')}</span>{t('mq.lg.032')}</a></li><li><a href="#propriete"><span class="n">{t('mq.lg.033')}</span>{t('mq.lg.034')}</a></li><li><a href="#responsabilite"><span class="n">{t('mq.lg.035')}</span>{t('mq.lg.036')}</a></li><li><a href="#cookies"><span class="n">{t('mq.lg.037')}</span>{t('mq.lg.038')}</a></li><li><a href="#signalement"><span class="n">{t('mq.lg.039')}</span>{t('mq.lg.040')}</a></li></ol><p class="note">{t('mq.lg.041')}</p></nav><div class="chapters"><section class="chap card pad rv sheen" id="edition" tabindex="-1" aria-labelledby="edition-t">
+<div class="chap-h"><span class="cnum" aria-hidden="true"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="26"/><circle class="fg" cx="28" cy="28" r="26"/></svg>{t('mq.lg.029')}</span><div><p class="kicker">{t('mq.lg.042')}<span class="badge b-own">{t('mq.lg.043')}</span></p><h2 id="edition-t"><span class="sr-only">{t('mq.lg.044')}</span>{t('mq.lg.045')}</h2></div></div><p class="prose">{t('mq.lg.046')}<strong>{t('mq.lg.022')}</strong>{t('mq.lg.047')}<strong>{t('mq.lg.048')}</strong>{t('mq.lg.049')}<strong>{t('mq.lg.013')}</strong>{t('mq.lg.050')}</p>
+<p class="prose">{t('mq.lg.051')}</p></section><section class="chap card pad rv sheen" id="hebergement" tabindex="-1" aria-labelledby="hebergement-t">
+<div class="chap-h"><span class="cnum" aria-hidden="true"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="26"/><circle class="fg" cx="28" cy="28" r="26"/></svg>{t('mq.lg.031')}</span><div><p class="kicker">{t('mq.lg.052')}<span class="badge b-ok">{t('mq.lg.053')}</span></p><h2 id="hebergement-t"><span class="sr-only">{t('mq.lg.054')}</span>{t('mq.lg.055')}</h2></div></div><p class="prose">{t('mq.lg.056')}</p>
+<div class="grid2" data-stagger><div class="tile card rv"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg></span><h3>{t('mq.lg.057')}</h3><p>{t('mq.lg.058')}</p></div>
+<div class="tile card rv"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></svg></span><h3>{t('mq.lg.059')}</h3><p>{t('mq.lg.060')}</p></div></div></section><section class="chap card pad rv sheen" id="propriete" tabindex="-1" aria-labelledby="propriete-t">
+<div class="chap-h"><span class="cnum" aria-hidden="true"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="26"/><circle class="fg" cx="28" cy="28" r="26"/></svg>{t('mq.lg.033')}</span><div><p class="kicker">{t('mq.lg.061')}<span class="badge b-own">{t('mq.lg.062')}</span></p><h2 id="propriete-t"><span class="sr-only">{t('mq.lg.063')}</span>{t('mq.lg.064')}</h2></div></div><p class="prose">{t('mq.lg.065')}</p>
+<p class="prose">{t('mq.lg.066')}</p></section><section class="chap card pad rv sheen" id="responsabilite" tabindex="-1" aria-labelledby="responsabilite-t">
+<div class="chap-h"><span class="cnum" aria-hidden="true"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="26"/><circle class="fg" cx="28" cy="28" r="26"/></svg>{t('mq.lg.035')}</span><div><p class="kicker">{t('mq.lg.067')}<span class="badge b-chk">{t('mq.lg.068')}</span></p><h2 id="responsabilite-t"><span class="sr-only">{t('mq.lg.069')}</span>{t('mq.lg.070')}</h2></div></div><div class="callout warn rv" style="margin-top:0"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><div><h3>{t('mq.lg.071')}</h3><p>{t('mq.lg.072')}<em>{t('mq.lg.073')}</em>{t('mq.lg.074')}</p></div></div>
+<p class="prose" style="margin-top:var(--s4)">{t('mq.lg.075')}</p></section><section class="chap card pad rv sheen" id="cookies" tabindex="-1" aria-labelledby="cookies-t">
+<div class="chap-h"><span class="cnum" aria-hidden="true"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="26"/><circle class="fg" cx="28" cy="28" r="26"/></svg>{t('mq.lg.037')}</span><div><p class="kicker">{t('mq.lg.076')}<span class="badge b-ok">{t('mq.lg.077')}</span></p><h2 id="cookies-t"><span class="sr-only">{t('mq.lg.078')}</span>{t('mq.lg.079')}</h2></div></div><p class="prose">{t('mq.lg.080')}</p>
+<ul class="ticks" data-stagger>
+<li style="--i:0"><span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><strong>{t('mq.lg.081')}</strong>{t('mq.lg.082')}</span></li>
+<li style="--i:1"><span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><strong>{t('mq.lg.083')}</strong>{t('mq.lg.084')}</span></li>
+<li style="--i:2"><span class="t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span><strong>{t('mq.lg.085')}</strong>{t('mq.lg.086')}<code>{t('mq.lg.087')}</code>{t('mq.lg.088')}</span></li></ul>
+<p class="prose" style="margin-top:var(--s3)">{t('mq.lg.089')}<a href="/confidentialite">{t('mq.lg.090')}</a>.</p></section><section class="chap card pad rv sheen" id="signalement" tabindex="-1" aria-labelledby="signalement-t">
+<div class="chap-h"><span class="cnum" aria-hidden="true"><svg viewBox="0 0 56 56"><circle class="bg" cx="28" cy="28" r="26"/><circle class="fg" cx="28" cy="28" r="26"/></svg>{t('mq.lg.039')}</span><div><p class="kicker">{t('mq.lg.091')}<span class="badge b-own">{t('mq.lg.092')}</span></p><h2 id="signalement-t"><span class="sr-only">{t('mq.lg.093')}</span>{t('mq.lg.094')}</h2></div></div><p class="prose">{t('mq.lg.095')}</p><p class="prose">{t('mq.lg.096')}<a href="/robot">{t('mq.lg.097')}</a>{t('mq.lg.098')}</p>
+<div class="mail card rv"><div><p class="lbl">{t('mq.lg.099')}</p><a class="addr" href="mailto:Audixio@outlook.fr">{t('mq.lg.100')}</a><p class="lbl" style="margin:8px 0 0">{t('mq.lg.101')}</p></div>
+<div class="acts"><button type="button" class="btn btn-ghost copy" data-copy="Audixio@outlook.fr"><span class="cp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg></span><span class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span>{t('mq.lg.102')}</button><a class="btn btn-primary" href="mailto:Audixio@outlook.fr?subject=R%C3%A9examen%20d%E2%80%99un%20constat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg>{t('mq.lg.103')}</a></div></div></section></div></div>
+<section class="end card rv sheen" aria-labelledby="end-t"><h2 id="end-t">{t('mq.lg.104')}</h2><p>{t('mq.lg.105')}</p><div class="acts"><a class="btn btn-primary" href="mailto:Audixio@outlook.fr?subject=Question%20sur%20les%20mentions%20l%C3%A9gales"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg>{t('mq.lg.106')}</a><a class="btn btn-ghost" href="/">{t('mq.lg.107')}</a></div><p class="rel">{t('mq.lg.108')}<a href="/cgu">{t('mq.lg.109')}</a> · <a href="/confidentialite">{t('mq.lg.110')}</a> · <a href="/robot">{t('mq.lg.097')}</a></p></section>
+<div class="toast" id="toast" aria-hidden="true"></div><p class="sr-only" id="live" role="status" aria-live="polite"></p>
+</main>
+<script>
+import { bindMaquetteMotion, bindReadingAids } from '../lib/motion';
+bindMaquetteMotion();
+const root = document.getElementById('contenu');
+if (root?.dataset.reading === '1') bindReadingAids(root.dataset.copyPrefix ?? '');
+document.dispatchEvent(new Event('audixio-motion'));
+</script>
+</Canon>

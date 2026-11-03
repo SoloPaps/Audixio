@@ -6,6 +6,7 @@ import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
 import { mqGatesFr } from './mq-gates-fr.js';
+import { mqLegalFr } from './mq-legal-fr.js';
 import { pdfFr } from './pdf-fr.js';
 
 const frCore = {
@@ -2791,6 +2792,7 @@ export const fr = {
   ...espaceFr,
   ...espaceUiFr,
   ...mqGatesFr,
+  ...mqLegalFr,
   ...pdfFr,
 };
 

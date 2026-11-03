@@ -19,6 +19,23 @@ async function waitForIslands(page: Page): Promise<void> {
 }
 
 async function expectNoViolations(page: Page): Promise<void> {
+  await page.waitForFunction(() => {
+    const view = globalThis as unknown as {
+      document: {
+        querySelectorAll: (selector: string) => Iterable<{
+          getBoundingClientRect: () => { top: number; bottom: number };
+        }>;
+      };
+      getComputedStyle: (node: object) => { opacity: string };
+      innerHeight: number;
+    };
+    const nodes = [...view.document.querySelectorAll('.rv')];
+    return nodes.every((node) => {
+      const rect = node.getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= view.innerHeight) return true;
+      return Number(view.getComputedStyle(node).opacity) >= 0.99;
+    });
+  });
   const results = await new AxeBuilder({ page }).analyze();
   expect(
     results.violations,
@@ -58,9 +75,16 @@ test('le pied de page ouvre les pages légales', async ({ page }) => {
 
   await page.goto('/mentions-legales?theme=dark');
   await waitForIslands(page);
-  await expect(page.getByText('Audixio@outlook.fr')).toBeVisible();
-  await expect(page.getByText('audigyweb.fr')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Hébergeur' })).toBeVisible();
+  await expect(page.getByText('Audixio@outlook.fr').first()).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Audixio@outlook.fr' }),
+  ).toBeVisible();
+  await expect(page.getByText('audixio.fr').first()).toBeVisible();
+  await expect(
+    page.getByRole('heading', {
+      name: 'Hébergement et localisation des données',
+    }),
+  ).toBeVisible();
   await expectNoViolations(page);
 
   await page.goto('/confidentialite?theme=light');
@@ -69,7 +93,7 @@ test('le pied de page ouvre les pages légales', async ({ page }) => {
 
   await page.goto('/accessibilite');
   await waitForIslands(page);
-  await expect(page.getByText('audit formel non réalisé')).toBeVisible();
+  await expect(page.getByText('l’audit reste à faire')).toBeVisible();
   await expectNoViolations(page);
 
   await page.goto('/methode');

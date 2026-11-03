@@ -26,6 +26,17 @@ const MAQUETTE_PORT = [
   'apps/web/src/pages/passer-pro.astro',
   'apps/web/src/pages/demande-acces.astro',
   'apps/web/src/pages/sites/[host]/demandes/[id].astro',
+  'apps/web/src/pages/mentions-legales.astro',
+  'apps/web/src/pages/cgu.astro',
+  'apps/web/src/pages/confidentialite.astro',
+  'apps/web/src/pages/accessibilite.astro',
+  'apps/web/src/pages/ecoconception.astro',
+  'apps/web/src/pages/robot.astro',
+  'apps/web/src/pages/404.astro',
+  'apps/web/src/pages/500/index.astro',
+  'apps/web/src/pages/maintenance.astro',
+  'apps/web/src/pages/cookies.astro',
+  'apps/web/src/pages/audit-echoue.astro',
 ];
 
 function isMaquettePort(relative: string): boolean {
@@ -245,6 +256,21 @@ describe('couleurs des CSS', () => {
     expect(isMaquettePort('apps/web/src/pages/pro.astro')).toBe(true);
     expect(isMaquettePort('apps/web/src/pages/passer-pro.astro')).toBe(true);
     expect(isMaquettePort('apps/web/src/pages/demande-acces.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/mentions-legales.astro')).toBe(
+      true,
+    );
+    expect(isMaquettePort('apps/web/src/pages/cgu.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/confidentialite.astro')).toBe(
+      true,
+    );
+    expect(isMaquettePort('apps/web/src/pages/accessibilite.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/ecoconception.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/robot.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/404.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/500/index.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/maintenance.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/cookies.astro')).toBe(true);
+    expect(isMaquettePort('apps/web/src/pages/audit-echoue.astro')).toBe(true);
     expect(
       isMaquettePort('apps/web/src/pages/sites/[host]/demandes/[id].astro'),
     ).toBe(true);
