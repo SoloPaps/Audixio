@@ -170,6 +170,20 @@ function auditBody(status: 'queued' | 'running' | 'done'): unknown {
   };
 }
 
+/** Invité : /lancer doit passer par /progression avant le rapport. */
+async function expectGuestThroughProgression(page: Page): Promise<void> {
+  await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 20_000 });
+  const status = page.getByRole('status');
+  await expect(status).toContainText('Analyse en cours');
+  await expect(
+    page.getByRole('link', { name: 'Revenir à l’accueil' }),
+  ).toBeVisible();
+  await expect(page.locator('[aria-modal="true"]')).toHaveCount(0);
+  await expect(status).toContainText('Rapport prêt', { timeout: 15_000 });
+  await page.getByRole('link', { name: 'Voir le rapport' }).click();
+  await expect(page).toHaveURL(/\/rapport\?id=/);
+}
+
 async function installMocks(
   page: Page,
   options: { immediate?: boolean } = {},
@@ -280,7 +294,7 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   ).toBeVisible();
   await page.getByLabel('Adresse du site').fill('https://exemple.fr');
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
-  await expect(page).toHaveURL(/\/rapport\?id=/, { timeout: 20_000 });
+  await expectGuestThroughProgression(page);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
   ).toBeVisible();
@@ -426,6 +440,58 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   );
   await expect(page.getByText('notes.exemple.fr').first()).toBeVisible();
   await expectNoViolations(page);
+});
+
+test('parcours invité : progression puis rapport, sans compte', async ({
+  page,
+}) => {
+  await installMocks(page);
+  await page.goto('/');
+  await expect(
+    page.getByRole('heading', {
+      level: 1,
+      name: 'Vérifiez la santé de votre site, gratuitement.',
+    }),
+  ).toBeVisible();
+  await page.getByLabel('Adresse du site').fill('https://exemple.fr');
+  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await expectGuestThroughProgression(page);
+  await expect(page).not.toHaveURL(/\/connexion/);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Connectez-vous ou inscrivez-vous' }),
+  ).toHaveCount(0);
+});
+
+test('parcours invité : le plafond ouvre la fenêtre sans rapport', async ({
+  page,
+}) => {
+  await page.route('**/api/guest-audits', async (route) => {
+    await route.fulfill({
+      status: 429,
+      contentType: 'application/json',
+      headers: { 'retry-after': '3600' },
+      body: JSON.stringify({
+        error: 'guest_limit',
+        messageKey: 'api.error.guest_limit',
+        retryAfter: 3600,
+      }),
+    });
+  });
+  await page.goto('/');
+  await page.getByLabel('Adresse du site').fill('https://exemple.fr');
+  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await expect(page).toHaveURL(/\/lancer\?url=/);
+  const gate = page.getByRole('dialog', {
+    name: 'Connectez-vous ou inscrivez-vous',
+  });
+  await expect(gate).toBeVisible();
+  await expect(gate.getByRole('link', { name: 'Connexion' })).toBeVisible();
+  await expect(gate.getByRole('link', { name: 'Inscription' })).toBeVisible();
+  await expect(page).not.toHaveURL(/\/progression/);
+  await expect(page).not.toHaveURL(/\/rapport/);
 });
 
 test('connexion et sites vides sans violation, clair et sombre', async ({
