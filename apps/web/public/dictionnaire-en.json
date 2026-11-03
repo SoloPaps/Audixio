@@ -368,6 +368,8 @@
   "progress.failed": "The audit did not finish. You can start it again.",
   "progress.live": "Analysis in progress.",
   "progress.ready": "Report ready.",
+  "progress.ready.heading": "Your diagnosis is ready for",
+  "progress.ready.lead": "The analysis is finished. Your full report, with the priorities and the action plan, is waiting.",
   "progress.home": "Back to the home page",
   "progress.report": "See the report",
   "progress.retry": "Run the audit again",

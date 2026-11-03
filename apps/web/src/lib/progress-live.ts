@@ -5,6 +5,14 @@ import { tReport } from '../i18n/report-fr.js';
  * Premier écran invité : l’audit est déjà en mémoire, on montre quand même
  * l’analyse avant le statut stocké. Aucune écriture, aucun appel réseau.
  */
+const GUEST_PHASES = ['phase.dns', 'phase.pages', 'phase.privacy'] as const;
+
+/** Phases montrées pendant le court passage invité, avant le statut stocké. */
+export function guestBeatPhase(step: number): string {
+  const index = Math.max(0, Math.min(step, GUEST_PHASES.length - 1));
+  return tReport(GUEST_PHASES[index] ?? 'phase.dns');
+}
+
 export function guestDisplayStatus(status: string, revealed: boolean): string {
   if (revealed) return status;
   if (status === 'done' || status === 'partial' || status === 'failed') {

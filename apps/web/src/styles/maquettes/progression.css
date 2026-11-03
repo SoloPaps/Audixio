@@ -1152,6 +1152,26 @@ main {
   .ax-hero .p-dns {
     right: 6px;
   }
+  .ax-hero .url {
+    min-width: 0;
+    padding-right: 0.45rem;
+  }
+  .ax-hero .url .p-sec {
+    position: static;
+    margin: 0;
+    flex: none;
+  }
+  .ax-hero .url-host {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+#ready-slot {
+  margin: 1.25rem 0 0.5rem;
+  text-align: center;
 }
 .cap[data-state="wait"] .st,
 .cap[data-state="off"] .st {

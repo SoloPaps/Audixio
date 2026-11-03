@@ -432,6 +432,9 @@ const frCore = {
   'progress.failed': 'L’audit n’a pas abouti. Vous pouvez le relancer.',
   'progress.live': 'Analyse en cours.',
   'progress.ready': 'Rapport prêt.',
+  'progress.ready.heading': 'Votre diagnostic est prêt pour',
+  'progress.ready.lead':
+    'L’analyse est terminée. Votre rapport complet, avec les priorités et le plan d’action, vous attend.',
   'progress.home': 'Revenir à l’accueil',
   'progress.report': 'Voir le rapport',
   'progress.notify.title': 'Recevoir les résultats dès finalisation',

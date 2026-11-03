@@ -180,7 +180,27 @@ async function expectGuestThroughProgression(page: Page): Promise<void> {
   ).toBeVisible();
   await expect(page.locator('[aria-modal="true"]')).toHaveCount(0);
   await expect(status).toContainText('Rapport prêt', { timeout: 15_000 });
-  await page.getByRole('link', { name: 'Voir le rapport' }).click();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(
+    'Votre diagnostic est prêt pour',
+  );
+  await expect(page.locator('#leadT')).toContainText('L’analyse est terminée');
+  await expect(page.locator('.url-host')).toHaveText('exemple.fr');
+  const report = page.getByRole('link', { name: 'Voir le rapport' });
+  await expect(report).toBeInViewport();
+  const previous = page.viewportSize();
+  await page.setViewportSize({ width: 330, height: 800 });
+  await expect(report).toBeInViewport();
+  const overlap = await page.evaluate(() => {
+    const host = document.querySelector('.url-host');
+    const chip = document.querySelector('.url .p-sec');
+    if (!host || !chip) return true;
+    const hostBox = host.getBoundingClientRect();
+    const chipBox = chip.getBoundingClientRect();
+    return hostBox.right > chipBox.left + 1;
+  });
+  expect(overlap).toBe(false);
+  if (previous) await page.setViewportSize(previous);
+  await report.click();
   await expect(page).toHaveURL(/\/rapport\?id=/);
 }
 
