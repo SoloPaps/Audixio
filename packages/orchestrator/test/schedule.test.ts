@@ -895,7 +895,7 @@ describe('contrat', () => {
 
   it('décrit le cron, la purge et les alertes dans le dépôt', () => {
     const migration = readFileSync(
-      `${ROOT}supabase/migrations/20261024183000_schedule.sql`,
+      `${ROOT}supabase/migrations/20261101191827_schedule.sql`,
       'utf8',
     );
     const tick = readFileSync(

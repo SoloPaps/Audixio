@@ -5,21 +5,21 @@ import { LOCKED_DOMAINS } from '../src/droits.js';
 import { repoRoot } from './local.js';
 
 const migration = readFileSync(
-  `${repoRoot}supabase/migrations/20261023210000_init.sql`,
+  `${repoRoot}supabase/migrations/20261101191806_init.sql`,
   'utf8',
 );
 const seed = readFileSync(`${repoRoot}supabase/seed.sql`, 'utf8');
 const helper = readFileSync(`${repoRoot}packages/db/test/local.ts`, 'utf8');
 const places = readFileSync(
-  `${repoRoot}supabase/migrations/20261024180000_places.sql`,
+  `${repoRoot}supabase/migrations/20261101191822_places.sql`,
   'utf8',
 );
 const coeur = readFileSync(
-  `${repoRoot}supabase/migrations/20261101181500_coeur_droits.sql`,
+  `${repoRoot}supabase/migrations/20261101191850_coeur_droits.sql`,
   'utf8',
 );
 const authSql = readFileSync(
-  `${repoRoot}supabase/migrations/20261101194215_auth_securite.sql`,
+  `${repoRoot}supabase/migrations/20261101205211_auth_securite.sql`,
   'utf8',
 );
 
