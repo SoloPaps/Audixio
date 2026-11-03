@@ -280,7 +280,11 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   ).toBeVisible();
   await page.getByLabel('Adresse du site').fill('https://exemple.fr');
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
-  await expect(page).toHaveURL(/\/connexion/);
+  await expect(page).toHaveURL(/\/rapport\?id=/, { timeout: 20_000 });
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
+  ).toBeVisible();
+  await page.goto('/connexion');
   await waitForIslands(page);
   await page.route('**/api/auth/connexion', async (route) => {
     await route.fulfill({
@@ -296,14 +300,21 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
     'Adresse ou mot de passe incorrect.',
   );
 
-  await page.evaluate((value) => {
-    const storage = (
-      globalThis as unknown as {
-        localStorage: { setItem: (key: string, item: string) => void };
-      }
-    ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
-  }, session);
+  await page.evaluate(
+    ({ value, next }) => {
+      const storage = (
+        globalThis as unknown as {
+          localStorage: { setItem: (key: string, item: string) => void };
+        }
+      ).localStorage;
+      storage.setItem('audigy-auth', JSON.stringify(value));
+      storage.setItem('audigy-next', next);
+    },
+    {
+      value: session,
+      next: '/lancer?url=https%3A%2F%2Fexemple.fr',
+    },
+  );
   await page.goto('/compte/retour');
   await expect(page).toHaveURL(/\/progression/, { timeout: 15_000 });
 
