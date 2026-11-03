@@ -304,6 +304,7 @@ async function audit(site: LocalSite): Promise<{
 interface AuditPage {
   on(event: 'pageerror', listener: (error: Error) => void): void;
   on(event: 'console', listener: (msg: { text(): string }) => void): void;
+  emulateMedia(options: { colorScheme: 'light' | 'dark' }): Promise<void>;
   goto(url: string, options: { waitUntil: 'load' }): Promise<unknown>;
   waitForFunction(
     expression: string,
@@ -311,6 +312,12 @@ interface AuditPage {
     options: { timeout: number },
   ): Promise<unknown>;
   getByLabel(name: string): { selectOption(value: string): Promise<unknown> };
+  locator(selector: string): {
+    getByRole(
+      role: 'button',
+      options: { name: string },
+    ): { click(): Promise<void> };
+  };
   evaluate(expression: string): Promise<unknown>;
 }
 
@@ -369,7 +376,10 @@ async function assertHydrated(origin: string): Promise<void> {
       undefined,
       { timeout: 20_000 },
     );
-    await page.locator('.axn-tools').getByRole('button', { name: 'Thème' }).click();
+    await page
+      .locator('.axn-tools')
+      .getByRole('button', { name: 'Thème' })
+      .click();
     const theme = await page.evaluate(
       "document.documentElement.getAttribute('data-theme')",
     );

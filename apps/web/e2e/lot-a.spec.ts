@@ -1,5 +1,14 @@
 import { expect, test } from '@playwright/test';
 
+type Painted = {
+  getBoundingClientRect(): {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+  };
+};
+
 test('FR/EN traduit la page et le bouton de compte reste lisible', async ({
   page,
 }) => {
@@ -49,8 +58,8 @@ test('le thème bascule au clic et suit l’appareil', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const paper = await page.evaluate(() => {
     const view = globalThis as unknown as {
-      getComputedStyle: (node: Element) => { backgroundColor: string };
-      document: { body: Element };
+      getComputedStyle: (node: Painted) => { backgroundColor: string };
+      document: { body: Painted };
     };
     return view.getComputedStyle(view.document.body).backgroundColor;
   });
@@ -73,9 +82,9 @@ test('aucune ligne de repère au survol mobile', async ({ page }) => {
   const guide = await page.evaluate(() => {
     const view = globalThis as unknown as {
       document: {
-        querySelectorAll: (selector: string) => Iterable<Element>;
+        querySelectorAll: (selector: string) => Iterable<Painted>;
       };
-      getComputedStyle: (node: Element) => {
+      getComputedStyle: (node: Painted) => {
         outlineStyle: string;
         outlineWidth: string;
         backgroundImage: string;
@@ -141,9 +150,9 @@ test('la pastille de note ne chevauche pas le texte', async ({ page }) => {
   const boxes = await page.evaluate(() => {
     const view = globalThis as unknown as {
       document: {
-        querySelector: (selector: string) => Element | null;
+        querySelector: (selector: string) => Painted | null;
       };
-      getComputedStyle: (node: Element) => {
+      getComputedStyle: (node: Painted) => {
         position: string;
         whiteSpace: string;
       };
@@ -153,7 +162,7 @@ test('la pastille de note ne chevauche pas le texte', async ({ page }) => {
     const warn = view.document.querySelector('.find.warn');
     const status = view.document.querySelector('.score-slot .status');
     if (!slotNode || !note || !warn || !status) return null;
-    const rect = (node: Element) => {
+    const rect = (node: Painted) => {
       const box = node.getBoundingClientRect();
       return {
         left: box.left,

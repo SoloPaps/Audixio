@@ -2421,7 +2421,7 @@ html:where([data-vue="domaine"]),
     ),
     linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
 }
-:where(html[data-vue='domaine']) .eco-line a {
+:where(html[data-vue="domaine"]) .eco-line a {
   color: #3d52a0;
   font-weight: 650;
   text-decoration: underline;

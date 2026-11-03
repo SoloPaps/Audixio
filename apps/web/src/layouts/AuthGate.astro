@@ -4,6 +4,7 @@ import { t } from '../i18n/index.js';
 import '../styles/polices.css';
 import '../styles/maquettes/auth.css';
 import '../styles/mobile-fit.css';
+import '../styles/theme-dark.css';
 
 interface Props {
   title: string;
@@ -16,7 +17,7 @@ const initial = theme === 'light' || theme === 'dark' ? theme : 'system';
 ---
 
 <!doctype html>
-<html lang="fr" data-theme={initial === 'system' ? undefined : initial}>
+<html lang="fr" data-theme={initial === 'system' ? undefined : initial} data-vue="auth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

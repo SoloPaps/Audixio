@@ -11,6 +11,7 @@ const MAQUETTE_PORT = [
   'apps/web/src/styles/maquettes/',
   'apps/web/src/styles/canon.css',
   'apps/web/src/styles/chrome.css',
+  'apps/web/src/styles/theme-dark.css',
   'apps/web/src/components/ShareSheet.svelte',
   'apps/web/src/components/AccountBoard.svelte',
   'apps/web/src/components/AlertsBoard.svelte',
@@ -237,6 +238,7 @@ describe('couleurs des CSS', () => {
     expect(isMaquettePort('apps/web/src/styles/maquettes/hub.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/styles/canon.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/styles/chrome.css')).toBe(true);
+    expect(isMaquettePort('apps/web/src/styles/theme-dark.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/components/ShareSheet.svelte')).toBe(
       true,
     );

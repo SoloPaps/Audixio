@@ -202,7 +202,8 @@ export function bootEspace(
     if (dead) return;
     const rootEl = document.documentElement;
     if (page === 'sites') {
-      if (next.mode === 'empty' || next.mode === 'out') rootEl.dataset.board = 'vide';
+      if (next.mode === 'empty' || next.mode === 'out')
+        rootEl.dataset.board = 'vide';
       else if (next.mode === 'list' || next.mode === 'live') {
         rootEl.dataset.board = 'liste';
       } else delete rootEl.dataset.board;

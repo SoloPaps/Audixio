@@ -497,8 +497,8 @@
   html[data-vue] .btn > svg,
   html[data-vue] .chip svg,
   html[data-vue] .badge svg {
-    width: 18px;
-    height: 18px;
+    width: 1.125rem;
+    height: 1.125rem;
     max-width: none;
     flex: none;
   }

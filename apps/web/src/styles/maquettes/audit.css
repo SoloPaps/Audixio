@@ -1,7 +1,4 @@
 /* Porté depuis la maquette finale. Polices locales, pas de fichier docs/design. */
-.seg-wrap {
-  display: none;
-}
 :root {
   --bg1: #ede8f5;
   --bg2: #adbbda;
@@ -756,6 +753,11 @@ main {
   text-decoration: none;
 }
 @media (prefers-reduced-motion: reduce) {
+  .fade {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
   .lk,
   .lk-ar,
   .lk-pill {
