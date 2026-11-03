@@ -3,17 +3,29 @@ import { AUTH, LAB, readState, writeState } from './support.js';
 
 test.use({ storageState: AUTH });
 
-test('visiteur non connecté est renvoyé vers la connexion', async ({
+test('visiteur non connecté voit le hub et la fenêtre de compte', async ({
   browser,
 }) => {
   const context = await browser.newContext({
     storageState: { cookies: [], origins: [] },
+    extraHTTPHeaders: { 'x-nf-client-connection-ip': '203.0.113.250' },
   });
   const page = await context.newPage();
   await page.goto('/');
   await page.locator('#url-input').fill(LAB);
   await page.getByRole('button', { name: "Lancer l'audit gratuit" }).click();
-  await expect(page).toHaveURL(/\/connexion/);
+  await expect(page).toHaveURL(/\/rapport\?id=/, { timeout: 30_000 });
+  await expect(
+    page.getByText(/partielle · \d+ domaines · site non vérifié/),
+  ).toBeVisible();
+  await page.locator('#domaine-securite').click();
+  await expect(
+    page.getByRole('heading', { name: 'Connectez-vous ou inscrivez-vous' }),
+  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Inscription' })).toHaveAttribute(
+    'href',
+    '/inscription',
+  );
   await context.close();
 });
 

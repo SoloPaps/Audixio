@@ -25,6 +25,7 @@ export type ApiError =
   | 'terms_version'
   | 'account_limit'
   | 'ip_limit'
+  | 'guest_limit'
   | 'rate_limited'
   | 'unavailable'
   | 'internal';
@@ -136,6 +137,12 @@ export interface ApiDeps {
     req: Request,
     userId: string,
   ): Promise<{ ok: true } | { ok: false; retryAfter: number }>;
+  /** Visiteur sans compte : 3 / 24 h. Absent : le lancement visiteur répond 500. */
+  guardGuest?(
+    req: Request,
+  ): Promise<{ ok: true } | { ok: false; retryAfter: number }>;
+  /** Hôtes de labo (`*.audigy.test`) seulement quand le drapeau local est là. */
+  allowLab?: boolean;
 }
 
 async function authenticate(

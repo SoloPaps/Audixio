@@ -147,6 +147,18 @@ jobs:
         continue-on-error: true
         run: pnpm test:a11y
 
+      - name: Deno
+        run: |
+          curl -fsSL -o /tmp/deno.zip https://github.com/denoland/deno/releases/download/v2.5.6/deno-x86_64-unknown-linux-gnu.zip
+          sudo unzip -o /tmp/deno.zip -d /usr/local/bin
+
+      - name: edge
+        id: edge
+        continue-on-error: true
+        run: |
+          deno check --sloppy-imports --no-lock netlify/edge-functions/auth-guard.ts
+          deno bundle --sloppy-imports --no-lock netlify/edge-functions/auth-guard.ts -o /tmp/audixio-auth-guard.js
+
       - name: Résumé
         if: always()
         env:
@@ -160,6 +172,7 @@ jobs:
             self-audit=${{ steps.self_audit.outcome }}
             test:ui=${{ steps.test_ui.outcome }}
             test:a11y=${{ steps.test_a11y.outcome }}
+            edge=${{ steps.edge.outcome }}
         run: |
           failed=0
           for r in $RESULTS; do

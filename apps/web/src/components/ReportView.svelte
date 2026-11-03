@@ -6,6 +6,7 @@ import { browserClient, currentSession } from '../lib/browser-session.js';
 import { domainPlain, isKnownDomain } from '../lib/domains.js';
 import { levelForStatus } from '../lib/findings.js';
 import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
+import { readGuestAudit } from '../lib/guest-store.js';
 import {
   type ActionStatus,
   domainLetter,
@@ -55,6 +56,7 @@ let payload = $state<AuditPayload | null>(null);
 let domainId = $state('');
 let checkId = $state('');
 let userId = $state('');
+let guest = $state(false);
 let statuses = $state<Record<string, ActionStatus>>({});
 
 const items = $derived(
@@ -227,7 +229,14 @@ onMount(() => {
     const session = await currentSession();
     if (session) userId = session.user.id;
     if (!session) {
-      location.replace(loginHref(`${location.pathname}${location.search}`));
+      const stored = id ? readGuestAudit(id) : null;
+      if (!stored) {
+        location.replace(loginHref(`${location.pathname}${location.search}`));
+        return;
+      }
+      guest = true;
+      payload = stored;
+      phase = 'ready';
       return;
     }
     const result = await readAudit(session.access_token, id);
@@ -354,6 +363,7 @@ onMount(() => {
         {partialText}
         headline={verdict.headline}
         {stamp}
+        {guest}
       />
     {/if}
   </div>

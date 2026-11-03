@@ -225,7 +225,7 @@ describe('RLS Supabase local', () => {
     expect(open).toEqual([]);
   });
 
-  it('anon ne reçoit que sites et reports', async () => {
+  it('anon ne reçoit aucune table publique', async () => {
     const grants = await admin<
       { table_name: string; privilege_type: string }[]
     >`
@@ -234,10 +234,7 @@ describe('RLS Supabase local', () => {
       where grantee = 'anon' and table_schema = 'public'
       order by table_name, privilege_type
     `;
-    expect(grants).toEqual([
-      { table_name: 'reports', privilege_type: 'SELECT' },
-      { table_name: 'sites', privilege_type: 'SELECT' },
-    ]);
+    expect(grants).toEqual([]);
   });
 
   it('A ne lit rien de B, et lit son propre site', async () => {
@@ -294,7 +291,7 @@ describe('RLS Supabase local', () => {
       select id from public.sites where id = ${B_PUBLIC}::uuid
     `,
     );
-    expect(pub).toHaveLength(1);
+    expect(pub).toHaveLength(0);
   });
 
   it("A n'écrit rien chez B", async () => {
@@ -439,30 +436,13 @@ describe('RLS Supabase local', () => {
     );
   });
 
-  it('anon ne lit que les sites publics et les rapports public valides', async () => {
-    const sites = await asUser(
+  it('anon ne lit pas les tables sites et reports', async () => {
+    await expectDenied(null, (tx) => tx`select id from public.sites`);
+    await expectDenied(null, (tx) => tx`select id from public.reports`);
+    await expectDenied(
       null,
-      (tx) => tx<{ id: string }[]>`
-      select id::text as id from public.sites order by id
-    `,
+      (tx) => tx`select id from public.reports where visibility = 'link'`,
     );
-    expect(sites.map((row) => row.id)).toEqual([B_PUBLIC]);
-
-    const reports = await asUser(
-      null,
-      (tx) => tx<{ visibility: string }[]>`
-      select visibility from public.reports order by visibility
-    `,
-    );
-    expect(reports.map((row) => row.visibility)).toEqual(['public']);
-
-    const linkRows = await asUser(
-      null,
-      (tx) => tx`
-      select id from public.reports where visibility = 'link'
-    `,
-    );
-    expect(linkRows).toHaveLength(0);
 
     const viaToken = await asUser(
       null,
@@ -737,11 +717,12 @@ describe('RLS Supabase local', () => {
       url: local.apiUrl,
       anonKey: local.anonKey,
     });
-    const { data: publicSites } = await anon
+    const { data: publicSites, error: sitesError } = await anon
       .from('sites')
       .select('id')
       .eq('is_public', true);
-    expect(publicSites?.map((row) => row.id).sort()).toEqual([B_PUBLIC]);
+    expect(sitesError).not.toBeNull();
+    expect(publicSites).toBeNull();
 
     const shared = await readReportByShareToken(anon, linkToken);
     expect(shared?.visibility).toBe('link');
@@ -1111,6 +1092,6 @@ describe('RLS Supabase local', () => {
       .from('sites')
       .select('id')
       .eq('id', B_PUBLIC);
-    expect(visible).toEqual([{ id: B_PUBLIC }]);
+    expect(visible).toEqual([]);
   });
 });

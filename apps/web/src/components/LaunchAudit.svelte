@@ -1,14 +1,16 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
-import { createAudit } from '../lib/audit-api.js';
+import { createAudit, createGuestAudit } from '../lib/audit-api.js';
 import { currentSession } from '../lib/browser-session.js';
-import { loginHref } from '../lib/nav.js';
+import { saveGuestAudit } from '../lib/guest-store.js';
 import { progressionHref } from '../lib/relaunch.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from '../lib/site-url.js';
+import GuestGate from './GuestGate.svelte';
 
 let message = $state(t('launch.working'));
 let failed = $state(false);
+let gate = $state(false);
 
 onMount(async () => {
   const params = new URLSearchParams(location.search);
@@ -35,7 +37,28 @@ onMount(async () => {
   }
   const session = await currentSession();
   if (!session) {
-    location.replace(loginHref(`${location.pathname}${location.search}`));
+    if (!url) {
+      gate = true;
+      failed = true;
+      message = t('guest.gate.title');
+      return;
+    }
+    const guest = await createGuestAudit(url);
+    if (!guest.ok) {
+      if (guest.limit) {
+        gate = true;
+        failed = true;
+        message = t('guest.gate.title');
+        return;
+      }
+      message = guest.message;
+      failed = true;
+      return;
+    }
+    saveGuestAudit(guest.payload);
+    location.replace(
+      `/rapport?id=${encodeURIComponent(guest.payload.audit.id)}`,
+    );
     return;
   }
   const result = await createAudit(
@@ -52,9 +75,12 @@ onMount(async () => {
 </script>
 
 <p role="status" aria-live="polite">{message}</p>
-{#if failed}
+{#if failed && !gate}
   <p class="page-links">
     <a class="link-action" href="/">{t('launch.back')}</a>
     <a class="link-action" href="/sites">{t('nav.sites')}</a>
   </p>
+{/if}
+{#if gate}
+  <GuestGate open={true} onClose={() => { gate = false; }} />
 {/if}

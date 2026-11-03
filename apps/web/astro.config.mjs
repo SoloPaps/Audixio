@@ -77,6 +77,13 @@ function authDev() {
   const mount = (server) => {
     server.middlewares.use((req, res, next) => {
       const path = (req.url ?? '').split('?')[0] ?? '';
+      if (path === '/api/guest-audits') {
+        server
+          .ssrLoadModule('/src/lib/guest-node.ts')
+          .then((mod) => mod.handleGuestNode(req, res))
+          .catch(next);
+        return;
+      }
       const auth = path.startsWith('/api/auth');
       const guarded =
         path === '/sites' ||

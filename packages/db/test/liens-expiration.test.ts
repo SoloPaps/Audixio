@@ -178,14 +178,15 @@ describe('lien public expiré (SQL local)', () => {
     `;
     expect(await scoreBody(openToken)).toBe('[]');
     expect(await reportBody(openToken)).toBe('[]');
-    const direct = await asAnon(
-      (tx) => tx<{ n: number }[]>`
-        select count(*)::int as n
-        from public.reports
-        where id = ${openId}::uuid
-      `,
-    );
-    expect(direct[0]?.n).toBe(0);
+    await expect(
+      asAnon(
+        (tx) => tx<{ n: number }[]>`
+          select count(*)::int as n
+          from public.reports
+          where id = ${openId}::uuid
+        `,
+      ),
+    ).rejects.toMatchObject({ code: '42501' });
 
     await admin`
       update public.reports

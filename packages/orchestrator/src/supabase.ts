@@ -13,6 +13,8 @@ import {
   type Database,
   dbEnvFrom,
   failStaleAudits,
+  GUEST_AUDIT,
+  guestAuditKey,
   isLockedDomain,
   requestAudit,
   retryAfterSeconds,
@@ -452,6 +454,22 @@ export function apiDepsFromEnv(options: FromEnvOptions): ApiDeps {
       };
     },
     readAudit: (token, auditId) => readAuditView(userClient(token), auditId),
+    allowLab: lab !== null,
+    async guardGuest(req) {
+      const key = await guestAuditKey(clientIp(req));
+      const { data, error } = await service.rpc('consume_rate_limit', {
+        p_key: key,
+        p_window_start: windowStartIso(Date.now(), GUEST_AUDIT.windowMs),
+        p_limit: GUEST_AUDIT.limit,
+      });
+      if (error || data !== true) {
+        return {
+          ok: false as const,
+          retryAfter: retryAfterSeconds(Date.now(), GUEST_AUDIT.windowMs),
+        };
+      }
+      return { ok: true as const };
+    },
     async guardLaunch(req) {
       const material = await sha256Hex(
         `${new Date().toISOString().slice(0, 10)}\n${clientIp(req)}`,
