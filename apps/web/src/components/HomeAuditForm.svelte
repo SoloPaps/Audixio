@@ -1,23 +1,50 @@
 <script lang="ts">
 import { t } from '../i18n/slim.js';
+import { createAudit, createGuestAudit } from '../lib/audit-api.js';
+import { currentSession } from '../lib/browser-session.js';
+import { saveGuestAudit } from '../lib/guest-store.js';
+import { progressionHref } from '../lib/relaunch.js';
 import { isCompleteHttpUrl } from '../lib/site-url.js';
+import GuestGate from './GuestGate.svelte';
 
 let invalid = $state(false);
+let gate = $state(false);
+let busy = $state(false);
 
-function onSubmit(event: SubmitEvent): void {
+async function onSubmit(event: SubmitEvent): Promise<void> {
+  event.preventDefault();
   const form = event.currentTarget;
-  if (!(form instanceof HTMLFormElement)) return;
+  if (!(form instanceof HTMLFormElement) || busy) return;
   const raw = String(new FormData(form).get('url') ?? '').trim();
-  if (isCompleteHttpUrl(raw)) {
-    invalid = false;
+  if (!isCompleteHttpUrl(raw)) {
+    invalid = true;
     return;
   }
-  event.preventDefault();
-  invalid = true;
+  invalid = false;
+  busy = true;
+  try {
+    const session = await currentSession();
+    if (session) {
+      const result = await createAudit(session.access_token, { url: raw });
+      if (result.ok) location.assign(progressionHref(result.auditId));
+      else invalid = true;
+      return;
+    }
+    const guest = await createGuestAudit(raw);
+    if (!guest.ok) {
+      if (guest.limit) gate = true;
+      else invalid = true;
+      return;
+    }
+    saveGuestAudit(guest.payload);
+    location.assign(progressionHref(guest.payload.audit.id));
+  } finally {
+    busy = false;
+  }
 }
 </script>
 
-<form id="audit-form" class="form" action="/lancer" method="get" novalidate onsubmit={onSubmit}>
+<form id="audit-form" class="form" novalidate onsubmit={onSubmit}>
   <label for="url-input">
     <span>{t('home.url.long')}</span>
     <kbd class="kbd">URL</kbd>
@@ -50,3 +77,6 @@ function onSubmit(event: SubmitEvent): void {
   <p class="hint" id="url-hint">{t('home.url.format')}</p>
 </form>
 <p><a class="link-inline" href="/methode">{t('home.method')}</a></p>
+{#if gate}
+  <GuestGate open={true} onClose={() => { gate = false; }} />
+{/if}
