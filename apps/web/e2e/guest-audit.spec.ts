@@ -29,9 +29,23 @@ async function waitForIslands(page: Page): Promise<void> {
 async function expectGateChrome(page: Page): Promise<void> {
   const dialog = page.getByRole('dialog');
   const style = await dialog.evaluate((node) => {
-    const card = getComputedStyle(node);
+    const view = globalThis as unknown as {
+      getComputedStyle: (elt: typeof node) => {
+        borderRadius: string;
+        backgroundColor: string;
+        zIndex: string;
+        overflow: string;
+      };
+      document: {
+        documentElement: {
+          classList: { contains: (name: string) => boolean };
+        };
+        body: typeof node;
+      };
+    };
+    const card = view.getComputedStyle(node);
     const root = node.parentElement
-      ? getComputedStyle(node.parentElement)
+      ? view.getComputedStyle(node.parentElement)
       : null;
     const login = node.querySelector('a');
     const loginBox = login?.getBoundingClientRect();
@@ -40,8 +54,8 @@ async function expectGateChrome(page: Page): Promise<void> {
       radius: card.borderRadius,
       bg: card.backgroundColor,
       z: root?.zIndex ?? '',
-      locked: document.documentElement.classList.contains('gg-lock'),
-      body: getComputedStyle(document.body).overflow,
+      locked: view.document.documentElement.classList.contains('gg-lock'),
+      body: view.getComputedStyle(view.document.body).overflow,
       loginW: loginBox?.width ?? 0,
       cardW: cardBox.width,
     };
