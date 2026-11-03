@@ -13,7 +13,6 @@ Mis à jour le 29/10/2026 (réorganisation). Fusion de l'ancien `INDEX.md` et de
 | Dossier | Contenu |
 |---|---|
 | `finales/` | Maquettes de référence actuelles (ex-`design_complet`). « Finale » = dossier de référence, même si l'écran est encore **à refaire**. |
-| `stitch/` | Exports Stitch (notes du rapport du 28/10). Le ZIP `stitch-rapport-2026-10-28.zip` cité par les anciens docs **n'existe pas** dans le dépôt. |
 | `chrome/` | Références nav / header / footer : canons et PNG. |
 | `archive/` | Maquettes obsolètes. |
 
@@ -63,9 +62,9 @@ Mis à jour le 29/10/2026 (réorganisation). Fusion de l'ancien `INDEX.md` et de
 | Connexion / inscription / mot de passe oublié / confirmation d'e-mail (4 vues) | [`finales/interface_connexion/interface_connexion.html`](finales/interface_connexion/interface_connexion.html) | **finale (à relire)** | ajoutée 30/10 ; e-mail + mot de passe, Google, GitHub ; cible du bouton « Connexion » de la nav |
 | Bandeau cookies (consentement CNIL) | [`finales/interface_bandeau_cookies/interface_bandeau_cookies.html`](finales/interface_bandeau_cookies/interface_bandeau_cookies.html) | **finale (à relire)** | ajoutée 30/10 ; Accepter / Refuser / Personnaliser au même niveau ; `FONCTIONNEMENT.md` §16 |
 | Robot Audixio (UA, robots.txt, opt-out) | [`finales/page_robot_audixio/page_robot_audixio.html`](finales/page_robot_audixio/page_robot_audixio.html) | **finale (à relire)** | ajoutée 30/10 ; route `/robot` ; `FONCTIONNEMENT.md` §15 |
-| Réinitialisation du mot de passe (2 états : demande du lien, nouveau mot de passe) | [`finales/page_reinitialisation_mot_de_passe/page_reinitialisation_mot_de_passe.html`](finales/page_reinitialisation_mot_de_passe/page_reinitialisation_mot_de_passe.html) | **finale (à relire)** | ajoutée 30/10 ; route `/mot-de-passe/reinitialiser` ; cible de « Mot de passe oublié ? » dans `interface_connexion` |
+| Réinitialisation du mot de passe (2 états : demande du lien, nouveau mot de passe) | [`finales/page_reinitialisation_mot_de_passe/page_reinitialisation_mot_de_passe.html`](finales/page_reinitialisation_mot_de_passe/page_reinitialisation_mot_de_passe.html) | **finale (à relire)** | ajoutée 30/10 ; route `/reinitialisation` ; cible de « Mot de passe oublié ? » dans `interface_connexion` |
 | E-mail confirmé (après clic sur le lien) | [`finales/page_email_confirme/page_email_confirme.html`](finales/page_email_confirme/page_email_confirme.html) | **finale (à relire)** | ajoutée 30/10 ; route `/email-confirme` |
-| Audit échoué (3 cas : échec, accès refusé 403/WAF, site injoignable) | [`finales/page_audit_echoue/page_audit_echoue.html`](finales/page_audit_echoue/page_audit_echoue.html) | **finale (à relire)** | ajoutée 30/10 ; route `/audit/:id/echec` ; « Relancer » → `page_progression` ; lien `page_robot_audixio` |
+| Audit échoué (3 cas : échec, accès refusé 403/WAF, site injoignable) | [`finales/page_audit_echoue/page_audit_echoue.html`](finales/page_audit_echoue/page_audit_echoue.html) | **finale (à relire)** | ajoutée 30/10 ; route `/audit-echoue` ; « Relancer » → `page_progression` ; lien `page_robot_audixio` |
 | Modale « Partager » (copier, créer, révoquer un lien) | [`finales/interface_partager/interface_partager.html`](finales/interface_partager/interface_partager.html) | **finale (à relire)** | ajoutée 30/10 ; modale sur fond flouté ; cible de « Partager » du hub ; lien `interface_badge_partage` |
 | Sites suivis vide (premier site) | [`finales/page_sites_suivis_vide/page_sites_suivis_vide.html`](finales/page_sites_suivis_vide/page_sites_suivis_vide.html) | **finale (à relire)** | ajoutée 30/10 ; état vide de `/sites` ; CTA « Lancer un audit » |
 | Réglages des alertes (gratuit fixe / Pro réglable) | [`finales/page_reglages_alertes/page_reglages_alertes.html`](finales/page_reglages_alertes/page_reglages_alertes.html) | **finale (à relire)** | ajoutée 30/10 ; route `/compte/alertes` ; SSL 14 j en gratuit ; Pro : seuils, délai SSL, fréquence, récap du lundi ; partie Pro verrouillée en gratuit ; liens depuis `page_compte` et `page_site_suivi` |
@@ -76,7 +75,7 @@ Mis à jour le 29/10/2026 (réorganisation). Fusion de l'ancien `INDEX.md` et de
 
 | Page | Fichier | Statut | Remarque |
 |---|---|---|---|
-| Plafond atteint (2 sites / 1 lien) — le popup `interface_passer_pro` couvre peut-être ce cas, à confirmer | — | **manquante** | |
+| Plafond atteint (2 sites / 1 lien) | — | **couvert** | couvert par la pop-up « Connectez-vous ou inscrivez-vous » |
 | Footer en maquette dédiée (réf. PNG dans `chrome/`) | — | **manquante** | |
 | E-mail : confirmation d'inscription | — | **manquante** | |
 | E-mail : réinitialisation du mot de passe | — | **manquante** | |
@@ -95,11 +94,9 @@ Mis à jour le 29/10/2026 (réorganisation). Fusion de l'ancien `INDEX.md` et de
 | chrome-mobile-bottom-nav.png | [`chrome/chrome-mobile-bottom-nav.png`](chrome/chrome-mobile-bottom-nav.png) | référence |
 | chrome-mobile-top-bar.png | [`chrome/chrome-mobile-top-bar.png`](chrome/chrome-mobile-top-bar.png) | référence |
 
-## Stitch
+## Routes sans lien entrant
 
-| Fichier | Statut |
-|---|---|
-| [`stitch/DESIGN-STITCH-RAPPORT-2026-10-28.md`](stitch/DESIGN-STITCH-RAPPORT-2026-10-28.md) | notes Stitch (couleurs Stitch ≠ tokens produit) |
+`/compte/retour` est la cible de redirection OAuth (Google, GitHub). Aucun lien de l'interface ne doit y pointer.
 
 ## Archive
 

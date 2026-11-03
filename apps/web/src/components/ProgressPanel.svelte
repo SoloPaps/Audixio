@@ -4,8 +4,10 @@ import { t } from '../i18n/index.js';
 import { type AuditPayload, readAudit } from '../lib/audit-api.js';
 import { currentSession } from '../lib/browser-session.js';
 import { domainPlain } from '../lib/domains.js';
+import { readGuestAudit } from '../lib/guest-store.js';
 import { loginHref } from '../lib/nav.js';
 import {
+  guestDisplayStatus,
   progressEta,
   progressLive,
   progressPhase,
@@ -59,7 +61,21 @@ onMount(() => {
     const session = await currentSession();
     if (cancelled) return;
     if (!session) {
-      location.replace(loginHref(`${location.pathname}${location.search}`));
+      const stored = readGuestAudit(id);
+      if (!stored) {
+        location.replace(loginHref(`${location.pathname}${location.search}`));
+        return;
+      }
+      const shown = guestDisplayStatus(stored.audit.status, false);
+      payload =
+        shown === stored.audit.status
+          ? stored
+          : { ...stored, audit: { ...stored.audit, status: shown } };
+      timer = window.setTimeout(() => {
+        if (cancelled) return;
+        payload = stored;
+        stopped = true;
+      }, POLL_MS);
       return;
     }
     const result = await readAudit(session.access_token, id);
@@ -118,7 +134,7 @@ onMount(() => {
   {/if}
   {#if payload?.audit.status === 'failed'}
     <p>
-      <a class="link-action" href={`/lancer?site=${encodeURIComponent(payload.audit.site.id)}`}>{t('progress.retry')}</a>
+      <a class="link-action" href={`/audit-echoue?id=${encodeURIComponent(payload.audit.id)}`}>{t('progress.retry')}</a>
     </p>
   {/if}
   {#if stopped && !payload}

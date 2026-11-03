@@ -1,10 +1,38 @@
 import { describe, expect, it } from 'vitest';
 import {
+  guestBeatPhase,
+  guestDisplayStatus,
   progressEta,
   progressLive,
   progressPhase,
   runnerGap,
 } from './progress-live.js';
+
+describe('guestBeatPhase', () => {
+  it('avance de DNS aux pages, puis à la vie privée', () => {
+    expect(guestBeatPhase(0)).toBe('Phase : DNS.');
+    expect(guestBeatPhase(1)).toBe('Phase : pages.');
+    expect(guestBeatPhase(2)).toBe('Phase : vie privée.');
+    expect(guestBeatPhase(9)).toBe('Phase : vie privée.');
+  });
+});
+
+describe('guestDisplayStatus', () => {
+  it('montre l’analyse, puis le statut réel déjà stocké', () => {
+    expect(guestDisplayStatus('queued', false)).toBe('queued');
+    expect(guestDisplayStatus('running', false)).toBe('running');
+    expect(guestDisplayStatus('done', false)).toBe('running');
+    expect(guestDisplayStatus('partial', false)).toBe('running');
+    expect(guestDisplayStatus('failed', false)).toBe('running');
+    expect(guestDisplayStatus('done', true)).toBe('done');
+    expect(progressLive(guestDisplayStatus('done', false), [])).toBe(
+      'Analyse en cours.',
+    );
+    expect(progressLive(guestDisplayStatus('done', true), [])).toBe(
+      'Rapport prêt.',
+    );
+  });
+});
 
 describe('progressLive', () => {
   it('annonce l’analyse, puis le domaine, puis le rapport', () => {
