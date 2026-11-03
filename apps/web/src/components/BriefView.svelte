@@ -1,13 +1,14 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { type MessageKey, t } from '../i18n/index.js';
-import { renderBrief, type TerminalMode } from '../lib/brief.js';
+import type { BriefChoice } from '../lib/brief-fetch.js';
+import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
+import { currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
 import { REPORT_DOMAINS } from '../lib/domains.js';
 import { gradeForScore } from '../lib/grade.js';
 import { calm, say } from '../lib/motion.js';
 import { detailAllowed } from '../lib/plan-board.js';
-import { saveTextFile } from '../lib/report-export.js';
 import type { ReportRow } from '../lib/report-model.js';
 
 interface Props {
@@ -22,7 +23,7 @@ interface Props {
 
 type Mode = 'skip' | 'check' | 'fix';
 
-let { auditId, host, url, stamp, verified, items, rows }: Props = $props();
+let { auditId, host, verified, items, rows }: Props = $props();
 
 const NAMES: Record<string, MessageKey> = {
   performance: 'brief.name.performance',
@@ -169,44 +170,54 @@ const previewHtml = $derived.by(() => {
 
 const tokenCount = $derived(Math.max(1, Math.round(previewHtml.length / 3.8)));
 
-function productBrief(): string {
-  const findings = domains.flatMap((domain) =>
-    domain.issues.flatMap((issue) => {
+function selection(): BriefChoice[] {
+  const chosen: BriefChoice[] = [];
+  for (const domain of domains) {
+    for (const issue of domain.issues) {
       const mode = modeOf(issue);
-      if (mode === 'skip') return [];
-      const terminal: TerminalMode = mode === 'fix' ? 'fix' : 'verif';
-      return [
-        {
-          id: issue.id,
-          checkId: issue.checkId,
-          title: issue.title,
-          statusLabel:
-            mode === 'fix' ? t('brief.act.fix') : t('brief.act.check'),
-          proof: issue.why,
-          impact: issue.impactText,
-          terminal,
-        },
-      ];
-    }),
-  );
-  return renderBrief({
-    url,
-    at: stamp,
-    stack: null,
-    findings,
-    catalog: new Map(),
-    sources: new Map(),
-    includeTerminal: findings.some((item) => item.terminal === 'fix'),
-  });
+      if (mode === 'skip') continue;
+      chosen.push({
+        checkId: issue.checkId,
+        mode: mode === 'fix' ? 'fix' : 'verif',
+      });
+    }
+  }
+  return chosen;
+}
+
+async function serverFile(): Promise<{
+  filename: string;
+  markdown: string;
+} | null> {
+  const session = await currentSession();
+  const token = session?.access_token;
+  if (!token) {
+    say(t('api.error.unauthorized'));
+    return null;
+  }
+  const file = await requestBriefExport(auditId, token, selection());
+  if (!file.ok) {
+    say(file.message);
+    return null;
+  }
+  return file;
 }
 
 async function copyPrompt(): Promise<void> {
-  await navigator.clipboard.writeText(productBrief());
-  say(t('brief.copied'));
+  const file = await serverFile();
+  if (!file) return;
+  try {
+    await navigator.clipboard.writeText(file.markdown);
+    say(t('brief.copied'));
+  } catch {
+    say(t('api.error.internal'));
+  }
 }
 
-function download(): void {
-  saveTextFile(t('brief.file'), productBrief());
+async function download(): Promise<void> {
+  const file = await serverFile();
+  if (!file) return;
+  saveBriefExport(file.filename, file.markdown);
   say(t('brief.saved'));
 }
 

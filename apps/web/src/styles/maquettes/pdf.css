@@ -61,6 +61,23 @@ html[data-vue="pdf"] .sr-only {
   border: 0;
 }
 
+html[data-vue="pdf"] .skip {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 2000;
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 99px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+html[data-vue="pdf"] .skip:focus-visible {
+  top: 12px;
+}
+
 html[data-vue="pdf"] .crumbs {
   margin-bottom: var(--s3);
 }

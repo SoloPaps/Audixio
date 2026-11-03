@@ -55,6 +55,7 @@ describe('fonctions Netlify', () => {
 
   it('routes publiques et fonctions de fond sans route', async () => {
     expect(names.sort()).toEqual([
+      'api-audits-brief',
       'api-audits-create',
       'api-audits-get',
       'api-compte',

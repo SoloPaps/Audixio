@@ -2,7 +2,9 @@
 import { onMount, tick } from 'svelte';
 import { t } from '../i18n/index.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
-import { renderBrief, type TerminalMode } from '../lib/brief.js';
+import type { BriefChoice } from '../lib/brief-fetch.js';
+import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
+import { currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
 import {
   domainPager,
@@ -14,7 +16,6 @@ import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
 import { loginHref } from '../lib/nav.js';
-import { saveTextFile } from '../lib/report-export.js';
 import { levelForScore } from '../lib/score.js';
 
 interface Props {
@@ -29,17 +30,8 @@ interface Props {
   stamp: Date;
 }
 
-let {
-  auditId,
-  domainId,
-  host,
-  verified,
-  score,
-  findings,
-  items,
-  url,
-  stamp,
-}: Props = $props();
+let { auditId, domainId, host, verified, score, findings, items }: Props =
+  $props();
 
 type Filter = 'all' | 'crit' | 'fix' | 'ok';
 type Choice = 'none' | 'chk' | 'fix';
@@ -168,53 +160,81 @@ function placeInd(node: HTMLElement): void {
   }
 }
 
-function briefText(): string {
-  const rows = actionable
-    .filter((item) => choiceOf(item) !== 'none')
-    .map((item) => {
-      const mode: TerminalMode = choiceOf(item) === 'fix' ? 'fix' : 'verif';
-      return {
-        id: item.id,
-        checkId: item.id,
-        title: item.title,
-        statusLabel: mode === 'fix' ? t('domaine.correct') : t('domaine.check'),
-        proof: item.why,
-        impact: null,
-        terminal: mode,
-      };
+function selection(): BriefChoice[] {
+  const chosen: BriefChoice[] = [];
+  for (const item of actionable) {
+    const choice = choiceOf(item);
+    if (choice === 'none') continue;
+    chosen.push({
+      checkId: item.id,
+      mode: choice === 'fix' ? 'fix' : 'verif',
     });
-  return renderBrief({
-    url,
-    at: stamp,
-    stack: null,
-    findings: rows,
-    catalog: new Map(),
-    sources: new Map(),
-    includeTerminal: rows.some((row) => row.terminal === 'fix'),
-  });
+  }
+  return chosen;
+}
+
+async function serverFile(): Promise<{
+  filename: string;
+  markdown: string;
+} | null> {
+  const session = await currentSession();
+  const token = session?.access_token;
+  if (!token) {
+    say(t('api.error.unauthorized'), document.getElementById('live'));
+    return null;
+  }
+  const file = await requestBriefExport(auditId, token, selection());
+  if (!file.ok) {
+    say(file.message, document.getElementById('live'));
+    return null;
+  }
+  return file;
 }
 
 async function onGenerate(event: SubmitEvent): Promise<void> {
   event.preventDefault();
-  const text = briefText();
+  const file = await serverFile();
+  if (!file) {
+    copied = false;
+    return;
+  }
   try {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(file.markdown);
     copied = true;
     say(t('domaine.prompt.done'), document.getElementById('live'));
   } catch {
     copied = false;
+    say(t('api.error.internal'), document.getElementById('live'));
   }
 }
 
-function onCopyBrief(): void {
-  const text = briefText();
-  void navigator.clipboard.writeText(text).then(() => {
+async function onCopyBrief(): Promise<void> {
+  const file = await serverFile();
+  if (!file) return;
+  try {
+    await navigator.clipboard.writeText(file.markdown);
     say(t('domaine.prompt.done'), document.getElementById('live'));
-  });
+  } catch {
+    say(t('api.error.internal'), document.getElementById('live'));
+  }
 }
 
-function onExport(): void {
-  saveTextFile(`brief-${host}.md`, briefText());
+async function onExport(): Promise<void> {
+  const file = await serverFile();
+  if (!file) return;
+  saveBriefExport(file.filename, file.markdown);
+}
+
+async function onMail(event: MouseEvent): Promise<void> {
+  event.preventDefault();
+  const link = event.currentTarget;
+  if (!(link instanceof HTMLAnchorElement)) return;
+  const file = await serverFile();
+  if (!file) return;
+  const subject = encodeURIComponent(name);
+  const body = encodeURIComponent(file.markdown.slice(0, 1800));
+  link.href = `mailto:?subject=${subject}&body=${body}`;
+  window.location.assign(link.href);
 }
 
 $effect(() => {
@@ -377,7 +397,7 @@ onMount(() => {
         <div class="acts">
           {#if signedIn}
             <button type="button" class="btn btn-ghost" onclick={onCopyBrief}>{t('domaine.export.copy')}</button>
-            <a class="btn btn-ghost" href={`mailto:?subject=${encodeURIComponent(name)}&body=${encodeURIComponent(briefText())}`}>{t('domaine.export.mail')}</a>
+            <a class="btn btn-ghost" href={`mailto:?subject=${encodeURIComponent(name)}`} onclick={onMail}>{t('domaine.export.mail')}</a>
             <button type="button" class="btn btn-ghost" onclick={onExport}>{t('domaine.export.file')}</button>
           {:else}
             <button type="button" class="btn btn-ghost" aria-disabled="true">{t('domaine.export.copy')} <span class="sr-only">{t('domaine.lock.sr')}</span></button>

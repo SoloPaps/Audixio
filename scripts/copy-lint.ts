@@ -63,6 +63,8 @@ const ACRONYMS = new Set([
   'WARC',
   'WCAG',
   'WEBP',
+  'PARTIEL',
+  'COMPLET',
 ]);
 
 const FORBIDDEN =

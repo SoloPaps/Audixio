@@ -40,6 +40,32 @@ function rewriteRoutes(req, _res, next) {
   next();
 }
 
+function briefDev() {
+  const mount = (server) => {
+    server.middlewares.use((req, res, next) => {
+      const path = (req.url ?? '').split('?')[0] ?? '';
+      const match = /^\/api\/audits\/([^/]+)\/brief\/?$/u.exec(path);
+      const auditId = match?.[1];
+      if (!auditId) {
+        next();
+        return;
+      }
+      server
+        .ssrLoadModule('/src/lib/brief-export-node.ts')
+        .then((mod) =>
+          mod.handleBriefNode(req, res, decodeURIComponent(auditId)),
+        )
+        .catch(next);
+    });
+  };
+  return {
+    name: 'audigy-brief-dev',
+    enforce: 'pre',
+    configureServer: mount,
+    configurePreviewServer: mount,
+  };
+}
+
 function authDev() {
   const mount = (server) => {
     server.middlewares.use((req, res, next) => {
@@ -98,7 +124,7 @@ export default defineConfig({
     format: 'directory',
   },
   vite: {
-    plugins: [authDev(), printRoute()],
+    plugins: [briefDev(), authDev(), printRoute()],
     define: {
       [envKey('URL')]: JSON.stringify(process.env.SUPABASE_URL ?? ''),
       [envKey(`${piece(['A', 'N', 'O', 'N'])}_KEY`)]: JSON.stringify(
