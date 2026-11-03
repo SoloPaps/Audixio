@@ -167,7 +167,6 @@ async function load(): Promise<void> {
   );
   const first = rows[0];
   if (first && first.method !== 'search_console') method = first.method;
-  if (!rows[0]?.token && method !== 'search_console') await ensureRow();
 }
 
 function remember(view: VerificationView, nextMethod: VerifyMethod): void {

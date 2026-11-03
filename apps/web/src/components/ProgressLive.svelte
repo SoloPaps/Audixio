@@ -81,6 +81,11 @@ onMount(() => {
     const href = `/rapport?id=${encodeURIComponent(payload.audit.id)}`;
     const reportBtn = document.getElementById('reportBtn');
     if (reportBtn) reportBtn.setAttribute('href', href);
+    const slot = document.getElementById('ready-slot');
+    if (done && slot && reportBtn && reportBtn.parentElement !== slot) {
+      slot.hidden = false;
+      slot.append(reportBtn);
+    }
     document.body.classList.toggle('done', done);
     const fail = document.getElementById('fail-back');
     const failLink = document.getElementById('fail-link');

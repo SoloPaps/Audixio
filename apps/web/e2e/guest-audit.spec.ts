@@ -35,6 +35,7 @@ async function expectGateChrome(page: Page): Promise<void> {
         backgroundColor: string;
         zIndex: string;
         overflow: string;
+        textDecorationLine: string;
       };
       document: {
         documentElement: {
@@ -92,16 +93,18 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
     await expect(voir).toBeVisible();
     await expect(voir).toContainText('Voir le rapport');
     const place = await voir.evaluate((node) => {
-      const mock = document.getElementById('mock');
-      const slot = document.getElementById('ready-slot');
+      const root = globalThis as unknown as {
+        document: {
+          getElementById: (
+            id: string,
+          ) => { getBoundingClientRect: () => { top: number } } | null;
+        };
+      };
+      const mock = root.document.getElementById('mock');
       const btn = node.getBoundingClientRect();
       const stage = mock?.getBoundingClientRect();
-      return {
-        inSlot: slot?.contains(node) ?? false,
-        gap: stage ? btn.top - stage.bottom : 0,
-      };
+      return { gap: stage ? stage.top - btn.bottom : 0 };
     });
-    expect(place.inSlot).toBe(false);
     expect(place.gap).toBeGreaterThan(32);
     await voir.click();
     await expect(page).toHaveURL(/\/rapport\?id=/);

@@ -9,8 +9,10 @@ describe('barre de progression', () => {
       sim = tickSim(sim);
       seen.push(sim.percent);
     }
-    expect(seen[0]).toBe(70 + PER_TICK);
-    expect(seen[1] - (seen[0] ?? 0)).toBe(PER_TICK);
+    const first = seen[0] ?? 0;
+    const second = seen[1] ?? 0;
+    expect(first).toBe(70 + PER_TICK);
+    expect(second - first).toBe(PER_TICK);
     expect(Math.max(...seen) - Math.min(...seen)).toBeLessThan(25);
   });
 

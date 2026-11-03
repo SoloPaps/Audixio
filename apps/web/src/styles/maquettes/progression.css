@@ -1192,7 +1192,7 @@ main {
   }
 }
 #ready-slot {
-  margin: 1.25rem 0 0.5rem;
+  margin: 1.25rem 0 2.25rem;
   text-align: center;
 }
 .cap[data-state="wait"] .st,

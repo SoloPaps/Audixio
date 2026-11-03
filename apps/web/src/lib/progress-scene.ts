@@ -3,11 +3,11 @@ import { etaLabel, type Sim, TICK_MS, tickSim } from './progress-sim.js';
 type Gsap = {
   from: (target: string, vars: Record<string, unknown>) => void;
   fromTo: (
-    target: Element,
+    target: Element | string,
     from: Record<string, unknown>,
     to: Record<string, unknown>,
   ) => void;
-  to: (target: Element, vars: Record<string, unknown>) => void;
+  to: (target: Element | string, vars: Record<string, unknown>) => void;
 };
 
 function gsap(): Gsap | null {

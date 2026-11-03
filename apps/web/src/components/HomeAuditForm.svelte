@@ -1,12 +1,12 @@
 <script lang="ts">
 import { t } from '../i18n/slim.js';
-import { createAudit, createGuestAudit } from '../lib/audit-api.js';
-import { currentSession } from '../lib/browser-session.js';
 import { saveGuestAudit } from '../lib/guest-store.js';
+import { launchFromHome } from '../lib/home-audit-client.js';
+import { t as gateText } from '../lib/home-audit-copy.js';
 import { homeFormAlert } from '../lib/home-audit-notice.js';
 import { progressionHref } from '../lib/relaunch.js';
 import { isCompleteHttpUrl } from '../lib/site-url.js';
-import GuestGate from './GuestGate.svelte';
+import '../styles/maquettes/guest-gate.css';
 
 let invalid = $state(false);
 let apiMessage = $state('');
@@ -17,6 +17,14 @@ function fail(message: string): void {
   invalid = true;
   apiMessage = message;
 }
+
+$effect(() => {
+  if (!gate) return;
+  document.documentElement.classList.add('gg-lock');
+  return () => {
+    document.documentElement.classList.remove('gg-lock');
+  };
+});
 
 async function onSubmit(event: SubmitEvent): Promise<void> {
   event.preventDefault();
@@ -32,21 +40,14 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
   apiMessage = '';
   busy = true;
   try {
-    const session = await currentSession();
-    if (session) {
-      const result = await createAudit(session.access_token, { url: raw });
-      if (result.ok) location.assign(progressionHref(result.auditId));
+    const result = await launchFromHome(raw);
+    if (!result.ok) {
+      if (result.limit) gate = true;
       else fail(result.message);
       return;
     }
-    const guest = await createGuestAudit(raw);
-    if (!guest.ok) {
-      if (guest.limit) gate = true;
-      else fail(guest.message);
-      return;
-    }
-    saveGuestAudit(guest.payload);
-    location.assign(progressionHref(guest.payload.audit.id));
+    if (result.guest) saveGuestAudit(result.guest);
+    location.assign(progressionHref(result.auditId));
   } finally {
     busy = false;
   }
@@ -91,5 +92,17 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
 </form>
 <p><a class="link-inline" href="/methode">{t('home.method')}</a></p>
 {#if gate}
-  <GuestGate open={true} onClose={() => { gate = false; }} />
+  <div class="gg-root">
+    <div class="gg-veil"></div>
+    <div class="gg" role="dialog" aria-modal="true" aria-labelledby="gg-title" aria-describedby="gg-lead" tabindex="-1">
+      <p class="gg-pill-k">{gateText('guest.gate.kicker')}</p>
+      <h2 id="gg-title">{gateText('guest.gate.title')}</h2>
+      <p class="gg-lead" id="gg-lead">{gateText('guest.gate.lead')}</p>
+      <div class="gg-actions">
+        <a class="gg-btn" href="/connexion">{gateText('guest.gate.login')}</a>
+        <a class="gg-btn gg-btn-main" href="/inscription">{gateText('guest.gate.signup')}</a>
+      </div>
+      <button class="gg-close" type="button" onclick={() => { gate = false; }}>{gateText('guest.gate.close')}</button>
+    </div>
+  </div>
 {/if}

@@ -279,6 +279,7 @@ onMount(() => {
     />
   </div>
 {:else if phase === 'brief-gate'}
+  <h1>{t('guest.gate.title')}</h1>
   <GuestGate open={briefGate} onClose={() => { briefGate = false; }} />
   {#if !briefGate}
     <h1>{t('report.heading')}</h1>
