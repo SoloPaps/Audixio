@@ -197,9 +197,11 @@ onMount(() => {
             <li>{translate(row.messageKey) ?? row.checkId}</li>
           {/each}
         </ul>
-        {#if view.briefText}<p class="prose">{view.briefText}</p>{/if}
       {:else}
         <p>{t('score.security.hidden')}</p>
+      {/if}
+      {#if view.access === 'team' && view.briefText}
+        <p class="prose">{view.briefText}</p>
       {/if}
       <p class="export-links">
         <button type="button" class="button button-secondary" onclick={download}>

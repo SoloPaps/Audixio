@@ -21,7 +21,9 @@ onMount(async () => {
   }
   if (url && !siteId) {
     try {
-      normalizeSiteUrl(url);
+      normalizeSiteUrl(url, {
+        allowLab: import.meta.env.PUBLIC_AUDIGY_LAB === '1',
+      });
     } catch (error) {
       if (error instanceof InvalidSiteUrl) {
         message = t('api.error.invalid_url');

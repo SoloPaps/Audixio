@@ -131,7 +131,9 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
   if (pending) return;
   let draft: ReturnType<typeof normalizeSiteUrl>;
   try {
-    draft = normalizeSiteUrl(url);
+    draft = normalizeSiteUrl(url, {
+      allowLab: import.meta.env.PUBLIC_AUDIGY_LAB === '1',
+    });
   } catch (caught) {
     if (caught instanceof InvalidSiteUrl) {
       error = t('api.error.invalid_url');

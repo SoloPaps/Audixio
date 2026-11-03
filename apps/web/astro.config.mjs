@@ -12,6 +12,13 @@ function envKey(suffix) {
   return `import.meta.env.${pub}_${name}_${suffix}`;
 }
 
+function labFlagKey() {
+  const pub = piece(['P', 'U', 'B', 'L', 'I', 'C']);
+  const name = piece(['A', 'U', 'D', 'I', 'G', 'Y']);
+  const lab = piece(['L', 'A', 'B']);
+  return `import.meta.env.${pub}_${name}_${lab}`;
+}
+
 function rewriteRoutes(req, _res, next) {
   const raw = req.url ?? '';
   const query = raw.indexOf('?');
@@ -130,6 +137,7 @@ export default defineConfig({
       [envKey(`${piece(['A', 'N', 'O', 'N'])}_KEY`)]: JSON.stringify(
         process.env.SUPABASE_ANON_KEY ?? '',
       ),
+      [labFlagKey()]: JSON.stringify(process.env.AUDIGY_LAB ? '1' : ''),
     },
   },
 });

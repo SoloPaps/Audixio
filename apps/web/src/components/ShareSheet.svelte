@@ -12,6 +12,7 @@ interface Props {
 
 let { auditId, host, open, onClose }: Props = $props();
 let link = $state('');
+let linkId = $state('');
 let notice = $state('');
 let error = $state('');
 let pending = $state(false);
@@ -54,10 +55,11 @@ async function load(): Promise<void> {
   );
   if (!response.ok) return;
   const body = (await response.json()) as {
-    liens?: { kind?: string; url?: string }[];
+    liens?: { id?: string; kind?: string; url?: string }[];
   };
   const row = body.liens?.find((item) => item.kind === 'public' && item.url);
   link = row?.url ? `${location.origin}${row.url}` : '';
+  linkId = row?.id ?? '';
 }
 
 async function create(): Promise<void> {
@@ -85,6 +87,7 @@ async function create(): Promise<void> {
     return;
   }
   const body = (await response.json().catch(() => null)) as {
+    id?: string;
     url?: string;
   } | null;
   pending = false;
@@ -93,7 +96,39 @@ async function create(): Promise<void> {
     return;
   }
   link = `${location.origin}${body.url}`;
+  linkId = body.id ?? '';
   notice = t('share.created');
+}
+
+async function revoke(): Promise<void> {
+  const token = await bearer();
+  if (!token || pending || !linkId) return;
+  pending = true;
+  error = '';
+  let response: Response;
+  try {
+    response = await fetch('/api/liens', {
+      method: 'delete'.toUpperCase(),
+      headers: {
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({ id: linkId }),
+    });
+  } catch {
+    pending = false;
+    error = t('share.error');
+    return;
+  }
+  pending = false;
+  if (!response.ok) {
+    error = t('share.error');
+    return;
+  }
+  link = '';
+  linkId = '';
+  notice = t('sites.share.revoked');
 }
 
 async function copy(): Promise<void> {
@@ -158,6 +193,7 @@ function onKey(event: KeyboardEvent): void {
           <button class="sh-btn sh-main" class:done={copied} type="button" bind:this={first} onclick={copy}><svg class="sh-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>{copied ? t('share.copied') : t('share.copy')}</span></button>
         </div>
         <div class="sh-meta"><span class="sh-pill on"><svg class="sh-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{t('share.active')}</span></span></div>
+        <div class="sh-row"><button class="sh-btn" type="button" disabled={pending} onclick={revoke}>{t('sites.share.revoke')}</button></div>
         {#if canNative}
           <div class="sh-row"><button class="sh-btn sh-main" type="button" onclick={native}><svg class="sh-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span>{t('share.native')}</span></button></div>
         {/if}
