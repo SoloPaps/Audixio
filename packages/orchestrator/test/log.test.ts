@@ -38,6 +38,12 @@ describe('journal', () => {
     expect(out.match(/\[masqué\]/g)?.length).toBe(7);
   });
 
+  it('masque un jeton de partage hexadécimal', () => {
+    const token = 'ab'.repeat(16);
+    expect(redact(`lien ${token} fin`, [])).toBe('lien [masqué] fin');
+    expect(errorCode(new Error(token))).toBe('unknown');
+  });
+
   it('masque un jeton Google de rafraîchissement et d’accès', () => {
     const refresh = '1//0refresh-token-sentinel';
     const access = 'ya29.access-token-sentinel';

@@ -103,6 +103,31 @@ export {
   withinLinkQuota,
   withinSiteQuota,
 } from './droits.js';
+export {
+  decisionEquipe,
+  expiresAt,
+  gateLink,
+  type LienFinding,
+  type LienRapport,
+  type LienVue,
+  type LinkGate,
+  type LinkKind,
+  type LinkRecord,
+  lienActif,
+  PUBLIC_LINK_DAYS,
+  peutCreerLien,
+  SHARE_TOKEN,
+  shareTokenFromBytes,
+  TEAM_DAY_CHOICES,
+  vueLien,
+} from './liens.js';
+export {
+  type PlanChange,
+  type PlanItem,
+  type PlanMemory,
+  type PlanSignal,
+  reconcilePlan,
+} from './plan-sync.js';
 export { TERMS_VERSION } from './terms.js';
 export {
   ARTIFACT_KINDS,

@@ -126,6 +126,13 @@ export {
   labFromEnv,
   labNet,
 } from './lab.js';
+export { lienDepsFromEnv, supabaseLienStore } from './liens-db.js';
+export {
+  handleLien,
+  handlePartage,
+  type LienDeps,
+  type LienStore,
+} from './liens-http.js';
 export {
   createLogger,
   errorCode,
@@ -165,6 +172,7 @@ export {
   supabasePlacesCache,
   takePlacesSlot,
 } from './places.js';
+export { applyPlanSync, syncAuditPlan } from './plan-sync.js';
 export {
   type AuditStore,
   BACKGROUND_BUDGET_MS,

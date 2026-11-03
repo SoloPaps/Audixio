@@ -20,6 +20,7 @@ const PATTERNS: RegExp[] = [
   /\bBearer\s{1,16}[^\s"']{1,16384}/gi,
   /\b1\/\/[A-Za-z0-9_\-+/=]{8,}/g,
   /\bya29\.[A-Za-z0-9_-]{1,4096}/g,
+  /\b[0-9a-f]{32}\b/g,
 ];
 
 export type LogLevel = 'info' | 'warn' | 'error';
@@ -76,6 +77,8 @@ export function errorCode(error: unknown): string {
     if (typeof code === 'string' && /^[A-Za-z0-9_]{1,64}$/.test(code))
       return code;
     const message = (error as { message?: unknown }).message;
+    if (typeof message === 'string' && /^[0-9a-f]{16,}$/i.test(message))
+      return 'unknown';
     if (typeof message === 'string' && /^[a-z0-9_]{1,64}$/.test(message))
       return message;
   }

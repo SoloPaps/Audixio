@@ -3,7 +3,6 @@ import {
   isLockedDomain,
   type Json,
   readPublicScore,
-  readSharedScore,
 } from '@audigy/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { isKnownDomain } from './domains.js';
@@ -42,6 +41,9 @@ export interface PublicScoreView {
   auditId: string | null;
   domains: PublicDomain[];
   securityDetails: SecurityDetail[];
+  /** Absent sur l’exemple hors ligne. `team` seulement pour un lien équipe ouvert. */
+  access?: 'public' | 'team' | 'retired';
+  briefText?: string | null;
 }
 
 export interface ShareRow {
@@ -279,10 +281,94 @@ export async function loadPublicScore(
   return row ? presentRow(row) : null;
 }
 
+interface ShareApiBody {
+  access?: unknown;
+  brief?: unknown;
+  label?: unknown;
+  url?: unknown;
+  finishedAt?: unknown;
+  methodVersion?: unknown;
+  auditId?: unknown;
+  noteGlobale?: unknown;
+  domaines?: unknown;
+  constats?: unknown;
+  briefTexte?: unknown;
+}
+
+function textOf(value: unknown): string {
+  return typeof value === 'string' ? value : '';
+}
+
+/**
+ * Reprend la vue API et retire encore les champs interdits.
+ * Un lien public ou retiré ne garde ni note globale, ni domaine verrouillé, ni brief.
+ */
+export function fromShareApi(body: ShareApiBody): PublicScoreView | null {
+  const access = body.access;
+  if (access !== 'public' && access !== 'team' && access !== 'retired') {
+    return null;
+  }
+  const team = access === 'team';
+  const domains: PublicDomain[] = [];
+  if (Array.isArray(body.domaines)) {
+    for (const row of body.domaines) {
+      if (!row || typeof row !== 'object') continue;
+      const domain = textOf((row as { domain?: unknown }).domain);
+      if (!isKnownDomain(domain)) continue;
+      const locked =
+        (row as { verrouille?: unknown }).verrouille === true ||
+        isLockedDomain(domain);
+      if (!team && locked) continue;
+      const score = (row as { score?: unknown }).score;
+      domains.push({
+        domain,
+        score:
+          typeof score === 'number' && Number.isFinite(score)
+            ? Math.round(score)
+            : null,
+        level: '',
+        coverage: null,
+      });
+    }
+  }
+  const securityDetails: SecurityDetail[] = [];
+  if (team && Array.isArray(body.constats)) {
+    for (const row of body.constats) {
+      if (!row || typeof row !== 'object') continue;
+      const domain = textOf((row as { domain?: unknown }).domain);
+      const checkId = textOf((row as { checkId?: unknown }).checkId);
+      const status = textOf((row as { status?: unknown }).status);
+      const messageKey = textOf((row as { messageKey?: unknown }).messageKey);
+      if (!isLockedDomain(domain) || !checkId || !status || !messageKey)
+        continue;
+      securityDetails.push({ checkId, status, messageKey });
+    }
+  }
+  const note = body.noteGlobale;
+  return {
+    label: textOf(body.label),
+    url: textOf(body.url),
+    finishedAt: typeof body.finishedAt === 'string' ? body.finishedAt : null,
+    methodVersion:
+      typeof body.methodVersion === 'string' ? body.methodVersion : null,
+    globalScore:
+      team && typeof note === 'number' && Number.isFinite(note)
+        ? Math.round(note)
+        : null,
+    auditId: typeof body.auditId === 'string' ? body.auditId : null,
+    domains,
+    securityDetails,
+    access,
+    briefText:
+      team && typeof body.briefTexte === 'string' ? body.briefTexte : null,
+  };
+}
+
 export async function loadSharedScore(
   client: ScoreClient | null,
   token: string,
 ): Promise<PublicScoreView | null> {
+  void client;
   if (!TOKEN.test(token)) return null;
   if (import.meta.env.DEV && token === REVOKED_SHARE) {
     const closed: ShareRow = {
@@ -295,7 +381,18 @@ export async function loadSharedScore(
     const open: ShareRow = { visibility: 'link', revokedAt: null };
     return shareIsOpen(open) ? exampleView() : null;
   }
-  if (!client) return null;
-  const row = await readSharedScore(client, token);
-  return row ? presentRow(row) : null;
+  try {
+    const response = await fetch('/api/partage', {
+      method: 'post'.toUpperCase(),
+      headers: {
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    });
+    if (!response.ok) return null;
+    return fromShareApi((await response.json()) as ShareApiBody);
+  } catch {
+    return null;
+  }
 }

@@ -3,6 +3,7 @@ import {
   badgeHasTracker,
   exampleRaw,
   exampleView,
+  fromShareApi,
   presentRow,
   scoreBadgeSvg,
   shareIsOpen,
@@ -84,6 +85,72 @@ describe('score public', () => {
     expect(shareIsOpen(report)).toBe(false);
     expect(shareIsOpen(null)).toBe(false);
     expect(shareIsOpen({ visibility: 'public', revokedAt: null })).toBe(false);
+  });
+
+  it('un lien public ou retiré ne garde pas une fuite du serveur', () => {
+    const leaked = {
+      access: 'public',
+      brief: 'complet',
+      label: 'Exemple',
+      url: 'https://exemple.fr',
+      noteGlobale: 72,
+      briefTexte: 'Audixio Brief — COMPLET secret-brief',
+      domaines: [
+        { domain: 'seo', score: 80, verrouille: false },
+        { domain: 'securite', score: 40, verrouille: true },
+      ],
+      constats: [
+        {
+          domain: 'securite',
+          checkId: 'securite.hsts',
+          status: 'fail',
+          messageKey: 'finding.securite.hsts',
+          measured: TRAP,
+        },
+      ],
+    };
+    const view = fromShareApi(leaked);
+    const dumped = JSON.stringify(view);
+    expect(view?.globalScore).toBeNull();
+    expect(view?.securityDetails).toEqual([]);
+    expect(view?.briefText).toBeNull();
+    expect(view?.domains.map((row) => row.domain)).toEqual(['seo']);
+    expect(dumped).not.toContain(TRAP);
+    expect(dumped).not.toContain('secret-brief');
+    expect(dumped).not.toContain('securite');
+    const retired = fromShareApi({ ...leaked, access: 'retired' });
+    expect(JSON.stringify(retired)).not.toContain(TRAP);
+  });
+
+  it('un lien équipe garde la note et le constat, pas la mesure brute', () => {
+    const view = fromShareApi({
+      access: 'team',
+      brief: 'complet',
+      label: 'Exemple',
+      url: 'https://exemple.fr',
+      noteGlobale: 72,
+      briefTexte: 'brief équipe',
+      domaines: [{ domain: 'securite', score: 40, verrouille: false }],
+      constats: [
+        {
+          domain: 'securite',
+          checkId: 'securite.hsts',
+          status: 'fail',
+          messageKey: 'finding.securite.hsts',
+          measured: TRAP,
+        },
+      ],
+    });
+    expect(view?.globalScore).toBe(72);
+    expect(view?.briefText).toBe('brief équipe');
+    expect(view?.securityDetails).toEqual([
+      {
+        checkId: 'securite.hsts',
+        status: 'fail',
+        messageKey: 'finding.securite.hsts',
+      },
+    ]);
+    expect(JSON.stringify(view)).not.toContain(TRAP);
   });
 
   it('fabrique un badge sans traceur', () => {

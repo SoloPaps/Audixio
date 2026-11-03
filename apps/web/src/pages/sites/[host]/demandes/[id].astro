@@ -423,6 +423,38 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
 
   /* Décision */
   var live=$('#live'),f=$('#f'),ok=$('#ok'),no=$('#no'),cf=$('#confirm'),st=$('#status');
+  function sendDecision(decision){
+    var roleEl=f.querySelector('input[name=role]:checked');
+    var role=roleEl?roleEl.value:'rapport';
+    var days=Number($('#dur').value);
+    var parts=location.pathname.split('/').filter(Boolean);
+    var requestId=parts[parts.length-1]||'';
+    var auditId=new URLSearchParams(location.search).get('audit')||'';
+    fetch('/api/auth/session',{credentials:'include'}).then(function(res){
+      return res.ok?res.json():{};
+    }).catch(function(){return {};}).then(function(session){
+      var headers={'content-type':'application/json',accept:'application/json'};
+      if(session&&session.access_token) headers.authorization='Bearer '+session.access_token;
+      return fetch('/api/liens/decision',{method:'post',credentials:'same-origin',headers:headers,body:JSON.stringify({auditId:auditId,requestId:requestId,decision:decision,role:role,days:days})});
+    }).then(function(res){return res.json();}).then(function(body){
+      if(body&&typeof body.url==='string'&&body.url.indexOf('/partage/')===0){
+        var pane=$('#pane-ok');
+        if(pane){pane.setAttribute('data-lien',body.url);if(body.id)pane.setAttribute('data-id',body.id);}
+      }
+    }).catch(function(){});
+  }
+  function revokeDecision(){
+    var pane=$('#pane-ok');
+    var id=pane?pane.getAttribute('data-id'):'';
+    if(!id) return;
+    fetch('/api/auth/session',{credentials:'include'}).then(function(res){
+      return res.ok?res.json():{};
+    }).catch(function(){return {};}).then(function(session){
+      var headers={'content-type':'application/json',accept:'application/json'};
+      if(session&&session.access_token) headers.authorization='Bearer '+session.access_token;
+      return fetch('/api/liens',{method:'delete',credentials:'same-origin',headers:headers,body:JSON.stringify({id:id})});
+    }).catch(function(){});
+  }
   function say(t){live.textContent='';setTimeout(function(){live.textContent=t},60)}
   function finish(btn,pane,msg,status){
     btn.classList.add('loading');
@@ -471,6 +503,7 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     var r=f.querySelector('input[name=role]:checked'),dur=$('#dur');
     $('#s-role').textContent=r.closest('.role').querySelector('.role-t').firstChild.textContent.trim();
     $('#s-dur').textContent=dur.options[dur.selectedIndex].text;
+    sendDecision('accept');
     finish(ok,'#pane-ok',tr('mq.ac.granted.say'),tr('mq.ac.granted.status'));
   });
   no.addEventListener('click',function(){
@@ -488,9 +521,11 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     if(e.key==='Escape')$('#no-cancel').click();
   });
   $('#no-ok').addEventListener('click',function(){
+    sendDecision('refuse');
     finish($('#no-ok'),'#pane-no',tr('mq.ac.refused.say'),tr('mq.ac.refused.status'));
   });
   $('#undo').addEventListener('click',function(){
+    revokeDecision();
     $('#pane-ok').hidden=true;
     $('#pane-form').hidden=false;
     ok.classList.remove('loading');

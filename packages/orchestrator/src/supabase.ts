@@ -36,6 +36,7 @@ import type { ApiDeps, AuditView, FindingView, RunDeps } from './http.js';
 import { labFromEnv } from './lab.js';
 import { errorCode, type Logger } from './log.js';
 import { readConfirmedPlaceId, supabasePlacesCache } from './places.js';
+import { syncAuditPlan } from './plan-sync.js';
 import {
   type AuditStore,
   type ProcessDeps,
@@ -501,6 +502,9 @@ export function runDepsFromEnv(options: RunFromEnvOptions): RunDeps {
     async process() {
       return processNextAudit({
         store: supabaseAuditStore(service, logger),
+        planSync: async (auditId) => {
+          await syncAuditPlan(service, auditId, new Date());
+        },
         dispatcher,
         checks: defaultChecks(env, supabasePlacesCache(service)),
         fixes: await fixesFromDisk(logger),

@@ -76,6 +76,8 @@ export interface ProcessDeps {
     audit: ClaimedAudit,
   ): Promise<{ allowed: boolean; actor: string | null }>;
   logger: Logger;
+  /** Ferme ou rouvre le plan après un audit terminé. Une erreur ne rate pas l’audit. */
+  planSync?(auditId: string): Promise<void>;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
   runnerWaitMs?: number;
@@ -224,6 +226,16 @@ export async function processNextAudit(
       requests: ctx.budget.requests,
       runner,
     });
+    if (deps.planSync) {
+      try {
+        await deps.planSync(audit.id);
+      } catch (syncError) {
+        log.error('plan_sync_failed', {
+          auditId: audit.id,
+          code: errorCode(syncError),
+        });
+      }
+    }
     return { auditId: audit.id, status: 'done', runner };
   } catch (error) {
     log.error('audit_failed', { auditId: audit.id, code: errorCode(error) });
