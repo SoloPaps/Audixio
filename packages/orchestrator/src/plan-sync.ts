@@ -15,7 +15,7 @@ type Client = SupabaseClient<Database>;
 
 export type { PlanChange };
 
-export interface PlanPort {
+interface PlanPort {
   load(auditId: string): Promise<{
     items: PlanItem[];
     signals: PlanSignal[];
@@ -70,7 +70,7 @@ function memoryFrom(rows: readonly { details: Json }[]): PlanMemory[] {
  * Lit le plan et les constats, puis écrit `auto_closed` avec le service.
  * Le client ne peut pas poser ce statut (politique RLS).
  */
-export function supabasePlanPort(service: Client): PlanPort {
+function supabasePlanPort(service: Client): PlanPort {
   let ownerId = '';
   let siteId = '';
   return {
