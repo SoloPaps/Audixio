@@ -37,9 +37,11 @@ test('le formulaire robot confirme une demande acceptée', async ({ page }) => {
   await page.locator('#oo-d').fill('exemple.fr');
   await page.locator('#oo-m').fill('ada@exemple.fr');
   await page.locator('#oo button[type="submit"]').click();
-  await expect(page.locator('#oo-st')).toHaveText(
+  await expect(page.locator('#oo-st')).toContainText(
     'Demande reçue. Elle sera examinée après une preuve de propriété.',
   );
+  await expect(page.locator('#oo-st')).toContainText('ada@exemple.fr');
+  await expect(page.locator('#oo-st')).toContainText('exemple.fr');
   expect(body).toContain('exemple.fr');
   expect(body).toContain('ada@exemple.fr');
 });
