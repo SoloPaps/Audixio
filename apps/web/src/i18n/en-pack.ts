@@ -17,7 +17,7 @@ export function enPackUsable(pack: unknown): pack is Record<string, string> {
 
 /** Remplace le cache. Un ancien lien magique ne reste pas en mémoire. */
 export async function storeEnglishDictionary(): Promise<boolean> {
-  const res = await fetch('/dictionnaire-en.json', { cache: 'no-cache' });
+  const res = await fetch(`/dictionnaire-en.json?t=${Date.now()}`);
   if (!res.ok) return false;
   const text = await res.text();
   let pack: unknown;
