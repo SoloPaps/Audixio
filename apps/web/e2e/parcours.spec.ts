@@ -190,15 +190,13 @@ async function expectGuestThroughProgression(page: Page): Promise<void> {
   const previous = page.viewportSize();
   await page.setViewportSize({ width: 330, height: 800 });
   await expect(report).toBeInViewport();
-  const overlap = await page.evaluate(() => {
-    const host = document.querySelector('.url-host');
-    const chip = document.querySelector('.url .p-sec');
-    if (!host || !chip) return true;
-    const hostBox = host.getBoundingClientRect();
-    const chipBox = chip.getBoundingClientRect();
-    return hostBox.right > chipBox.left + 1;
-  });
-  expect(overlap).toBe(false);
+  const hostBox = await page.locator('.url-host').boundingBox();
+  const chipBox = await page.locator('.url .p-sec').boundingBox();
+  expect(hostBox).not.toBeNull();
+  expect(chipBox).not.toBeNull();
+  expect((hostBox?.x ?? 0) + (hostBox?.width ?? 0)).toBeLessThanOrEqual(
+    (chipBox?.x ?? 0) + 1,
+  );
   if (previous) await page.setViewportSize(previous);
   await report.click();
   await expect(page).toHaveURL(/\/rapport\?id=/);

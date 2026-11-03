@@ -82,7 +82,12 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   test.setTimeout(120_000);
   for (let index = 0; index < 3; index += 1) {
     await launch(page);
-    await expect(page).toHaveURL(/\/rapport\?id=/, { timeout: 20_000 });
+    await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 20_000 });
+    const voir = page.locator('#reportBtn');
+    await expect(voir).toBeVisible();
+    await expect(voir).toContainText('Voir le rapport');
+    await voir.click();
+    await expect(page).toHaveURL(/\/rapport\?id=/);
     await expect(
       page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
     ).toBeVisible();
