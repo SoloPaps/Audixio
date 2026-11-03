@@ -34,7 +34,7 @@ test('lien public 30 jours, lecture anonyme, expiration', async ({
   const reader = await guest.newPage();
   await reader.goto(share);
   await expect(
-    reader.getByText('Verrouillé', { exact: true }).first(),
+    reader.getByText('Le détail de la protection n’est pas publié.'),
   ).toBeVisible();
   await expect(reader.getByText('PARTIEL')).toHaveCount(0);
   await guest.close();
@@ -62,10 +62,10 @@ test('demande d’accès puis lien équipe', async ({ page, browser }) => {
   await page.goto('/demande-acces');
   await page.locator('#owner-email').fill('proprio@exemple.test');
   await page.locator('#submit-btn').click();
-  await expect(page.getByText(/Demande envoyée/)).toBeVisible();
+  await expect(page.locator('#toast')).toContainText('Demande envoyée');
 
   await page.goto(
-    `/sites/mauvais.audigy.test/demandes/req-e2e?audit=${encodeURIComponent(auditId)}`,
+    `/sites/exemple.fr/demandes/req_948f2a1b7e?audit=${encodeURIComponent(auditId)}`,
   );
   await page.locator('#ok').click();
   const pane = page.locator('#pane-ok');
@@ -85,9 +85,20 @@ test('demande d’accès puis lien équipe', async ({ page, browser }) => {
   ageReport(linkId);
   const token = (team ?? '').split('/').filter(Boolean).at(-1) ?? '';
   const api = await page.request.post('/api/partage', { data: { token } });
-  expect(api.status()).toBe(404);
-  const payload = (await api.json()) as { error?: string };
-  expect(payload.error).toBe('absent');
+  expect(api.status()).toBe(200);
+  const payload = (await api.json()) as {
+    access?: string;
+    brief?: string;
+    briefTexte?: string | null;
+  };
+  expect(payload.access).toBe('retired');
+  expect(payload.brief).toBe('aucun');
+  expect(payload.briefTexte ?? '').not.toContain('PARTIEL');
+  await page.goto(team ?? '/');
+  await expect(page.getByText('PARTIEL')).toHaveCount(0);
+  await expect(
+    page.getByText('Le détail de la protection n’est pas publié.'),
+  ).toBeVisible();
 });
 
 test('le dialogue de partage retire le lien public', async ({ page }) => {

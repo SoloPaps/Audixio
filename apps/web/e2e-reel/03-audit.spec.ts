@@ -26,6 +26,8 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   await page.waitForURL(/\/progression\?id=/, { timeout: 60_000 });
   const auditId = new URL(page.url()).searchParams.get('id') ?? '';
   expect(auditId).not.toBe('');
+  const state = await readState();
+  await writeState({ ...state, auditId });
   await expect(page.locator('#report-link')).toBeVisible({ timeout: 120_000 });
   await page.locator('#report-link').click();
   await expect(page).toHaveURL(/\/rapport\?id=/);
@@ -36,8 +38,8 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   await page.locator('#domaine-seo').click();
   await expect(page).toHaveURL(/domaine=seo/);
   await expect(page.getByText('Verrouillé', { exact: true })).toHaveCount(0);
-  await page.getByRole('link', { name: 'Corriger' }).first().click();
-  await expect(page).toHaveURL(/\/constat\?/);
+  await page.getByRole('button', { name: 'Détails' }).first().click();
+  await expect(page.getByText('Actions recommandées').first()).toBeVisible();
 
   await page.goto(`/rapport?id=${encodeURIComponent(auditId)}`);
   await page.locator('#domaine-securite').click();
@@ -47,11 +49,24 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   await page.goto(`/rapport?id=${encodeURIComponent(auditId)}`);
   await page.getByRole('link', { name: 'Ouvrir le brief IA' }).click();
   await expect(page).toHaveURL(/\/brief\?id=/);
-  await expect(page.locator('#md')).toContainText('PARTIEL', {
-    timeout: 30_000,
-  });
+  await expect(page.locator('#md')).toContainText(/pas de titre/);
+  await expect(
+    page.getByText('Verrouillé', { exact: true }).first(),
+  ).toBeVisible();
+  const exported = page.waitForResponse(
+    (res) =>
+      res.url().includes('/api/audits/') &&
+      res.url().includes('/brief') &&
+      res.request().method() === 'POST',
+  );
+  await page.getByRole('button', { name: 'Télécharger (.md)' }).click();
+  const file = await exported;
+  expect(file.status()).toBe(200);
+  expect(await file.text()).toContain('PARTIEL');
   await page.getByRole('link', { name: /plan d.action/ }).click();
   await expect(page).toHaveURL(/\/plan\?id=/);
+  await page.getByRole('link', { name: 'Voir le détail' }).first().click();
+  await expect(page).toHaveURL(/\/constat\?/);
 
   await page.addInitScript(() => {
     window.print = () => {
@@ -61,9 +76,6 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   await page.goto(`/rapport/${auditId}/imprimer`);
   await page.locator('#printBtn').click();
   await expect(page.locator('html')).toHaveAttribute('data-imprime', 'oui');
-
-  const state = await readState();
-  await writeState({ ...state, auditId });
 });
 
 test('un second audit du même site répond 429', async ({ page }) => {

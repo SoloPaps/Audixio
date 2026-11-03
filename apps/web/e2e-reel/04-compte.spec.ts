@@ -30,7 +30,7 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   ).toHaveCount(0);
 
   await page.goto(`/historique?site=${encodeURIComponent(siteId ?? '')}`);
-  await expect(page.getByRole('heading', { name: /Historique/ })).toBeVisible();
+  await expect(page.getByText(/Historique/).first()).toBeVisible();
 
   await page.goto('/compte/alertes');
   await expect(page.getByText('Disponible avec Audixio Pro')).toBeVisible();

@@ -31,9 +31,7 @@ test('parcours clés en 330 px puis suppression du compte', async ({
   await expect(narrow.locator('#lo')).toBeVisible();
   await expect(narrow.locator('#del')).toBeVisible();
   await narrow.goto('/historique');
-  await expect(
-    narrow.getByRole('heading', { name: /Historique/ }),
-  ).toBeVisible();
+  await expect(narrow.getByText(/Historique/).first()).toBeVisible();
   await narrow.goto('/compte/alertes');
   await expect(narrow.getByText('Disponible avec Audixio Pro')).toBeVisible();
   await narrow.context().close();

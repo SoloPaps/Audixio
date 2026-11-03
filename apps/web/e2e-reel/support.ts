@@ -108,6 +108,28 @@ interface MailRow {
   Created: string;
 }
 
+function mailLink(raw: string, type: string): string | null {
+  const stop = new Set([' ', '\n', '\r', '\t', '"', "'", '<', '>', ')']);
+  let from = 0;
+  while (from < raw.length) {
+    const start = raw.indexOf('http', from);
+    if (start < 0) return null;
+    let end = start;
+    while (end < raw.length && !stop.has(raw[end] ?? '')) end += 1;
+    const url = raw.slice(start, end).replace('://localhost:', '://127.0.0.1:');
+    if (
+      url.includes('/api/auth/callback?') &&
+      url.includes(`type=${type}`) &&
+      (url.startsWith('http://127.0.0.1:8888/') ||
+        url.startsWith('http://localhost:8888/'))
+    ) {
+      return url;
+    }
+    from = end + 1;
+  }
+  return null;
+}
+
 export async function waitMailLink(
   email: string,
   kind: 'signup' | 'recovery',
@@ -131,11 +153,8 @@ export async function waitMailLink(
           '&amp;',
           '&',
         );
-        const found = raw.match(
-          /https?:\/\/(?:127\.0\.0\.1|localhost):8888\/api\/auth\/callback\?\S+/g,
-        );
-        const link = found?.find((item) => item.includes(`type=${type}`));
-        if (link) return link.replace('://localhost:', '://127.0.0.1:');
+        const link = mailLink(raw, type);
+        if (link) return link;
       }
     }
     await new Promise((resolve) => setTimeout(resolve, 500));

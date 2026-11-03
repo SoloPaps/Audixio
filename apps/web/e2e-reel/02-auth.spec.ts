@@ -39,7 +39,7 @@ test('inscription et lien de confirmation', async ({ page }) => {
   await page.locator('input[name="terms"]').check();
   await page.getByRole('button', { name: 'Créer mon compte' }).click();
   await expect(page).toHaveURL(/envoye=1/);
-  await expect(page.getByText('Confirmez votre adresse')).toBeVisible();
+  await expect(page.locator('#sub')).toHaveText('Confirmez votre adresse');
   const link = await waitMailLink(email, 'signup', after);
   await page.goto(link);
   await expect(page).toHaveURL(/\/email-confirme/);
@@ -81,6 +81,7 @@ test('lien expiré puis renvoi', async ({ browser }) => {
   const resent = Date.now();
   await page.locator('#login-email').fill(expiredEmail);
   await page.getByRole('button', { name: 'Renvoyer le lien' }).click();
+  await expect(page).toHaveURL(/envoye=1/);
   await expect(
     page.getByText('Si le compte peut être créé, un message part.'),
   ).toBeVisible();
