@@ -139,7 +139,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       host: row.host,
       href: mark
         ? `/rapport?id=${encodeURIComponent(mark.auditId)}`
-        : `/lancer?site=${encodeURIComponent(row.id)}`,
+        : `/progression?site=${encodeURIComponent(row.id)}`,
       verify: `/verifier?site=${encodeURIComponent(row.id)}`,
       when: mark ? formatDate(new Date(mark.at)) : '',
       score: mark?.score ?? null,
@@ -416,7 +416,7 @@ async function addSite(
   const site: LiveSite = {
     id: data.id,
     host: data.host,
-    href: `/lancer?site=${encodeURIComponent(data.id)}`,
+    href: `/progression?site=${encodeURIComponent(data.id)}`,
     verify: `/verifier?site=${encodeURIComponent(data.id)}`,
     when: '',
     score: null,

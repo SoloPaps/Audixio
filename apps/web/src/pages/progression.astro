@@ -105,6 +105,10 @@ import Canon from '../layouts/Canon.astro';
   </div>
 </dialog>
 <ProgressLive client:load />
+<script>
+  import { bindProgressScene } from '../lib/progress-scene.ts';
+  bindProgressScene();
+</script>
 <script is:inline>
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -120,89 +124,6 @@ var STATUS={done:'Analysé',active:'En cours',next:'Prochain',wait:'En attente',
    window.audixioProgress.domain('perf','done')        // done | active | next | wait | off
    window.audixioProgress.phrase('Texte de l'étape')    // phrase affichée
    window.audixioProgress.finish()                     // diagnostic terminé            */
-
-var pctEl=$('#pct'),fill=$('#fill'),pbar=$('#pbar'),timeEl=$('#timeLeft'),taskEl=$('#task'),liveEl=$('#live');
-var percent=70,typeTimer=null,finished=false,PER_TICK=.5,TICK=400;
-
-function counts(){
-  var c=$$('.cap'),d=0,a=0;
-  c.forEach(function(el){if(el.dataset.state==='done')d++;if(el.dataset.state==='active')a++;});
-  $('#counts').innerHTML='<b>'+a+' en cours</b> · '+d+' terminé'+(d>1?'s':'')+' · '+(c.length-a-d)+' en attente';
-}
-function setDomain(key,state){
-  $$('[data-key="'+key+'"]').forEach(function(el){
-    el.dataset.state=state;
-    var t=$('.stt',el);if(t)t.textContent=STATUS[state];
-  });
-  counts();
-}
-function setPercent(p){
-  percent=Math.max(0,Math.min(100,p));
-  var r=Math.round(percent);
-  pctEl.textContent=r;fill.style.width=percent+'%';pbar.setAttribute('aria-valuenow',r);
-  var s=Math.max(0,Math.ceil((100-percent)/PER_TICK*TICK/1000));
-  timeEl.textContent=s<=0?'quelques instants':'~'+s+' seconde'+(s>1?'s':'');
-}
-function setPhrase(txt){
-  clearInterval(typeTimer);
-  if(liveEl)liveEl.textContent=txt;
-  if(reduce){taskEl.textContent=txt;taskEl.classList.remove('caret');return;}
-  taskEl.classList.add('caret');taskEl.textContent='';
-  var i=0;
-  typeTimer=setInterval(function(){
-    taskEl.textContent=txt.slice(0,++i);
-    if(i>=txt.length){clearInterval(typeTimer);setTimeout(function(){taskEl.classList.remove('caret');},900);}
-  },18);
-}
-function burst(){
-  if(!hasG||reduce)return;
-  var host=$('#burst'),cols=['#7091E6','#adbbda','#7091E6','#3D52A0'];
-  for(var i=0;i<34;i++){
-    var d=document.createElement('i');d.style.background=cols[i%4];host.appendChild(d);
-    var a=Math.random()*Math.PI*2,r=140+Math.random()*190;
-    gsap.fromTo(d,{x:0,y:0,scale:0,opacity:1},{x:Math.cos(a)*r,y:Math.sin(a)*r+40,scale:.6+Math.random()*1.2,rotation:Math.random()*360,duration:1.6+Math.random()*.8,ease:'expo.out',onComplete:(function(n){return function(){n.remove();};})(d)});
-    gsap.to(d,{opacity:0,delay:.9,duration:1,ease:'power1.in'});
-  }
-}
-function finish(){
-  if(finished)return;finished=true;
-  clearInterval(sim);
-  ['perf','a11y','code'].forEach(function(k){setDomain(k,'done');});
-  setPercent(100);
-  document.body.classList.add('done');
-  $('#h1T').textContent='Votre diagnostic est prêt pour';
-  $('#leadT').textContent="L'analyse est terminée. Votre rapport complet, avec les priorités et le plan d'action, vous attend.";
-  $('#liveT').textContent='Analyse terminée';
-  setPhrase('Diagnostic terminé : votre rapport est disponible');
-  if($('#notify').open)$('#notify').close();
-  burst();
-  if(hasG&&!reduce)gsap.fromTo('.big-ok',{rotate:-30},{rotate:0,duration:1,ease:'elastic.out(1,.5)'});
-}
-window.audixioProgress={set:setPercent,domain:setDomain,phrase:setPhrase,finish:finish};
-
-/* ===== simulation de démonstration (à remplacer par vos vraies données) ===== */
-var stages=[
-  {key:'perf',until:82,next:'a11y',phrases:['Analyse de la compression des images et du poids global','Vérification de la fluidité et du confort de lecture sur smartphone']},
-  {key:'a11y',until:91,next:'code',phrases:['Contrôle des contrastes et de la navigation au clavier']},
-  {key:'code',until:99,next:null,phrases:['Lecture du code source et recherche des erreurs','Génération de la synthèse finale et des recommandations']}
-];
-var si=0,spoke=0,sim=null;
-function tick(){
-  var st=stages[si];
-  setPercent(percent+PER_TICK);
-  var mid=(st.until-(si?stages[si-1].until:70))/2+(si?stages[si-1].until:70);
-  if(st.phrases.length>1&&spoke===0&&percent>=mid){spoke=1;setPhrase(st.phrases[1]);}
-  if(percent>=st.until){
-    setDomain(st.key,'done');
-    si++;spoke=0;
-    if(si>=stages.length||percent>=99.5){finish();return;}
-    setDomain(stages[si].key,'active');
-    if(stages[si+1])setDomain(stages[si+1].key,'next');
-    setPhrase(stages[si].phrases[0]);
-  }
-}
-counts();setPercent(70);
-/* simulation retirée : la page reste sur l'état illustratif à 70 %. */
 
 /* ===== modale e-mail ===== */
 var dlg=$('#notify'),form=$('#notifyForm'),mail=$('#email'),err=$('#emailErr');

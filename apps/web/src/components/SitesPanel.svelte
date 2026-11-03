@@ -225,7 +225,7 @@ async function onSignOut(): Promise<void> {
           {:else}
             <a
               class="site-tile lift glass glass-module"
-              href={`/lancer?site=${encodeURIComponent(site.id)}`}
+              href={relaunchHref(site.id, site.url)}
             >
               <div class="glass-plate">
                 <span>{site.label}</span>
@@ -241,7 +241,7 @@ async function onSignOut(): Promise<void> {
               <span class="visually-hidden">{site.label}</span>
             </summary>
             <div class="site-extra">
-              <a class="link-action" href={relaunchHref(site.id)}>
+              <a class="link-action" href={relaunchHref(site.id, site.url)}>
                 {mark ? t('progress.retry') : t('sites.audit')}
                 <span class="visually-hidden">{site.label}</span>
               </a>

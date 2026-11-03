@@ -748,6 +748,9 @@ body.done .task i {
   vertical-align: -0.15em;
   animation: blink 0.9s infinite;
 }
+body.done .eta {
+  display: none;
+}
 .eta {
   display: flex;
   align-items: center;

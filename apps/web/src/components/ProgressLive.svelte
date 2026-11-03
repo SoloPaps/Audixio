@@ -1,17 +1,25 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
-import { type AuditPayload, readAudit } from '../lib/audit-api.js';
+import {
+  type AuditPayload,
+  createAudit,
+  createGuestAudit,
+  readAudit,
+} from '../lib/audit-api.js';
 import { currentSession } from '../lib/browser-session.js';
-import { readGuestAudit } from '../lib/guest-store.js';
+import { readGuestAudit, saveGuestAudit } from '../lib/guest-store.js';
 import { loginHref } from '../lib/nav.js';
 import {
   guestBeatPhase,
   guestDisplayStatus,
-  progressEta,
   progressLive,
   progressPhase,
 } from '../lib/progress-live.js';
+import { progressionHref } from '../lib/relaunch.js';
+import GuestGate from './GuestGate.svelte';
+
+let gate = $state(false);
 
 const POLL_MS = 1500;
 const GUEST_BEAT_MS = 800;
@@ -25,27 +33,18 @@ function hostOf(url: string): string {
 }
 
 onMount(() => {
-  const id = new URLSearchParams(location.search).get('id');
+  const params = new URLSearchParams(location.search);
+  let id = params.get('id');
   const status = document.getElementById('liveT');
   const home = document.getElementById('home-back');
   const heading = document.getElementById('h1T');
   const lead = document.getElementById('leadT');
   const task = document.getElementById('task');
   const eta = document.getElementById('timeLeft');
-  const slot = document.getElementById('ready-slot');
-  if (!id) return;
+  if (!id && !params.get('url') && !params.get('site')) return;
 
   let timer = 0;
   let cancelled = false;
-
-  const meter = (value: number): void => {
-    const pct = document.getElementById('pct');
-    const fill = document.getElementById('fill');
-    const bar = document.getElementById('pbar');
-    if (pct) pct.textContent = String(value);
-    if (fill) fill.style.width = `${value}%`;
-    if (bar) bar.setAttribute('aria-valuenow', String(value));
-  };
 
   const paint = (
     payload: AuditPayload,
@@ -67,28 +66,21 @@ onMount(() => {
     const phase = guest
       ? guestBeatPhase(step)
       : progressPhase(shown, names.length, names.includes('vie_privee'));
-    const remain = progressEta(shown, names.length);
-    if (eta && remain) eta.textContent = remain;
     const done = shown === 'done' || shown === 'partial';
     const failed = shown === 'failed';
     if (done) {
       if (heading) heading.textContent = t('progress.ready.heading');
       if (lead) lead.textContent = t('progress.ready.lead');
       if (task) task.textContent = t('progress.ready');
-      meter(100);
+      if (eta) eta.textContent = '';
     } else if (heading) {
       heading.textContent = t('mq.p.004');
       if (lead && phase) lead.textContent = phase;
       if (task && phase) task.textContent = phase;
-      if (guest) meter(25 + step * 25);
     }
     const href = `/rapport?id=${encodeURIComponent(payload.audit.id)}`;
     const reportBtn = document.getElementById('reportBtn');
     if (reportBtn) reportBtn.setAttribute('href', href);
-    if (done && slot && reportBtn) {
-      slot.hidden = false;
-      if (reportBtn.parentElement !== slot) slot.appendChild(reportBtn);
-    }
     document.body.classList.toggle('done', done);
     const fail = document.getElementById('fail-back');
     const failLink = document.getElementById('fail-link');
@@ -104,7 +96,38 @@ onMount(() => {
     }
   };
 
+  const ensureId = async (): Promise<string | null> => {
+    if (id) return id;
+    const url = params.get('url');
+    const siteId = params.get('site');
+    if (!url && !siteId) return null;
+    const session = await currentSession();
+    if (!session) {
+      if (!url) {
+        gate = true;
+        return null;
+      }
+      const guest = await createGuestAudit(url);
+      if (!guest.ok) {
+        if (guest.limit) gate = true;
+        return null;
+      }
+      saveGuestAudit(guest.payload);
+      history.replaceState(null, '', progressionHref(guest.payload.audit.id));
+      return guest.payload.audit.id;
+    }
+    const result = await createAudit(
+      session.access_token,
+      siteId ? { siteId } : { url: url ?? '' },
+    );
+    if (!result.ok) return null;
+    history.replaceState(null, '', progressionHref(result.auditId));
+    return result.auditId;
+  };
+
   const tick = async (): Promise<void> => {
+    id = await ensureId();
+    if (!id || cancelled) return;
     const session = await currentSession();
     if (cancelled) return;
     if (!session) {
@@ -156,3 +179,7 @@ onMount(() => {
   };
 });
 </script>
+
+{#if gate}
+  <GuestGate open={true} onClose={() => { gate = false; }} />
+{/if}

@@ -250,7 +250,7 @@ onMount(() => {
       <a class="btn btn-ghost" id="shareBtn" href={`/rapport?id=${encodeURIComponent(auditId)}#partager`} onclick={onShare}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>{t('hub.share')}</a>
       <a class="btn btn-ghost" href={badgeHref(auditId)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg>{t('hub.badge')}</a>
       <a class="btn btn-ghost" href={`/rapport/${auditId}/imprimer`}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>{t('hub.pdf')}</a>
-      <a class="btn btn-ghost" id="rerunBtn" href={relaunchHref(payload.audit.site.id)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>{t('hub.rerun')}</a>
+      <a class="btn btn-ghost" id="rerunBtn" href={relaunchHref(payload.audit.site.id, payload.audit.site.url)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>{t('hub.rerun')}</a>
     </div>
   </div>
 

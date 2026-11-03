@@ -286,7 +286,7 @@ onMount(() => {
   <section class="fail-card" aria-labelledby="fail-title">
     <h1 id="fail-title">{t('hub.failed.title')}</h1>
     <p>{failureKind(payload.audit.error) === 'denied' ? t('hub.failed.denied') : failureKind(payload.audit.error) === 'down' ? t('hub.failed.down') : t('hub.failed.body')}</p>
-    <p><a class="btn-primary" href={relaunchHref(payload.audit.site.id)}>{t('progress.retry')}</a></p>
+    <p><a class="btn-primary" href={relaunchHref(payload.audit.site.id, payload.audit.site.url)}>{t('progress.retry')}</a></p>
   </section>
 {:else if payload && mode === 'badge'}
   <BadgeView

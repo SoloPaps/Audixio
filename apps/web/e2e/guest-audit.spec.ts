@@ -91,6 +91,18 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
     const voir = page.locator('#reportBtn');
     await expect(voir).toBeVisible();
     await expect(voir).toContainText('Voir le rapport');
+    const place = await voir.evaluate((node) => {
+      const mock = document.getElementById('mock');
+      const slot = document.getElementById('ready-slot');
+      const btn = node.getBoundingClientRect();
+      const stage = mock?.getBoundingClientRect();
+      return {
+        inSlot: slot?.contains(node) ?? false,
+        gap: stage ? btn.top - stage.bottom : 0,
+      };
+    });
+    expect(place.inSlot).toBe(false);
+    expect(place.gap).toBeGreaterThan(32);
     await voir.click();
     await expect(page).toHaveURL(/\/rapport\?id=/);
     ids.push(new URL(page.url()).searchParams.get('id') ?? '');

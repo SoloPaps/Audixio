@@ -9,7 +9,11 @@ describe('relance', () => {
     expect(href).not.toContain('/rapport');
   });
 
-  it('relancer ouvre le formulaire du site', () => {
-    expect(relaunchHref('site-1')).toBe('/lancer?site=site-1');
+  it('relancer ouvre la progression du site, pas /lancer', () => {
+    expect(relaunchHref('site-1')).toBe('/progression?site=site-1');
+    expect(relaunchHref('site-1')).not.toContain('/lancer');
+    expect(relaunchHref('site-1', 'https://exemple.fr')).toBe(
+      '/progression?site=site-1&url=https%3A%2F%2Fexemple.fr',
+    );
   });
 });
