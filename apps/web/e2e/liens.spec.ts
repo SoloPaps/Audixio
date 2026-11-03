@@ -50,7 +50,8 @@ test('aucun lien interne mort ni ancre absente', async ({ request }) => {
     const response = await request.get(path);
     const status = response.status();
     const known =
-      (path === '/404' && status === 404) || (path === '/500' && status === 500);
+      (path === '/404' && status === 404) ||
+      (path === '/500' && status === 500);
     if (status >= 400 && !known) {
       failures.push(`${path} → ${status}`);
       continue;
