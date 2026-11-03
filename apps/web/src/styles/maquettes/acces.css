@@ -873,6 +873,12 @@ legend::before {
 .role:hover::before {
   transform: translateX(100%);
 }
+.role > div {
+  min-width: 0;
+}
+.role label {
+  display: contents;
+}
 .role input {
   appearance: none;
   -webkit-appearance: none;

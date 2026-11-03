@@ -96,28 +96,32 @@ export function getStaticPaths() {
             <legend>{t('mq.acces.027')}</legend>
             <p class="help" id="roles-help">{t('mq.acces.028')} <strong>{t('mq.acces.029')}</strong>{t('mq.acces.030')}</p>
             <div class="roles" aria-describedby="roles-help">
-              <label class="role">
-                <input type="radio" name="role" value="rapport" aria-describedby="r1d">
-                <span>
-                  <span class="role-t">{t('mq.acces.031')}</span>
-                  <span class="role-d" id="r1d">{t('mq.acces.032')}</span>
+              <div class="role">
+                <input type="radio" id="acces-role-rapport" name="role" value="rapport" aria-describedby="r1d">
+                <div>
+                  <label for="acces-role-rapport">
+                    <span class="role-t">{t('mq.acces.031')}</span>
+                    <span class="role-d" id="r1d">{t('mq.acces.032')}</span>
+                  </label>
                   <ul class="perm">
                     <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.acces.033')}</li>
                     <li class="n"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>{t('mq.acces.034')}</li>
                   </ul>
-                </span>
-              </label>
-              <label class="role">
-                <input type="radio" name="role" value="rapport-brief" checked aria-describedby="r2d">
-                <span>
-                  <span class="role-t">{t('mq.acces.035')} <span class="reco">{t('mq.acces.036')}</span></span>
-                  <span class="role-d" id="r2d">{t('mq.acces.037')}</span>
+                </div>
+              </div>
+              <div class="role">
+                <input type="radio" id="acces-role-brief" name="role" value="rapport-brief" checked aria-describedby="r2d">
+                <div>
+                  <label for="acces-role-brief">
+                    <span class="role-t">{t('mq.acces.035')} <span class="reco">{t('mq.acces.036')}</span></span>
+                    <span class="role-d" id="r2d">{t('mq.acces.037')}</span>
+                  </label>
                   <ul class="perm">
                     <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.acces.033')}</li>
                     <li class="y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.acces.038')}</li>
                   </ul>
-                </span>
-              </label>
+                </div>
+              </div>
             </div>
             <p class="never"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span><strong>{t('mq.acces.039')}</strong> {t('mq.acces.040')}</span></p>
           </fieldset>
