@@ -40,7 +40,6 @@ import BriefView from './BriefView.svelte';
 import ConstatView from './ConstatView.svelte';
 import DomainLockedView from './DomainLockedView.svelte';
 import DomainView from './DomainView.svelte';
-import GuestGate from './GuestGate.svelte';
 import HubView from './HubView.svelte';
 import PlanView from './PlanView.svelte';
 import UntestedCause from './UntestedCause.svelte';
@@ -52,7 +51,6 @@ interface Props {
 let { mode = 'report' }: Props = $props();
 
 let phase = $state<'loading' | 'message' | 'ready' | 'brief-gate'>('loading');
-let briefGate = $state(true);
 let message = $state(t('report.loading'));
 let payload = $state<AuditPayload | null>(null);
 let domainId = $state('');
@@ -280,15 +278,11 @@ onMount(() => {
   </div>
 {:else if phase === 'brief-gate'}
   <h1>{t('guest.gate.title')}</h1>
-  <GuestGate open={briefGate} onClose={() => { briefGate = false; }} />
-  {#if !briefGate}
-    <h1>{t('report.heading')}</h1>
-    <p role="status">{t('guest.gate.lead')}</p>
-    <p class="page-links">
-      <a class="gg-btn" href="/connexion">{t('guest.gate.login')}</a>
-      <a class="gg-btn gg-btn-main" href="/inscription">{t('guest.gate.signup')}</a>
-    </p>
-  {/if}
+  <p role="status">{t('guest.gate.lead')}</p>
+  <p class="page-links">
+    <a class="gg-btn" href="/connexion">{t('guest.gate.login')}</a>
+    <a class="gg-btn gg-btn-main" href="/inscription">{t('guest.gate.signup')}</a>
+  </p>
 {:else if phase === 'message'}
   <h1>{mode === 'domain' ? t('domain.heading') : t('report.heading')}</h1>
   <p role="status">{message}</p>

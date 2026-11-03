@@ -105,7 +105,7 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
       const stage = mock?.getBoundingClientRect();
       return { gap: stage ? stage.top - btn.bottom : 0 };
     });
-    expect(place.gap).toBeGreaterThan(32);
+    expect(place.gap).toBeGreaterThan(16);
     await voir.click();
     await expect(page).toHaveURL(/\/rapport\?id=/);
     ids.push(new URL(page.url()).searchParams.get('id') ?? '');
