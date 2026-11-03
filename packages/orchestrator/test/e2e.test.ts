@@ -194,6 +194,13 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
     };
     await signUp('a');
     await signUp('b');
+    const promoted = await admin`
+      update public.profiles
+      set plan = 'pro'
+      where id in (${users.a}::uuid, ${users.b}::uuid)
+      returning id
+    `;
+    if (promoted.length !== 2) throw new Error('profils absents');
   });
 
   afterAll(async () => {

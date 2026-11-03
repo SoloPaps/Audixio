@@ -82,7 +82,7 @@ onMount(() => {
     position: fixed;
     inset: 0;
     z-index: 80;
-    background: rgb(27 31 36 / 0.46);
+    background: color-mix(in srgb, var(--ink) 46%, transparent);
   }
   .gg-wrap {
     position: fixed;
@@ -90,16 +90,16 @@ onMount(() => {
     z-index: 81;
     display: grid;
     place-items: center;
-    padding: 12px;
+    padding: var(--space-3);
   }
   .gg {
     box-sizing: border-box;
     width: min(26rem, 100%);
-    max-height: calc(100vh - 24px);
+    max-height: calc(100vh - var(--space-5));
     overflow: auto;
     margin: 0;
     padding: 1.25rem;
-    border: 1px solid var(--line);
+    border: var(--border) solid var(--line);
     border-radius: var(--radius-lg);
     background: var(--surface);
     color: var(--ink);
@@ -107,8 +107,8 @@ onMount(() => {
     font-family: Inter, "Segoe UI", system-ui, sans-serif;
   }
   .gg:focus {
-    outline: 2px solid var(--focus);
-    outline-offset: 3px;
+    outline: var(--focus-width) solid var(--focus);
+    outline-offset: var(--space-1);
   }
   .gg-pill-k {
     display: inline-flex;
@@ -145,7 +145,7 @@ onMount(() => {
     justify-content: center;
     min-height: var(--touch-min);
     padding: 0 1rem;
-    border: 1px solid var(--line);
+    border: var(--border) solid var(--line);
     border-radius: var(--radius-pill);
     background: var(--surface);
     color: var(--ink);
@@ -160,8 +160,8 @@ onMount(() => {
   }
   .gg-btn:focus-visible,
   .gg-close:focus-visible {
-    outline: 2px solid var(--focus);
-    outline-offset: 3px;
+    outline: var(--focus-width) solid var(--focus);
+    outline-offset: var(--space-1);
   }
   .gg-close {
     display: inline-flex;
@@ -177,7 +177,7 @@ onMount(() => {
   }
   @media (max-width: 360px) {
     .gg-wrap {
-      padding: 8px;
+      padding: var(--space-2);
     }
     .gg {
       width: 100%;
