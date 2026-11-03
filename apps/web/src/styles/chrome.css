@@ -686,3 +686,26 @@
     bottom: 80px;
   }
 }
+
+/* Lien d’évitement : hors écran, sauf au focus clavier. Toutes les pages Canon. */
+a.skip {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 2000;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 99px;
+  background: #3d52a0;
+  color: #fff;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+}
+a.skip:focus,
+a.skip:focus-visible {
+  top: 12px;
+}

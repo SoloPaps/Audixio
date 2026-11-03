@@ -15,6 +15,7 @@ import {
   failStaleAudits,
   GUEST_AUDIT,
   guestAuditKey,
+  guestAuditLimit,
   isLockedDomain,
   requestAudit,
   retryAfterSeconds,
@@ -457,10 +458,14 @@ export function apiDepsFromEnv(options: FromEnvOptions): ApiDeps {
     allowLab: lab !== null,
     async guardGuest(req) {
       const key = await guestAuditKey(clientIp(req));
+      const limit = guestAuditLimit({
+        supabaseUrl: db.url,
+        lift: env.AUDIGY_GUEST_UNLIMITED === '1',
+      });
       const { data, error } = await service.rpc('consume_rate_limit', {
         p_key: key,
         p_window_start: windowStartIso(Date.now(), GUEST_AUDIT.windowMs),
-        p_limit: GUEST_AUDIT.limit,
+        p_limit: limit,
       });
       if (error || data !== true) {
         return {

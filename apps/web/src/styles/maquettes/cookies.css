@@ -309,8 +309,7 @@ a {
 }
 
 [data-vue="cookies"] .axn,
-[data-vue="cookies"] .axf,
-[data-vue="cookies"] .skip {
+[data-vue="cookies"] .axf {
   display: none !important;
 }
 [data-vue="cookies"] body {

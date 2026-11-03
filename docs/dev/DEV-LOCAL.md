@@ -21,7 +21,7 @@ supabase start
 pnpm lab
 ```
 
-`pnpm lab` écrit `.netlify/audigy-lab.json` (AC de test et ports). Si `.env` manque, il le crée avec les clés du Supabase local et `AUDIGY_LAB`. Il écrit aussi `apps/web/.env` avec seulement `SUPABASE_URL` et `SUPABASE_ANON_KEY` (publiques). La clé service n'y est pas. Les valeurs ne sont jamais affichées.
+`pnpm lab` écrit `.netlify/audigy-lab.json` (AC de test et ports). Si `.env` manque, il le crée avec les clés du Supabase local et `AUDIGY_LAB`. Il écrit aussi `apps/web/.env` avec seulement `SUPABASE_URL` et `SUPABASE_ANON_KEY` (publiques). La clé service n'y est pas. Les clés ne sont jamais affichées. Les identifiants des comptes de test locaux le sont : `docs/dev/TEST-LOCAL.md`.
 
 `.env`, `apps/web/.env` et `.netlify/` sont ignorés par Git. Les secrets restent sur votre machine : ne commitez jamais ces fichiers, ni une copie remplie. `.env.example` ne contient que les noms. Si `.env` existait déjà, relancez `pnpm lab` : il met à jour `apps/web/.env` sans afficher les clés.
 

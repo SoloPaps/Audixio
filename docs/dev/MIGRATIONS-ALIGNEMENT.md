@@ -55,6 +55,17 @@ Appliquée en production le 3 novembre 2026, version `20261103064721` (`created_
 
 Les tests et `docs/dev/BASE-DE-DONNEES.md` citent ce nouveau nom. Aucune migration n’a été créée ni rejouée.
 
+## sites_plafond_gratuit et rls_sites_reports_anon
+
+Appliquées en production le 3 novembre 2026, versions `20261103130351` et `20261103130357`. Le dépôt les nommait autrement. Le SQL est le même, octet pour octet. Seul le préfixe a changé, pour coller aux versions déjà enregistrées :
+
+- `20261103111811_sites_plafond_gratuit.sql` → `20261103130351_sites_plafond_gratuit.sql`
+- `20261103111812_rls_sites_reports_anon.sql` → `20261103130357_rls_sites_reports_anon.sql`
+
+`20261103130351` pose le plafond de 2 sites actifs pour un compte gratuit (`private.enforce_free_site_cap`). `20261103130357` retire le `select` de `anon` sur `sites` et `reports`, et limite la lecture authentifiée au propriétaire. Aucune migration n’a été créée ni rejouée ici. Ne pas `db push` : ces versions sont déjà en production. Un push les verrait comme déjà appliquées.
+
+Une base locale qui a déjà appliqué `20261103111811` ou `20261103111812` ne correspond plus. La remettre d’aplomb : `supabase db reset --local` (cela efface la base Docker locale). Ne pas faire ce reset sur le projet distant.
+
 ## Commande du propriétaire
 
 À lancer depuis la racine du dépôt, après relecture de la PR, et seulement par le propriétaire. Cela n’a pas été exécuté ici.
@@ -64,7 +75,7 @@ supabase link --project-ref pzholfyjwanmkkfggsfe
 supabase migration list
 ```
 
-`migration list` doit montrer les 12 versions déjà présentes des deux côtés, dont `20261103064721` (`liens_partage` : `link_kind`, `expires_at`, `created_at` sur `reports`). Rien ne doit rester en attente. Ne pas relancer `supabase db push` pour cette migration : elle est déjà en production sous ce numéro. Un push la verrait comme déjà appliquée.
+`migration list` doit montrer les 14 versions déjà présentes des deux côtés, dont `20261103064721` (`liens_partage`), `20261103130351` (`sites_plafond_gratuit` : 2 sites actifs pour un compte gratuit) et `20261103130357` (`rls_sites_reports_anon` : plus de lecture `anon` sur `sites` et `reports`). Rien ne doit rester en attente. Ne pas relancer `supabase db push` pour ces migrations : elles sont déjà en production sous ces numéros. Un push les verrait comme déjà appliquées.
 
 Ne pas utiliser `supabase migration repair` pour réécrire l’historique distant : les versions prod sont la référence, le dépôt s’y est calé.
 

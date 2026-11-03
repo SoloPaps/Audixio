@@ -7,9 +7,15 @@
  * jamais commitées). `apps/web/.env` ne reçoit que l'URL et la clé anon.
  */
 import { existsSync } from 'node:fs';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isLocalSupabaseUrl } from '../packages/db/src/local-only.js';
+import {
+  guestLiftLine,
+  localAccountsMessage,
+  seedLocalDatabase,
+} from '../packages/db/src/local-seed.js';
 import { generateTestCerts } from '../packages/net/test/certs.js';
 import { syncWebEnv } from '../scripts/dev-env.mjs';
 import {
@@ -101,6 +107,34 @@ async function ensureDevEnv(root: string, labFile: string): Promise<string> {
   return '.env créé avec les valeurs du Supabase local. apps/web/.env ne contient que l’URL et la clé anon. Rien n’est commité.';
 }
 
+/** Comptes de test et levée du plafond visiteur. Refusé si l’URL n’est pas locale. */
+async function seedLabAccounts(root: string): Promise<string> {
+  const { localSupabaseStatus } = await import('../packages/db/test/local.js');
+  let local: ReturnType<typeof localSupabaseStatus>;
+  try {
+    local = localSupabaseStatus();
+  } catch {
+    return 'Supabase local absent : comptes de test non créés. Le plafond de 3 audits sans compte reste en place.';
+  }
+  const envPath = path.join(root, '.env');
+  const localUrl =
+    isLocalSupabaseUrl(local.apiUrl) && isLocalSupabaseUrl(local.dbUrl);
+  if (!localUrl) {
+    if (existsSync(envPath)) {
+      const text = await readFile(envPath, 'utf8');
+      const next = guestLiftLine(text, false);
+      if (next !== text) await writeFile(envPath, next, { mode: 0o600 });
+    }
+    return 'Supabase non local : comptes de test refusés, plafond visiteur inchangé.';
+  }
+  await seedLocalDatabase({ apiUrl: local.apiUrl, dbUrl: local.dbUrl });
+  if (existsSync(envPath)) {
+    const text = await readFile(envPath, 'utf8');
+    await writeFile(envPath, guestLiftLine(text, true), { mode: 0o600 });
+  }
+  return localAccountsMessage();
+}
+
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const root = fileURLToPath(new URL('../', import.meta.url));
   const labFile = process.argv[2] ?? DEFAULT_LAB_FILE;
@@ -111,6 +145,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   console.log(`Labo prêt : ${labFile}`);
   for (const site of FIXTURE_SITES) console.log(`- ${lab.url(site)}`);
   console.log(await ensureDevEnv(root, labFile));
+  console.log(await seedLabAccounts(root));
   console.log('Laissez ce terminal ouvert. Ctrl+C pour arrêter.');
   const stop = async () => {
     await lab.close();

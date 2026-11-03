@@ -15,8 +15,8 @@ Lecture du code (auth, RLS, fonctions `SECURITY DEFINER`, soft-gate, fonctions N
 | Les journaux ne masquaient pas les adresses e-mail | Moyenne | `redact` dans `packages/orchestrator/src/log.ts` | Motif e-mail ajouté aux masques (jetons, JWT, clés déjà masqués, dont le jeton de partage 32 hex) | Corrigé |
 | Retour chariot ou saut de ligne dans destinataire, objet, lien de désinscription ou expéditeur | Moyenne | `createBrevoMailer.send` envoyait ces champs tels quels à l’API JSON Brevo | Refus `mail_header` avant l’appel. Le lien de désinscription reste signé (HMAC, comparaison en temps constant) | Corrigé |
 | `glob` 9–14.0.1 (GHSA-3g3m-2fjr-6pw4), tiré par Lighthouse → plugin Sentry, outil de build seulement | Moyenne | `pnpm audit` avant correctif | Override `glob@<14.0.2` → `14.0.2`. `scripts/deps-audit.test.ts` | Corrigé |
-| `anon` peut lire toutes les colonnes de `public.sites` et `public.reports` quand la ligne est publique : `owner_id`, `share_token` | Moyenne | `grant select on public.sites to anon` et `grant select on public.reports to anon` (`20261101191806_init.sql`). Politiques `sites_select_anon`, `reports_select_anon`. Les pages publiques passent par les RPC, pas par ces tables | SQL ci-dessous. Pas appliqué : consigne de ne pas créer de migration | À appliquer par le propriétaire |
-| Un compte connecté peut lire les sites publics des autres (`owner_id`) et les rapports `visibility = public` (`share_token`) | Moyenne | Politiques `sites_select` et `reports_select` : propriétaire **ou** ligne publique. Un droit de colonne ne peut pas dépendre de la ligne | SQL optionnel ci-dessous. L’interface propriétaire et le test RLS « anon ne reçoit que sites et reports » sont à revoir en même temps. La note publique passe déjà par `read_public_score` / `read_shared_score` | À appliquer par le propriétaire, après relecture |
+| `anon` peut lire toutes les colonnes de `public.sites` et `public.reports` quand la ligne est publique : `owner_id`, `share_token` | Moyenne | `grant select on public.sites to anon` et `grant select on public.reports to anon` (`20261101191806_init.sql`). Politiques `sites_select_anon`, `reports_select_anon`. Les pages publiques passent par les RPC, pas par ces tables | `20261103130357_rls_sites_reports_anon.sql` | Déjà en production sous ce numéro. Ne pas rejouer |
+| Un compte connecté peut lire les sites publics des autres (`owner_id`) et les rapports `visibility = public` (`share_token`) | Moyenne | Politiques `sites_select` et `reports_select` : propriétaire **ou** ligne publique. Un droit de colonne ne peut pas dépendre de la ligne | Même fichier `20261103130357_rls_sites_reports_anon.sql` | Déjà en production sous ce numéro. Ne pas rejouer |
 | `deepmerge` 4.2.0–4.3.1 (GHSA-gcqx-w48m-2h4j), chaîne Astro → Svelte, build seulement. Aucune version corrigée publiée | Faible | `pnpm audit` : 1 faible restante | Aucun correctif en amont | Accepté |
 | `GET /api/auth/session` renvoie `access_token` au JavaScript. `refresh_token` est vide | Faible | `packages/db/src/auth-http.ts`. Le jeton dure 1 h. Les cookies de session sont `httpOnly`, `SameSite=Lax`, `secure` si l’URL est https | Non retiré : le client s’en sert. CSP sans `unsafe-inline` sur les scripts | Accepté |
 | `set:html={JSON.stringify(...)}` n’échappe pas `<`. Pas de `{@html}` | Faible | Pages i18n / JSON-LD. Dictionnaires statiques, pas de texte visiteur. La prop `jsonLd` n’a pas d’appelant | Aucun changement | Accepté |
@@ -34,18 +34,18 @@ Lecture du code (auth, RLS, fonctions `SECURITY DEFINER`, soft-gate, fonctions N
 - Cookies de session `httpOnly`. `audixio_connecte` est un drapeau, pas un secret.
 - Rotation du jeton quand un rapport passe en lien. Un jeton de ligne `public` ne suffit pas à `read_shared_score` (il exige `visibility = link`).
 
-## SQL à appliquer par le propriétaire
+## SQL propriétaire (déjà en production)
 
-Ne pas le coller dans une migration de cette PR. Le coller dans le SQL editor du projet, ou dans une migration séparée après relecture.
+Le SQL ci-dessous est celui de `supabase/migrations/20261103130357_rls_sites_reports_anon.sql`. Il est déjà appliqué en production sous la version `20261103130357`. Ne pas le rejouer. Ne pas `db push`. Les pages publiques restent sur les RPC (`read_public_score`, `read_shared_score`, `read_report_by_share_token`).
 
-Retrait du droit `anon` sur les deux tables. Les pages publiques restent sur les RPC (`read_public_score`, `read_shared_score`, `read_report_by_share_token`).
+Retrait du droit `anon` sur les deux tables.
 
 ```sql
 revoke select on table public.sites from anon;
 revoke select on table public.reports from anon;
 ```
 
-Option, plus stricte. Un visiteur connecté ne lit plus les lignes publiques des autres via la table. À valider avec l’écran Sites et le test RLS avant de l’exécuter.
+Le second bloc est dans la même migration, déjà en production. Un visiteur connecté ne lit plus les lignes publiques des autres via la table. La note publique passe par les RPC.
 
 ```sql
 drop policy if exists sites_select_anon on public.sites;
@@ -68,7 +68,7 @@ using (private.owns_audit(audit_id));
 ## Actions propriétaire
 
 1. Tableau de bord Supabase (Auth, projet hébergé) : longueur minimale du mot de passe à 10 ; activer « Secure password change ». `config.toml` ne pousse pas ces réglages. Vérifier qu’une réinitialisation depuis un lien frais fonctionne encore (une session de recovery de moins de 24 h peut changer le mot de passe sans nonce).
-2. Exécuter le `revoke` ci-dessus. Le second bloc seulement après relecture.
-3. `supabase migration list` doit montrer 12 versions des deux côtés, dont `20261103064721`. Ne pas `db push` cette migration. Ne pas `migration repair`.
+2. Le `revoke` et le resserrement des politiques sont déjà en production (`20261103130357`). Ne pas les réexécuter.
+3. `supabase migration list` doit montrer 14 versions des deux côtés, dont `20261103064721`, `20261103130351` et `20261103130357`. Ne pas `db push` ces migrations. Ne pas `migration repair`.
 4. Une base Docker locale encore sur l’ancien préfixe : `supabase db reset --local` seulement. Jamais sur le projet distant.
 5. `deepmerge` : rien à faire tant qu’aucune version corrigée n’existe. Outil de build, pas le navigateur des visiteurs.
