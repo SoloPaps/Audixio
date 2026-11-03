@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { mobile } from './support';
+import { mobile } from './support.js';
 
 test('pages légales, 404, 500, cookies et Pro', async ({ page, browser }) => {
   await page.goto('/mentions-legales');

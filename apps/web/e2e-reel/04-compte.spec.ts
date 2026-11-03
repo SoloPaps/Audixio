@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { AUTH, readState, writeState } from './support';
+import { AUTH, readState, writeState } from './support.js';
 
 test.use({ storageState: AUTH });
 

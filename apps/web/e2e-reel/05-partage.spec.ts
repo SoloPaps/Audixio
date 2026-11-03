@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { AUTH, ageReport, readState } from './support';
+import { AUTH, ageReport, readState } from './support.js';
 
 test.use({ storageState: AUTH });
 test.describe.configure({ mode: 'serial' });

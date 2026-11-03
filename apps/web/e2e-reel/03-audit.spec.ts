@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { AUTH, LAB, readState, writeState } from './support';
+import { AUTH, LAB, readState, writeState } from './support.js';
 
 test.use({ storageState: AUTH });
 
@@ -68,11 +68,9 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   await page.getByRole('link', { name: 'Voir le détail' }).first().click();
   await expect(page).toHaveURL(/\/constat\?/);
 
-  await page.addInitScript(() => {
-    window.print = () => {
-      document.documentElement.dataset.imprime = 'oui';
-    };
-  });
+  await page.addInitScript(
+    "window.print = () => { document.documentElement.dataset.imprime = 'oui'; };",
+  );
   await page.goto(`/rapport/${auditId}/imprimer`);
   await page.locator('#printBtn').click();
   await expect(page.locator('html')).toHaveAttribute('data-imprime', 'oui');

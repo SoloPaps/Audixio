@@ -5,7 +5,7 @@ import {
   readState,
   waitMailLink,
   writeState,
-} from './support';
+} from './support.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -25,9 +25,10 @@ test('mot de passe de 9 caractères refusé', async ({ page }) => {
   await page.locator('input[name="terms"]').check();
   await page.getByRole('button', { name: 'Créer mon compte' }).click();
   await expect(page).toHaveURL(/\/inscription\/?$/);
-  const tooShort = await page
-    .locator('#signup-password')
-    .evaluate((node) => (node as HTMLInputElement).validity.tooShort);
+  const tooShort = await page.locator('#signup-password').evaluate((node) => {
+    const field = node as unknown as { validity: { tooShort: boolean } };
+    return field.validity.tooShort;
+  });
   expect(tooShort).toBe(true);
 });
 
