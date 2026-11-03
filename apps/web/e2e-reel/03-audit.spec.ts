@@ -14,7 +14,13 @@ test('visiteur non connecté voit le hub et la fenêtre de compte', async ({
   await page.goto('/');
   await page.locator('#url-input').fill(LAB);
   await page.getByRole('button', { name: "Lancer l'audit gratuit" }).click();
-  await expect(page).toHaveURL(/\/rapport\?id=/, { timeout: 30_000 });
+  await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 30_000 });
+  await expect(page.getByRole('status')).toContainText('Analyse en cours');
+  const voir = page.locator('#reportBtn');
+  await expect(voir).toBeVisible({ timeout: 30_000 });
+  await expect(voir).toContainText('Voir le rapport');
+  await voir.click();
+  await expect(page).toHaveURL(/\/rapport\?id=/);
   await expect(
     page.getByText(/partielle · \d+ domaines · site non vérifié/),
   ).toBeVisible();
@@ -40,8 +46,10 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   expect(auditId).not.toBe('');
   const state = await readState();
   await writeState({ ...state, auditId });
-  await expect(page.locator('#report-link')).toBeVisible({ timeout: 120_000 });
-  await page.locator('#report-link').click();
+  const voir = page.locator('#reportBtn');
+  await expect(voir).toBeVisible({ timeout: 120_000 });
+  await expect(voir).toContainText('Voir le rapport');
+  await voir.click();
   await expect(page).toHaveURL(/\/rapport\?id=/);
   await expect(
     page.getByText(/partielle · \d+ domaines · site non vérifié/),
