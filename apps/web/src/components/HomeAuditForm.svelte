@@ -1,6 +1,6 @@
 <script lang="ts">
 import { t } from '../i18n/slim.js';
-import { normalizeSiteUrl } from '../lib/site-url.js';
+import { isCompleteHttpUrl } from '../lib/site-url.js';
 
 let invalid = $state(false);
 
@@ -8,13 +8,12 @@ function onSubmit(event: SubmitEvent): void {
   const form = event.currentTarget;
   if (!(form instanceof HTMLFormElement)) return;
   const raw = String(new FormData(form).get('url') ?? '').trim();
-  try {
-    normalizeSiteUrl(raw);
+  if (isCompleteHttpUrl(raw)) {
     invalid = false;
-  } catch {
-    event.preventDefault();
-    invalid = true;
+    return;
   }
+  event.preventDefault();
+  invalid = true;
 }
 </script>
 
