@@ -1,8 +1,7 @@
 <script lang="ts">
 import { t } from '../i18n/index.js';
-import { browserClient } from '../lib/browser-session.js';
+import { currentSession } from '../lib/browser-session.js';
 import { badgeHref } from '../lib/hub-view.js';
-import { shareIsOpen } from '../lib/public-score.js';
 
 interface Props {
   auditId: string;
@@ -39,43 +38,61 @@ $effect(() => {
   };
 });
 
+async function bearer(): Promise<string | null> {
+  const session = await currentSession();
+  return session?.access_token ?? null;
+}
+
 async function load(): Promise<void> {
-  const supabase = browserClient();
-  if (!supabase) return;
-  const { data } = await supabase
-    .from('reports')
-    .select('share_token, visibility, revoked_at')
-    .eq('audit_id', auditId)
-    .eq('visibility', 'link')
-    .is('revoked_at', null)
-    .limit(1);
-  const row = Array.isArray(data) ? data[0] : undefined;
-  if (
-    !row ||
-    !shareIsOpen({ visibility: row.visibility, revokedAt: row.revoked_at })
-  ) {
-    link = '';
-    return;
-  }
-  link = `${location.origin}/partage/${row.share_token}`;
+  const token = await bearer();
+  if (!token) return;
+  const response = await fetch(
+    `/api/liens?auditId=${encodeURIComponent(auditId)}`,
+    {
+      headers: { authorization: `Bearer ${token}`, accept: 'application/json' },
+    },
+  );
+  if (!response.ok) return;
+  const body = (await response.json()) as {
+    liens?: { kind?: string; url?: string }[];
+  };
+  const row = body.liens?.find((item) => item.kind === 'public' && item.url);
+  link = row?.url ? `${location.origin}${row.url}` : '';
 }
 
 async function create(): Promise<void> {
-  const supabase = browserClient();
-  if (!supabase || pending) return;
-  pending = true;
-  error = '';
-  const { data, error: writeError } = await supabase
-    .from('reports')
-    .insert({ audit_id: auditId, visibility: 'link' })
-    .select('share_token, visibility, revoked_at')
-    .single();
-  pending = false;
-  if (writeError || !data?.share_token) {
+  const token = await bearer();
+  if (!token || pending) {
     error = t('share.error');
     return;
   }
-  link = `${location.origin}/partage/${data.share_token}`;
+  pending = true;
+  error = '';
+  let response: Response;
+  try {
+    response = await fetch('/api/liens', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({ auditId, kind: 'public' }),
+    });
+  } catch {
+    pending = false;
+    error = t('share.error');
+    return;
+  }
+  const body = (await response.json().catch(() => null)) as {
+    url?: string;
+  } | null;
+  pending = false;
+  if (!response.ok || !body?.url?.startsWith('/partage/')) {
+    error = t('share.error');
+    return;
+  }
+  link = `${location.origin}${body.url}`;
   notice = t('share.created');
 }
 

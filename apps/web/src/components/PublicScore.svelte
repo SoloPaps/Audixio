@@ -21,6 +21,7 @@ import {
   saveTextFile,
 } from '../lib/report-export.js';
 import { type Level, levelForScore } from '../lib/score.js';
+import { translate } from '../lib/translate.js';
 import { publicCoverageNote } from '../lib/untested-cause.js';
 import CategoryList from './CategoryList.svelte';
 import EmptyState from './EmptyState.svelte';
@@ -190,7 +191,16 @@ onMount(() => {
   <section class="glass glass-module">
     <div class="glass-plate">
       <h2>{t('score.security.title')}</h2>
-      <p>{t('score.security.hidden')}</p>
+      {#if view.access === 'team' && view.securityDetails.length > 0}
+        <ul>
+          {#each view.securityDetails as row (row.checkId)}
+            <li>{translate(row.messageKey) ?? row.checkId}</li>
+          {/each}
+        </ul>
+        {#if view.briefText}<p class="prose">{view.briefText}</p>{/if}
+      {:else}
+        <p>{t('score.security.hidden')}</p>
+      {/if}
       <p class="export-links">
         <button type="button" class="button button-secondary" onclick={download}>
           {t('sites.badge')}

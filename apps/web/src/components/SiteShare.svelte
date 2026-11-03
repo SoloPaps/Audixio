@@ -2,8 +2,8 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { scoreAutorise } from '../lib/apercu.js';
-import { browserClient } from '../lib/browser-session.js';
-import { scoreBadgeSvg, shareIsOpen } from '../lib/public-score.js';
+import { browserClient, currentSession } from '../lib/browser-session.js';
+import { scoreBadgeSvg } from '../lib/public-score.js';
 
 interface SiteShareRow {
   id: string;
@@ -66,22 +66,35 @@ async function loadAudit(): Promise<void> {
   if (!latest) return;
   auditId = latest.id;
   globalScore = await scoreAutorise(supabase, latest.id);
-  const { data: reports } = await supabase
-    .from('reports')
-    .select('id, share_token, visibility, revoked_at')
-    .eq('audit_id', latest.id)
-    .eq('visibility', 'link')
-    .is('revoked_at', null)
-    .limit(1);
-  const open = Array.isArray(reports) ? reports[0] : undefined;
-  if (!open) return;
-  if (
-    !shareIsOpen({ visibility: open.visibility, revokedAt: open.revoked_at })
-  ) {
+  await loadLink(latest.id);
+}
+
+async function bearer(): Promise<string | null> {
+  const session = await currentSession();
+  return session?.access_token ?? null;
+}
+
+function remember(row: { id?: string; url?: string } | undefined): void {
+  if (!row?.id || !row.url?.startsWith('/partage/')) {
+    shareId = null;
+    shareToken = null;
     return;
   }
-  shareId = open.id;
-  shareToken = open.share_token;
+  shareId = row.id;
+  shareToken = row.url.slice('/partage/'.length);
+}
+
+async function loadLink(id: string): Promise<void> {
+  const token = await bearer();
+  if (!token) return;
+  const response = await fetch(`/api/liens?auditId=${encodeURIComponent(id)}`, {
+    headers: { authorization: `Bearer ${token}`, accept: 'application/json' },
+  });
+  if (!response.ok) return;
+  const body = (await response.json()) as {
+    liens?: { id?: string; kind?: string; url?: string }[];
+  };
+  remember(body.liens?.find((item) => item.kind === 'public'));
 }
 
 async function setPublic(next: boolean): Promise<void> {
@@ -128,8 +141,8 @@ async function setExpose(next: boolean): Promise<void> {
 }
 
 async function createShare(): Promise<void> {
-  const supabase = browserClient();
-  if (!supabase || pending) return;
+  const token = await bearer();
+  if (!token || pending) return;
   if (!auditId) {
     error = t('sites.share.need_audit');
     return;
@@ -137,46 +150,58 @@ async function createShare(): Promise<void> {
   pending = true;
   error = '';
   notice = '';
-  const { data, error: writeError } = await supabase
-    .from('reports')
-    .insert({ audit_id: auditId, visibility: 'link' })
-    .select('id, share_token, visibility, revoked_at')
-    .single();
-  pending = false;
-  if (writeError || !data) {
+  let response: Response;
+  try {
+    response = await fetch('/api/liens', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({ auditId, kind: 'public' }),
+    });
+  } catch {
+    pending = false;
     error = t('sites.error');
     return;
   }
-  if (
-    !shareIsOpen({ visibility: data.visibility, revokedAt: data.revoked_at })
-  ) {
-    notice = t('sites.share.revoked');
+  const body = (await response.json().catch(() => null)) as {
+    id?: string;
+    url?: string;
+  } | null;
+  pending = false;
+  if (!response.ok || !body) {
+    error = t('sites.error');
     return;
   }
-  shareId = data.id;
-  shareToken = data.share_token;
+  remember(body);
+  notice = t('share.created');
 }
 
 async function revokeShare(): Promise<void> {
-  const supabase = browserClient();
-  if (!supabase || pending || !shareId) return;
+  const token = await bearer();
+  if (!token || pending || !shareId) return;
   pending = true;
   error = '';
-  const revokedAt = new Date().toISOString();
-  const { data, error: writeError } = await supabase
-    .from('reports')
-    .update({ revoked_at: revokedAt })
-    .eq('id', shareId)
-    .select('visibility, revoked_at')
-    .single();
-  pending = false;
-  if (writeError || !data) {
+  let response: Response;
+  try {
+    response = await fetch('/api/liens', {
+      method: 'DELETE',
+      headers: {
+        authorization: `Bearer ${token}`,
+        'content-type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({ id: shareId }),
+    });
+  } catch {
+    pending = false;
     error = t('sites.error');
     return;
   }
-  if (
-    shareIsOpen({ visibility: data.visibility, revokedAt: data.revoked_at })
-  ) {
+  pending = false;
+  if (!response.ok) {
     error = t('sites.error');
     return;
   }
