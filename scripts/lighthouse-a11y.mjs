@@ -1,9 +1,30 @@
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import net from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
+import { pathToFileURL } from 'node:url';
+
+export const A11Y_CHROME_FLAGS =
+  '--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage';
+export const A11Y_ATTEMPTS = 3;
+
+/** Relance si Chrome n’a pas publié son port. Un code 0 passe à la lecture. */
+export function a11yAttempt(code, attempt, max = A11Y_ATTEMPTS) {
+  if (code === 0) return 'read';
+  if (attempt < max) return 'retry';
+  return 'fail';
+}
+
+/** Dernier chemin absolu, en ignorant le bruit de pnpm. */
+export function chromePathFromOutput(text) {
+  const lines = String(text)
+    .trim()
+    .split(/\r?\n/)
+    .filter((row) => row.startsWith('/'));
+  return lines[lines.length - 1] ?? '';
+}
 
 const port = 4322;
 const host = '127.0.0.1';
@@ -57,68 +78,126 @@ function waitForPort(timeoutMs) {
   });
 }
 
-const server = spawn(
-  'pnpm',
-  [
-    '--filter',
-    '@audigy/web',
-    'exec',
-    'astro',
-    'dev',
-    '--host',
-    host,
-    '--port',
-    String(port),
-  ],
-  {
-    stdio: 'inherit',
-    detached: true,
-    env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' },
-  },
-);
-
-try {
-  await waitForPort(120_000);
-  await delay(300);
-  const dir = await mkdtemp(path.join(tmpdir(), 'audigy-lh-'));
-  const failures = [];
-  for (const [index, url] of pages.entries()) {
-    const output = path.join(dir, `${index}.json`);
-    const child = spawn(
+function playwrightChrome() {
+  try {
+    const out = execFileSync(
       'pnpm',
       [
+        '--filter',
+        '@audigy/web',
         'exec',
-        'lighthouse',
-        url,
-        '--only-categories=accessibility',
-        '--quiet',
-        '--chrome-flags=--headless=new --no-sandbox --disable-gpu',
-        `--output-path=${output}`,
-        '--output=json',
+        'node',
+        '--input-type=module',
+        '-e',
+        "import { chromium } from '@playwright/test'; console.log(chromium.executablePath());",
       ],
-      { stdio: 'inherit' },
+      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] },
     );
-    const code = await new Promise((resolve) => child.on('exit', resolve));
-    if (code !== 0) failures.push(`${url} lighthouse a quitté ${code}`);
-    const report = JSON.parse(await readFile(output, 'utf8'));
-    const score = report.categories?.accessibility?.score;
-    if (score !== 1) {
-      const audits = Object.values(report.audits ?? {})
-        .filter((audit) => audit.score !== null && audit.score < 1)
-        .map((audit) => audit.id);
-      failures.push(`${url} score ${score} : ${audits.join(', ')}`);
+    return chromePathFromOutput(out);
+  } catch {
+    return '';
+  }
+}
+
+function runLighthouse(url, output, chromePath) {
+  const child = spawn(
+    'pnpm',
+    [
+      'exec',
+      'lighthouse',
+      url,
+      '--only-categories=accessibility',
+      '--quiet',
+      `--chrome-flags=${A11Y_CHROME_FLAGS}`,
+      `--output-path=${output}`,
+      '--output=json',
+    ],
+    {
+      stdio: 'inherit',
+      env: chromePath
+        ? { ...process.env, CHROME_PATH: chromePath }
+        : process.env,
+    },
+  );
+  return new Promise((resolve) => child.on('exit', resolve));
+}
+
+async function main() {
+  const server = spawn(
+    'pnpm',
+    [
+      '--filter',
+      '@audigy/web',
+      'exec',
+      'astro',
+      'dev',
+      '--host',
+      host,
+      '--port',
+      String(port),
+    ],
+    {
+      stdio: 'inherit',
+      detached: true,
+      env: { ...process.env, ASTRO_TELEMETRY_DISABLED: '1' },
+    },
+  );
+
+  try {
+    await waitForPort(120_000);
+    await delay(300);
+    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-lh-'));
+    const chromePath = playwrightChrome();
+    const failures = [];
+    for (const [index, url] of pages.entries()) {
+      const output = path.join(dir, `${index}.json`);
+      let code = 1;
+      for (let attempt = 1; attempt <= A11Y_ATTEMPTS; attempt += 1) {
+        code = await runLighthouse(url, output, chromePath);
+        const next = a11yAttempt(code, attempt);
+        if (next === 'retry') {
+          await delay(1500);
+          continue;
+        }
+        break;
+      }
+      if (code !== 0) {
+        failures.push(`${url} lighthouse a quitté ${code}`);
+        continue;
+      }
+      let report;
+      try {
+        report = JSON.parse(await readFile(output, 'utf8'));
+      } catch {
+        failures.push(`${url} rapport illisible`);
+        continue;
+      }
+      const score = report.categories?.accessibility?.score;
+      if (score !== 1) {
+        const audits = Object.values(report.audits ?? {})
+          .filter((audit) => audit.score !== null && audit.score < 1)
+          .map((audit) => audit.id);
+        failures.push(`${url} score ${score} : ${audits.join(', ')}`);
+      }
+    }
+    await rm(dir, { recursive: true, force: true });
+    if (failures.length > 0) {
+      throw new Error(failures.join('\n'));
+    }
+  } finally {
+    if (server.pid) {
+      try {
+        process.kill(-server.pid, 'SIGTERM');
+      } catch {
+        server.kill('SIGTERM');
+      }
     }
   }
-  await rm(dir, { recursive: true, force: true });
-  if (failures.length > 0) {
-    throw new Error(failures.join('\n'));
-  }
-} finally {
-  if (server.pid) {
-    try {
-      process.kill(-server.pid, 'SIGTERM');
-    } catch {
-      server.kill('SIGTERM');
-    }
-  }
+}
+
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  await main();
 }
