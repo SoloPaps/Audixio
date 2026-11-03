@@ -21,6 +21,7 @@ const PATTERNS: RegExp[] = [
   /\b1\/\/[A-Za-z0-9_\-+/=]{8,}/g,
   /\bya29\.[A-Za-z0-9_-]{1,4096}/g,
   /\b[0-9a-f]{32}\b/g,
+  /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
 ];
 
 export type LogLevel = 'info' | 'warn' | 'error';

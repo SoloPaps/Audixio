@@ -395,6 +395,14 @@ export function createBrevoMailer(options: {
   const doFetch = options.fetch ?? globalThis.fetch;
   return {
     async send(message) {
+      if (
+        /[\r\n]/.test(message.to) ||
+        /[\r\n]/.test(message.subject) ||
+        /[\r\n]/.test(message.unsubscribeUrl) ||
+        /[\r\n]/.test(options.senderEmail)
+      ) {
+        throw new Error('mail_header');
+      }
       const res = await doFetch(BREVO_URL, {
         method: 'POST',
         redirect: 'error',
