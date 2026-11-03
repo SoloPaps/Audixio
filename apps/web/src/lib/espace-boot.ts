@@ -6,8 +6,11 @@ import { formatDate, t } from '../i18n/index.js';
 import { scoreAutorise } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
+import { axisLabels, GLOBAL_SERIES } from './history.js';
+import { type EvolutionChart, evolutionChart } from './history-chart.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
 import { parsePlacesState } from './places-api.js';
+import { loadSiteHistory } from './site-history.js';
 import { latestAuditBySite } from './site-tiles.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from './site-url.js';
 
@@ -509,33 +512,133 @@ function bindProModal(_root: HTMLElement): () => void {
   };
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function applyEvolutionChart(svg: SVGSVGElement, chart: EvolutionChart): void {
+  svg.querySelector('polyline.ln')?.setAttribute('points', chart.polyline);
+  svg.querySelector('path.area')?.setAttribute('d', chart.area);
+  const lines = svg.querySelectorAll('.grid line');
+  const texts = svg.querySelectorAll('.grid text');
+  chart.ticks.forEach((tick, index) => {
+    const line = lines[index];
+    const text = texts[index];
+    line?.setAttribute('y1', tick.y);
+    line?.setAttribute('y2', tick.y);
+    if (!text) return;
+    text.setAttribute('y', tick.textY);
+    text.textContent = tick.label;
+  });
+  svg.querySelectorAll('g.pt, rect.hit').forEach((node) => {
+    node.remove();
+  });
+  const labels = svg.querySelector('g.xl');
+  const anchor = labels ?? svg.querySelector('#cross');
+  if (labels) labels.replaceChildren();
+  for (const mark of chart.marks) {
+    const group = document.createElementNS(SVG_NS, 'g');
+    group.setAttribute(
+      'class',
+      mark.index === chart.marks.length - 1 ? 'pt last' : 'pt',
+    );
+    group.style.setProperty('--d', mark.delay);
+    const halo = document.createElementNS(SVG_NS, 'circle');
+    halo.setAttribute('class', 'halo');
+    halo.setAttribute('cx', String(mark.x));
+    halo.setAttribute('cy', String(mark.y));
+    halo.setAttribute('r', '16');
+    const dot = document.createElementNS(SVG_NS, 'circle');
+    dot.setAttribute('class', 'dot');
+    dot.setAttribute('cx', String(mark.x));
+    dot.setAttribute('cy', String(mark.y));
+    dot.setAttribute('r', '7');
+    const value = document.createElementNS(SVG_NS, 'text');
+    value.setAttribute('class', 'val');
+    value.setAttribute('x', String(mark.x));
+    value.setAttribute('y', String(mark.y - 20));
+    value.setAttribute('text-anchor', 'middle');
+    value.textContent = String(Math.round(mark.value));
+    group.append(halo, dot, value);
+    anchor?.parentNode?.insertBefore(group, anchor);
+    if (labels) {
+      const label = document.createElementNS(SVG_NS, 'text');
+      label.setAttribute('x', String(mark.x));
+      label.setAttribute('y', '290');
+      label.setAttribute('text-anchor', 'middle');
+      label.textContent = mark.label;
+      labels.append(label);
+    }
+    const hit = document.createElementNS(SVG_NS, 'rect');
+    hit.setAttribute('class', 'hit');
+    hit.setAttribute('x', String(mark.hitX));
+    hit.setAttribute('y', '0');
+    hit.setAttribute('width', String(mark.hitWidth));
+    hit.setAttribute('height', '300');
+    hit.dataset.i = String(mark.index);
+    svg.append(hit);
+  }
+}
+
 function bindHistory(root: HTMLElement): () => void {
   const off: (() => void)[] = [];
+  let dead = false;
   const chart = root.querySelector<HTMLElement>('#chart');
   const svg = chart?.querySelector('svg');
   const tip = root.querySelector<HTMLElement>('#tip');
   const cross = root.querySelector<SVGLineElement>('#cross');
-  const labels = ['Déc. 2025', 'Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai 2026'];
-  const values = [78, 79, 80, 81, 82, 84];
-  const xOf = (index: number): number => 70 + index * 164;
-  const yOf = (value: number): number => 260 - ((value - 70) / 20) * 230;
+  let labels = ['Déc. 2025', 'Janv.', 'Févr.', 'Mars', 'Avr.', 'Mai 2026'];
+  let values = [78, 79, 80, 81, 82, 84];
+  let xs = [70, 234, 398, 562, 726, 890];
+  let ys = [168, 156.5, 145, 133.5, 122, 99];
   const show = (index: number): void => {
     if (!svg || !tip || !chart || !cross) return;
     const box = svg.getBoundingClientRect();
     const scale = box.width / 960;
-    tip.innerHTML = `${labels[index]} · <b>${values[index]}</b>`;
-    tip.style.left = `${xOf(index) * scale - chart.scrollLeft}px`;
-    tip.style.top = `${yOf(values[index] ?? 0) * scale - 14}px`;
+    const x = xs[index] ?? 0;
+    const y = ys[index] ?? 0;
+    tip.innerHTML = `${labels[index] ?? ''} · <b>${values[index] ?? ''}</b>`;
+    tip.style.left = `${x * scale - chart.scrollLeft}px`;
+    tip.style.top = `${y * scale - 14}px`;
     tip.classList.add('on');
-    cross.setAttribute('x1', String(xOf(index)));
-    cross.setAttribute('x2', String(xOf(index)));
+    cross.setAttribute('x1', String(x));
+    cross.setAttribute('x2', String(x));
     cross.style.opacity = '1';
   };
-  svg?.querySelectorAll<SVGElement>('.hit').forEach((hit) => {
-    const enter = (): void => show(Number(hit.dataset.i));
-    hit.addEventListener('pointerenter', enter);
-    off.push(() => hit.removeEventListener('pointerenter', enter));
-  });
+  const bindHits = (): void => {
+    svg?.querySelectorAll<SVGElement>('.hit').forEach((hit) => {
+      const enter = (): void => show(Number(hit.dataset.i));
+      hit.addEventListener('pointerenter', enter);
+      off.push(() => hit.removeEventListener('pointerenter', enter));
+    });
+  };
+  bindHits();
+  const site = new URLSearchParams(location.search).get('site')?.trim() ?? '';
+  if (site && svg) {
+    void loadSiteHistory(site, 'other').then((view) => {
+      if (dead || !view) return;
+      const scored = view.points.flatMap((point) => {
+        const value = point.scores[GLOBAL_SERIES];
+        return typeof value === 'number' ? [{ at: point.at, value }] : [];
+      });
+      const names = axisLabels(
+        scored.map((point) => Date.parse(point.at) / 1000),
+      );
+      const built = evolutionChart(
+        scored.map((point, index) => ({
+          label: names[index] ?? '',
+          value: point.value,
+        })),
+      );
+      if (!built) return;
+      applyEvolutionChart(svg, built);
+      labels = built.marks.map((mark) => mark.label);
+      values = built.marks.map((mark) => Math.round(mark.value));
+      xs = built.marks.map((mark) => mark.x);
+      ys = built.marks.map((mark) => mark.y);
+      const average = root.querySelector('.avg [data-count]');
+      if (average) average.textContent = built.average;
+      bindHits();
+    });
+  }
   const leave = (): void => {
     tip?.classList.remove('on');
     if (cross) cross.style.opacity = '0';
@@ -586,6 +689,7 @@ function bindHistory(root: HTMLElement): () => void {
     off.push(() => button.removeEventListener('click', click));
   });
   return () => {
+    dead = true;
     for (const fn of off) fn();
   };
 }
