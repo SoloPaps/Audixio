@@ -37,9 +37,6 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export function clientIp(request: Request): string {
   const netlify = request.headers.get('x-nf-client-connection-ip')?.trim();
   if (netlify) return netlify.slice(0, 64);
-  const forwarded = request.headers.get('x-forwarded-for');
-  const first = forwarded?.split(',')[0]?.trim();
-  if (first && first.length > 0) return first.slice(0, 64);
   return 'local';
 }
 

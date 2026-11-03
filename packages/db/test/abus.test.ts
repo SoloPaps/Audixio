@@ -66,8 +66,15 @@ describe('plafonds anti-abus', () => {
           headers: { 'x-forwarded-for': ' 198.51.100.2 , 10.0.0.1' },
         }),
       ),
-    ).toBe('198.51.100.2');
+    ).toBe('local');
     expect(clientIp(new Request('http://localhost/'))).toBe('local');
+    expect(
+      clientIp(
+        new Request('http://localhost/', {
+          headers: { 'x-forwarded-for': '203.0.113.8' },
+        }),
+      ),
+    ).toBe('local');
   });
 
   it('normalise le domaine et refuse l’hôte local', () => {

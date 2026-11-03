@@ -19,7 +19,7 @@ import { z } from 'zod';
 import { apiError, bearerToken } from './http.js';
 import { errorCode, type Logger } from './log.js';
 
-const SEARCH_LIMIT = 30;
+export const SEARCH_LIMIT = 30;
 const HOUR_MS = 60 * 60 * 1000;
 
 type Client = SupabaseClient<Database>;
@@ -242,22 +242,13 @@ export async function takePlacesSlot(
   const key = createHash('sha256')
     .update(`places:${userId}:${windowStart.toISOString()}`)
     .digest('hex');
-  const { data, error } = await client
-    .from('rate_limits')
-    .select('count')
-    .eq('key', key)
-    .eq('window_start', windowStart.toISOString())
-    .maybeSingle();
+  const { data, error } = await client.rpc('consume_rate_limit', {
+    p_key: key,
+    p_window_start: windowStart.toISOString(),
+    p_limit: SEARCH_LIMIT,
+  });
   if (error) return false;
-  const count = data?.count ?? 0;
-  if (count >= SEARCH_LIMIT) return false;
-  const { error: writeError } = await client
-    .from('rate_limits')
-    .upsert(
-      { key, window_start: windowStart.toISOString(), count: count + 1 },
-      { onConflict: 'key,window_start' },
-    );
-  return !writeError;
+  return data === true;
 }
 
 export interface PlacesFromEnvOptions {

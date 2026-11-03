@@ -44,6 +44,12 @@ describe('journal', () => {
     expect(errorCode(new Error(token))).toBe('unknown');
   });
 
+  it('masque une adresse e-mail', () => {
+    const out = redact('contact ada@exemple.fr fini', []);
+    expect(out).not.toContain('ada@exemple.fr');
+    expect(out).toContain('[masqué]');
+  });
+
   it('masque un jeton Google de rafraîchissement et d’accès', () => {
     const refresh = '1//0refresh-token-sentinel';
     const access = 'ya29.access-token-sentinel';

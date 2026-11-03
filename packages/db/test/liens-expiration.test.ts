@@ -16,7 +16,7 @@ const AUDIT = 'cccccccc-cccc-4ccc-8ccc-cccccccccc10';
 const SECRET = 'secret-lien-expire-hsts';
 const SHA = 'cd'.repeat(32);
 const MIGRATION = readFileSync(
-  `${repoRoot}supabase/migrations/20261103061242_liens_partage.sql`,
+  `${repoRoot}supabase/migrations/20261103064721_liens_partage.sql`,
   'utf8',
 );
 

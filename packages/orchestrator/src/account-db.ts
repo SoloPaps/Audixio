@@ -460,7 +460,7 @@ function oauthExportSelect(): 'provider' {
   return 'provider';
 }
 
-async function takeAccountSlot(
+export async function takeAccountSlot(
   service: Client,
   userId: string,
   action: AccountAction,
@@ -469,23 +469,13 @@ async function takeAccountSlot(
   const key = createHash('sha256')
     .update(`audigy:account:${action}:${userId}:${windowStart}`)
     .digest('hex');
-  const { data, error } = await service
-    .from('rate_limits')
-    .select('count')
-    .eq('key', key)
-    .eq('window_start', windowStart)
-    .maybeSingle();
+  const { data, error } = await service.rpc('consume_rate_limit', {
+    p_key: key,
+    p_window_start: windowStart,
+    p_limit: accountLimit(action),
+  });
   if (error) throw new Error('rate_limit');
-  const count = data?.count ?? 0;
-  if (count >= accountLimit(action)) return false;
-  const { error: writeError } = await service
-    .from('rate_limits')
-    .upsert(
-      { key, window_start: windowStart, count: count + 1 },
-      { onConflict: 'key,window_start' },
-    );
-  if (writeError) throw new Error('rate_limit');
-  return true;
+  return data === true;
 }
 
 export function accountDepsFromEnv(options: {

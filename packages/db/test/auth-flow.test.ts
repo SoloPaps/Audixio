@@ -47,7 +47,7 @@ async function call(
   const headers = new Headers();
   if (init.json !== false) headers.set('accept', 'application/json');
   if (init.jar) headers.set('cookie', cookieHeader(init.jar));
-  if (init.ip) headers.set('x-forwarded-for', init.ip);
+  if (init.ip) headers.set('x-nf-client-connection-ip', init.ip);
   let body: string | undefined;
   if (init.form) {
     headers.set('content-type', 'application/x-www-form-urlencoded');

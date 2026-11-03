@@ -44,7 +44,7 @@ function post(path: string, body: unknown, ip = '203.0.113.8'): Request {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      'x-forwarded-for': ip,
+      'x-nf-client-connection-ip': ip,
     },
     body: JSON.stringify(body),
   });
