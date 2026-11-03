@@ -17,8 +17,11 @@ export function isLocalSupabaseUrl(url: string | null | undefined): boolean {
   }
 }
 
-/** Plafond pratiquement levé, uniquement en local. Tient dans un integer SQL. */
-export const GUEST_AUDIT_LOCAL_LIMIT = 1_000_000;
+/**
+ * Plafond local. `consume_rate_limit` refuse toute valeur au-dessus de 1000
+ * (la fonction renvoie false, donc un 429 à chaque audit).
+ */
+export const GUEST_AUDIT_LOCAL_LIMIT = 1000;
 
 /**
  * 3 audits / 24 h, sauf si le réglage local est demandé ET que l’URL

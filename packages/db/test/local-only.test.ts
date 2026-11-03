@@ -36,6 +36,11 @@ describe('plafond visiteur local', () => {
     ).toBe(3);
   });
 
+  it('reste sous le plafond SQL de consume_rate_limit', () => {
+    expect(GUEST_AUDIT_LOCAL_LIMIT).toBeGreaterThan(GUEST_AUDIT.limit);
+    expect(GUEST_AUDIT_LOCAL_LIMIT).toBeLessThanOrEqual(1000);
+  });
+
   it('lève le plafond seulement avec une URL locale et le réglage', () => {
     expect(guestAuditLimit({ supabaseUrl: LOCAL_API, lift: true })).toBe(
       GUEST_AUDIT_LOCAL_LIMIT,
