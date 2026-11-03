@@ -59,7 +59,9 @@ describe('fonctions Netlify', () => {
       'api-audits-create',
       'api-audits-get',
       'api-compte',
+      'api-demandes-acces',
       'api-places',
+      'api-robot',
       'api-unsubscribe',
       'api-verifications-check',
       'api-verifications-create',
@@ -87,6 +89,14 @@ describe('fonctions Netlify', () => {
     expect((await load('api-places')).config).toEqual({
       path: '/api/places',
       method: ['GET', 'POST'],
+    });
+    expect((await load('api-demandes-acces')).config).toEqual({
+      path: '/api/demandes-acces',
+      method: 'POST',
+    });
+    expect((await load('api-robot')).config).toEqual({
+      path: '/api/robot',
+      method: 'POST',
     });
     expect((await load('audit-run-background')).config).toBeUndefined();
     expect((await load('api-verifications-create')).config).toEqual({
