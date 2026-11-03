@@ -661,7 +661,7 @@ async function collect(
         };
         scrollWidth: number;
         clientWidth: number;
-        querySelectorAll: (selector: string) => ArrayLike<El>;
+        querySelectorAll: (selector: string) => Iterable<El>;
       };
       type Style = {
         display: string;
@@ -679,7 +679,7 @@ async function collect(
             | (El & { scrollWidth: number; clientWidth: number })
             | null;
           body: El & { scrollWidth: number };
-          querySelectorAll: (selector: string) => ArrayLike<El>;
+          querySelectorAll: (selector: string) => Iterable<El>;
         };
         getComputedStyle: (el: El) => Style;
         innerWidth: number;
@@ -994,10 +994,17 @@ test.describe('débordement mobile', () => {
       await page
         .waitForFunction(
           () => {
-            const nodes = document.querySelectorAll('astro-island');
+            const view = globalThis as unknown as {
+              document: {
+                querySelectorAll: (
+                  selector: string,
+                ) => Iterable<{ hasAttribute: (name: string) => boolean }>;
+              };
+            };
+            const nodes = [...view.document.querySelectorAll('astro-island')];
             return (
               nodes.length === 0 ||
-              [...nodes].every((node) => !node.hasAttribute('ssr'))
+              nodes.every((node) => !node.hasAttribute('ssr'))
             );
           },
           { timeout: 15_000 },
@@ -1009,7 +1016,12 @@ test.describe('débordement mobile', () => {
         await page.evaluate(
           () =>
             new Promise((resolve) => {
-              requestAnimationFrame(() => requestAnimationFrame(resolve));
+              const view = globalThis as unknown as {
+                requestAnimationFrame: (frame: () => void) => void;
+              };
+              view.requestAnimationFrame(() =>
+                view.requestAnimationFrame(() => resolve(undefined)),
+              );
             }),
         );
         const pageIssues = await collect(page, width, 'page');
