@@ -69,6 +69,35 @@ function recordFrom(
   };
 }
 
+/**
+ * La colonne `reports` est la date que `read_shared_score` applique.
+ * Le journal peut encore porter l’ancienne valeur : la colonne gagne.
+ */
+async function applyReports(
+  service: Client,
+  rows: LinkRecord[],
+): Promise<LinkRecord[]> {
+  if (rows.length === 0) return rows;
+  const { data, error } = await service
+    .from('reports')
+    .select('id, expires_at, revoked_at')
+    .in(
+      'id',
+      rows.map((row) => row.id),
+    );
+  if (error) throw new Error('lien_recherche');
+  const byId = new Map((data ?? []).map((row) => [row.id, row]));
+  return rows.map((row) => {
+    const live = byId.get(row.id);
+    if (!live) return row;
+    return {
+      ...row,
+      expiresAt: live.expires_at ?? row.expiresAt,
+      revokedAt: live.revoked_at ?? row.revokedAt,
+    };
+  });
+}
+
 export function supabaseLienStore(
   service: Client,
   asUser: Client | null,
@@ -129,7 +158,7 @@ export function supabaseLienStore(
         const parsed = recordFrom(row.target, row.actor, row.at, row.details);
         if (parsed) rows.push(parsed);
       }
-      return rows;
+      return applyReports(service, rows);
     },
     async tokenOf(hash) {
       const { data, error } = await service
@@ -235,7 +264,10 @@ export function supabaseLienStore(
       if (error) throw new Error('lien_recherche');
       const row = data?.[0];
       if (!row?.target) return null;
-      return recordFrom(row.target, row.actor, row.at, row.details);
+      const parsed = recordFrom(row.target, row.actor, row.at, row.details);
+      if (!parsed) return null;
+      const [live] = await applyReports(service, [parsed]);
+      return live ?? null;
     },
     async rapport(auditId) {
       const { data: audit, error } = await service
