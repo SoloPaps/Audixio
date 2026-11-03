@@ -46,6 +46,7 @@ if (leaked) {
 await pruneUnreferenced(dist);
 await access(path.join(dist, 'index.html'));
 await access(path.join(dist, 'dictionnaire-en.json'));
+await access(path.join(dist, 'dictionnaire-fr.json'));
 await access(path.join(dist, '.well-known', 'audigy-signing-key'));
 const preuves = await readdir(path.join(dist, 'preuves'));
 if (!preuves.some((name) => name.endsWith('.json'))) {

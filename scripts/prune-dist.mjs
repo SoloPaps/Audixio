@@ -2,7 +2,11 @@ import { readdir, readFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 
 /** Fichiers de `public/` chargés hors HTML (fetch runtime). */
-const KEEP_ROOT = new Set(['robots.txt', 'dictionnaire-en.json']);
+const KEEP_ROOT = new Set([
+  'robots.txt',
+  'dictionnaire-en.json',
+  'dictionnaire-fr.json',
+]);
 
 async function walk(dir) {
   const found = [];

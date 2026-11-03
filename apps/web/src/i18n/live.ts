@@ -1,5 +1,3 @@
-import { fr } from './fr.js';
-
 const ORIG = '__axOrig';
 const SKIP =
   'script, style, textarea, noscript, [data-chrome], [data-i18n-skip]';
@@ -27,12 +25,33 @@ function englishPack(): Record<string, string> | null {
   }
 }
 
-function buildMap(pack: Record<string, string>): Map<string, string> {
+let frenchPack: Record<string, string> | null = null;
+let frenchTask: Promise<Record<string, string> | null> | null = null;
+
+function loadFrench(): Promise<Record<string, string> | null> {
+  if (frenchPack) return Promise.resolve(frenchPack);
+  if (!frenchTask) {
+    frenchTask = fetch('/dictionnaire-fr.json')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((pack: unknown) => {
+        if (!pack || typeof pack !== 'object') return null;
+        frenchPack = pack as Record<string, string>;
+        return frenchPack;
+      })
+      .catch(() => null);
+  }
+  return frenchTask;
+}
+
+function buildMap(
+  pack: Record<string, string>,
+  french: Record<string, string>,
+): Map<string, string> {
   const next = new Map<string, string>();
-  for (const [key, french] of Object.entries(fr)) {
+  for (const [key, lineFr] of Object.entries(french)) {
     const english = pack[key];
-    if (!english || english === french) continue;
-    const line = norm(french);
+    if (!english || english === lineFr) continue;
+    const line = norm(lineFr);
     if (line.length < 2 || /^\d+$/.test(line)) continue;
     if (!next.has(line)) next.set(line, english);
   }
@@ -89,8 +108,16 @@ export function applyLocale(locale: 'fr' | 'en'): void {
   }
   const pack = englishPack();
   if (!pack) return;
-  dictionary ??= buildMap(pack);
-  paint('en', dictionary);
+  if (frenchPack) {
+    dictionary ??= buildMap(pack, frenchPack);
+    paint('en', dictionary);
+    return;
+  }
+  void loadFrench().then((french) => {
+    if (!french || !englishPack()) return;
+    dictionary ??= buildMap(pack, french);
+    paint('en', dictionary);
+  });
 }
 
 export function bootLocale(): void {
