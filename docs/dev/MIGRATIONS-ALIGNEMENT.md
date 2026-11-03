@@ -47,6 +47,14 @@ Les chemins cités dans les tests et les docs suivent ces noms. L’ordre d’ap
 
 Une base locale qui a déjà appliqué les anciens préfixes ne correspond plus. La remettre d’aplomb : `supabase db reset --local` (cela efface la base Docker locale). Ne pas faire ce reset sur le projet distant.
 
+## liens_partage
+
+Appliquée en production le 3 novembre 2026, version `20261103064721` (`created_by` = `audixio@outlook.fr`). Le dépôt la nommait `20261103061242_liens_partage.sql`. Le SQL est le même, octet pour octet. Seul le préfixe a changé, pour coller à la version déjà enregistrée :
+
+- `20261103061242_liens_partage.sql` → `20261103064721_liens_partage.sql`
+
+Les tests et `docs/dev/BASE-DE-DONNEES.md` citent ce nouveau nom. Aucune migration n’a été créée ni rejouée.
+
 ## Commande du propriétaire
 
 À lancer depuis la racine du dépôt, après relecture de la PR, et seulement par le propriétaire. Cela n’a pas été exécuté ici.
@@ -54,10 +62,9 @@ Une base locale qui a déjà appliqué les anciens préfixes ne correspond plus.
 ```bash
 supabase link --project-ref pzholfyjwanmkkfggsfe
 supabase migration list
-supabase db push
 ```
 
-`migration list` doit montrer les 11 versions déjà présentes des deux côtés, et une seule migration locale en attente : `20261103061242_liens_partage.sql` (`link_kind`, `expires_at`, `created_at` sur `reports`). `db push` n’applique que celle-là.
+`migration list` doit montrer les 12 versions déjà présentes des deux côtés, dont `20261103064721` (`liens_partage` : `link_kind`, `expires_at`, `created_at` sur `reports`). Rien ne doit rester en attente. Ne pas relancer `supabase db push` pour cette migration : elle est déjà en production sous ce numéro. Un push la verrait comme déjà appliquée.
 
 Ne pas utiliser `supabase migration repair` pour réécrire l’historique distant : les versions prod sont la référence, le dépôt s’y est calé.
 

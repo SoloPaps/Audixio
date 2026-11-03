@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { repoRoot } from './local.js';
 
 const sql = readFileSync(
-  `${repoRoot}supabase/migrations/20261103061242_liens_partage.sql`,
+  `${repoRoot}supabase/migrations/20261103064721_liens_partage.sql`,
   'utf8',
 );
 const store = readFileSync(
