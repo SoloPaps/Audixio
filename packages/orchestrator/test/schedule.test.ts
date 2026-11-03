@@ -9,19 +9,27 @@ import {
   BREVO_URL,
   createBrevoMailer,
   type DigestSite,
+  digestSiteChanged,
   handleUnsubscribe,
   type OutboundMail,
   renderAlert,
+  renderDigest,
   unsubscribeMac,
   verifyUnsubscribe,
 } from '../src/mail.js';
 import {
+  type AlertRosterInput,
+  applyAlertSettings,
+  assembleDigest,
   checksToPurge,
+  clampAlertPrefs,
   type DailyFold,
   type DigestRecipient,
   type DigestStore,
   type DueSchedule,
+  defaultsForPlan,
   digestRateKey,
+  dueAudits,
   foldUptime,
   handleDigest,
   handleSchedule,
@@ -35,10 +43,12 @@ import {
   type RawCheck,
   type RosterSite,
   readUptime,
+  reauditDue,
   runScheduleTick,
   runWeeklyDigest,
   type ScheduleDeps,
   type ScheduleStore,
+  scoreDropped,
   siteProbeFromSafeFetch,
   UPTIME_KEEP_MS,
 } from '../src/schedule.js';
@@ -228,6 +238,10 @@ class Memory implements ScheduleStore, DigestStore {
   }) {
     if (this.enqueueMode === 'skip') return 'skip';
     this.enqueued.push({ siteId: input.siteId, mode: input.mode });
+    if (this.enqueueMode === 'created') {
+      const found = this.sites.find((item) => item.id === input.siteId);
+      if (found?.prefs) found.prefs = { ...found.prefs, auditOpen: true };
+    }
     return this.enqueueMode;
   }
 
@@ -340,6 +354,9 @@ describe('calendrier Paris', () => {
     );
     expect(nextRunAt('monthly', new Date('2026-01-15T00:00:00.000Z'))).toBe(
       '2026-02-15T00:00:00.000Z',
+    );
+    expect(nextRunAt('daily', new Date('2026-01-05T07:00:00.000Z'))).toBe(
+      '2026-01-06T07:00:00.000Z',
     );
   });
 });
@@ -907,5 +924,407 @@ describe('contrat', () => {
         logger: createLogger({ sink: () => {} }),
       }),
     ).toThrow();
+  });
+});
+
+function prefs(
+  patch: Partial<RosterSite['prefs']> &
+    Pick<NonNullable<RosterSite['prefs']>, 'plan'>,
+): NonNullable<RosterSite['prefs']> {
+  return { ...defaultsForPlan(patch.plan), verified: true, ...patch };
+}
+
+describe('réglages alert_settings', () => {
+  const now = new Date('2026-03-16T12:00:00.000Z');
+
+  it('fige le gratuit et laisse le Pro choisir', () => {
+    const free = clampAlertPrefs({
+      ...defaultsForPlan('free'),
+      cadence: 'daily',
+      sslWarnDays: 30,
+      scoreDropPoints: 5,
+      verified: true,
+    });
+    expect(free).toMatchObject({
+      cadence: 'monthly',
+      sslWarnDays: 14,
+      scoreDropPoints: 0,
+    });
+    const pro = clampAlertPrefs({
+      ...defaultsForPlan('pro'),
+      cadence: 'daily',
+      sslWarnDays: 21,
+      scoreDropPoints: 5,
+      verified: true,
+    });
+    expect(pro).toMatchObject({
+      cadence: 'daily',
+      sslWarnDays: 21,
+      scoreDropPoints: 5,
+    });
+    expect(scoreDropped(82, 80, 0)).toBe(false);
+    expect(scoreDropped(82, 70, 0)).toBe(true);
+    expect(scoreDropped(82, 76, 5)).toBe(true);
+    expect(scoreDropped(82, 76, 10)).toBe(false);
+    expect(reauditDue(prefs({ plan: 'free', verified: false }), now)).toBe(
+      false,
+    );
+  });
+
+  it('alerte selon la lettre, le certificat 14 j, et ignore le site non vérifié', async () => {
+    const store = new Memory();
+    const row = site(1, {
+      prefs: prefs({ plan: 'free', verified: true }),
+      audits: [
+        audit(
+          uid(5, 1),
+          70,
+          '2026-03-01T00:00:00.000Z',
+          ['securite.https'],
+          14,
+          '2026-03-30',
+        ),
+        audit(uid(5, 2), 82, '2026-02-01T00:00:00.000Z', [], 40, '2026-04-01'),
+      ],
+    });
+    store.sites.push(row);
+    store.emails.set(row.ownerId, 'ada@example.com');
+    const quiet = site(2, {
+      prefs: prefs({ plan: 'free', verified: true }),
+      audits: [
+        audit(uid(5, 3), 80, '2026-03-01T00:00:00.000Z', ['seo.title'], 20),
+        audit(uid(5, 4), 85, '2026-02-01T00:00:00.000Z', ['seo.title'], 40),
+      ],
+    });
+    store.sites.push(quiet);
+    const hidden = site(3, {
+      prefs: prefs({ plan: 'free', verified: false }),
+      audits: [
+        audit(uid(5, 5), 40, '2026-03-01T00:00:00.000Z', ['securite.https'], 1),
+        audit(uid(5, 6), 90, '2026-02-01T00:00:00.000Z', [], 40),
+      ],
+    });
+    store.sites.push(hidden);
+    const { deps, sent } = harness(store);
+    await runScheduleTick(deps);
+    await runScheduleTick(deps);
+    expect(store.alerts.map((alert) => alert.kind).sort()).toEqual([
+      'cert_expiring',
+      'grave_problem',
+      'score_drop',
+    ]);
+    expect(sent).toHaveLength(3);
+    expect(store.alerts.every((alert) => alert.siteId === row.id)).toBe(true);
+    expect(store.checks.every((check) => check.siteId !== hidden.id)).toBe(
+      true,
+    );
+  });
+
+  it('alerte le Pro selon ses seuils, pas selon la lettre', async () => {
+    const store = new Memory();
+    const row = site(1, {
+      prefs: prefs({ plan: 'pro', scoreDropPoints: 5, sslWarnDays: 30 }),
+      audits: [
+        audit(
+          uid(5, 8),
+          80,
+          '2026-03-01T00:00:00.000Z',
+          ['securite.https'],
+          20,
+          '2026-04-01',
+        ),
+        audit(
+          uid(5, 9),
+          86,
+          '2026-02-01T00:00:00.000Z',
+          ['securite.https'],
+          40,
+          '2026-05-01',
+        ),
+      ],
+    });
+    store.sites.push(row);
+    store.emails.set(row.ownerId, 'ada@example.com');
+    const { deps, sent } = harness(store);
+    await runScheduleTick(deps);
+    await runScheduleTick(deps);
+    expect(store.alerts.map((alert) => alert.kind).sort()).toEqual([
+      'cert_expiring',
+      'score_drop',
+    ]);
+    expect(sent).toHaveLength(2);
+  });
+
+  it('n’envoie pas si les alertes sont coupées, et ne double pas', async () => {
+    const store = new Memory();
+    const row = site(1, {
+      prefs: prefs({ plan: 'pro', alertsEnabled: false, scoreDropPoints: 5 }),
+      audits: [
+        audit(uid(5, 1), 70, '2026-03-01T00:00:00.000Z'),
+        audit(uid(5, 2), 90, '2026-02-01T00:00:00.000Z'),
+      ],
+    });
+    store.sites.push(row);
+    store.emails.set(row.ownerId, 'ada@example.com');
+    const { deps, sent } = harness(store);
+    await runScheduleTick(deps);
+    expect(sent).toHaveLength(0);
+    expect(store.alerts).toHaveLength(0);
+  });
+
+  it('ré-audite en passif selon la cadence, pas selon schedules', async () => {
+    const store = new Memory();
+    const recent = site(1, {
+      prefs: prefs({
+        plan: 'free',
+        lastAuditAt: '2026-03-01T12:00:00.000Z',
+      }),
+    });
+    const daily = site(2, {
+      prefs: prefs({
+        plan: 'pro',
+        cadence: 'daily',
+        lastAuditAt: '2026-02-01T12:00:00.000Z',
+      }),
+    });
+    store.sites.push(recent, daily);
+    store.schedules.push({
+      siteId: recent.id,
+      ownerId: recent.ownerId,
+      cadence: 'weekly',
+      mode: 'active',
+      nextRunAt: '2026-03-01T00:00:00.000Z',
+    });
+    const { deps, trigger } = harness(store);
+    const first = await runScheduleTick(deps);
+    expect(first.enqueued).toBe(1);
+    expect(store.enqueued).toEqual([{ siteId: daily.id, mode: 'passive' }]);
+    expect(trigger).toHaveBeenCalledOnce();
+    const second = await runScheduleTick(deps);
+    expect(second.enqueued).toBe(0);
+    expect(store.schedules[0]?.nextRunAt).toBe('2026-03-01T00:00:00.000Z');
+  });
+
+  it('refuse la file si l’anti-abus répond skip', async () => {
+    const store = new Memory();
+    store.enqueueMode = 'skip';
+    store.sites.push(
+      site(1, {
+        prefs: prefs({ plan: 'pro', cadence: 'daily', lastAuditAt: null }),
+      }),
+    );
+    const { deps, trigger } = harness(store);
+    const result = await runScheduleTick(deps);
+    expect(result.enqueued).toBe(0);
+    expect(trigger).not.toHaveBeenCalled();
+    expect(store.sites[0]?.prefs?.auditOpen).toBe(false);
+  });
+
+  it('applique les défauts sans ligne et ignore une cadence daily gratuite', () => {
+    const row = site(1, {
+      audits: [audit(uid(5, 1), 80, '2026-03-10T00:00:00.000Z')],
+    });
+    const input: AlertRosterInput = {
+      plans: [{ userId: row.ownerId, plan: 'free' }],
+      settings: [
+        {
+          siteId: row.id,
+          userId: row.ownerId,
+          cadence: 'daily',
+          sslWarnDays: 40,
+          scoreDropPoints: 8,
+          alertsEnabled: false,
+        },
+      ],
+      verifiedSiteIds: [row.id],
+      openSiteIds: [],
+    };
+    const roster = applyAlertSettings(
+      { sites: [row], due: [] },
+      input,
+      new Date('2026-03-16T12:00:00.000Z'),
+    );
+    expect(roster.sites[0]?.prefs).toMatchObject({
+      plan: 'free',
+      cadence: 'monthly',
+      sslWarnDays: 14,
+      scoreDropPoints: 0,
+      alertsEnabled: false,
+      verified: true,
+      lastAuditAt: '2026-03-10T00:00:00.000Z',
+    });
+    expect(roster.due).toEqual([]);
+    const bare = site(2);
+    const missing = applyAlertSettings(
+      { sites: [bare], due: [] },
+      {
+        plans: [{ userId: bare.ownerId, plan: 'pro' }],
+        settings: [],
+        verifiedSiteIds: [bare.id],
+        openSiteIds: [],
+      },
+      new Date('2026-03-16T12:00:00.000Z'),
+    );
+    expect(missing.sites[0]?.prefs).toMatchObject({
+      plan: 'pro',
+      cadence: 'weekly',
+      sslWarnDays: 14,
+      scoreDropPoints: 0,
+      alertsEnabled: true,
+    });
+    expect(missing.due).toHaveLength(1);
+    expect(missing.due[0]?.mode).toBe('passive');
+    expect(dueAudits({ sites: [row], due: [] }, now)).toEqual([]);
+  });
+
+  it('récapitule les changements et la semaine calme, une seule fois', async () => {
+    const user = uid(1, 4);
+    const changed = assembleDigest({
+      now: new Date('2026-01-05T07:00:00.000Z'),
+      users: [{ id: user, weeklyDigest: true, emailOptOut: false }],
+      sites: [
+        {
+          id: uid(2, 4),
+          ownerId: user,
+          label: 'Exemple',
+          host: 'exemple.example',
+          verified: true,
+        },
+      ],
+      audits: [
+        {
+          siteId: uid(2, 4),
+          score: 70,
+          finishedAt: '2026-01-03T00:00:00.000Z',
+          failed: ['seo.title', 'securite.https'],
+          graves: 1,
+          certDays: 10,
+        },
+        {
+          siteId: uid(2, 4),
+          score: 82,
+          finishedAt: '2025-12-20T00:00:00.000Z',
+          failed: ['seo.description'],
+          graves: 0,
+          certDays: 40,
+        },
+      ],
+      uptime: [
+        {
+          siteId: uid(2, 4),
+          day: '2026-01-05',
+          checks: 10,
+          failures: 1,
+        },
+        {
+          siteId: uid(2, 4),
+          day: '2025-12-01',
+          checks: 99,
+          failures: 0,
+        },
+      ],
+      openIncidents: [],
+      sslWarnDays: [{ siteId: uid(2, 4), days: 14 }],
+    });
+    const card = changed[0]?.sites[0];
+    expect(card).toMatchObject({
+      score: 70,
+      previousScore: 82,
+      checks: 10,
+      failures: 1,
+      newFindings: 2,
+      fixedFindings: 1,
+      openProblems: 1,
+      certDays: 10,
+    });
+    expect(card && digestSiteChanged(card)).toBe(true);
+    const mail = renderDigest({
+      sites: changed[0]?.sites ?? [],
+      appUrl: APP,
+      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+    });
+    expect(mail.subject).toBe('Votre récap du lundi');
+    expect(mail.text).toContain('2 constats nouveaux');
+    expect(mail.text).toContain('1 constat corrigé');
+    expect(mail.text).toContain('Certificat : 10 jours');
+    expect(mail.text).toContain('90 %');
+
+    const calmUser = uid(1, 5);
+    const calm = assembleDigest({
+      now: new Date('2026-01-05T07:00:00.000Z'),
+      users: [
+        { id: calmUser, weeklyDigest: true, emailOptOut: false },
+        { id: uid(1, 6), weeklyDigest: false, emailOptOut: false },
+        { id: uid(1, 7), weeklyDigest: true, emailOptOut: true },
+      ],
+      sites: [
+        {
+          id: uid(2, 5),
+          ownerId: calmUser,
+          label: 'Calme',
+          host: 'calme.example',
+          verified: true,
+        },
+        {
+          id: uid(2, 6),
+          ownerId: calmUser,
+          label: 'Secret',
+          host: 'secret.example',
+          verified: false,
+        },
+      ],
+      audits: [
+        {
+          siteId: uid(2, 5),
+          score: 80,
+          finishedAt: '2026-01-02T00:00:00.000Z',
+          failed: ['seo.title'],
+          graves: 0,
+          certDays: 40,
+        },
+        {
+          siteId: uid(2, 5),
+          score: 80,
+          finishedAt: '2025-12-20T00:00:00.000Z',
+          failed: ['seo.title'],
+          graves: 0,
+          certDays: 40,
+        },
+      ],
+      uptime: [],
+      openIncidents: [],
+      sslWarnDays: [{ siteId: uid(2, 5), days: 14 }],
+    });
+    expect(calm).toHaveLength(1);
+    expect(calm[0]?.sites).toHaveLength(1);
+    const steady = renderDigest({
+      sites: calm[0]?.sites ?? [],
+      appUrl: APP,
+      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+    });
+    expect(steady.subject).toBe('Rien n’a changé cette semaine');
+    expect(steady.text).toContain('Aucun problème grave ouvert');
+    expect(steady.text).not.toContain('secret.example');
+
+    const store = new Memory();
+    store.digestPeople = calm;
+    store.emails.set(calmUser, 'ada@example.com');
+    const sent: OutboundMail[] = [];
+    const deps = {
+      now: () => new Date('2026-01-05T07:00:00.000Z'),
+      store,
+      mailer: {
+        send: async (message: OutboundMail) => {
+          sent.push(message);
+        },
+      },
+      appBaseUrl: APP,
+      signingKey: KEY,
+      logger: createLogger({ sink: () => {} }),
+    };
+    expect((await runWeeklyDigest(deps)).sent).toBe(1);
+    expect((await runWeeklyDigest(deps)).sent).toBe(0);
+    expect(sent).toHaveLength(1);
+    expect(sent[0]?.text).toContain(sent[0]?.unsubscribeUrl ?? '');
   });
 });
