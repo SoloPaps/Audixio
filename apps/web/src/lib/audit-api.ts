@@ -79,6 +79,43 @@ async function readBody(response: Response): Promise<unknown> {
   }
 }
 
+export async function createGuestAudit(
+  url: string,
+): Promise<
+  | { ok: true; payload: AuditPayload }
+  | { ok: false; limit: boolean; message: string }
+> {
+  let response: Response;
+  try {
+    response = await fetch('/api/guest-audits', {
+      method: 'post'.toUpperCase(),
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+  } catch {
+    return { ok: false, limit: false, message: t('api.error.internal') };
+  }
+  const body = await readBody(response);
+  if (response.status === 429) {
+    const code =
+      body && typeof body === 'object'
+        ? (body as { error?: unknown }).error
+        : '';
+    if (code === 'guest_limit') {
+      return { ok: false, limit: true, message: t('api.error.guest_limit') };
+    }
+  }
+  if (response.ok && body && typeof body === 'object') {
+    const view = (body as { view?: unknown }).view;
+    if (isPayload(view)) return { ok: true, payload: view };
+  }
+  return {
+    ok: false,
+    limit: false,
+    message: messageFromBody(body, 'api.error.internal'),
+  };
+}
+
 export async function createAudit(
   token: string,
   input: { url: string } | { siteId: string },

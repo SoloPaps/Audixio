@@ -809,6 +809,15 @@ const frCore = {
     'Vous avez trop sollicité votre compte. Réessayez plus tard.',
   'api.error.ip_limit':
     'Trop de lancements depuis ce réseau. Réessayez plus tard.',
+  'api.error.guest_limit':
+    'Trois audits ont déjà été lancés aujourd’hui depuis ce réseau.',
+  'guest.gate.kicker': 'Sans compte',
+  'guest.gate.title': 'Connectez-vous ou inscrivez-vous',
+  'guest.gate.lead':
+    'Trois audits par jour sont offerts sans compte. Le détail demande un compte.',
+  'guest.gate.login': 'Connexion',
+  'guest.gate.signup': 'Inscription',
+  'guest.gate.close': 'Fermer',
   'api.error.rate_limited': 'Trop de demandes. Réessayez plus tard.',
   'api.error.unavailable':
     'La demande n’a pas pu être enregistrée. Réessayez plus tard.',

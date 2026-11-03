@@ -23,6 +23,7 @@ import {
   reputationAside,
 } from '../lib/report-model.js';
 import { rose } from '../lib/rose.js';
+import GuestGate from './GuestGate.svelte';
 import ShareSheet from './ShareSheet.svelte';
 
 interface Priority {
@@ -41,6 +42,7 @@ interface Props {
   partialText: string;
   headline: string;
   stamp: Date;
+  guest?: boolean;
 }
 
 let {
@@ -54,9 +56,11 @@ let {
   partialText,
   headline,
   stamp,
+  guest = false,
 }: Props = $props();
 
 let shareOpen = $state(false);
+let gate = $state(false);
 let root: HTMLElement | undefined = $state();
 let roseHost: HTMLDivElement | undefined = $state();
 
@@ -122,6 +126,12 @@ function blurb(item: CategoryItem): string {
   if (item.locked) return item.detail;
   const key = SUM[item.id];
   return key ? t(key) : item.detail;
+}
+
+function onDomain(event: MouseEvent, item: CategoryItem): void {
+  if (!guest || !item.locked) return;
+  event.preventDefault();
+  gate = true;
 }
 
 async function onShare(event: MouseEvent): Promise<void> {
@@ -307,7 +317,7 @@ onMount(() => {
     <ul class="doms">
       {#each items as item, index (item.id)}
         {@const grade = gradeOf(item)}
-        <li class="rv" style={`--i:${index}`}><a class="dom" id={`domaine-${item.id}`} href={item.href} data-key={item.id} data-g={grade ?? 'N'} data-icon={domainSymbol(item.id)} data-short={domainShort(item.id)}>
+        <li class="rv" style={`--i:${index}`}><a class="dom" id={`domaine-${item.id}`} href={item.href} data-key={item.id} data-g={grade ?? 'N'} data-icon={domainSymbol(item.id)} data-short={domainShort(item.id)} onclick={(event) => onDomain(event, item)}>
           <span class="tile g-{grade ?? 'N'}"><svg class="ico" width="26" height="26" aria-hidden="true"><use href={`#${domainSymbol(item.id)}`}/></svg></span>
           <span class="dom-txt"><span class="dom-name">{domainShort(item.id)}</span><span class="dom-sum">{blurb(item)}</span></span>
           {#if grade && item.score !== null}
@@ -344,3 +354,6 @@ onMount(() => {
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <ShareSheet {auditId} {host} open={shareOpen} onClose={() => { shareOpen = false; }} />
+{#if gate}
+  <GuestGate open={true} onClose={() => { gate = false; }} />
+{/if}
