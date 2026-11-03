@@ -367,7 +367,9 @@ async function addSite(
   const raw = field?.value.trim() ?? '';
   let draft: ReturnType<typeof normalizeSiteUrl>;
   try {
-    draft = normalizeSiteUrl(raw);
+    draft = normalizeSiteUrl(raw, {
+      allowLab: import.meta.env.PUBLIC_AUDIGY_LAB === '1',
+    });
   } catch (caught) {
     if (caught instanceof InvalidSiteUrl) {
       field?.setAttribute('aria-invalid', 'true');

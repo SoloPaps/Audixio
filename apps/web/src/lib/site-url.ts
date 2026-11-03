@@ -12,6 +12,7 @@ export class InvalidSiteUrl extends Error {
 }
 
 const RESERVED_TLDS = ['test', 'localhost', 'invalid', 'example', 'local'];
+const LAB_SUFFIX = '.audigy.test';
 const HOST_RE =
   /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{0,62}$/;
 const MAX_URL_LENGTH = 2048;
@@ -39,8 +40,12 @@ function isIp(host: string): boolean {
 /**
  * Même règles que l’orchestrateur : https forcé, pas d’identifiant,
  * pas de port, pas d’adresse IP, pas de nom réservé.
+ * `allowLab` accepte seulement `*.audigy.test`.
  */
-export function normalizeSiteUrl(raw: string): SiteDraft {
+export function normalizeSiteUrl(
+  raw: string,
+  options: { allowLab?: boolean } = {},
+): SiteDraft {
   const trimmed = raw.trim();
   if (trimmed === '' || trimmed.length > MAX_URL_LENGTH) {
     throw new InvalidSiteUrl('invalid_url');
@@ -64,8 +69,10 @@ export function normalizeSiteUrl(raw: string): SiteDraft {
   const host = url.hostname.toLowerCase().replace(/\.$/, '');
   if (isIp(host) || !HOST_RE.test(host))
     throw new InvalidSiteUrl('invalid_url');
+  const lab = options.allowLab === true && host.endsWith(LAB_SUFFIX);
   const tld = host.slice(host.lastIndexOf('.') + 1);
-  if (RESERVED_TLDS.includes(tld)) throw new InvalidSiteUrl('invalid_url');
+  if (!lab && RESERVED_TLDS.includes(tld))
+    throw new InvalidSiteUrl('invalid_url');
 
   const prefix = prefixOf(url.pathname);
   const scope = prefix === '/' ? 'origin' : 'path';

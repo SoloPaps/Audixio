@@ -2,6 +2,7 @@ interface ImportMetaEnv {
   readonly DEV: boolean;
   readonly PUBLIC_SUPABASE_URL?: string;
   readonly PUBLIC_SUPABASE_ANON_KEY?: string;
+  readonly PUBLIC_AUDIGY_LAB?: string;
 }
 
 interface ImportMeta {
