@@ -21,7 +21,7 @@ onMount(() => {
 </script>
 
 <div bind:this={root} data-mode={mode}>
-{#if mode === 'pending'}<p class="sr-only" role="status">{t('sites.loading')}</p>{:else if mode === 'out'}<main id="contenu"><h1>{t('sites.need_login')}</h1><p><a class="btn btn-primary" href="/connexion?next=%2Fhistorique">{t('nav.login')}</a></p></main>{:else}
+{#if mode === 'pending'}<main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{:else if mode === 'out'}<main id="contenu"><h1>{t('sites.need_login')}</h1><p><a class="btn btn-primary" href="/connexion?next=%2Fhistorique">{t('nav.login')}</a></p></main>{:else}
 <main id="contenu" tabindex="-1">
 <section class="khero" aria-labelledby="t">
 <div class="aurora" aria-hidden="true"><i data-depth=".6"></i><i data-depth="-.4"></i><i data-depth=".3"></i><i data-depth="-.7"></i></div>

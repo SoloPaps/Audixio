@@ -29,7 +29,7 @@ onMount(() => {
 
 <div bind:this={root} data-mode={mode}>
 {#if mode === 'pending'}
-  <p class="sr-only" role="status">{t('sites.loading')}</p>
+  <main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>
 {:else if mode === 'out'}
   <main id="contenu" class="wrap">
     <h1 id="t">{t('sites.title')}</h1>
@@ -122,7 +122,7 @@ onMount(() => {
 <p class="kicker" id="qt">{t('mq.sl.010')}</p>
 <div class="qrow"><div class="ring full" style="--p:1" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36"/></svg><b><span><span data-count="2">{t('mq.sl.011')}</span><small> {t('mq.sl.012')}</small></span></b></div><div><h2>{t('mq.sl.003')}</h2><p><span class="sr-only">{t('mq.sl.013')} </span><span class="badge b-chk">{t('mq.sl.014')}</span></p></div></div>
 <div class="qrow"><div class="ring full" style="--p:1" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36"/></svg><b><span><span data-count="1">{t('mq.sl.015')}</span><small> {t('mq.sl.016')}</small></span></b></div><div><h2>{t('mq.sl.017')}</h2><p><span class="sr-only">{t('mq.sl.018')} </span><span class="badge b-chk">{t('mq.sl.014')}</span></p></div></div>
-<a class="qlink lk-pill" href="/pro">{t('mq.sl.019')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+<a class="qlink lk-pill" href="/passer-pro">{t('mq.sl.019')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
 </div>
 </div>
 </section>
@@ -233,7 +233,7 @@ onMount(() => {
 <p class="err" id="pm-err"></p>
 <p class="hint" id="pm-hint">{t('mq.sl.110')}</p>
 </form>
-<div class="later st" style="--i:11"><button class="btn btn-text" type="button" data-close>{t('mq.sl.111')}</button></div>
+<div class="later st" style="--i:11"><button class="btn btn-text" type="button" data-close>{t('mq.sl.111')}</button><a class="lk-pill" href="/passer-pro">{t('mq.passer.002')}</a></div>
 </div>
 <div class="okv" id="pm-ok" tabindex="-1" hidden>
 <div class="okc" aria-hidden="true"><svg viewBox="0 0 84 84" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle class="bg" cx="42" cy="42" r="38"/><circle class="c" cx="42" cy="42" r="38"/><path class="k" d="M27 43l10 10 21-22"/></svg><span class="ring"></span></div>

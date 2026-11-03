@@ -266,6 +266,7 @@ onMount(() => {
 </script>
 
 {#if phase === 'loading' || (payload && (payload.audit.status === 'queued' || payload.audit.status === 'running'))}
+  {#if mode === 'badge'}<main id="contenu" hidden></main>{/if}
   <div class="reading">
     <AuditOverlay
       message={progressLive(payload?.audit.status ?? 'queued', finishedNames)}

@@ -134,7 +134,7 @@ onMount(() => {
   {/if}
   {#if payload?.audit.status === 'failed'}
     <p>
-      <a class="link-action" href={`/lancer?site=${encodeURIComponent(payload.audit.site.id)}`}>{t('progress.retry')}</a>
+      <a class="link-action" href={`/audit-echoue?id=${encodeURIComponent(payload.audit.id)}`}>{t('progress.retry')}</a>
     </p>
   {/if}
   {#if stopped && !payload}

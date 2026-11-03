@@ -68,6 +68,18 @@ onMount(() => {
     const reportBtn = document.getElementById('reportBtn');
     if (reportBtn) reportBtn.setAttribute('href', href);
     if (done && guest) document.body.classList.add('done');
+    const fail = document.getElementById('fail-back');
+    const failLink = document.getElementById('fail-link');
+    if (fail && failLink) {
+      const failed = shown === 'failed';
+      fail.hidden = !failed;
+      if (failed) {
+        failLink.setAttribute(
+          'href',
+          `/audit-echoue?id=${encodeURIComponent(payload.audit.id)}`,
+        );
+      }
+    }
   };
 
   const tick = async (): Promise<void> => {
