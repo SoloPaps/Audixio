@@ -1,0 +1,53 @@
+---
+import '../styles/maquettes/cookies.css';
+import { t } from '../i18n/index.js';
+import Canon from '../layouts/Canon.astro';
+
+const messages = {
+  'mq.lg.591': t('mq.lg.591'),
+  'mq.lg.592': t('mq.lg.592'),
+  'mq.lg.593': t('mq.lg.593'),
+};
+---
+
+<Canon vue="cookies" title={t('mq.meta.cookies.title')} description={t('mq.meta.cookies.title')} robots="noindex">
+<div class="backdrop" aria-hidden="true"><iframe src="/" tabindex="-1" title=""></iframe></div>
+<div class="veil" aria-hidden="true"></div>
+<div class="wrap" id="contenu" >
+<section class="bn" role="dialog" aria-modal="true" aria-labelledby="ct" aria-describedby="cd">
+ <div class="hd"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 4 4 0 0 1-4-4 4 4 0 0 1-5-5z"/><path d="M8.5 11.5h.01M12 16h.01M15.5 13.5h.01M8 15.5h.01"/></svg></span>
+ <div><h1 id="ct">{t('mq.lg.578')}</h1>
+ <p id="cd">{t('mq.lg.579')}<code>{t('mq.lg.281')}</code>{t('mq.lg.580')}<a href="/confidentialite#cookies">{t('mq.lg.090')}</a>.</p></div></div>
+ <div class="panel" id="pn"><div>
+  <div class="opt"><div><h2>{t('mq.lg.581')}</h2><p>{t('mq.lg.582')}</p></div><label class="sw"><input type="checkbox" checked disabled aria-label={t('mq.lg.583')}><span></span></label></div>
+  <div class="opt"><div><h2>{t('mq.lg.584')}</h2><p>{t('mq.lg.585')}</p></div><label class="sw"><input type="checkbox" id="pref" aria-label={t('mq.lg.584')}><span></span></label></div>
+  <button type="button" class="btn b-gh save" id="sv">{t('mq.lg.586')}</button>
+ </div></div>
+ <div class="acts">
+  <button type="button" class="btn b-main" id="ac">{t('mq.lg.587')}</button>
+  <button type="button" class="btn b-main" id="rf">{t('mq.lg.588')}</button>
+  <button type="button" class="btn b-gh" id="ps" aria-expanded="false" aria-controls="pn">{t('mq.lg.589')}</button>
+ </div>
+ <p class="st" id="st" role="status" aria-live="polite"></p>
+ <p class="ft">{t('mq.lg.590')}<a href="/">{t('mq.lg.378')}</a></p>
+</section>
+</div>
+<script type="application/json" id="i18n-msg" set:html={JSON.stringify(messages)}></script>
+<script>
+import { bindMaquetteMotion } from '../lib/motion';
+bindMaquetteMotion();
+document.dispatchEvent(new Event('audixio-motion'));
+</script>
+<script is:inline>
+var MSG = JSON.parse(document.getElementById('i18n-msg').textContent);
+
+(function(){var st=document.getElementById('st'),pn=document.getElementById('pn'),ps=document.getElementById('ps'),pref=document.getElementById('pref');
+function save(v,msg){try{localStorage.setItem('audixio_consent',JSON.stringify({pref:v,at:Date.now()}))}catch(e){}st.textContent=msg}
+document.getElementById('ac').onclick=function(){pref.checked=true;save(true,MSG['mq.lg.591'])};
+document.getElementById('rf').onclick=function(){pref.checked=false;save(false,MSG['mq.lg.592'])};
+document.getElementById('sv').onclick=function(){save(pref.checked,MSG['mq.lg.593'])};
+ps.onclick=function(){var o=pn.classList.toggle('open');ps.setAttribute('aria-expanded',o);if(o)setTimeout(function(){pref.focus()},350)};
+document.getElementById('ac').focus({preventScroll:true});})();
+
+</script>
+</Canon>

@@ -6,6 +6,7 @@ import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
 import { mqGatesFr } from './mq-gates-fr.js';
+import { mqLegalFr } from './mq-legal-fr.js';
 
 const frCore = {
   'skip.content': 'Aller au contenu',
@@ -2789,6 +2790,7 @@ export const fr = {
   ...espaceFr,
   ...espaceUiFr,
   ...mqGatesFr,
+  ...mqLegalFr,
 };
 
 export type MessageKey = keyof typeof fr;
