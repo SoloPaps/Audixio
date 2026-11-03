@@ -32,9 +32,15 @@ async function skipBox(page: Page): Promise<{
   const text = (await link.textContent()) ?? '';
   if (!text.includes('principal')) return null;
   return link.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (elt: typeof node) => { fontFamily: string };
+    };
     const box = node.getBoundingClientRect();
-    const font = getComputedStyle(node).fontFamily;
-    return { y: box.y, height: box.height, font };
+    return {
+      y: box.y,
+      height: box.height,
+      font: view.getComputedStyle(node).fontFamily,
+    };
   });
 }
 
@@ -72,9 +78,12 @@ test('Inscription de la fenêtre sans compte : même primaire bureau et 330 px',
       .getByRole('link', { name: 'Inscription' });
     await expect(button).toBeVisible();
     await page.mouse.move(0, 0);
-    const color = await button.evaluate(
-      (node) => getComputedStyle(node).backgroundColor,
-    );
+    const color = await button.evaluate((node) => {
+      const view = globalThis as unknown as {
+        getComputedStyle: (elt: typeof node) => { backgroundColor: string };
+      };
+      return view.getComputedStyle(node).backgroundColor;
+    });
     expect(color, `lancer ${width}`).toBe(PRIMARY);
   }
 
@@ -137,9 +146,12 @@ test('Inscription de la fenêtre sans compte : même primaire bureau et 330 px',
       .getByRole('link', { name: 'Inscription' });
     await expect(button).toBeVisible();
     await page.mouse.move(0, 0);
-    const color = await button.evaluate(
-      (node) => getComputedStyle(node).backgroundColor,
-    );
+    const color = await button.evaluate((node) => {
+      const view = globalThis as unknown as {
+        getComputedStyle: (elt: typeof node) => { backgroundColor: string };
+      };
+      return view.getComputedStyle(node).backgroundColor;
+    });
     expect(color, `hub ${width}`).toBe(PRIMARY);
   }
 });
