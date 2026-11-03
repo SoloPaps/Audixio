@@ -484,8 +484,8 @@ html[data-vue="historique"] .glass {
 }
 
 html[data-vue="historique"].js .rv {
-  opacity: 0;
-  transform: translateY(26px) scale(0.985);
+  opacity: 1;
+  transform: none;
   transition:
     opacity 0.9s var(--out),
     transform 1s var(--spring);
@@ -1418,7 +1418,7 @@ html[data-vue="historique"] .ta .btn + .btn {
   margin-left: 8px;
 }
 html[data-vue="historique"].js tbody tr.rv {
-  transform: translateX(-18px);
+  transform: none;
   transition-delay: calc(var(--i, 0) * 60ms);
 }
 html[data-vue="historique"].js tbody tr.rv.in {
