@@ -19,6 +19,23 @@ async function waitForIslands(page: Page): Promise<void> {
 }
 
 async function expectNoViolations(page: Page): Promise<void> {
+  await page.waitForFunction(() => {
+    const view = globalThis as unknown as {
+      document: {
+        querySelectorAll: (selector: string) => Iterable<{
+          getBoundingClientRect: () => { top: number; bottom: number };
+        }>;
+      };
+      getComputedStyle: (node: object) => { opacity: string };
+      innerHeight: number;
+    };
+    const nodes = [...view.document.querySelectorAll('.rv')];
+    return nodes.every((node) => {
+      const rect = node.getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= view.innerHeight) return true;
+      return Number(view.getComputedStyle(node).opacity) >= 0.99;
+    });
+  });
   const results = await new AxeBuilder({ page }).analyze();
   expect(
     results.violations,

@@ -261,12 +261,14 @@ test('méthode, conditions, confidentialité et mentions ont un sommaire', async
   await expect(
     page
       .getByRole('navigation', { name: 'Sommaire' })
-      .getByRole('link', { name: 'Hébergeur' }),
-  ).toHaveAttribute('href', '#mentions-host');
+      .getByRole('link', { name: 'Hébergement des données' }),
+  ).toHaveAttribute('href', '#hebergement');
   await page.goto('/accessibilite');
-  await expect(page.getByRole('navigation', { name: 'Sommaire' })).toHaveCount(
-    0,
-  );
+  await expect(
+    page
+      .getByRole('navigation', { name: 'Sommaire' })
+      .getByRole('link', { name: 'État de conformité' }),
+  ).toHaveAttribute('href', '#etat');
 });
 
 test('captures clair et sombre', async ({ page }) => {

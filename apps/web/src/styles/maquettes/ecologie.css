@@ -689,8 +689,14 @@ fieldset.q {
 fieldset.q.ans {
   border-color: #adbbda;
 }
+.q legend,
+.q .qt,
+.q .opts {
+  grid-column: 2;
+}
 .q .num {
-  grid-row: span 3;
+  grid-column: 1;
+  grid-row: 1 / span 3;
   width: 48px;
   height: 48px;
   border-radius: 16px;
@@ -709,7 +715,14 @@ fieldset.q.ans {
 }
 @media (max-width: 600px) {
   .q .num {
+    grid-column: auto;
     grid-row: auto;
+    order: -1;
+  }
+  .q legend,
+  .q .qt,
+  .q .opts {
+    grid-column: auto;
   }
 }
 .q legend {
