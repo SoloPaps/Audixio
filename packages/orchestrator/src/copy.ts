@@ -4,7 +4,7 @@
  * Le linter de texte lit ce fichier.
  */
 
-const fr = {
+export const mailCopy = {
   'mail.alert.down.subject': 'Votre site ne répond plus',
   'mail.alert.down.body': '{site} n’a pas répondu deux fois de suite.',
   'mail.alert.down.action': 'Vérifiez que le site est en ligne.',
@@ -25,8 +25,34 @@ const fr = {
   'mail.alert.cert.expired.subject': 'Le certificat est périmé',
   'mail.alert.cert.expired.body': 'Le certificat de {site} est périmé.',
   'mail.alert.cert.expired.action': 'Renouvelez-le pour rétablir le cadenas.',
-  'mail.digest.subject': 'Votre résumé de la semaine',
-  'mail.digest.intro': 'Voici l’état de vos sites pour la semaine.',
+  'mail.digest.subject': 'Votre récap du lundi',
+  'mail.digest.intro':
+    'Voici ce qui a changé sur vos sites suivis depuis lundi dernier.',
+  'mail.digest.steady.subject': 'Rien n’a changé cette semaine',
+  'mail.digest.steady.intro':
+    'Aucune évolution sur vos sites suivis. Pour rappel, vos résultats actuels :',
+  'mail.digest.same': 'inchangé',
+  'mail.digest.report': 'Voir le rapport',
+  'mail.digest.question': 'Une question ? Écrivez-nous :',
+  'mail.digest.contact': 'Audixio@outlook.fr',
+  'mail.digest.prefs': 'Gérer mes préférences',
+  'mail.digest.legal': 'Mentions légales',
+  'mail.digest.copy': '© 2026 Audixio',
+  'mail.digest.why.change':
+    'Vous recevez cet e-mail car le récap du lundi est activé sur votre compte.',
+  'mail.digest.why.signup':
+    'Vous recevez cet e-mail car un compte Audixio vient d’être créé avec cette adresse.',
+  'mail.signup.subject': 'Confirmez votre adresse — Audixio',
+  'mail.signup.title': 'Bienvenue sur Audixio',
+  'mail.signup.lead':
+    'Merci pour votre inscription. Il reste une étape : confirmez votre adresse e-mail pour suivre vos sites et recevoir vos alertes.',
+  'mail.signup.action': 'Confirmer mon adresse',
+  'mail.signup.expire':
+    'Ce lien expire dans 15 minutes. Si vous n’êtes pas à l’origine de cette inscription, ignorez simplement cet e-mail.',
+  'mail.signup.fallback':
+    'Le bouton ne fonctionne pas ? Copiez ce lien dans votre navigateur :',
+  'mail.signup.code': 'Code : {code}',
+  'mail.brand': 'Audixio',
   'mail.digest.line': '{site} : note {score}, disponibilité {uptime}.',
   'mail.digest.incident': 'Un incident est en cours.',
   'mail.digest.score.none': 'pas encore de note',
@@ -44,6 +70,8 @@ const fr = {
     'C’est fait. Vous ne recevrez plus les alertes ni le résumé.',
   'mail.unsub.invalid': 'Ce lien n’est pas valable.',
 } as const;
+
+const fr = mailCopy;
 
 export type MailKey = keyof typeof fr;
 

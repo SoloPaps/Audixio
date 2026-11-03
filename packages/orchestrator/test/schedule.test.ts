@@ -705,7 +705,7 @@ describe('résumé et Brevo', () => {
     expect((await runWeeklyDigest(deps)).sent).toBe(1);
     expect((await runWeeklyDigest(deps)).sent).toBe(0);
     expect(sent).toHaveLength(1);
-    expect(sent[0]?.subject).toBe('Votre résumé de la semaine');
+    expect(sent[0]?.subject).toBe('Votre récap du lundi');
     expect(sent[0]?.text).toContain('98 %');
     expect(sent[0]?.text).toContain('Un incident est en cours.');
     expect(sent[0]?.html).toContain('&lt;script&gt;');
