@@ -193,11 +193,15 @@ if (await needsBuild()) {
   await writeFile(path.join(root, 'apps/web/dist/.reel-stamp'), 'local-lab\n');
 }
 
-const netlify = spawn('netlify', ['dev', '--offline', '--filter', '@audigy/web'], {
-  cwd: root,
-  env: { ...process.env, BROWSER: 'none' },
-  stdio: ['ignore', 'pipe', 'pipe'],
-});
+const netlify = spawn(
+  'netlify',
+  ['dev', '--offline', '--filter', '@audigy/web'],
+  {
+    cwd: root,
+    env: { ...process.env, BROWSER: 'none' },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  },
+);
 kids.push(netlify);
 pipe(netlify);
 netlify.on('exit', (code) => {
