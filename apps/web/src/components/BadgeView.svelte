@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
+import { badgeEmbed, badgePublicHref } from '../lib/badge-embed.js';
 import { browserClient } from '../lib/browser-session.js';
 import { gradeForScore } from '../lib/grade.js';
 import { say } from '../lib/motion.js';
@@ -25,10 +26,13 @@ const previewLabel = $derived(
   grade ? t('badge.alt', { grade, host }) : t('badge.alt.none', { host }),
 );
 const snippet = $derived.by(() => {
-  const href = link || rapport;
-  const height = style === 'complet' ? 48 : 40;
   const alt = grade ? `${t('brand.ui')} : ${grade}` : t('brand.ui');
-  return `<a href="${href}">\n  <img src="${location.origin}/marque/logo-mobile.svg" alt="${alt}" height="${height}">\n</a>`;
+  return badgeEmbed({
+    style,
+    href: link || `${location.origin}/exemple-rapport`,
+    origin: location.origin,
+    alt,
+  });
 });
 
 const styles = [
@@ -50,9 +54,7 @@ async function loadLink(): Promise<void> {
     .is('revoked_at', null)
     .limit(1);
   const row = Array.isArray(data) ? data[0] : null;
-  link = row?.share_token
-    ? `${location.origin}/partage/${row.share_token}`
-    : `${location.origin}${rapport}`;
+  link = badgePublicHref(location.origin, row?.share_token ?? null);
 }
 
 async function copy(kind: 'code' | 'link'): Promise<void> {

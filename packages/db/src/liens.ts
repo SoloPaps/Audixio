@@ -181,7 +181,7 @@ export function vueLien(gate: LinkGate, rapport: LienRapport): LienVue | null {
     finishedAt: rapport.finishedAt,
     methodVersion: rapport.methodVersion,
     auditId: rapport.auditId,
-    noteGlobale: full ? rapport.globalScore : null,
+    noteGlobale: full || gate.state === 'public' ? rapport.globalScore : null,
     grade: visibleGlobalGrade(viewer, rapport.globalGrade),
     domaines: rapport.domains.map((row) => {
       const view = visibleDomain(viewer, row);

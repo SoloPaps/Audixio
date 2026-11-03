@@ -6,6 +6,7 @@ import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
 import { currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
+import { shownConclusion } from '../lib/domain-conclusion.js';
 import {
   domainPager,
   domainSentence,
@@ -49,19 +50,31 @@ const letter = $derived(domainLetter(score, false));
 const level = $derived(levelForScore(score));
 const name = $derived(domainShort(domainId));
 const sentence = $derived(domainSentence(domainId, level));
+const measured = $derived(level !== 'untested');
 const title = $derived(
-  domainId === 'performance' && (level === 'improve' || level === 'problem')
-    ? t('domaine.performance.title')
-    : sentence,
+  !measured
+    ? name
+    : domainId === 'performance' && (level === 'improve' || level === 'problem')
+      ? t('domaine.performance.title')
+      : sentence,
 );
 const lede = $derived(
-  domainId === 'performance' ? t('domaine.lede.speed') : sentence,
+  shownConclusion(
+    level,
+    domainId === 'performance' ? t('domaine.lede.speed') : sentence,
+  ),
 );
 const cardTitle = $derived(
-  domainId === 'performance' ? t('domaine.card.speed') : sentence,
+  shownConclusion(
+    level,
+    domainId === 'performance' ? t('domaine.card.speed') : sentence,
+  ) ?? t('hub.untested'),
 );
 const cardSub = $derived(
-  domainId === 'performance' ? t('domaine.card.speed.sub') : name,
+  shownConclusion(
+    level,
+    domainId === 'performance' ? t('domaine.card.speed.sub') : name,
+  ) ?? '',
 );
 const order = REPORT_DOMAINS as readonly string[];
 const index = $derived(Math.max(0, order.indexOf(domainId)));
@@ -286,7 +299,7 @@ onMount(() => {
       <div>
         <div class="meta"><span class="tag">{t('domaine.tag', { name })}</span></div>
         <h1>{title}<span class="q">{t('domaine.q')}</span></h1>
-        <p class="lede">{lede}</p>
+        {#if lede}<p class="lede">{lede}</p>{/if}
         <div class="hacts">
           <a class="btn btn-primary" href="#constats">{t('domaine.see', { n: findings.length })}</a>
           <a class="btn btn-ghost" href="#prompt">{t('domaine.prepare')}</a>

@@ -731,11 +731,26 @@ html:where([data-vue="hub"]) {
   letter-spacing: 0.12em;
   color: var(--muted);
 }
+:where(html[data-vue="hub"]) .hero-right,
+:where(html[data-vue="hub"]) .note-txt {
+  min-width: 0;
+  max-width: 100%;
+}
 :where(html[data-vue="hub"]) .note-p {
   margin: 0 auto;
-  max-width: 36ch;
+  max-width: min(36ch, 100%);
   color: var(--muted);
   font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}
+:where(html[data-vue="hub"]) .note-sub {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 360px) {
+  :where(html[data-vue="hub"]) .note-sub {
+    letter-spacing: 0.04em;
+    font-size: 0.68rem;
+  }
 }
 :where(html[data-vue="hub"]) .sec-h {
   margin: 5.5rem 0 2rem;

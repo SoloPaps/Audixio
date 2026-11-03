@@ -5,7 +5,9 @@ import {
   readPublicScore,
 } from '@audigy/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { AuditPayload } from './audit-api.js';
 import { isKnownDomain } from './domains.js';
+import { readLocalShare } from './local-share.js';
 
 /** Exemple servi hors ligne en dev (Lighthouse, Playwright). */
 export const EXAMPLE_SLUG = 'exemple-score';
@@ -202,7 +204,7 @@ export function presentRow(row: RpcRow): PublicScoreView {
   const view = toPublicScore(raw, { exposeSecurity: false });
   return {
     ...view,
-    globalScore: null,
+    globalScore: raw.globalScore,
     securityDetails: [],
     domains: view.domains.filter((item) => !isLockedDomain(item.domain)),
   };
@@ -301,7 +303,8 @@ function textOf(value: unknown): string {
 
 /**
  * Reprend la vue API et retire encore les champs interdits.
- * Un lien public ou retiré ne garde ni note globale, ni domaine verrouillé, ni brief.
+ * Un lien public garde la note globale et les domaines ouverts.
+ * Il retire le brief, les domaines verrouillés et les mesures.
  */
 export function fromShareApi(body: ShareApiBody): PublicScoreView | null {
   const access = body.access;
@@ -345,6 +348,7 @@ export function fromShareApi(body: ShareApiBody): PublicScoreView | null {
     }
   }
   const note = body.noteGlobale;
+  const showNote = access === 'public' || team;
   return {
     label: textOf(body.label),
     url: textOf(body.url),
@@ -352,7 +356,7 @@ export function fromShareApi(body: ShareApiBody): PublicScoreView | null {
     methodVersion:
       typeof body.methodVersion === 'string' ? body.methodVersion : null,
     globalScore:
-      team && typeof note === 'number' && Number.isFinite(note)
+      showNote && typeof note === 'number' && Number.isFinite(note)
         ? Math.round(note)
         : null,
     auditId: typeof body.auditId === 'string' ? body.auditId : null,
@@ -362,6 +366,35 @@ export function fromShareApi(body: ShareApiBody): PublicScoreView | null {
     briefText:
       team && typeof body.briefTexte === 'string' ? body.briefTexte : null,
   };
+}
+
+export function viewFromAudit(payload: AuditPayload): PublicScoreView {
+  return {
+    label: payload.audit.site.label,
+    url: payload.audit.site.url,
+    finishedAt: payload.audit.finishedAt,
+    methodVersion: payload.audit.methodVersion,
+    globalScore: payload.audit.globalScore,
+    auditId: payload.audit.id,
+    domains: payload.domains
+      .filter(
+        (item) => isKnownDomain(item.domain) && !isLockedDomain(item.domain),
+      )
+      .map((item) => ({
+        domain: item.domain,
+        score: item.score,
+        level: item.level,
+        coverage: item.coverage,
+      })),
+    securityDetails: [],
+    access: 'public',
+    briefText: null,
+  };
+}
+
+function viewFromLocal(token: string): PublicScoreView | null {
+  const stored = readLocalShare(token);
+  return stored ? viewFromAudit(stored) : null;
 }
 
 export async function loadSharedScore(
@@ -390,9 +423,12 @@ export async function loadSharedScore(
       },
       body: JSON.stringify({ token }),
     });
-    if (!response.ok) return null;
-    return fromShareApi((await response.json()) as ShareApiBody);
+    if (!response.ok) return viewFromLocal(token);
+    return (
+      fromShareApi((await response.json()) as ShareApiBody) ??
+      viewFromLocal(token)
+    );
   } catch {
-    return null;
+    return viewFromLocal(token);
   }
 }
