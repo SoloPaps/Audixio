@@ -63,6 +63,11 @@ async function write(res: ServerResponse, response: Response): Promise<void> {
   res.end(Buffer.from(buf));
 }
 
+/** Variables locales lues via `supabase status`. `null` hors machine locale. */
+export function localFunctionEnv(): NodeJS.ProcessEnv | null {
+  return statusEnv();
+}
+
 function statusEnv(): NodeJS.ProcessEnv | null {
   const configured = process.env.SUPABASE_URL ?? '';
   if (configured && !isLocal(configured)) return null;

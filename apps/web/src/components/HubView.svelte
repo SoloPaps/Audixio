@@ -3,6 +3,7 @@ import { onMount, tick } from 'svelte';
 import { formatDate, formatNumber } from '../i18n/format.js';
 import { type MessageKey, t } from '../i18n/index.js';
 import type { AuditPayload } from '../lib/audit-api.js';
+import { hubConclusion } from '../lib/domain-conclusion.js';
 import { domainShort, domainSymbol } from '../lib/domains.js';
 import {
   badgeHref,
@@ -122,10 +123,14 @@ const SUM: Record<string, MessageKey> = {
   vie_privee: 'hub.sum.vie_privee',
   dns_email: 'hub.sum.dns_email',
 };
-function blurb(item: CategoryItem): string {
-  if (item.locked) return item.detail;
+function blurb(item: CategoryItem): string | null {
   const key = SUM[item.id];
-  return key ? t(key) : item.detail;
+  return hubConclusion({
+    locked: item.locked,
+    score: item.score,
+    summary: key ? t(key) : item.detail,
+    detail: item.detail,
+  });
 }
 
 function onDomain(event: MouseEvent, item: CategoryItem): void {
@@ -250,7 +255,7 @@ onMount(() => {
       <a class="btn btn-ghost" id="shareBtn" href={`/rapport?id=${encodeURIComponent(auditId)}#partager`} onclick={onShare}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>{t('hub.share')}</a>
       <a class="btn btn-ghost" href={badgeHref(auditId)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg>{t('hub.badge')}</a>
       <a class="btn btn-ghost" href={`/rapport/${auditId}/imprimer`}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>{t('hub.pdf')}</a>
-      <a class="btn btn-ghost" id="rerunBtn" href={relaunchHref(payload.audit.site.id)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>{t('hub.rerun')}</a>
+      <a class="btn btn-ghost" id="rerunBtn" href={relaunchHref(payload.audit.site.id, payload.audit.site.url)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>{t('hub.rerun')}</a>
     </div>
   </div>
 
@@ -319,7 +324,7 @@ onMount(() => {
         {@const grade = gradeOf(item)}
         <li class="rv" style={`--i:${index}`}><a class="dom" id={`domaine-${item.id}`} href={item.href} data-key={item.id} data-g={grade ?? 'N'} data-icon={domainSymbol(item.id)} data-short={domainShort(item.id)} onclick={(event) => onDomain(event, item)}>
           <span class="tile g-{grade ?? 'N'}"><svg class="ico" width="26" height="26" aria-hidden="true"><use href={`#${domainSymbol(item.id)}`}/></svg></span>
-          <span class="dom-txt"><span class="dom-name">{domainShort(item.id)}</span><span class="dom-sum">{blurb(item)}</span></span>
+          <span class="dom-txt"><span class="dom-name">{domainShort(item.id)}</span>{#if blurb(item)}<span class="dom-sum">{blurb(item)}</span>{/if}</span>
           {#if grade && item.score !== null}
             <span class="dom-score"><span class="bar mt m-{grade}" style={`--w:${Math.max(0, Math.min(100, item.score))}%`} aria-hidden="true"><i></i></span><span class="grade chip m-{grade}" aria-label={t('report.grade.letter', { grade })}>{grade}</span></span>
           {:else}
@@ -339,7 +344,7 @@ onMount(() => {
         <p class="d">{t('hub.brief.lead')}</p>
       </div>
     </div>
-    <a class="btn btn-w" href={briefHref(auditId)}><svg class="ico" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>{t('hub.brief.cta')}</a>
+    <a class="btn btn-w" href={guest ? '/connexion' : briefHref(auditId)} onclick={(event) => { if (!guest) return; event.preventDefault(); gate = true; }}><svg class="ico" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>{t('hub.brief.cta')}</a>
   </section>
   {#if avis && avis.rating !== null && avis.score !== null}
     <section aria-labelledby="t-avis">

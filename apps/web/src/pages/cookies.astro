@@ -42,6 +42,7 @@ document.dispatchEvent(new Event('audixio-motion'));
 var MSG = JSON.parse(document.getElementById('i18n-msg').textContent);
 
 (function(){var st=document.getElementById('st'),pn=document.getElementById('pn'),ps=document.getElementById('ps'),pref=document.getElementById('pref');
+try{var saved=JSON.parse(localStorage.getItem('audixio_consent')||'null');if(saved&&typeof saved.pref==='boolean')pref.checked=saved.pref}catch(e){}
 function save(v,msg){try{localStorage.setItem('audixio_consent',JSON.stringify({pref:v,at:Date.now()}))}catch(e){}st.textContent=msg}
 document.getElementById('ac').onclick=function(){pref.checked=true;save(true,MSG['mq.lg.591'])};
 document.getElementById('rf').onclick=function(){pref.checked=false;save(false,MSG['mq.lg.592'])};

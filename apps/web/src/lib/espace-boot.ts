@@ -3,10 +3,24 @@ import { withinSiteQuota } from '@audigy/db';
 import type { Session } from '@supabase/supabase-js';
 import { tick } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
+import { historySource, pickHistorySite } from './account-history.js';
+import {
+  alertsOpenForPlan,
+  consentChecked,
+  latestReportHref,
+  welcomeDone,
+} from './account-prefs.js';
 import { scoreAutorise } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
-import { axisLabels, GLOBAL_SERIES } from './history.js';
+import { gradeForScore } from './grade.js';
+import {
+  axisLabels,
+  GLOBAL_SERIES,
+  type HistoryPoint,
+  type HistoryView,
+  historySummary,
+} from './history.js';
 import { type EvolutionChart, evolutionChart } from './history-chart.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
 import { parsePlacesState } from './places-api.js';
@@ -139,7 +153,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       host: row.host,
       href: mark
         ? `/rapport?id=${encodeURIComponent(mark.auditId)}`
-        : `/lancer?site=${encodeURIComponent(row.id)}`,
+        : `/progression?site=${encodeURIComponent(row.id)}`,
       verify: `/verifier?site=${encodeURIComponent(row.id)}`,
       when: mark ? formatDate(new Date(mark.at)) : '',
       score: mark?.score ?? null,
@@ -416,7 +430,7 @@ async function addSite(
   const site: LiveSite = {
     id: data.id,
     host: data.host,
-    href: `/lancer?site=${encodeURIComponent(data.id)}`,
+    href: `/progression?site=${encodeURIComponent(data.id)}`,
     verify: `/verifier?site=${encodeURIComponent(data.id)}`,
     when: '',
     score: null,
@@ -584,6 +598,102 @@ function applyEvolutionChart(svg: SVGSVGElement, chart: EvolutionChart): void {
   }
 }
 
+function paintHistoryEmpty(root: HTMLElement, host: string | null): void {
+  const main = root.querySelector('main');
+  if (!main) return;
+  main.replaceChildren();
+  const section = document.createElement('section');
+  section.className = 'khero';
+  const eyebrow = document.createElement('p');
+  eyebrow.className = 'eyebrow';
+  eyebrow.textContent = t('mq.hi.005').trim();
+  const heading = document.createElement('h1');
+  heading.id = 't';
+  heading.textContent = host ?? t('mq.hi.004');
+  const lead = document.createElement('p');
+  lead.textContent = host ? t('score.public.empty') : t('sites.empty');
+  section.append(eyebrow, heading, lead);
+  main.append(section);
+}
+
+function historyRow(point: HistoryPoint, latest: boolean): HTMLTableRowElement {
+  const tr = document.createElement('tr');
+  const score = point.scores[GLOBAL_SERIES];
+  const numeric = typeof score === 'number' ? Math.round(score) : null;
+  const grade = gradeForScore(numeric);
+  const date = document.createElement('td');
+  const time = document.createElement('time');
+  time.dateTime = point.at;
+  time.textContent = formatDate(new Date(point.at));
+  date.append(time);
+  const ref = document.createElement('td');
+  const code = document.createElement('code');
+  code.textContent = point.id.slice(-6);
+  ref.append(code);
+  const note = document.createElement('td');
+  note.textContent =
+    grade && numeric !== null ? `${grade} · ${numeric}` : t('mq.co.086');
+  const kind = document.createElement('td');
+  kind.textContent = latest ? t('mq.hi.094') : t('mq.hi.101');
+  const act = document.createElement('td');
+  const link = document.createElement('a');
+  link.className = 'btn btn-ghost btn-sm';
+  link.href = point.href;
+  link.textContent = t('mq.hi.095');
+  act.append(link);
+  tr.append(date, ref, note, kind, act);
+  return tr;
+}
+
+function paintHistoryLive(
+  root: HTMLElement,
+  host: string,
+  view: HistoryView,
+  plan: string | null,
+): void {
+  const title = root.querySelector('#t');
+  if (title) title.textContent = host;
+  const crumb = root.querySelector('.crumbs li:nth-child(2) a');
+  if (crumb) crumb.textContent = host;
+  if (plan !== 'pro') root.querySelector('.pb')?.remove();
+  const points = [...view.points].reverse();
+  const latest = points[0];
+  const score = latest?.scores[GLOBAL_SERIES];
+  const numeric = typeof score === 'number' ? score : null;
+  const grade = gradeForScore(numeric);
+  const glass = root.querySelector('.sum-top .glass');
+  if (glass && grade) glass.textContent = grade;
+  const strong = root.querySelector('.sum-top strong');
+  if (strong && grade && numeric !== null) {
+    strong.textContent = `${grade} · ${Math.round(numeric)}`;
+  }
+  const trend = root.querySelector('.trend span');
+  if (trend) trend.textContent = historySummary(view.points, GLOBAL_SERIES);
+  const when = root.querySelector('.chips time');
+  if (when && latest) {
+    when.setAttribute('datetime', latest.at);
+    when.textContent = formatDate(new Date(latest.at));
+  }
+  const body = root.querySelector('table tbody');
+  if (body) {
+    body.replaceChildren();
+    for (const [index, point] of points.entries()) {
+      body.append(historyRow(point, index === 0));
+    }
+  }
+  root.querySelector('.doms')?.closest('section')?.remove();
+  const caption = root.querySelector('table caption');
+  if (caption) caption.textContent = `${t('mq.hi.084')} ${host}`;
+  root.querySelector('.tf span:nth-child(2)')?.remove();
+  root.querySelector('.tf nav')?.remove();
+  if (!latest) return;
+  for (const link of root.querySelectorAll<HTMLAnchorElement>(
+    'a[href="/rapport"]',
+  )) {
+    link.setAttribute('href', latest.href);
+  }
+}
+
 function bindHistory(root: HTMLElement): () => void {
   const off: (() => void)[] = [];
   let dead = false;
@@ -617,34 +727,121 @@ function bindHistory(root: HTMLElement): () => void {
     });
   };
   bindHits();
-  const site = new URLSearchParams(location.search).get('site')?.trim() ?? '';
-  if (site && svg) {
-    void loadSiteHistory(site, 'other').then((view) => {
-      if (dead || !view) return;
-      const scored = view.points.flatMap((point) => {
-        const value = point.scores[GLOBAL_SERIES];
-        return typeof value === 'number' ? [{ at: point.at, value }] : [];
-      });
-      const names = axisLabels(
-        scored.map((point) => Date.parse(point.at) / 1000),
-      );
-      const built = evolutionChart(
-        scored.map((point, index) => ({
-          label: names[index] ?? '',
-          value: point.value,
-        })),
-      );
-      if (!built) return;
-      applyEvolutionChart(svg, built);
-      labels = built.marks.map((mark) => mark.label);
-      values = built.marks.map((mark) => Math.round(mark.value));
-      xs = built.marks.map((mark) => mark.x);
-      ys = built.marks.map((mark) => mark.y);
-      const average = root.querySelector('.avg [data-count]');
-      if (average) average.textContent = built.average;
-      bindHits();
+  const applyChart = (view: HistoryView): void => {
+    if (!svg) return;
+    const scored = view.points.flatMap((point) => {
+      const value = point.scores[GLOBAL_SERIES];
+      return typeof value === 'number' ? [{ at: point.at, value }] : [];
     });
-  }
+    const names = axisLabels(
+      scored.map((point) => Date.parse(point.at) / 1000),
+    );
+    const built = evolutionChart(
+      scored.map((point, index) => ({
+        label: names[index] ?? '',
+        value: point.value,
+      })),
+    );
+    if (!built) return;
+    applyEvolutionChart(svg, built);
+    labels = built.marks.map((mark) => mark.label);
+    values = built.marks.map((mark) => Math.round(mark.value));
+    xs = built.marks.map((mark) => mark.x);
+    ys = built.marks.map((mark) => mark.y);
+    const average = root.querySelector('.avg [data-count]');
+    if (average) average.textContent = built.average;
+    bindHits();
+  };
+  void (async () => {
+    const session = await currentSession();
+    const supabase = browserClient();
+    if (!session || !supabase || dead) return;
+    const { data: owned } = await supabase
+      .from('sites')
+      .select('id, host, hosting')
+      .eq('owner_id', session.user.id)
+      .is('deleted_at', null)
+      .order('host', { ascending: true })
+      .limit(8);
+    if (dead) return;
+    const source = historySource(owned);
+    const asked =
+      new URLSearchParams(location.search).get('site')?.trim() ?? '';
+    if (source.kind === 'empty' && asked === '') {
+      paintHistoryEmpty(root, null);
+      return;
+    }
+    if (source.kind === 'live' && asked === '') {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      const ids = source.sites.map((site) => site.id);
+      const { data: latest } = await supabase
+        .from('audits')
+        .select('site_id')
+        .in('site_id', ids)
+        .in('status', ['done', 'partial'])
+        .order('finished_at', { ascending: false, nullsFirst: false })
+        .limit(1);
+      if (dead) return;
+      const audited = latest?.[0]?.site_id;
+      const site = pickHistorySite(
+        source.sites,
+        typeof audited === 'string' ? audited : null,
+      );
+      if (!site) {
+        paintHistoryEmpty(root, null);
+        return;
+      }
+      const view = await loadSiteHistory(site.id, site.hosting);
+      if (dead) return;
+      if (!view || view.points.length === 0) {
+        paintHistoryEmpty(root, site.host);
+        return;
+      }
+      paintHistoryLive(
+        root,
+        site.host,
+        view,
+        typeof profile?.plan === 'string' ? profile.plan : null,
+      );
+      applyChart(view);
+      return;
+    }
+    const siteId =
+      asked ||
+      (Array.isArray(owned) && typeof owned[0]?.id === 'string'
+        ? owned[0].id
+        : '');
+    if (siteId === '') return;
+    if (asked === '') {
+      const { data: audits } = await supabase
+        .from('audits')
+        .select('id')
+        .eq('site_id', siteId)
+        .in('status', ['done', 'partial'])
+        .order('finished_at', { ascending: false })
+        .limit(1);
+      if (dead) return;
+      const href = latestReportHref(audits?.[0]?.id ?? null);
+      for (const link of root.querySelectorAll<HTMLAnchorElement>(
+        'a[href="/rapport"]',
+      )) {
+        link.setAttribute('href', href);
+      }
+    }
+    const listed =
+      source.kind === 'live'
+        ? (source.sites.find((site) => site.id === (asked || siteId)) ??
+          source.sites[0])
+        : null;
+    const hosting = listed?.hosting ?? 'other';
+    const view = await loadSiteHistory(asked || siteId, hosting);
+    if (dead || !view) return;
+    applyChart(view);
+  })();
   const leave = (): void => {
     tip?.classList.remove('on');
     if (cross) cross.style.opacity = '0';
@@ -858,11 +1055,26 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   };
   pro?.addEventListener('click', onPro);
   if (pro) off.push(() => pro.removeEventListener('click', onPro));
+  const consent = root.querySelector<HTMLInputElement>('#consent');
+  if (consent) {
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem('audixio-stats-consent');
+    } catch {
+      stored = null;
+    }
+    consent.checked = consentChecked(stored, consent.checked);
+  }
   const acc = root.querySelector<HTMLButtonElement>('#acc');
   const onAcc = (): void => {
     if (!acc) return;
     busy(acc, 700, () => {
       const box = root.querySelector<HTMLInputElement>('#consent');
+      try {
+        localStorage.setItem('audixio-stats-consent', box?.checked ? '1' : '0');
+      } catch {
+        /* stockage refusé */
+      }
       say(box?.checked ? t('mq.ui.terms.on') : t('mq.ui.terms.off'), true);
     });
   };
@@ -920,6 +1132,10 @@ function bindAlerts(root: HTMLElement, next: EspaceNext): () => void {
   };
   form?.addEventListener('submit', onForm);
   if (form) off.push(() => form.removeEventListener('submit', onForm));
+  if (alertsOpenForPlan(next.plan)) {
+    root.querySelector('#gate')?.classList.remove('locked');
+    root.querySelector('#fPro')?.removeAttribute('inert');
+  }
   const params = new URLSearchParams(location.search);
   const siteId = params.get('site');
   if (siteId && next.token) void paintAlerts(root, siteId);
@@ -997,6 +1213,19 @@ function bindWelcome(root: HTMLElement, next: EspaceNext): () => void {
   if (name && next.name && next.name !== 'Camille')
     name.textContent = next.name;
   const steps = [...root.querySelectorAll<HTMLElement>('.step')];
+  let saved: string[] = [];
+  try {
+    const raw = localStorage.getItem('audixio-welcome-steps');
+    const parsed = raw ? (JSON.parse(raw) as unknown) : [];
+    if (Array.isArray(parsed)) {
+      saved = parsed.filter((item) => typeof item === 'string');
+    }
+  } catch {
+    saved = [];
+  }
+  for (const step of steps) {
+    if (welcomeDone(saved, step.id)) step.dataset.state = 'done';
+  }
   const ring = root.querySelector<HTMLElement>('#ring');
   const count = root.querySelector('#rc');
   const labels: Record<string, string> = {
@@ -1038,6 +1267,18 @@ function bindWelcome(root: HTMLElement, next: EspaceNext): () => void {
     const button = step.querySelector('button.mark');
     const click = (): void => {
       step.dataset.state = step.dataset.state === 'done' ? 'todo' : 'done';
+      try {
+        localStorage.setItem(
+          'audixio-welcome-steps',
+          JSON.stringify(
+            steps
+              .filter((item) => item.dataset.state === 'done')
+              .map((item) => item.id),
+          ),
+        );
+      } catch {
+        /* stockage refusé */
+      }
       const n = update();
       say(n > 1 ? t('mq.ui.steps', { n }) : t('mq.ui.step', { n }), true);
     };

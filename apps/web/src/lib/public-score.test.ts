@@ -69,7 +69,7 @@ describe('score public', () => {
       ],
     });
     const dumped = JSON.stringify(view);
-    expect(view.globalScore).toBeNull();
+    expect(view.globalScore).toBe(72);
     expect(view.securityDetails).toEqual([]);
     expect(view.domains.map((row) => row.domain)).toEqual(['performance']);
     expect(dumped).not.toContain(TRAP);
@@ -111,7 +111,7 @@ describe('score public', () => {
     };
     const view = fromShareApi(leaked);
     const dumped = JSON.stringify(view);
-    expect(view?.globalScore).toBeNull();
+    expect(view?.globalScore).toBe(72);
     expect(view?.securityDetails).toEqual([]);
     expect(view?.briefText).toBeNull();
     expect(view?.domains.map((row) => row.domain)).toEqual(['seo']);

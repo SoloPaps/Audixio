@@ -748,6 +748,9 @@ body.done .task i {
   vertical-align: -0.15em;
   animation: blink 0.9s infinite;
 }
+body.done .eta {
+  display: none;
+}
 .eta {
   display: flex;
   align-items: center;
@@ -1189,7 +1192,7 @@ main {
   }
 }
 #ready-slot {
-  margin: 1.25rem 0 0.5rem;
+  margin: 1.25rem 0 2.25rem;
   text-align: center;
 }
 .cap[data-state="wait"] .st,

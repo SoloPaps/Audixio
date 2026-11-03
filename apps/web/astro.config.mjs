@@ -73,6 +73,35 @@ function briefDev() {
   };
 }
 
+function auditGetDev() {
+  const mount = (server) => {
+    server.middlewares.use((req, res, next) => {
+      const path = (req.url ?? '').split('?')[0] ?? '';
+      if (!path.startsWith('/api/audits/')) {
+        next();
+        return;
+      }
+      server
+        .ssrLoadModule('/src/lib/audit-get-node.ts')
+        .then((mod) => {
+          const id = mod.auditGetId(path, req.method ?? 'GET');
+          if (!id) {
+            next();
+            return;
+          }
+          return mod.handleAuditGetNode(req, res, id);
+        })
+        .catch(next);
+    });
+  };
+  return {
+    name: 'audigy-audit-get-dev',
+    enforce: 'pre',
+    configureServer: mount,
+    configurePreviewServer: mount,
+  };
+}
+
 function authDev() {
   const mount = (server) => {
     server.middlewares.use((req, res, next) => {
@@ -138,7 +167,7 @@ export default defineConfig({
     format: 'directory',
   },
   vite: {
-    plugins: [briefDev(), authDev(), printRoute()],
+    plugins: [briefDev(), auditGetDev(), authDev(), printRoute()],
     define: {
       [envKey('URL')]: JSON.stringify(process.env.SUPABASE_URL ?? ''),
       [envKey(`${piece(['A', 'N', 'O', 'N'])}_KEY`)]: JSON.stringify(

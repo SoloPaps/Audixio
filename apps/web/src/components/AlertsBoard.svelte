@@ -2,6 +2,7 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { bootEspace } from '../lib/espace-boot.js';
+import SessionWall from './SessionWall.svelte';
 
 let mode = $state<
   'pending' | 'out' | 'empty' | 'list' | 'ready' | 'live' | 'error'
@@ -21,7 +22,7 @@ onMount(() => {
 </script>
 
 <div bind:this={root} data-mode={mode}>
-{#if mode === 'pending'}<main id="contenu" class="wrap" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{:else if mode === 'out'}<main id="contenu" class="wrap"><h1 id="t">{t('mq.al.005')} {t('mq.al.006')}</h1><p role="status">{t('sites.need_login')}</p><p><a class="btn btn-primary" href="/connexion?next=%2Fcompte%2Falertes">{t('nav.login')}</a></p></main>{:else}
+{#if mode === 'pending'}<main id="contenu" class="wrap" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{:else if mode === 'out'}<main id="contenu" class="wrap"><SessionWall title={`${t('mq.al.005')} ${t('mq.al.006')}`} status={t('sites.need_login')} next="/compte/alertes" /></main>{:else}
 <main id="contenu" class="wrap">
 <nav class="crumbs fade" aria-label={t('mq.al.001')}><ol><li><a href="/">{t('mq.al.002')}</a></li><li><a href="/compte">{t('mq.al.003')}</a></li><li aria-current="page">{t('mq.al.004')}</li></ol></nav>
 <section class="hero" aria-labelledby="t">

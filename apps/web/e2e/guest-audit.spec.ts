@@ -35,6 +35,7 @@ async function expectGateChrome(page: Page): Promise<void> {
         backgroundColor: string;
         zIndex: string;
         overflow: string;
+        textDecorationLine: string;
       };
       document: {
         documentElement: {
@@ -58,6 +59,8 @@ async function expectGateChrome(page: Page): Promise<void> {
       body: view.getComputedStyle(view.document.body).overflow,
       loginW: loginBox?.width ?? 0,
       cardW: cardBox.width,
+      loginRadius: login ? view.getComputedStyle(login).borderRadius : '',
+      loginDecor: login ? view.getComputedStyle(login).textDecorationLine : '',
     };
   });
   expect(style.radius).toBe('24px');
@@ -67,6 +70,8 @@ async function expectGateChrome(page: Page): Promise<void> {
   expect(style.body).toBe('hidden');
   expect(style.loginW).toBeGreaterThan(40);
   expect(style.loginW).toBeLessThan(style.cardW - 24);
+  expect(style.loginRadius).toBe('999px');
+  expect(style.loginDecor).toBe('none');
 }
 
 async function launch(page: Page): Promise<void> {
@@ -80,14 +85,30 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   page,
 }) => {
   test.setTimeout(120_000);
+  const ids: string[] = [];
   for (let index = 0; index < 3; index += 1) {
     await launch(page);
     await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 20_000 });
     const voir = page.locator('#reportBtn');
     await expect(voir).toBeVisible();
     await expect(voir).toContainText('Voir le rapport');
+    const place = await voir.evaluate((node) => {
+      const root = globalThis as unknown as {
+        document: {
+          getElementById: (
+            id: string,
+          ) => { getBoundingClientRect: () => { top: number } } | null;
+        };
+      };
+      const mock = root.document.getElementById('mock');
+      const btn = node.getBoundingClientRect();
+      const stage = mock?.getBoundingClientRect();
+      return { gap: stage ? stage.top - btn.bottom : 0 };
+    });
+    expect(place.gap).toBeGreaterThan(16);
     await voir.click();
     await expect(page).toHaveURL(/\/rapport\?id=/);
+    ids.push(new URL(page.url()).searchParams.get('id') ?? '');
     await expect(
       page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
     ).toBeVisible();
@@ -97,6 +118,12 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(page.getByText('Verrouillé').first()).toBeVisible();
   }
+
+  await page.goto(`/rapport?id=${ids[0]}`);
+  await expect(page).not.toHaveURL(/connexion/);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
+  ).toBeVisible();
 
   await page.locator('#domaine-securite').click();
   const dialog = page.getByRole('dialog');
@@ -141,7 +168,8 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   await expect(
     dialog.getByRole('link', { name: 'Inscription' }),
   ).toHaveAttribute('href', '/inscription');
-  await expect(page).toHaveURL(/\/lancer/);
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page).not.toHaveURL(/\/lancer|connexion/);
   await expect(page.locator('.axn')).toBeVisible();
   await expectGateChrome(page);
   const wide = await new AxeBuilder({ page })

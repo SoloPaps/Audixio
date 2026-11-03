@@ -42,6 +42,7 @@ import DomainLockedView from './DomainLockedView.svelte';
 import DomainView from './DomainView.svelte';
 import HubView from './HubView.svelte';
 import PlanView from './PlanView.svelte';
+import SessionWall from './SessionWall.svelte';
 import UntestedCause from './UntestedCause.svelte';
 
 interface Props {
@@ -50,7 +51,7 @@ interface Props {
 
 let { mode = 'report' }: Props = $props();
 
-let phase = $state<'loading' | 'message' | 'ready'>('loading');
+let phase = $state<'loading' | 'message' | 'ready' | 'brief-gate'>('loading');
 let message = $state(t('report.loading'));
 let payload = $state<AuditPayload | null>(null);
 let domainId = $state('');
@@ -228,6 +229,10 @@ onMount(() => {
     }
     const session = await currentSession();
     if (session) userId = session.user.id;
+    if (!session && mode === 'brief') {
+      phase = 'brief-gate';
+      return;
+    }
     if (!session) {
       const stored = id ? readGuestAudit(id) : null;
       if (!stored) {
@@ -272,6 +277,12 @@ onMount(() => {
       message={progressLive(payload?.audit.status ?? 'queued', finishedNames)}
     />
   </div>
+{:else if phase === 'brief-gate'}
+  <SessionWall
+    title={t('guest.gate.title')}
+    lead={t('guest.gate.lead')}
+    next={`${location.pathname}${location.search}`}
+  />
 {:else if phase === 'message'}
   <h1>{mode === 'domain' ? t('domain.heading') : t('report.heading')}</h1>
   <p role="status">{message}</p>
@@ -286,7 +297,7 @@ onMount(() => {
   <section class="fail-card" aria-labelledby="fail-title">
     <h1 id="fail-title">{t('hub.failed.title')}</h1>
     <p>{failureKind(payload.audit.error) === 'denied' ? t('hub.failed.denied') : failureKind(payload.audit.error) === 'down' ? t('hub.failed.down') : t('hub.failed.body')}</p>
-    <p><a class="btn-primary" href={relaunchHref(payload.audit.site.id)}>{t('progress.retry')}</a></p>
+    <p><a class="btn-primary" href={relaunchHref(payload.audit.site.id, payload.audit.site.url)}>{t('progress.retry')}</a></p>
   </section>
 {:else if payload && mode === 'badge'}
   <BadgeView

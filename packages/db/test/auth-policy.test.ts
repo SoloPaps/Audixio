@@ -14,6 +14,13 @@ import {
 } from '../src/auth-policy.js';
 
 describe('politique de connexion', () => {
+  it('accepte un e-mail classique et le compte local', () => {
+    expect(validEmail('ada@exemple.fr')).toBe(true);
+    expect(validEmail('gratuit@localhost')).toBe(true);
+    expect(validEmail('ada@localhostes')).toBe(false);
+    expect(validEmail('pas-une-adresse')).toBe(false);
+  });
+
   it('compte l’inscription par IP et par e-mail', () => {
     expect(authRateParts('signup')).toEqual(['ip', 'mail']);
     expect(authRateParts('signin')).toEqual(['ip', 'mail']);

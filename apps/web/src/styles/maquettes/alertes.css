@@ -48,7 +48,7 @@ html[data-vue="alertes"] body {
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
 }
-html[data-vue="alertes"] a {
+html[data-vue="alertes"] main a {
   color: var(--primary);
 }
 html[data-vue="alertes"] :focus-visible {

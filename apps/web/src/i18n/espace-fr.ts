@@ -322,7 +322,7 @@ export const espaceFr = {
   'mq.co.014': 'alexis95120',
   'mq.co.015': '@gmail.com',
   'mq.co.016': 'Actif',
-  'mq.co.017': 'Compte sans mot de passe (lien magique)',
+  'mq.co.017': 'Connexion par e-mail et mot de passe',
   'mq.co.018': 'Configuration du compte : 2 étapes sur 3',
   'mq.co.019': '2',
   'mq.co.020': '/3',

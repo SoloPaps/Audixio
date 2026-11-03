@@ -60,7 +60,9 @@ export function readStoredNext(raw: string | null | undefined): string {
 
 export function validEmail(value: string): boolean {
   const email = value.trim().toLowerCase();
-  return email.length <= 254 && EMAIL.test(email);
+  if (email.length > 254) return false;
+  if (EMAIL.test(email)) return true;
+  return /^[^\s@]+@localhost$/u.test(email);
 }
 
 export function normalizeEmail(value: string): string {
