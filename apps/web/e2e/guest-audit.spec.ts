@@ -141,7 +141,7 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   await expect(
     dialog.getByRole('link', { name: 'Inscription' }),
   ).toHaveAttribute('href', '/inscription');
-  await expect(page).toHaveURL(/\/lancer/);
+  await expect(page).toHaveURL(/\/progression/);
   await expect(page.locator('.axn')).toBeVisible();
   await expectGateChrome(page);
   const wide = await new AxeBuilder({ page })

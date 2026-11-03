@@ -27,14 +27,14 @@ async function expectNoViolations(page: Page): Promise<void> {
 }
 
 test('propose de relier Search Console', async ({ page }) => {
-  await page.goto('/search-console');
+  await page.goto('/compte');
   await waitForIslands(page);
   const link = page.getByRole('link', { name: 'Connecter Search Console' });
   await expect(link).toBeVisible();
   await expect(link).toHaveAttribute('href', /\/connexion\?next=/);
   await expectNoViolations(page);
 
-  await page.goto('/search-console?theme=dark');
+  await page.goto('/compte?theme=dark');
   await waitForIslands(page);
   await expect(
     page.getByRole('link', { name: 'Connecter Search Console' }),

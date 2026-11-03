@@ -5,8 +5,11 @@ import { currentSession } from '../lib/browser-session.js';
 import { takeNext } from '../lib/nav.js';
 
 let failed = $state(false);
+let armed = $state(false);
 
 onMount(async () => {
+  if (new URLSearchParams(location.search).get('retour') !== '1') return;
+  armed = true;
   const session = await currentSession();
   if (!session) {
     failed = true;
@@ -16,9 +19,11 @@ onMount(async () => {
 });
 </script>
 
-{#if failed}
-  <p role="alert">{t('callback.failed')}</p>
-  <p><a class="link-action" href="/connexion">{t('callback.retry')}</a></p>
-{:else}
-  <p role="status">{t('callback.working')}</p>
+{#if armed}
+  {#if failed}
+    <p role="alert">{t('callback.failed')}</p>
+    <p><a class="link-action" href="/connexion">{t('callback.retry')}</a></p>
+  {:else}
+    <p role="status">{t('callback.working')}</p>
+  {/if}
 {/if}

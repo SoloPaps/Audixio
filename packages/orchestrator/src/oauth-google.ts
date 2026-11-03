@@ -504,7 +504,7 @@ function appOrigin(value: string | undefined): URL | null {
 }
 
 function back(config: OauthConfig, etat: 'ok' | 'erreur'): Response {
-  const url = new URL('/search-console', config.origin);
+  const url = new URL('/compte', config.origin);
   url.searchParams.set('etat', etat);
   const headers = new Headers({
     location: url.href,

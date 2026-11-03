@@ -98,7 +98,7 @@ test('le pied de page ouvre les pages légales', async ({ page }) => {
 
   await page.goto('/methode');
   await waitForIslands(page);
-  await expect(page.getByText('Méthode 2026.1.')).toBeVisible();
+  await expect(page.getByText('Méthode 2026.1', { exact: true })).toBeVisible();
   await expectNoViolations(page);
 
   await page.goto('/compte');

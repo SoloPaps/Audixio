@@ -52,7 +52,11 @@ test('composants sombre sans violation', async ({ page }) => {
     const island = root.document.querySelector('astro-island');
     return Boolean(island && !island.hasAttribute('ssr'));
   });
-  await expect(page.getByLabel('Thème')).toHaveValue('dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('button', { name: 'Thème' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
   await expectNoViolations(page);
 });
 
@@ -131,6 +135,7 @@ test('thème sombre mémorisé', async ({ page }) => {
   page.on('pageerror', (error) => {
     errors.push(error.message);
   });
+  await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/dev/composants');
   await page.waitForFunction(() => {
     const root = globalThis as unknown as {
@@ -143,7 +148,7 @@ test('thème sombre mémorisé', async ({ page }) => {
     const island = root.document.querySelector('astro-island');
     return Boolean(island && !island.hasAttribute('ssr'));
   });
-  await page.getByLabel('Thème').selectOption('dark');
+  await page.getByRole('button', { name: 'Thème' }).click();
   expect(errors).toEqual([]);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.reload();
@@ -164,7 +169,7 @@ test('le thème tient après une navigation client', async ({ page }) => {
     const island = root.document.querySelector('astro-island');
     return Boolean(island && !island.hasAttribute('ssr'));
   });
-  await page.getByLabel('Thème').selectOption('dark');
+  await page.getByRole('button', { name: 'Thème' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.locator('footer').getByRole('link', { name: 'Méthode' }).click();
   await expect(page).toHaveURL(/\/methode/);

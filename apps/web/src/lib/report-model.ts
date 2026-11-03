@@ -97,7 +97,7 @@ export function toFinding(row: ApiFinding, fix: FixView | undefined): Finding {
     finding.sourceLabel = fix.sourceLabel;
   }
   if (needsSearchConsole(row)) {
-    finding.actionHref = '/search-console';
+    finding.actionHref = '/compte#search-console';
     finding.actionLabel = t('gsc.connect');
   }
   return finding;

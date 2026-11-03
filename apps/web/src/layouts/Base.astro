@@ -11,6 +11,7 @@ import '../styles/base.css';
 import '../styles/arc.css';
 import '../styles/canon.css';
 import '../styles/mobile-fit.css';
+import '../styles/theme-dark.css';
 
 interface Props {
   title: string;
@@ -95,5 +96,9 @@ const initialTheme =
         <p class="footer-note">{t('footer.note')}</p>
       </footer>
     )}
+    <script>
+      import { bootLocale } from '../i18n/live';
+      bootLocale();
+    </script>
   </body>
 </html>

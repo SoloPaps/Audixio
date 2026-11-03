@@ -11,16 +11,14 @@ import GuestGate from './GuestGate.svelte';
 let message = $state(t('launch.working'));
 let failed = $state(false);
 let gate = $state(false);
+let active = $state(false);
 
 onMount(async () => {
   const params = new URLSearchParams(location.search);
   const url = params.get('url');
   const siteId = params.get('site');
-  if (!url && !siteId) {
-    message = t('launch.missing');
-    failed = true;
-    return;
-  }
+  if (!url && !siteId) return;
+  active = true;
   if (url && !siteId) {
     try {
       normalizeSiteUrl(url, {
@@ -72,13 +70,15 @@ onMount(async () => {
 });
 </script>
 
-<p role="status" aria-live="polite">{message}</p>
-{#if failed && !gate}
-  <p class="page-links">
-    <a class="link-action" href="/">{t('launch.back')}</a>
-    <a class="link-action" href="/sites">{t('nav.sites')}</a>
-  </p>
-{/if}
-{#if gate}
-  <GuestGate open={true} onClose={() => { gate = false; }} />
+{#if active}
+  <p>{message}</p>
+  {#if failed && !gate}
+    <p class="page-links">
+      <a class="link-action" href="/">{t('launch.back')}</a>
+      <a class="link-action" href="/sites">{t('nav.sites')}</a>
+    </p>
+  {/if}
+  {#if gate}
+    <GuestGate open={true} onClose={() => { gate = false; }} />
+  {/if}
 {/if}

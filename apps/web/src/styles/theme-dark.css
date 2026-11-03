@@ -1,0 +1,118 @@
+/* Thème sombre appliqué par-dessus les variables des maquettes. */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #12162a;
+  --white: #1c2340;
+  --surface: #1c2340;
+  --solid: #1c2340;
+  --ink: #f0f2f5;
+  --ink-2: #c9d0e4;
+  --text: #f0f2f5;
+  --muted: #adbbda;
+  --lilac: #1a2144;
+  --navy: #e7ebf8;
+  --line: rgba(173, 187, 218, 0.28);
+  --line-strong: rgba(173, 187, 218, 0.45);
+  --tint: rgba(112, 145, 230, 0.12);
+  --bg: #12162a;
+  --bg1: #12162a;
+  --bg2: #243056;
+  --axn-tx: #f0f2f5;
+  --axn-tx2: #c9d0e4;
+  --axn-sf: #243056;
+  --axn-bd: #3d4d7a;
+}
+
+html[data-theme="dark"] body {
+  background: #12162a;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue],
+html[data-theme="dark"][data-board] {
+  --bg1: #12162a;
+  --bg2: #243056;
+  --surface: #1c2340;
+  --solid: #1c2340;
+  --white: #1c2340;
+  --text: #f0f2f5;
+  --ink: #f0f2f5;
+  --ink-2: #c9d0e4;
+  --muted: #c9d0e4;
+  --line: rgba(173, 187, 218, 0.28);
+}
+
+html[data-theme="dark"][data-board="vide"] .hero {
+  background:
+    radial-gradient(
+      60% 80% at 15% 0%,
+      rgba(112, 145, 230, 0.28),
+      transparent 70%
+    ),
+    linear-gradient(180deg, #1c2340, #161c36);
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-board="vide"] .btn-ghost {
+  background: #243056;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .chap,
+html[data-theme="dark"] .tile,
+html[data-theme="dark"] .window,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .toc {
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"] .kicker {
+  color: #d6e2ff;
+}
+
+html[data-theme="dark"] .card a:not(.axn-cta),
+html[data-theme="dark"] .chap a:not(.axn-cta),
+html[data-theme="dark"] .tile a:not(.axn-cta),
+html[data-theme="dark"] .toc a,
+html[data-theme="dark"] .eco-line,
+html[data-theme="dark"] .eco-line a {
+  color: #d6e2ff;
+}
+
+html[data-theme="dark"] .axn-bar,
+html[data-theme="dark"] .axn-sheet,
+html[data-theme="dark"] .axn-lang,
+html[data-theme="dark"] .axn-theme,
+html[data-theme="dark"] .axn-burger,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .window,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .chap {
+  background-color: #1c2340;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"] .axn-bar {
+  background-color: rgba(28, 35, 64, 0.94);
+}
+
+html[data-theme="dark"] .axn-links a,
+html[data-theme="dark"] .axn-lang a,
+html[data-theme="dark"] .axn-lang span {
+  color: #c9d0e4;
+}
+
+html[data-theme="dark"] .axn-links a[aria-current="page"],
+html[data-theme="dark"] .axn-lang [aria-current] {
+  background: #243056;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"] .axn .axn-cta,
+html[data-theme="dark"] .axn .axn-cta span {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}

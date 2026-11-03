@@ -6,7 +6,7 @@ const CANON = [
   '/',
   '/methode',
   '/sites',
-  '/lancer',
+  '/progression',
   '/passer-pro',
   '/pro',
   '/audit-echoue',
@@ -56,7 +56,7 @@ test('le lien d’évitement Canon reste hors écran', async ({ page }) => {
 });
 
 test('le lien d’évitement apparaît au focus clavier', async ({ page }) => {
-  for (const route of ['/lancer', '/sites']) {
+  for (const route of ['/progression', '/sites']) {
     await page.goto(route, { waitUntil: 'load' });
     await page.locator('a.skip').waitFor({ state: 'attached' });
     await page.keyboard.press('Tab');
@@ -72,7 +72,7 @@ test('Inscription de la fenêtre sans compte : même primaire bureau et 330 px',
 }) => {
   for (const width of [1280, 330]) {
     await page.setViewportSize({ width, height: 800 });
-    await page.goto('/lancer?site=exemple', { waitUntil: 'domcontentloaded' });
+    await page.goto('/progression?site=exemple', { waitUntil: 'domcontentloaded' });
     const button = page
       .getByRole('dialog')
       .getByRole('link', { name: 'Inscription' });

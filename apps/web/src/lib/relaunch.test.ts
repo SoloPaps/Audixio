@@ -10,6 +10,6 @@ describe('relance', () => {
   });
 
   it('relancer ouvre le formulaire du site', () => {
-    expect(relaunchHref('site-1')).toBe('/lancer?site=site-1');
+    expect(relaunchHref('site-1')).toBe('/progression?site=site-1');
   });
 });

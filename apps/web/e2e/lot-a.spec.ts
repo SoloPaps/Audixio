@@ -1,0 +1,202 @@
+import { expect, test } from '@playwright/test';
+
+test('FR/EN traduit la page et le bouton de compte reste lisible', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
+  await expect(
+    page.locator('.axn-tools').getByRole('link', { name: 'Connexion' }),
+  ).toBeVisible();
+  const cta = page.locator('.axn-tools .axn-cta');
+  const colors = await cta.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (elt: typeof node) => {
+        color: string;
+        backgroundColor: string;
+        webkitTextFillColor: string;
+      };
+    };
+    const style = view.getComputedStyle(node);
+    return {
+      color: style.color,
+      fill: style.webkitTextFillColor,
+      background: style.backgroundColor,
+    };
+  });
+  expect(colors.color).toBe('rgb(255, 255, 255)');
+  expect(colors.fill).toBe('rgb(255, 255, 255)');
+  expect(colors.background).not.toBe(colors.color);
+
+  await page
+    .locator('.axn-tools')
+    .getByRole('link', { name: 'EN — English' })
+    .click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(
+    page.locator('.axn-links').getByRole('link', { name: 'Home' }),
+  ).toBeVisible();
+  await expect(
+    page.locator('.axn-tools').getByRole('link', { name: 'FR — Français' }),
+  ).toBeVisible();
+});
+
+test('le thème bascule au clic et suit l’appareil', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const paper = await page.evaluate(() => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (node: Element) => { backgroundColor: string };
+      document: { body: Element };
+    };
+    return view.getComputedStyle(view.document.body).backgroundColor;
+  });
+  expect(paper).toBe('rgb(18, 22, 42)');
+  const button = page
+    .locator('.axn-tools')
+    .getByRole('button', { name: 'Thème' });
+  await expect(button).toHaveAttribute('aria-pressed', 'true');
+  await button.click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+});
+
+test('aucune ligne de repère au survol mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 330, height: 800 });
+  await page.goto('/');
+  const chip = page.locator('main .chip, main .btn, main .badge').first();
+  await chip.hover();
+  const guide = await page.evaluate(() => {
+    const view = globalThis as unknown as {
+      document: {
+        querySelectorAll: (selector: string) => Iterable<Element>;
+      };
+      getComputedStyle: (node: Element) => {
+        outlineStyle: string;
+        outlineWidth: string;
+        backgroundImage: string;
+        display: string;
+      };
+    };
+    const grids = [...view.document.querySelectorAll('.bg-grid, .scan')];
+    if (grids.some((node) => view.getComputedStyle(node).display !== 'none')) {
+      return 'grille';
+    }
+    for (const node of view.document.querySelectorAll(
+      'main button, main a, main .chip, main .badge',
+    )) {
+      const style = view.getComputedStyle(node);
+      const width = Number.parseFloat(style.outlineWidth);
+      if (style.outlineStyle !== 'none' && width > 0) return 'contour';
+    }
+    return '';
+  });
+  expect(guide).toBe('');
+});
+
+test('une adresse invalide reste sur l’accueil', async ({ page }) => {
+  await page.goto('/');
+  await page.getByLabel('Adresse du site').fill('not a url');
+  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await expect(page).toHaveURL('/');
+  await expect(page.getByRole('alert')).toContainText(
+    'Indiquez une adresse complète',
+  );
+});
+
+test('les pages retirées répondent 404', async ({ page }) => {
+  for (const path of ['/lancer', '/search-console', '/compte/retour']) {
+    const response = await page.goto(path);
+    expect(response?.status(), path).toBe(404);
+  }
+});
+
+test('Vos droits ouvre le chapitre des droits', async ({ page }) => {
+  await page.goto('/confidentialite');
+  const link = page.locator('.toc').getByRole('link', { name: /Vos droits/ });
+  await expect(link).toHaveAttribute('href', '#droits');
+  const target = page.locator('#droits');
+  await expect(target).toHaveAttribute('aria-labelledby', 'droits-t');
+  await expect(target.locator('#droits-t')).toBeVisible();
+  await expect(target.locator('#cookies-t')).toHaveCount(0);
+});
+
+test('la méthode n’a pas de point en trop', async ({ page }) => {
+  await page.goto('/methode');
+  await expect(page.getByText('Méthode 2026.1', { exact: true })).toBeVisible();
+  await expect(page.getByText('Méthode 2026.1.')).toHaveCount(0);
+});
+
+test('la pastille de note ne chevauche pas le texte', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/');
+  const slot = page.locator('.score-slot');
+  await expect(slot).toBeVisible();
+  await expect(slot.getByText('À améliorer')).toBeVisible();
+  const boxes = await page.evaluate(() => {
+    const view = globalThis as unknown as {
+      document: {
+        querySelector: (selector: string) => Element | null;
+      };
+      getComputedStyle: (node: Element) => {
+        position: string;
+        whiteSpace: string;
+      };
+    };
+    const slotNode = view.document.querySelector('.score-slot');
+    const note = view.document.querySelector('.gauge-wrap strong');
+    const warn = view.document.querySelector('.find.warn');
+    const status = view.document.querySelector('.score-slot .status');
+    if (!slotNode || !note || !warn || !status) return null;
+    const rect = (node: Element) => {
+      const box = node.getBoundingClientRect();
+      return {
+        left: box.left,
+        right: box.right,
+        top: box.top,
+        bottom: box.bottom,
+      };
+    };
+    const hit = (
+      a: { left: number; right: number; top: number; bottom: number },
+      b: { left: number; right: number; top: number; bottom: number },
+    ) =>
+      a.left < b.right &&
+      a.right > b.left &&
+      a.top < b.bottom &&
+      a.bottom > b.top;
+    const slotBox = rect(slotNode);
+    return {
+      position: view.getComputedStyle(slotNode).position,
+      nowrap: view.getComputedStyle(status).whiteSpace,
+      hitsNote: hit(slotBox, rect(note)),
+      hitsWarn: hit(slotBox, rect(warn)),
+    };
+  });
+  expect(boxes).not.toBeNull();
+  expect(boxes?.position).not.toBe('absolute');
+  expect(boxes?.nowrap).toBe('nowrap');
+  expect(boxes?.hitsNote).toBe(false);
+  expect(boxes?.hitsWarn).toBe(false);
+});
+
+test('le compte mobile affiche Connexion', async ({ page }) => {
+  await page.setViewportSize({ width: 330, height: 800 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
+  const cta = page.locator('.axn-sheet .axn-cta');
+  await expect(cta).toBeVisible();
+  await expect(cta).toContainText('Connexion');
+  const color = await cta.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (elt: typeof node) => { color: string };
+    };
+    return view.getComputedStyle(node).color;
+  });
+  expect(color).toBe('rgb(255, 255, 255)');
+});

@@ -5,5 +5,5 @@ export function progressionHref(auditId: string): string {
 
 /** Nouvelle demande pour ce site. */
 export function relaunchHref(siteId: string): string {
-  return `/lancer?site=${encodeURIComponent(siteId)}`;
+  return `/progression?site=${encodeURIComponent(siteId)}`;
 }

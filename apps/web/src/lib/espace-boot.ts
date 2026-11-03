@@ -139,7 +139,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       host: row.host,
       href: mark
         ? `/rapport?id=${encodeURIComponent(mark.auditId)}`
-        : `/lancer?site=${encodeURIComponent(row.id)}`,
+        : `/progression?site=${encodeURIComponent(row.id)}`,
       verify: `/verifier?site=${encodeURIComponent(row.id)}`,
       when: mark ? formatDate(new Date(mark.at)) : '',
       score: mark?.score ?? null,
@@ -202,7 +202,7 @@ export function bootEspace(
     if (dead) return;
     const rootEl = document.documentElement;
     if (page === 'sites') {
-      if (next.mode === 'empty') rootEl.dataset.board = 'vide';
+      if (next.mode === 'empty' || next.mode === 'out') rootEl.dataset.board = 'vide';
       else if (next.mode === 'list' || next.mode === 'live') {
         rootEl.dataset.board = 'liste';
       } else delete rootEl.dataset.board;
@@ -416,7 +416,7 @@ async function addSite(
   const site: LiveSite = {
     id: data.id,
     host: data.host,
-    href: `/lancer?site=${encodeURIComponent(data.id)}`,
+    href: `/progression?site=${encodeURIComponent(data.id)}`,
     verify: `/verifier?site=${encodeURIComponent(data.id)}`,
     when: '',
     score: null,
@@ -713,7 +713,7 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   const gscLink = [...root.querySelectorAll('a')].find((anchor) =>
     (anchor.textContent ?? '').includes('Search Console'),
   );
-  if (gscLink) gscLink.setAttribute('href', '/search-console');
+  if (gscLink) gscLink.setAttribute('href', '#search-console');
   const lo = root.querySelector<HTMLButtonElement>('#lo');
   const onOut = (): void => {
     if (!lo) return;
@@ -730,7 +730,7 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
     if (!gsc) return;
     busy(gsc, 400, () => {
       say(t('mq.ui.gsc'), true);
-      location.assign('/search-console');
+      location.hash = 'search-console';
     });
   };
   gsc?.addEventListener('click', onGsc);

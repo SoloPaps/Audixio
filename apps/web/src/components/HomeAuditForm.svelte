@@ -1,6 +1,6 @@
 <script lang="ts">
 import { t } from '../i18n/slim.js';
-import { isCompleteHttpUrl } from '../lib/site-url.js';
+import { normalizeSiteUrl } from '../lib/site-url.js';
 
 let invalid = $state(false);
 
@@ -8,16 +8,17 @@ function onSubmit(event: SubmitEvent): void {
   const form = event.currentTarget;
   if (!(form instanceof HTMLFormElement)) return;
   const raw = String(new FormData(form).get('url') ?? '').trim();
-  if (isCompleteHttpUrl(raw)) {
+  try {
+    normalizeSiteUrl(raw);
     invalid = false;
-    return;
+  } catch {
+    event.preventDefault();
+    invalid = true;
   }
-  event.preventDefault();
-  invalid = true;
 }
 </script>
 
-<form id="audit-form" class="form" action="/lancer" method="get" novalidate onsubmit={onSubmit}>
+<form id="audit-form" class="form" action="/progression" method="get" novalidate onsubmit={onSubmit}>
   <label for="url-input">
     <span>{t('home.url.long')}</span>
     <kbd class="kbd">URL</kbd>
@@ -29,7 +30,7 @@ function onSubmit(event: SubmitEvent): void {
         class="input"
         id="url-input"
         name="url"
-        type="url"
+        type="text"
         inputmode="url"
         autocomplete="url"
         autocapitalize="off"

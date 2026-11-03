@@ -1,5 +1,6 @@
 ---
 import AccountBoard from '../components/AccountBoard.svelte';
+import SearchConsolePanel from '../components/SearchConsolePanel.svelte';
 import { t } from '../i18n/index.js';
 import Canon from '../layouts/Canon.astro';
 import '../styles/maquettes/compte.css';
@@ -12,4 +13,7 @@ import '../styles/maquettes/compte.css';
   robots="noindex, nofollow"
 >
   <AccountBoard client:load />
+  <section id="search-console" aria-label={t('gsc.connect')}>
+    <SearchConsolePanel client:load />
+  </section>
 </Canon>

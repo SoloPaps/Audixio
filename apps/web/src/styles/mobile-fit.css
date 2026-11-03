@@ -347,6 +347,8 @@
 
   html[data-vue="exemple"] .stp .sl b {
     font-size: 0.75rem;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   html[data-vue="e404"] .hero::before,
@@ -490,5 +492,19 @@
   html[data-vue="restreint"] .code {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+  }
+
+  html[data-vue] .btn > svg,
+  html[data-vue] .chip svg,
+  html[data-vue] .badge svg {
+    width: 18px;
+    height: 18px;
+    max-width: none;
+    flex: none;
+  }
+
+  .bg-grid,
+  .scan {
+    display: none;
   }
 }

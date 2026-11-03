@@ -31,11 +31,21 @@ onMount(() => {
 {#if mode === 'pending'}
   <main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>
 {:else if mode === 'out'}
-  <main id="contenu" class="wrap">
-    <h1 id="t">{t('sites.title')}</h1>
-    <p role="status">{t('sites.need_login')}</p>
-    <p><a class="btn btn-primary" href="/connexion?next=%2Fsites">{t('nav.login')}</a></p>
-  </main>
+<main id="contenu" class="wrap">
+<nav class="crumbs fade" aria-label={t('mq.sv.001')}><ol><li><a href="/">{t('mq.sv.002')}</a></li><li aria-current="page">{t('mq.sv.003')}</li></ol></nav>
+<section class="hero" aria-labelledby="t">
+<div class="empty-art" aria-hidden="true"><span></span><span></span><span></span><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
+<h1 id="t" class="fade">{t('mq.sv.005')}<span class="grad">{t('mq.sv.006')}</span></h1>
+<p class="lead fade">{t('sites.need_login')}</p>
+<div class="acts fade"><a class="btn btn-primary" href="/connexion?next=%2Fsites">{t('nav.login')}</a><a class="btn btn-ghost" href="/inscription?next=%2Fsites">{t('login.tab.signup')}</a></div>
+</section>
+<section class="sec" aria-labelledby="h-steps"><h2 id="h-steps">{t('mq.sv.010')}</h2>
+<ol class="steps">
+<li class="panel"><b>{t('mq.sv.011')}</b><h3>{t('mq.sv.012')}</h3><p>{t('mq.sv.013')}</p></li>
+<li class="panel"><b>{t('mq.sv.014')}</b><h3>{t('mq.sv.015')}</h3><p>{t('mq.sv.016')}</p></li>
+<li class="panel"><b>{t('mq.sv.017')}</b><h3>{t('mq.sv.018')}</h3><p>{t('mq.sv.019')}</p></li>
+</ol></section>
+</main>
 {:else if mode === 'error'}
   <main id="contenu" class="wrap">
     <h1 id="t">{t('sites.title')}</h1>

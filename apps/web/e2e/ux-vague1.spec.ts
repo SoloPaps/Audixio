@@ -74,11 +74,14 @@ test('la barre étroite ne coupe pas la marque, le menu ni le thème', async ({
       );
     }
   }
-  await expect(page.locator('.axn-tools select')).toHaveValue('dark');
+  await expect(page.locator('.axn-tools .axn-theme')).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
   await burger.click();
-  const theme = page.getByRole('button', {
-    name: 'Mode sombre : bientôt disponible',
-  });
+  const theme = page
+    .locator('.axn-sheet')
+    .getByRole('button', { name: 'Thème' });
   await expect(theme).toBeVisible();
   const themeBox = await theme.boundingBox();
   expect(themeBox).not.toBeNull();
@@ -120,7 +123,9 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
   await expect(action).toHaveCSS('font-weight', '600');
   await expect(action).toHaveCSS('border-top-width', '1px');
   await expect(action).toHaveCSS('min-height', '44px');
-  await expect(page.getByRole('combobox', { name: 'Thème' })).toBeVisible();
+  await expect(
+    page.locator('.axn-tools').getByRole('button', { name: 'Thème' }),
+  ).toBeVisible();
   const cgu = page.getByRole('contentinfo').getByRole('link', { name: 'CGU' });
   await expect(cgu).toHaveCSS('text-decoration-line', 'none');
   await expect(cgu).toHaveCSS('font-weight', '500');

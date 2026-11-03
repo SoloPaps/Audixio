@@ -1,40 +1,24 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
-
-type Choice = 'system' | 'light' | 'dark';
-type Locale = 'fr' | 'en';
+import { applyLocale } from '../i18n/live.js';
 
 interface Props {
-  initial?: Choice;
+  initial?: 'system' | 'light' | 'dark';
 }
 
 let { initial = 'system' }: Props = $props();
-let chosen = $state<Choice | null>(null);
-let locale = $state<Locale>('fr');
-const value = $derived(chosen ?? initial);
+let dark = $state(false);
+let locale = $state<'fr' | 'en'>('fr');
 
-function apply(next: Choice, persist: boolean): void {
-  chosen = next;
-  const root = document.documentElement;
-  if (next === 'system') {
-    if (persist) localStorage.removeItem('audigy-theme');
-    root.removeAttribute('data-theme');
-    return;
-  }
-  if (persist) localStorage.setItem('audigy-theme', next);
-  root.setAttribute('data-theme', next);
+function toggleTheme(): void {
+  const next = dark ? 'light' : 'dark';
+  dark = next === 'dark';
+  localStorage.setItem('audigy-theme', next);
+  document.documentElement.setAttribute('data-theme', next);
 }
 
-function onChange(event: Event): void {
-  const next = (event.currentTarget as HTMLSelectElement).value;
-  if (next === 'light' || next === 'dark' || next === 'system')
-    apply(next, true);
-}
-
-async function onLocale(event: Event): Promise<void> {
-  const next = (event.currentTarget as HTMLSelectElement).value;
-  if (next !== 'fr' && next !== 'en') return;
+async function setLocale(next: 'fr' | 'en'): Promise<void> {
   if (next === locale) return;
   try {
     if (next === 'en' && !localStorage.getItem('audigy-en')) {
@@ -43,6 +27,8 @@ async function onLocale(event: Event): Promise<void> {
       localStorage.setItem('audigy-en', await res.text());
     }
     localStorage.setItem('audigy-locale', next);
+    locale = next;
+    applyLocale(next);
     location.reload();
   } catch {
     locale = 'fr';
@@ -50,31 +36,18 @@ async function onLocale(event: Event): Promise<void> {
 }
 
 onMount(() => {
-  const savedLocale = localStorage.getItem('audigy-locale');
-  if (savedLocale === 'en') locale = 'en';
-  const query = new URLSearchParams(location.search).get('theme');
-  if (query === 'light' || query === 'dark') {
-    apply(query, false);
-    return;
-  }
-  if (initial === 'light' || initial === 'dark') return;
-  const saved = localStorage.getItem('audigy-theme');
-  if (saved === 'light' || saved === 'dark') apply(saved, false);
+  dark =
+    document.documentElement.getAttribute('data-theme') === 'dark' ||
+    initial === 'dark';
+  if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
+  applyLocale(locale);
 });
 </script>
 
-<label class="theme">
-  <span>{t('theme.label')}</span>
-  <select {value} onchange={onChange}>
-    <option value="system">{t('theme.system')}</option>
-    <option value="light">{t('theme.light')}</option>
-    <option value="dark">{t('theme.dark')}</option>
-  </select>
-</label>
-<label class="theme">
-  <span class="visually-hidden">{t('locale.label')}</span>
-  <select aria-label={t('locale.label')} value={locale} onchange={onLocale}>
-    <option value="fr">{t('locale.fr')}</option>
-    <option value="en">{t('locale.en')}</option>
-  </select>
-</label>
+<button class="axn-theme" type="button" aria-pressed={dark} aria-label={t('theme.label')} onclick={toggleTheme}>
+  <svg class="axn-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  <svg class="axn-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+</button>
+<button type="button" class="link-nav" lang={locale === 'fr' ? 'en' : 'fr'} onclick={() => setLocale(locale === 'fr' ? 'en' : 'fr')}>
+  {locale === 'fr' ? 'EN' : 'FR'}
+</button>

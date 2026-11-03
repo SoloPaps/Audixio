@@ -194,7 +194,7 @@ async function onSignOut(): Promise<void> {
   <p role="status">{t('sites.need_login')}</p>
   <p><a class="link-action" href={loginHref('/sites')}>{t('nav.login')}</a></p>
 {:else}
-  <p><a class="link-action" href="/search-console">{t('gsc.connect')}</a></p>
+  <p><a class="link-action" href="/compte#search-console">{t('gsc.connect')}</a></p>
   {#if notice}
     <p role="status">{notice}</p>
   {/if}
@@ -225,7 +225,7 @@ async function onSignOut(): Promise<void> {
           {:else}
             <a
               class="site-tile lift glass glass-module"
-              href={`/lancer?site=${encodeURIComponent(site.id)}`}
+              href={relaunchHref(site.id)}
             >
               <div class="glass-plate">
                 <span>{site.label}</span>

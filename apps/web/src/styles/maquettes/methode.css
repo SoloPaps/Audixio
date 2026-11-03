@@ -199,8 +199,26 @@ h1 {
   max-width: 20ch;
 }
 a.link-inline {
+  margin-inline: 0.35rem;
+  color: var(--primary, #3d52a0);
   font-weight: 600;
   text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+a.link-inline:hover {
+  color: var(--primary-hover, #1e2a55);
+}
+main > p.chip,
+main > p:has(> .chip) {
+  display: inline-flex;
+  margin: 0.75rem 0.5rem 0 0;
+}
+.crumbs {
+  margin-top: 1rem;
+}
+.next {
+  margin-top: 4.5rem;
+  margin-bottom: 2rem;
 }
 #method-repro {
   scroll-margin-top: 7rem;

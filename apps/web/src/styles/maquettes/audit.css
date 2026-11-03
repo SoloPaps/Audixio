@@ -1,4 +1,7 @@
 /* Porté depuis la maquette finale. Polices locales, pas de fichier docs/design. */
+.seg-wrap {
+  display: none;
+}
 :root {
   --bg1: #ede8f5;
   --bg2: #adbbda;

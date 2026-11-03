@@ -263,7 +263,7 @@ describe('rapport', () => {
     );
     expect(finding?.status).toBe('untested');
     expect(finding?.actionLabel).toBe('Connecter Search Console');
-    expect(finding?.actionHref).toBe('/search-console');
+    expect(finding?.actionHref).toBe('/compte#search-console');
     expect(JSON.stringify(finding)).not.toContain('refresh');
   });
 

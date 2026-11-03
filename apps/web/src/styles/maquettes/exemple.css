@@ -2803,6 +2803,8 @@ h3.h {
 .zoomb svg {
   width: 16px;
   height: 16px;
+  margin-inline-start: 8px;
+  flex: none;
 }
 .pp {
   position: sticky;

@@ -1887,7 +1887,7 @@ const frCore = {
   'a11y.limits':
     'La jauge annonce sa note. Le passage au lecteur d’écran se fait à la main.',
   'method.lead': 'Cette page explique comment Audigy calcule ses notes.',
-  'method.version': 'Méthode 2026.1.',
+  'method.version': 'Méthode 2026.1',
   'method.change':
     'Toute modification de pondération crée une nouvelle version.',
   'method.recorded': 'La version est enregistrée sur chaque audit.',

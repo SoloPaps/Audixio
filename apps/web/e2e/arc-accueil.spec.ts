@@ -18,6 +18,10 @@ test('l’accueil montre l’exemple avant de demander l’adresse', async ({
   ).toBeVisible();
   await expect(page.getByLabel('Adresse du site')).toHaveAttribute(
     'type',
+    'text',
+  );
+  await expect(page.getByLabel('Adresse du site')).toHaveAttribute(
+    'inputmode',
     'url',
   );
   await expect(
@@ -65,7 +69,7 @@ test('une adresse incomplète reste sur l’accueil', async ({ page }) => {
       islands.every((island) => !island.hasAttribute('ssr'))
     );
   });
-  await page.getByLabel('Adresse du site').fill('exemple.fr');
+  await page.getByLabel('Adresse du site').fill('not a url');
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
   await expect(page).toHaveURL('/');
   await expect(page.getByText(/Indiquez une adresse complète/)).toBeVisible();

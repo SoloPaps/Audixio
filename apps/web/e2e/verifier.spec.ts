@@ -154,7 +154,11 @@ test('vérification claire et sombre sans violation', async ({ page }) => {
   await expectNoViolations(page);
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto(`/verifier/${ID}/?theme=dark`);
-  await expect(page.getByLabel('Thème')).toHaveValue('dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('button', { name: 'Thème' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
   await expect(page.getByText('La signature correspond.')).toBeVisible();
   await expectNoViolations(page);
 });

@@ -112,11 +112,16 @@ main {
 .crumbs ol {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   list-style: none;
   font-size: 14px;
   font-weight: 500;
   color: var(--muted);
+}
+.crumbs li {
+  display: inline-flex;
+  align-items: center;
 }
 .crumbs li + li::before {
   content: "/";
@@ -191,6 +196,9 @@ main {
   color: var(--warn);
 }
 .hero h1 {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.28em;
   font-size: clamp(32px, 5.5vw, 58px);
   line-height: 1.06;
   letter-spacing: -0.035em;
