@@ -417,6 +417,7 @@ h1 .grad {
 }
 .nav .sk {
   height: 14px;
+  width: 46px;
 }
 .nav .logo {
   width: 78px;
@@ -1147,10 +1148,28 @@ main {
   margin-bottom: 0;
 }
 @media (max-width: 560px) {
+  .ax-hero .mock-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ax-hero .mock-body > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .ax-hero .nav .sk {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    max-width: 46px;
+  }
   .ax-hero .p-perf,
   .ax-hero .p-eco,
-  .ax-hero .p-dns {
+  .ax-hero .p-dns,
+  .ax-hero .p-code,
+  .ax-hero .p-a11y,
+  .ax-hero .p-rgpd {
     right: 6px;
+    left: auto;
+    max-width: calc(100% - 12px);
   }
   .ax-hero .url {
     min-width: 0;
