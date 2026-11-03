@@ -785,6 +785,7 @@ const frCore = {
     'Cette adresse ne convient pas. Exemple : https://exemple.fr',
   'api.error.site_not_found': 'Ce site ne figure pas dans votre liste.',
   'api.error.audit_not_found': 'Cet audit est introuvable.',
+  'api.error.forbidden': 'Ce brief n’est pas disponible pour ce rapport.',
   'api.error.unverified':
     'Ce test demande un site vérifié. Vérifiez votre site, puis relancez.',
   'api.error.verification_not_found': 'Cette vérification est introuvable.',
@@ -2664,6 +2665,8 @@ const frCore = {
   'brief.preview.p':
     'Ce brief se met à jour en direct selon vos choix. Copiez-le ou téléchargez le fichier pour votre assistant.',
   'brief.file': 'audixio-prompt-remediation.md',
+  'brief.export.partial': 'Audixio Brief — PARTIEL (Site non vérifié)',
+  'brief.export.full': 'Audixio Brief — COMPLET (Site vérifié)',
   'brief.meta': 'Markdown LLM v1.2',
   'brief.tokens': '≈ {n} tokens',
   'brief.md': 'Aperçu du brief Markdown',

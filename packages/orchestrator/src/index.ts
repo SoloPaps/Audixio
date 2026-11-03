@@ -9,6 +9,9 @@
  *   (10 par jour et par utilisateur, 1 par hôte et 15 min), 400, 401, 403, 404.
  *   Erreurs : `{ error, messageKey: 'api.error.<code>' }`.
  * - `handleGet(req, deps, id)` : `GET /api/audits/:id`, lecture sous RLS.
+ * - `handleBriefExport(req, deps, id)` : `GET|POST /api/audits/:id/brief`.
+ *   Jeton requis. Le Markdown ne contient que les constats autorisés
+ *   (soft-gate). Un brief interdit répond 403, sans les constats.
  * - `handleRun(req, deps)` : `audit-run-background`, réveil signé (`x-audigy-trigger`,
  *   HMAC de `SUPABASE_SERVICE_ROLE_KEY`), puis `processNextAudit`.
  * - `handleCreateVerification`, `handleCheckVerification` : `POST /api/verifications`
@@ -59,6 +62,12 @@ export {
   OAUTH_EXPORT_FIELDS,
 } from './account.js';
 export { accountDepsFromEnv } from './account-db.js';
+export {
+  BRIEF_EXPORT_FILENAME,
+  type BriefExportDeps,
+  type BriefRenderInput,
+  handleBriefExport,
+} from './brief-export.js';
 export {
   type AuditContext,
   type AuditContextOptions,
