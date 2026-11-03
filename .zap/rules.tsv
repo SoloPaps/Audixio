@@ -1,0 +1,3 @@
+10015	IGNORE	(Incomplete or No Cache-control and Pragma HTTP Header Set)	Fichiers statiques mis en cache volontairement. Les API portent Cache-Control: no-store.
+10096	IGNORE	(Timestamp Disclosure)	Faux positifs sur les nombres des bundles (versions, hachages).
+10109	IGNORE	(Modern Web Application)	Information posée sur toute application à fort JavaScript. Pas une faille.

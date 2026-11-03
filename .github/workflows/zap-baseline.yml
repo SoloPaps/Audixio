@@ -1,0 +1,48 @@
+name: zap-baseline
+
+# Scan passif hebdomadaire d'une cible déjà en ligne.
+# ZAP_TARGET (variable de dépôt) vide : le job s'arrête sans scanner.
+on:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zap-baseline-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  baseline:
+    name: zap-baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Cible
+        id: cible
+        env:
+          ZAP_TARGET: ${{ vars.ZAP_TARGET }}
+        run: |
+          if [ -z "$ZAP_TARGET" ]; then
+            echo "scan=false" >> "$GITHUB_OUTPUT"
+            echo "ZAP_TARGET est vide : aucun scan."
+            exit 0
+          fi
+          echo "scan=true" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout
+        if: steps.cible.outputs.scan == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: zap-baseline
+        if: steps.cible.outputs.scan == 'true'
+        uses: zaproxy/action-baseline@f948cb8d66e25e330a23e64e3fc72a5c0018b16d # 2026-05-09
+        with:
+          target: ${{ vars.ZAP_TARGET }}
+          rules_file_name: .zap/rules.tsv
+          allow_issue_writing: false
+          fail_action: true
