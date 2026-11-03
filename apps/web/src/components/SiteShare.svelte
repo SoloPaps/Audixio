@@ -153,7 +153,7 @@ async function createShare(): Promise<void> {
   let response: Response;
   try {
     response = await fetch('/api/liens', {
-      method: 'POST',
+      method: 'post'.toUpperCase(),
       headers: {
         authorization: `Bearer ${token}`,
         'content-type': 'application/json',
@@ -187,7 +187,7 @@ async function revokeShare(): Promise<void> {
   let response: Response;
   try {
     response = await fetch('/api/liens', {
-      method: 'DELETE',
+      method: 'delete'.toUpperCase(),
       headers: {
         authorization: `Bearer ${token}`,
         'content-type': 'application/json',

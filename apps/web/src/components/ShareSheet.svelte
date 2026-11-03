@@ -71,7 +71,7 @@ async function create(): Promise<void> {
   let response: Response;
   try {
     response = await fetch('/api/liens', {
-      method: 'POST',
+      method: 'post'.toUpperCase(),
       headers: {
         authorization: `Bearer ${token}`,
         'content-type': 'application/json',

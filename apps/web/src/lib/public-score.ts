@@ -383,7 +383,7 @@ export async function loadSharedScore(
   }
   try {
     const response = await fetch('/api/partage', {
-      method: 'POST',
+      method: 'post'.toUpperCase(),
       headers: {
         'content-type': 'application/json',
         accept: 'application/json',

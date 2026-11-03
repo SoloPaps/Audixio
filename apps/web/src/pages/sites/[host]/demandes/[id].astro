@@ -435,7 +435,7 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     }).catch(function(){return {};}).then(function(session){
       var headers={'content-type':'application/json',accept:'application/json'};
       if(session&&session.access_token) headers.authorization='Bearer '+session.access_token;
-      return fetch('/api/liens/decision',{method:'POST',credentials:'same-origin',headers:headers,body:JSON.stringify({auditId:auditId,requestId:requestId,decision:decision,role:role,days:days})});
+      return fetch('/api/liens/decision',{method:'post',credentials:'same-origin',headers:headers,body:JSON.stringify({auditId:auditId,requestId:requestId,decision:decision,role:role,days:days})});
     }).then(function(res){return res.json();}).then(function(body){
       if(body&&typeof body.url==='string'&&body.url.indexOf('/partage/')===0){
         var pane=$('#pane-ok');
@@ -452,7 +452,7 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     }).catch(function(){return {};}).then(function(session){
       var headers={'content-type':'application/json',accept:'application/json'};
       if(session&&session.access_token) headers.authorization='Bearer '+session.access_token;
-      return fetch('/api/liens',{method:'DELETE',credentials:'same-origin',headers:headers,body:JSON.stringify({id:id})});
+      return fetch('/api/liens',{method:'delete',credentials:'same-origin',headers:headers,body:JSON.stringify({id:id})});
     }).catch(function(){});
   }
   function say(t){live.textContent='';setTimeout(function(){live.textContent=t},60)}

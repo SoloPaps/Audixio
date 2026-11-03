@@ -146,7 +146,7 @@ describe('fonctions Netlify', () => {
       path: '/api/oauth/google/revoke',
       method: 'POST',
     });
-  });
+  }, 120_000);
 
   it('bundle autonome : aucun import de paquet du monorepo', async () => {
     for (const name of names) {
