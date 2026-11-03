@@ -3,6 +3,8 @@ import {
   AUDIT_IP,
   accessBudgets,
   clientIp,
+  GUEST_AUDIT,
+  guestAuditKey,
   hostOf,
   INTAKE,
   plainText,
@@ -12,6 +14,8 @@ import {
 
 describe('plafonds anti-abus', () => {
   it('laisse passer un usage normal et coupe la rafale', () => {
+    expect(GUEST_AUDIT.limit).toBe(3);
+    expect(GUEST_AUDIT.windowMs).toBe(24 * 60 * 60 * 1000);
     expect(AUDIT_IP.limit).toBeGreaterThanOrEqual(30);
     expect(INTAKE.access.account.limit).toBeGreaterThanOrEqual(5);
     expect(INTAKE.robot.domain.limit).toBeGreaterThanOrEqual(4);
@@ -95,5 +99,15 @@ describe('plafonds anti-abus', () => {
 
   it('retire les caractères de contrôle du motif', () => {
     expect(plainText('bonjour\nmonde', 20)).toBe('bonjourmonde');
+  });
+
+  it('empreinte le plafond visiteur sans garder l’adresse', async () => {
+    const now = new Date('2026-11-03T12:00:00.000Z');
+    const left = await guestAuditKey('203.0.113.9', now);
+    const right = await guestAuditKey('203.0.113.10', now);
+    expect(left).toMatch(/^[0-9a-f]{64}$/);
+    expect(left).not.toContain('203.0.113.9');
+    expect(left).not.toBe(right);
+    expect(await guestAuditKey('203.0.113.9', now)).toBe(left);
   });
 });

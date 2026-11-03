@@ -28,6 +28,8 @@ export {
   accessBudgets,
   accountId,
   clientIp,
+  GUEST_AUDIT,
+  guestAuditKey,
   hostOf,
   INTAKE,
   plainText,

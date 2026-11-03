@@ -15,6 +15,12 @@ export interface RateBudget {
 /** Lancement d’audit : 60 / h / IP. Le compte reste à 10 / jour (SQL). */
 export const AUDIT_IP = { limit: 60, windowMs: 60 * 60 * 1000 } as const;
 
+/** Visiteur sans compte : 3 audits / 24 h / IP hachée. */
+export const GUEST_AUDIT = {
+  limit: 3,
+  windowMs: 24 * 60 * 60 * 1000,
+} as const;
+
 /**
  * Formulaires publics.
  * Compte = e-mail, et identifiant si une session est là.
@@ -43,6 +49,19 @@ export function clientIp(request: Request): string {
 export function retryAfterSeconds(nowMs: number, windowMs: number): number {
   const start = Math.floor(nowMs / windowMs) * windowMs;
   return Math.max(1, Math.ceil((start + windowMs - nowMs) / 1000));
+}
+
+/**
+ * Clé du plafond visiteur. Même recette que les autres plafonds :
+ * empreinte du jour et de l’IP, puis empreinte du couple portée + matière.
+ */
+export async function guestAuditKey(
+  ip: string,
+  now = new Date(),
+): Promise<string> {
+  const day = now.toISOString().slice(0, 10);
+  const material = await sha256Hex(`${day}\n${ip}`);
+  return sha256Hex(`audixio\nguest-audit\n${material}`);
 }
 
 export async function sha256Hex(value: string): Promise<string> {

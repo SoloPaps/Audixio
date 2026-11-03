@@ -9,6 +9,9 @@
  *   (10 par jour et par utilisateur, 1 par hôte et 15 min, 60 par heure et par IP),
  *   400, 401, 403, 404.
  *   Erreurs : `{ error, messageKey: 'api.error.<code>' }`.
+ * - `handleGuestCreate(req, deps)` : `POST /api/guest-audits`, sans jeton.
+ *   Plafond 3 / 24 h via `consume_rate_limit` (IP hachée). 202 + hub soft-gate,
+ *   429 `guest_limit`.
  * - `handleGet(req, deps, id)` : `GET /api/audits/:id`, lecture sous RLS.
  * - `handleBriefExport(req, deps, id)` : `GET|POST /api/audits/:id/brief`.
  *   Jeton requis. Le Markdown ne contient que les constats autorisés
@@ -96,6 +99,7 @@ export {
   LOCAL_RUNNER_ENV_NAME,
 } from './dispatch.js';
 export { gscForAudit, loadSearchConsole } from './gsc-port.js';
+export { guestPreview, handleGuestCreate } from './guest.js';
 export {
   type ApiDeps,
   type ApiError,

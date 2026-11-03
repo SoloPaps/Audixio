@@ -60,6 +60,7 @@ describe('fonctions Netlify', () => {
       'api-audits-get',
       'api-compte',
       'api-demandes-acces',
+      'api-guest-audits',
       'api-liens',
       'api-liens-decision',
       'api-partage',
@@ -95,6 +96,10 @@ describe('fonctions Netlify', () => {
     });
     expect((await load('api-demandes-acces')).config).toEqual({
       path: '/api/demandes-acces',
+      method: 'POST',
+    });
+    expect((await load('api-guest-audits')).config).toEqual({
+      path: '/api/guest-audits',
       method: 'POST',
     });
     expect((await load('api-liens')).config).toEqual({
