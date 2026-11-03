@@ -57,7 +57,7 @@ supabase migration list
 supabase db push
 ```
 
-`migration list` doit montrer les 11 versions déjà présentes des deux côtés, et une seule migration locale en attente : celle des liens de partage (`link_kind`, `expires_at`, `created_at`), horodatée après `20261101223145`. `db push` n’applique que celle-là.
+`migration list` doit montrer les 11 versions déjà présentes des deux côtés, et une seule migration locale en attente : `20261103061242_liens_partage.sql` (`link_kind`, `expires_at`, `created_at` sur `reports`). `db push` n’applique que celle-là.
 
 Ne pas utiliser `supabase migration repair` pour réécrire l’historique distant : les versions prod sont la référence, le dépôt s’y est calé.
 
@@ -68,4 +68,4 @@ Ne pas utiliser `supabase migration repair` pour réécrire l’historique dista
 - Le corps soft-gate de `read_shared_score` ne change pas (pas de note globale, pas de domaine verrouillé). Le rapport équipe complet reste servi par l’application, pas par cette fonction.
 - Les politiques RLS et les droits existants ne sont pas modifiés. Les fonctions gardent `search_path` vide et les mêmes `grant execute`.
 - Un `expires_at` illisible dans le journal est ignoré (la ligne n’est pas datée) plutôt que de faire échouer toute la migration. Un `kind` inconnu n’est pas recopié.
-- Les liens créés après coup doivent écrire `link_kind` et `expires_at` sur `reports`. Sans ça, un lien public expiré resterait lisible par l’ancienne fonction jusqu’à la révocation.
+- Les liens créés après coup écrivent `link_kind`, `expires_at` et `created_at` dans `mint` (`packages/orchestrator/src/liens-db.ts`). Sans ces colonnes, un lien public expiré resterait lisible par l’ancienne fonction jusqu’à la révocation.

@@ -15,9 +15,9 @@
  * - `writeAuditResults(client, input)` : RPC `write_audit_results` (service_role).
  * - `failStaleAudits(client, minutes)` : audits `running`/`partial` trop vieux → `failed`.
  * - `createUserClient({ …, accessToken })` : client au nom de l'utilisateur (fonctions).
- * - `readReportByShareToken(client, token)` : rapport `link` non révoqué.
+ * - `readReportByShareToken(client, token)` : rapport `link` non révoqué et non expiré.
  * - `readPublicScore(client, slug)` : scores d'un site `is_public`.
- * - `readSharedScore(client, token)` : scores d'un lien encore ouvert.
+ * - `readSharedScore(client, token)` : scores d'un lien encore ouvert. Expiré : `null`.
  * - `dbEnvFrom(env)` : exige `SUPABASE_URL`, `SUPABASE_ANON_KEY`,
  *   `SUPABASE_SERVICE_ROLE_KEY`. Aucune valeur dans le dépôt.
  * - `TERMS_VERSION` : version des CGU acceptée dans `terms_acceptances`.

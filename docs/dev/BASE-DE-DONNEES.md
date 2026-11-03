@@ -42,7 +42,7 @@ Soft-gate, appliqué dans les politiques (pas dans le navigateur) :
 - Les artefacts (JSON complet) non plus.
 - `read_rapport_apercu(audit_id)` renvoie l’aperçu : domaines ouverts, pastilles verrouillées sans lettre, constats ouverts. La note globale et le correctif branché ne sont présents que si une preuve `verified` existe.
 - Libellé sans preuve : `partielle · N domaines · site non vérifié` (N = domaines ouverts notés).
-- Un lien public (`read_public_score`, `read_shared_score`) ne reçoit ni note globale, ni domaine sensible, ni constat. L’ancien drapeau `expose_security` ne rouvre pas ces données.
+- Un lien public (`read_public_score`, `read_shared_score`) ne reçoit ni note globale, ni domaine sensible, ni constat. L’ancien drapeau `expose_security` ne rouvre pas ces données. Un lien dont `expires_at` est passé ne reçoit rien (`20261103061242`).
 - Le plan Pro ne remplace pas la preuve. Il change le plafond et les alertes.
 
 `plan` n’a pas de droit `UPDATE` pour `authenticated`. `onboarding_vu` oui.
