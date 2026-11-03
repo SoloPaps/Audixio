@@ -97,16 +97,12 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
   });
 
   await page.goto(`/historique?site=${SITE}&theme=light`);
-  await expect(page.locator('polyline.ln')).not.toHaveAttribute(
-    'points',
-    DEMO,
-    {
-      timeout: 15_000,
-    },
-  );
+  const values = page.locator('text.val');
+  await expect(values.nth(0)).toHaveText('72', { timeout: 15_000 });
+  await expect(values.nth(1)).toHaveText('88');
   const points = await page.locator('polyline.ln').getAttribute('points');
   expect(points).toContain('70.0,237.0');
   expect(points).toContain('890.0,53.0');
-  await expect(page.locator('text.val').nth(0)).toHaveText('72');
-  await expect(page.locator('text.val').nth(1)).toHaveText('88');
+  expect(points).not.toContain('168.0');
+  expect(points).not.toBe(DEMO);
 });
