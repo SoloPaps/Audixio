@@ -28,7 +28,9 @@ test('lien public 30 jours, lecture anonyme, expiration', async ({
   const share = await page.locator('#share-url').inputValue();
   expect(share).toContain('/partage/');
 
-  const guest = await browser.newContext();
+  const guest = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
   const reader = await guest.newPage();
   await reader.goto(share);
   await expect(
@@ -72,7 +74,9 @@ test('demande d’accès puis lien équipe', async ({ page, browser }) => {
   });
   const team = await pane.getAttribute('data-lien');
   const linkId = (await pane.getAttribute('data-id')) ?? '';
-  const guest = await browser.newContext();
+  const guest = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
   const reader = await guest.newPage();
   await reader.goto(team ?? '/');
   await expect(reader.getByText('PARTIEL')).toBeVisible();

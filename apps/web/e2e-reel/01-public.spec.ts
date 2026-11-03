@@ -27,10 +27,10 @@ test('pages légales, 404, 500, cookies et Pro', async ({ page, browser }) => {
 
   const missing = await page.goto('/cette-page-n-existe-pas');
   expect(missing?.status()).toBe(404);
-  await expect(page.getByText('Page introuvable')).toBeVisible();
+  await expect(page.getByText('Page introuvable').first()).toBeVisible();
 
   await page.goto('/500/');
-  await expect(page.getByText('Erreur serveur')).toBeVisible();
+  await expect(page.getByText('Erreur serveur').first()).toBeVisible();
 
   await page.goto('/cookies');
   await expect(
@@ -68,8 +68,8 @@ test('pages légales, 404, 500, cookies et Pro', async ({ page, browser }) => {
   await narrow.goto('/pro');
   await expect(narrow.locator('#email-input')).toBeVisible();
   await narrow.goto('/cette-page-n-existe-pas');
-  await expect(narrow.getByText('Page introuvable')).toBeVisible();
+  await expect(narrow.getByText('Page introuvable').first()).toBeVisible();
   await narrow.goto('/500/');
-  await expect(narrow.getByText('Erreur serveur')).toBeVisible();
+  await expect(narrow.getByText('Erreur serveur').first()).toBeVisible();
   await narrow.context().close();
 });

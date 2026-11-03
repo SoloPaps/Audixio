@@ -19,11 +19,16 @@ test('mot de passe de 9 caractères refusé', async ({ page }) => {
   await page.goto('/inscription');
   await page.locator('#signup-email').fill(email);
   await page.locator('#signup-password').fill('Audixio-9');
+  await expect(
+    page.getByText('Trop court : 10 caractères minimum.'),
+  ).toBeVisible();
   await page.locator('input[name="terms"]').check();
   await page.getByRole('button', { name: 'Créer mon compte' }).click();
-  await expect(
-    page.getByText('Le mot de passe doit contenir au moins 10 caractères.'),
-  ).toBeVisible();
+  await expect(page).toHaveURL(/\/inscription\/?$/);
+  const tooShort = await page
+    .locator('#signup-password')
+    .evaluate((node) => (node as HTMLInputElement).validity.tooShort);
+  expect(tooShort).toBe(true);
 });
 
 test('inscription et lien de confirmation', async ({ page }) => {

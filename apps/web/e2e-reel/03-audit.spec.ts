@@ -6,7 +6,9 @@ test.use({ storageState: AUTH });
 test('visiteur non connecté est renvoyé vers la connexion', async ({
   browser,
 }) => {
-  const context = await browser.newContext();
+  const context = await browser.newContext({
+    storageState: { cookies: [], origins: [] },
+  });
   const page = await context.newPage();
   await page.goto('/');
   await page.locator('#url-input').fill(LAB);
