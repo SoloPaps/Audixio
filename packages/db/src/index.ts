@@ -60,31 +60,6 @@ export {
 } from './client.js';
 export type { Database, Json } from './database.types.js';
 export {
-  decisionEquipe,
-  expiresAt,
-  gateLink,
-  lienActif,
-  type LienFinding,
-  type LienRapport,
-  type LienVue,
-  type LinkGate,
-  type LinkKind,
-  type LinkRecord,
-  peutCreerLien,
-  PUBLIC_LINK_DAYS,
-  SHARE_TOKEN,
-  shareTokenFromBytes,
-  TEAM_DAY_CHOICES,
-  vueLien,
-} from './liens.js';
-export {
-  type PlanChange,
-  type PlanItem,
-  type PlanMemory,
-  type PlanSignal,
-  reconcilePlan,
-} from './plan-sync.js';
-export {
   A11Y_MENTION,
   ACCESS_STATUSES,
   ACTION_STATUSES,
@@ -128,6 +103,31 @@ export {
   withinLinkQuota,
   withinSiteQuota,
 } from './droits.js';
+export {
+  decisionEquipe,
+  expiresAt,
+  gateLink,
+  type LienFinding,
+  type LienRapport,
+  type LienVue,
+  type LinkGate,
+  type LinkKind,
+  type LinkRecord,
+  lienActif,
+  PUBLIC_LINK_DAYS,
+  peutCreerLien,
+  SHARE_TOKEN,
+  shareTokenFromBytes,
+  TEAM_DAY_CHOICES,
+  vueLien,
+} from './liens.js';
+export {
+  type PlanChange,
+  type PlanItem,
+  type PlanMemory,
+  type PlanSignal,
+  reconcilePlan,
+} from './plan-sync.js';
 export { TERMS_VERSION } from './terms.js';
 export {
   ARTIFACT_KINDS,

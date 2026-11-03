@@ -63,6 +63,11 @@ export type LinkGate =
 export interface LienVue {
   access: 'public' | 'team' | 'retired';
   brief: BriefLevel;
+  label: string;
+  url: string;
+  finishedAt: string | null;
+  methodVersion: string | null;
+  auditId: string;
   noteGlobale: number | null;
   grade: Grade | null;
   domaines: {
@@ -78,9 +83,7 @@ export interface LienVue {
 /** 16 octets aléatoires → jeton hex de 128 bits. */
 export function shareTokenFromBytes(bytes: Uint8Array): string {
   if (bytes.byteLength !== 16) throw new Error('token_bytes');
-  return [...bytes]
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 export function expiresAt(
@@ -106,7 +109,8 @@ export function lienActif(link: LinkRecord, now: Date): boolean {
 export function gateLink(link: LinkRecord | null, now: Date): LinkGate {
   if (!link) return { state: 'closed' };
   const dead = ended(link, now);
-  if (link.kind === 'public') return dead ? { state: 'closed' } : { state: 'public' };
+  if (link.kind === 'public')
+    return dead ? { state: 'closed' } : { state: 'public' };
   if (dead) return { state: 'retired' };
   return {
     state: 'team',
@@ -172,6 +176,11 @@ export function vueLien(gate: LinkGate, rapport: LienRapport): LienVue | null {
   return {
     access: gate.state === 'team' ? 'team' : gate.state,
     brief,
+    label: rapport.label,
+    url: rapport.url,
+    finishedAt: rapport.finishedAt,
+    methodVersion: rapport.methodVersion,
+    auditId: rapport.auditId,
     noteGlobale: full ? rapport.globalScore : null,
     grade: visibleGlobalGrade(viewer, rapport.globalGrade),
     domaines: rapport.domains.map((row) => {

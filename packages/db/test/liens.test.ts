@@ -3,9 +3,9 @@ import {
   decisionEquipe,
   expiresAt,
   gateLink,
-  lienActif,
   type LienRapport,
   type LinkRecord,
+  lienActif,
   PUBLIC_LINK_DAYS,
   shareTokenFromBytes,
   vueLien,
@@ -94,9 +94,7 @@ describe('jeton de partage', () => {
   });
 
   it('refuse une graine trop courte', () => {
-    expect(() => shareTokenFromBytes(new Uint8Array(8))).toThrow(
-      'token_bytes',
-    );
+    expect(() => shareTokenFromBytes(new Uint8Array(8))).toThrow('token_bytes');
   });
 });
 
@@ -159,9 +157,9 @@ describe('vue servie', () => {
     expect(vue?.brief).toBe('aucun');
     expect(vue?.constats.map((row) => row.checkId)).toEqual(['seo.titre']);
     expect(vue?.constats[0]?.fixKey).toBeNull();
-    expect(vue?.domaines.find((row) => row.domain === 'securite')).toMatchObject(
-      { verrouille: true, score: null, grade: null },
-    );
+    expect(
+      vue?.domaines.find((row) => row.domain === 'securite'),
+    ).toMatchObject({ verrouille: true, score: null, grade: null });
   });
 
   it('le lien équipe vérifié sert le rapport et le brief en lecture', () => {
@@ -176,8 +174,9 @@ describe('vue servie', () => {
       'securite.hsts',
       'seo.titre',
     ]);
-    expect(vue?.constats.find((row) => row.checkId === 'securite.hsts')?.fixKey)
-      .toBe('fix.securite.hsts');
+    expect(
+      vue?.constats.find((row) => row.checkId === 'securite.hsts')?.fixKey,
+    ).toBe('fix.securite.hsts');
   });
 
   it('le lien équipe sans preuve reste partiel, sans brief si le rôle l’exclut', () => {

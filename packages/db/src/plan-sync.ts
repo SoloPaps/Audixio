@@ -33,10 +33,6 @@ export interface PlanChange {
   at: string;
 }
 
-function keyOf(domain: string, checkId: string): string {
-  return `${domain}\n${checkId}`;
-}
-
 /** `ouvert` si un échec ou un avertissement reste. `corrige` seulement si tout passe. */
 function verdict(
   signals: readonly PlanSignal[],
@@ -73,7 +69,10 @@ export function reconcilePlan(
   const changes: PlanChange[] = [];
   for (const item of items) {
     const state = verdict(signals, item.domain, item.checkId);
-    if (state === 'corrige' && (item.status === 'todo' || item.status === 'doing')) {
+    if (
+      state === 'corrige' &&
+      (item.status === 'todo' || item.status === 'doing')
+    ) {
       changes.push({
         id: item.id,
         checkId: item.checkId,

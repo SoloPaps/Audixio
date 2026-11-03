@@ -60,6 +60,9 @@ describe('fonctions Netlify', () => {
       'api-audits-get',
       'api-compte',
       'api-demandes-acces',
+      'api-liens',
+      'api-liens-decision',
+      'api-partage',
       'api-places',
       'api-robot',
       'api-unsubscribe',
@@ -92,6 +95,18 @@ describe('fonctions Netlify', () => {
     });
     expect((await load('api-demandes-acces')).config).toEqual({
       path: '/api/demandes-acces',
+      method: 'POST',
+    });
+    expect((await load('api-liens')).config).toEqual({
+      path: '/api/liens',
+      method: ['GET', 'POST', 'DELETE'],
+    });
+    expect((await load('api-liens-decision')).config).toEqual({
+      path: '/api/liens/decision',
+      method: 'POST',
+    });
+    expect((await load('api-partage')).config).toEqual({
+      path: '/api/partage',
       method: 'POST',
     });
     expect((await load('api-robot')).config).toEqual({
