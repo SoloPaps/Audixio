@@ -9,6 +9,8 @@ const messages = {
   'mq.lg.494': t('mq.lg.494'),
   'mq.lg.495': t('mq.lg.495'),
   'mq.lg.496': t('mq.lg.496'),
+  'mq.lg.robot.ok': t('mq.lg.robot.ok'),
+  'mq.lg.robot.stop': t('mq.lg.robot.stop'),
 };
 ---
 
@@ -51,6 +53,6 @@ document.dispatchEvent(new Event('audixio-motion'));
 </script>
 <script is:inline>
 var MSG = JSON.parse(document.getElementById('i18n-msg').textContent);
-(function(){var f=document.getElementById('oo');if(!f)return;var st=document.getElementById('oo-st');f.addEventListener('submit',function(e){e.preventDefault();var ok=true;[f.d,f.m].forEach(function(x){var v=x.checkValidity()&&x.value.trim();x.setAttribute('aria-invalid',v?'false':'true');if(!v)ok=false});if(!ok){st.className=MSG['mq.lg.492'];st.textContent=MSG['mq.lg.493'];return}st.className=MSG['mq.lg.494'];st.textContent=MSG['mq.lg.495']+f.m.value+MSG['mq.lg.496']+f.d.value+'.';f.reset()})})();
+(function(){var f=document.getElementById('oo');if(!f)return;var st=document.getElementById('oo-st');f.addEventListener('submit',function(e){e.preventDefault();var ok=true;[f.d,f.m].forEach(function(x){var v=x.checkValidity()&&x.value.trim();x.setAttribute('aria-invalid',v?'false':'true');if(!v)ok=false});if(!ok){st.className=MSG['mq.lg.492'];st.textContent=MSG['mq.lg.493'];return}var btn=f.querySelector('button[type=submit]');if(btn)btn.disabled=true;fetch('/api/robot',{method:'post',headers:{'content-type':'application/json','accept':'application/json'},credentials:'same-origin',body:JSON.stringify({domain:f.d.value.trim(),email:f.m.value.trim(),reason:(f.r&&f.r.value?f.r.value:'').trim()})}).then(function(res){if(btn)btn.disabled=false;if(res.status===429){st.className=MSG['mq.lg.492'];st.textContent=MSG['mq.lg.robot.stop'];return}if(!res.ok){st.className=MSG['mq.lg.492'];st.textContent=MSG['mq.lg.493'];return}st.className=MSG['mq.lg.494'];st.textContent=MSG['mq.lg.robot.ok'];f.reset()}).catch(function(){if(btn)btn.disabled=false;st.className=MSG['mq.lg.492'];st.textContent=MSG['mq.lg.493']})})})();
 </script>
 </Canon>

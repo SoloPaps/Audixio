@@ -4421,5 +4421,13 @@
   "mq.lg.646": "Contact the team",
   "mq.lg.647": "With the error code, we reply quickly.",
   "mq.lg.648": "Retry in progress…",
-  "mq.lg.649": "adjusting…"
+  "mq.lg.649": "adjusting…",
+  "api.error.ip_limit": "Too many audits from this network. Try again later.",
+  "api.error.rate_limited": "Too many requests. Try again later.",
+  "api.error.unavailable": "The request could not be saved. Try again later.",
+  "api.intake.accepted": "Request received. It will be reviewed after proof of ownership.",
+  "mq.lg.robot.ok": "Request received. It will be reviewed after proof of ownership.",
+  "mq.lg.robot.stop": "Too many requests. Try again later.",
+  "mq.dm.limited": "Too many requests. Try again later.",
+  "mq.dm.error": "The request did not go through. Try again."
 }

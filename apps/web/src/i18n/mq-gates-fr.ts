@@ -175,6 +175,8 @@ export const mqGatesFr = {
   'mq.dm.refresh': 'Statut actualisé : toujours en attente du propriétaire',
   'mq.dm.need': 'Merci de saisir une adresse e-mail valide',
   'mq.dm.sent': 'Demande envoyée au propriétaire de exemple.fr',
+  'mq.dm.limited': 'Trop de demandes. Réessayez plus tard.',
+  'mq.dm.error': 'La demande n’a pas abouti. Réessayez.',
   'mq.demande.meta.title': "Demander l'accès au propriétaire · Audixio",
   'mq.demande.meta.desc':
     "Le rapport d'audit est verrouillé. Demandez l'accès au propriétaire pour consulter le détail et le brief. Lecture seule, sans partage ni export.",

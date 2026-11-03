@@ -3,6 +3,7 @@ import {
   badgeHasTracker,
   exampleRaw,
   exampleView,
+  presentRow,
   scoreBadgeSvg,
   shareIsOpen,
   toPublicScore,
@@ -38,6 +39,42 @@ describe('score public', () => {
     ]);
     expect(JSON.stringify(view)).not.toContain(TRAP);
     expect(JSON.stringify(view)).not.toContain('measured');
+  });
+
+  it('ferme la note et les domaines sensibles sur le score servi', () => {
+    const view = presentRow({
+      site_label: 'Exemple',
+      site_url: 'https://exemple.fr',
+      finished_at: null,
+      method_version: '2026.1',
+      global_score: 72,
+      audit_id: '00000000-0000-4000-8000-000000000019',
+      expose_security: true,
+      coverage: 1,
+      report_id: null,
+      domains: [
+        { domain: 'performance', score: 80, level: 'good' },
+        { domain: 'securite', score: 40, level: 'problem' },
+        { domain: 'vie_privee', score: 10, level: 'problem' },
+        { domain: 'dns_email', score: 20, level: 'problem' },
+      ],
+      security_details: [
+        {
+          check_id: 'securite.hsts',
+          status: 'fail',
+          message_key: 'finding.securite.hsts',
+          measured: TRAP,
+        },
+      ],
+    });
+    const dumped = JSON.stringify(view);
+    expect(view.globalScore).toBeNull();
+    expect(view.securityDetails).toEqual([]);
+    expect(view.domains.map((row) => row.domain)).toEqual(['performance']);
+    expect(dumped).not.toContain(TRAP);
+    expect(dumped).not.toContain('securite');
+    expect(dumped).not.toContain('vie_privee');
+    expect(dumped).not.toContain('dns_email');
   });
 
   it('révoque le lien dès que la date est posée', () => {

@@ -1,5 +1,10 @@
-import type { Database, Json } from '@audigy/db';
-import { readPublicScore, readSharedScore } from '@audigy/db';
+import {
+  type Database,
+  isLockedDomain,
+  type Json,
+  readPublicScore,
+  readSharedScore,
+} from '@audigy/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { isKnownDomain } from './domains.js';
 
@@ -192,7 +197,13 @@ export function fromScoreRow(row: RpcRow): RawPublicScore {
 
 export function presentRow(row: RpcRow): PublicScoreView {
   const raw = fromScoreRow(row);
-  return toPublicScore(raw, { exposeSecurity: raw.exposeSecurity === true });
+  const view = toPublicScore(raw, { exposeSecurity: false });
+  return {
+    ...view,
+    globalScore: null,
+    securityDetails: [],
+    domains: view.domains.filter((item) => !isLockedDomain(item.domain)),
+  };
 }
 
 const EXAMPLE_AUDIT = '00000000-0000-4000-8000-000000000019';
