@@ -3,6 +3,7 @@ import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { bootEspace, type LiveSite } from '../lib/espace-boot.js';
 import ReputationPanel from './ReputationPanel.svelte';
+import SessionWall from './SessionWall.svelte';
 
 let mode = $state<
   'pending' | 'out' | 'empty' | 'list' | 'ready' | 'live' | 'error'
@@ -32,9 +33,7 @@ onMount(() => {
   <main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>
 {:else if mode === 'out'}
   <main id="contenu" class="wrap">
-    <h1 id="t">{t('sites.title')}</h1>
-    <p role="status">{t('sites.need_login')}</p>
-    <p><a class="btn btn-primary" href="/connexion?next=%2Fsites">{t('nav.login')}</a></p>
+    <SessionWall title={t('sites.title')} status={t('sites.need_login')} next="/sites" />
   </main>
 {:else if mode === 'error'}
   <main id="contenu" class="wrap">

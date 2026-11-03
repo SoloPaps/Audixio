@@ -2,6 +2,7 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { bootEspace } from '../lib/espace-boot.js';
+import SessionWall from './SessionWall.svelte';
 
 let mode = $state<
   'pending' | 'out' | 'empty' | 'list' | 'ready' | 'live' | 'error'
@@ -21,7 +22,7 @@ onMount(() => {
 </script>
 
 <div bind:this={root} data-mode={mode}>
-{#if mode === 'pending'}<main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p><section id="contact" hidden></section></main>{:else if mode === 'out'}<main id="contenu"><h1 id="h1">{t('account.title')}</h1><p>{t('account.lead')}</p><p role="status">{t('account.out')}</p><p><a class="login-out" href="/connexion?next=%2Fcompte">{t('account.login')}</a></p><section id="contact" hidden></section></main>{:else}
+{#if mode === 'pending'}<main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p><section id="contact" hidden></section></main>{:else if mode === 'out'}<main id="contenu"><SessionWall title={t('account.title')} lead={t('account.lead')} status={t('account.out')} next="/compte" /><section id="contact" hidden></section></main>{:else}
 <main id="contenu" tabindex="-1">
 
 <section class="khero" aria-labelledby="h1"><div class="aurora" aria-hidden="true" data-depth="-.6"><i></i><i></i><i></i><i></i></div>

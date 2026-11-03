@@ -42,6 +42,7 @@ import DomainLockedView from './DomainLockedView.svelte';
 import DomainView from './DomainView.svelte';
 import HubView from './HubView.svelte';
 import PlanView from './PlanView.svelte';
+import SessionWall from './SessionWall.svelte';
 import UntestedCause from './UntestedCause.svelte';
 
 interface Props {
@@ -277,12 +278,11 @@ onMount(() => {
     />
   </div>
 {:else if phase === 'brief-gate'}
-  <h1>{t('guest.gate.title')}</h1>
-  <p role="status">{t('guest.gate.lead')}</p>
-  <p class="page-links">
-    <a class="gg-btn" href="/connexion">{t('guest.gate.login')}</a>
-    <a class="gg-btn gg-btn-main" href="/inscription">{t('guest.gate.signup')}</a>
-  </p>
+  <SessionWall
+    title={t('guest.gate.title')}
+    lead={t('guest.gate.lead')}
+    next={`${location.pathname}${location.search}`}
+  />
 {:else if phase === 'message'}
   <h1>{mode === 'domain' ? t('domain.heading') : t('report.heading')}</h1>
   <p role="status">{message}</p>

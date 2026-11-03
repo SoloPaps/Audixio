@@ -2,7 +2,6 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
-import { loginHref } from '../lib/nav.js';
 import {
   checkVerification,
   createVerification,
@@ -11,6 +10,7 @@ import {
 } from '../lib/verify-api.js';
 import { localChallenge } from '../lib/verify-challenge.js';
 import { guidesFor, type VerifyMethod } from '../lib/verify-guides.js';
+import SessionWall from './SessionWall.svelte';
 
 interface SiteRow {
   id: string;
@@ -239,12 +239,12 @@ async function onCopy(value: string): Promise<void> {
 {#if loading}
   <p role="status">{t('verify.loading')}</p>
 {:else if needLogin}
-  <section class="khero" data-st="idle" aria-labelledby="h1">
-    <h1 id="h1">{t('verify.title')}</h1>
-    <p>{t('verify.consent')}</p>
-    <p role="status">{t('verify.need_login')}</p>
-    <p><a class="btn btn-primary" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a></p>
-  </section>
+  <SessionWall
+    title={t('verify.title')}
+    lead={t('verify.consent')}
+    status={t('verify.need_login')}
+    next={`${location.pathname}${location.search}`}
+  />
 {:else if missing}
   <h1>{t('verify.missing')}</h1>
   <p><a class="btn btn-ghost" href="/sites">{t('verify.back')}</a></p>
