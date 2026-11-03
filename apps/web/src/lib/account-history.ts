@@ -7,7 +7,7 @@ export interface HistorySite {
 export type HistorySource =
   | { kind: 'demo' }
   | { kind: 'empty' }
-  | { kind: 'live'; site: HistorySite };
+  | { kind: 'live'; sites: HistorySite[] };
 
 function asSite(value: unknown): HistorySite | null {
   if (!value || typeof value !== 'object') return null;
@@ -23,14 +23,27 @@ function asSite(value: unknown): HistorySite | null {
 
 /**
  * La maquette statique ne reste que si la réponse n’est pas une liste.
- * Une liste vide ou un vrai site remplace `monsite-exemple.fr`.
+ * Une liste vide ou de vrais sites remplace `monsite-exemple.fr`.
  */
 export function historySource(sites: unknown): HistorySource {
   if (!Array.isArray(sites)) return { kind: 'demo' };
-  const site = sites.flatMap((row) => {
-    const parsed = asSite(row);
-    return parsed ? [parsed] : [];
-  })[0];
-  if (!site) return { kind: 'empty' };
-  return { kind: 'live', site };
+  const parsed = sites.flatMap((row) => {
+    const parsedSite = asSite(row);
+    return parsedSite ? [parsedSite] : [];
+  });
+  if (parsed.length === 0) return { kind: 'empty' };
+  return { kind: 'live', sites: parsed };
+}
+
+/** Site du dernier audit terminé, sinon le premier de la liste. */
+export function pickHistorySite(
+  sites: readonly HistorySite[],
+  auditedSiteId: string | null | undefined,
+): HistorySite | null {
+  const id = auditedSiteId?.trim() ?? '';
+  if (id !== '') {
+    const match = sites.find((site) => site.id === id);
+    if (match) return match;
+  }
+  return sites[0] ?? null;
 }

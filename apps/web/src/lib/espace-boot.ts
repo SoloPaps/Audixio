@@ -3,7 +3,7 @@ import { withinSiteQuota } from '@audigy/db';
 import type { Session } from '@supabase/supabase-js';
 import { tick } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
-import { historySource } from './account-history.js';
+import { historySource, pickHistorySite } from './account-history.js';
 import {
   alertsOpenForPlan,
   consentChecked,
@@ -604,12 +604,15 @@ function paintHistoryEmpty(root: HTMLElement, host: string | null): void {
   main.replaceChildren();
   const section = document.createElement('section');
   section.className = 'khero';
+  const eyebrow = document.createElement('p');
+  eyebrow.className = 'eyebrow';
+  eyebrow.textContent = t('mq.hi.005').trim();
   const heading = document.createElement('h1');
   heading.id = 't';
   heading.textContent = host ?? t('mq.hi.004');
   const lead = document.createElement('p');
   lead.textContent = host ? t('score.public.empty') : t('sites.empty');
-  section.append(heading, lead);
+  section.append(eyebrow, heading, lead);
   main.append(section);
 }
 
@@ -774,15 +777,33 @@ function bindHistory(root: HTMLElement): () => void {
         .select('plan')
         .eq('id', session.user.id)
         .maybeSingle();
-      const view = await loadSiteHistory(source.site.id, source.site.hosting);
+      const ids = source.sites.map((site) => site.id);
+      const { data: latest } = await supabase
+        .from('audits')
+        .select('site_id')
+        .in('site_id', ids)
+        .in('status', ['done', 'partial'])
+        .order('finished_at', { ascending: false, nullsFirst: false })
+        .limit(1);
+      if (dead) return;
+      const audited = latest?.[0]?.site_id;
+      const site = pickHistorySite(
+        source.sites,
+        typeof audited === 'string' ? audited : null,
+      );
+      if (!site) {
+        paintHistoryEmpty(root, null);
+        return;
+      }
+      const view = await loadSiteHistory(site.id, site.hosting);
       if (dead) return;
       if (!view || view.points.length === 0) {
-        paintHistoryEmpty(root, source.site.host);
+        paintHistoryEmpty(root, site.host);
         return;
       }
       paintHistoryLive(
         root,
-        source.site.host,
+        site.host,
         view,
         typeof profile?.plan === 'string' ? profile.plan : null,
       );
@@ -811,7 +832,12 @@ function bindHistory(root: HTMLElement): () => void {
         link.setAttribute('href', href);
       }
     }
-    const hosting = source.kind === 'live' ? source.site.hosting : 'other';
+    const listed =
+      source.kind === 'live'
+        ? (source.sites.find((site) => site.id === (asked || siteId)) ??
+          source.sites[0])
+        : null;
+    const hosting = listed?.hosting ?? 'other';
     const view = await loadSiteHistory(asked || siteId, hosting);
     if (dead || !view) return;
     applyChart(view);

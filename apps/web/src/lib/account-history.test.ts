@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { historySource } from './account-history.js';
+import { historySource, pickHistorySite } from './account-history.js';
 
 const SITE = {
   id: '00000000-0000-4000-8000-0000000000b2',
@@ -20,10 +20,14 @@ describe('historySource', () => {
     });
   });
 
-  it('prend le premier site réel du compte', () => {
+  it('garde tous les sites et préfère celui qui a un audit', () => {
+    const other = { id: 'x', host: 'autre.test', hosting: 'other' };
     expect(historySource([SITE, { id: 'x', host: 'autre.test' }])).toEqual({
       kind: 'live',
-      site: SITE,
+      sites: [SITE, other],
     });
+    expect(pickHistorySite([SITE, other], 'x')).toEqual(other);
+    expect(pickHistorySite([SITE, other], null)).toEqual(SITE);
+    expect(pickHistorySite([SITE, other], 'absent')).toEqual(SITE);
   });
 });
