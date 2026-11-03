@@ -8,6 +8,7 @@ import {
 
 /**
  * Toutes les 15 min. Doit tenir en 30 s (limite scheduled).
+ * Lit `alert_settings`. Activation : docs/dev/PLANIFICATEUR-ALERTES.md
  * En dev : `netlify functions:invoke schedule-tick`.
  */
 export default async (req: Request): Promise<Response> => {
