@@ -1,4 +1,4 @@
-import { createServerClient, parseCookieHeader } from '@supabase/ssr';
+import { createServerClient, parseCookieHeader } from 'npm:@supabase/ssr@0.8.0';
 import {
   authGuardActive,
   protectedPath,
