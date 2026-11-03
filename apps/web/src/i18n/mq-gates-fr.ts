@@ -252,6 +252,7 @@ export const mqGatesFr = {
   'mq.ac.granted.title': 'Accès accordé',
   'mq.ac.granted.say': 'Accès accordé à dev@agence.fr.',
   'mq.ac.granted.status': 'Accès accordé',
+  'mq.ac.denied': 'La demande n’a pas abouti. Connectez-vous pour répondre.',
   'mq.ac.refused.say': 'Demande refusée.',
   'mq.ac.refused.status': 'Refusée',
   'mq.ac.pending': 'En attente',

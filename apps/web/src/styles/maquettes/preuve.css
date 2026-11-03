@@ -1063,7 +1063,7 @@ html:where([data-vue="preuve"]),
 :where(html[data-vue="preuve"]) .tokbar .btn:hover {
   background: rgba(255, 255, 255, 0.26);
 }
-:where(html[data-vue="preuve"]) .tabs {
+html[data-vue="preuve"] .tabs {
   position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1074,7 +1074,7 @@ html:where([data-vue="preuve"]),
   border: 1px solid var(--soft);
 }
 @media (max-width: 760px) {
-  :where(html[data-vue="preuve"]) .tabs {
+  html[data-vue="preuve"] .tabs {
     grid-template-columns: 1fr 1fr;
   }
 }

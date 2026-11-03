@@ -3,6 +3,12 @@ import { withinSiteQuota } from '@audigy/db';
 import type { Session } from '@supabase/supabase-js';
 import { tick } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
+import {
+  alertsOpenForPlan,
+  consentChecked,
+  latestReportHref,
+  welcomeDone,
+} from './account-prefs.js';
 import { scoreAutorise } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
@@ -617,6 +623,33 @@ function bindHistory(root: HTMLElement): () => void {
     });
   };
   bindHits();
+  void (async () => {
+    const session = await currentSession();
+    const supabase = browserClient();
+    if (!session || !supabase || dead) return;
+    const { data: owned } = await supabase
+      .from('sites')
+      .select('id')
+      .eq('owner_id', session.user.id)
+      .is('deleted_at', null)
+      .limit(1);
+    const siteId = owned?.[0]?.id;
+    if (!siteId) return;
+    const { data: audits } = await supabase
+      .from('audits')
+      .select('id')
+      .eq('site_id', siteId)
+      .in('status', ['done', 'partial'])
+      .order('finished_at', { ascending: false })
+      .limit(1);
+    if (dead) return;
+    const href = latestReportHref(audits?.[0]?.id ?? null);
+    for (const link of root.querySelectorAll<HTMLAnchorElement>(
+      'a[href="/rapport"]',
+    )) {
+      link.setAttribute('href', href);
+    }
+  })();
   const site = new URLSearchParams(location.search).get('site')?.trim() ?? '';
   if (site && svg) {
     void loadSiteHistory(site, 'other').then((view) => {
@@ -858,11 +891,26 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   };
   pro?.addEventListener('click', onPro);
   if (pro) off.push(() => pro.removeEventListener('click', onPro));
+  const consent = root.querySelector<HTMLInputElement>('#consent');
+  if (consent) {
+    let stored: string | null = null;
+    try {
+      stored = localStorage.getItem('audixio-stats-consent');
+    } catch {
+      stored = null;
+    }
+    consent.checked = consentChecked(stored, consent.checked);
+  }
   const acc = root.querySelector<HTMLButtonElement>('#acc');
   const onAcc = (): void => {
     if (!acc) return;
     busy(acc, 700, () => {
       const box = root.querySelector<HTMLInputElement>('#consent');
+      try {
+        localStorage.setItem('audixio-stats-consent', box?.checked ? '1' : '0');
+      } catch {
+        /* stockage refusé */
+      }
       say(box?.checked ? t('mq.ui.terms.on') : t('mq.ui.terms.off'), true);
     });
   };
@@ -920,6 +968,10 @@ function bindAlerts(root: HTMLElement, next: EspaceNext): () => void {
   };
   form?.addEventListener('submit', onForm);
   if (form) off.push(() => form.removeEventListener('submit', onForm));
+  if (alertsOpenForPlan(next.plan)) {
+    root.querySelector('#gate')?.classList.remove('locked');
+    root.querySelector('#fPro')?.removeAttribute('inert');
+  }
   const params = new URLSearchParams(location.search);
   const siteId = params.get('site');
   if (siteId && next.token) void paintAlerts(root, siteId);
@@ -997,6 +1049,19 @@ function bindWelcome(root: HTMLElement, next: EspaceNext): () => void {
   if (name && next.name && next.name !== 'Camille')
     name.textContent = next.name;
   const steps = [...root.querySelectorAll<HTMLElement>('.step')];
+  let saved: string[] = [];
+  try {
+    const raw = localStorage.getItem('audixio-welcome-steps');
+    const parsed = raw ? (JSON.parse(raw) as unknown) : [];
+    if (Array.isArray(parsed)) {
+      saved = parsed.filter((item) => typeof item === 'string');
+    }
+  } catch {
+    saved = [];
+  }
+  for (const step of steps) {
+    if (welcomeDone(saved, step.id)) step.dataset.state = 'done';
+  }
   const ring = root.querySelector<HTMLElement>('#ring');
   const count = root.querySelector('#rc');
   const labels: Record<string, string> = {
@@ -1038,6 +1103,18 @@ function bindWelcome(root: HTMLElement, next: EspaceNext): () => void {
     const button = step.querySelector('button.mark');
     const click = (): void => {
       step.dataset.state = step.dataset.state === 'done' ? 'todo' : 'done';
+      try {
+        localStorage.setItem(
+          'audixio-welcome-steps',
+          JSON.stringify(
+            steps
+              .filter((item) => item.dataset.state === 'done')
+              .map((item) => item.id),
+          ),
+        );
+      } catch {
+        /* stockage refusé */
+      }
       const n = update();
       say(n > 1 ? t('mq.ui.steps', { n }) : t('mq.ui.step', { n }), true);
     };

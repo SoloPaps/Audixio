@@ -9,7 +9,7 @@ export function getStaticPaths() {
 ---
 
 <Canon vue="acces" title={t('mq.acces.meta.title')} description={t('mq.acces.meta.desc')} robots="noindex, nofollow">
-<p hidden id="mq.ac.sending">{t('mq.ac.sending')}</p><p hidden id="mq.ac.refused.word">{t('mq.ac.refused.word')}</p><p hidden id="mq.ac.refused.title">{t('mq.ac.refused.title')}</p><p hidden id="mq.ac.granted.title">{t('mq.ac.granted.title')}</p><p hidden id="mq.ac.granted.say">{t('mq.ac.granted.say')}</p><p hidden id="mq.ac.granted.status">{t('mq.ac.granted.status')}</p><p hidden id="mq.ac.refused.say">{t('mq.ac.refused.say')}</p><p hidden id="mq.ac.refused.status">{t('mq.ac.refused.status')}</p><p hidden id="mq.ac.pending">{t('mq.ac.pending')}</p><p hidden id="mq.ac.pending.eyebrow">{t('mq.ac.pending.eyebrow')}</p><p hidden id="mq.ac.undone">{t('mq.ac.undone')}</p>
+<p hidden id="mq.ac.sending">{t('mq.ac.sending')}</p><p hidden id="mq.ac.refused.word">{t('mq.ac.refused.word')}</p><p hidden id="mq.ac.refused.title">{t('mq.ac.refused.title')}</p><p hidden id="mq.ac.granted.title">{t('mq.ac.granted.title')}</p><p hidden id="mq.ac.granted.say">{t('mq.ac.granted.say')}</p><p hidden id="mq.ac.granted.status">{t('mq.ac.granted.status')}</p><p hidden id="mq.ac.refused.say">{t('mq.ac.refused.say')}</p><p hidden id="mq.ac.refused.status">{t('mq.ac.refused.status')}</p><p hidden id="mq.ac.pending">{t('mq.ac.pending')}</p><p hidden id="mq.ac.pending.eyebrow">{t('mq.ac.pending.eyebrow')}</p><p hidden id="mq.ac.undone">{t('mq.ac.undone')}</p><p hidden id="mq.ac.denied">{t('mq.ac.denied')}</p>
 
 
 
@@ -434,18 +434,21 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     var parts=location.pathname.split('/').filter(Boolean);
     var requestId=parts[parts.length-1]||'';
     var auditId=new URLSearchParams(location.search).get('audit')||'';
-    fetch('/api/auth/session',{credentials:'include'}).then(function(res){
+    return fetch('/api/auth/session',{credentials:'include'}).then(function(res){
       return res.ok?res.json():{};
     }).catch(function(){return {};}).then(function(session){
       var headers={'content-type':'application/json',accept:'application/json'};
       if(session&&session.access_token) headers.authorization='Bearer '+session.access_token;
       return fetch('/api/liens/decision',{method:'post',credentials:'same-origin',headers:headers,body:JSON.stringify({auditId:auditId,requestId:requestId,decision:decision,role:role,days:days})});
-    }).then(function(res){return res.json();}).then(function(body){
+    }).then(function(res){
+      if(!res || !res.ok) throw new Error('denied');
+      return res.json();
+    }).then(function(body){
       if(body&&typeof body.url==='string'&&body.url.indexOf('/partage/')===0){
         var pane=$('#pane-ok');
         if(pane){pane.setAttribute('data-lien',body.url);if(body.id)pane.setAttribute('data-id',body.id);}
       }
-    }).catch(function(){});
+    });
   }
   function revokeDecision(){
     var pane=$('#pane-ok');
@@ -507,8 +510,12 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     var r=f.querySelector('input[name=role]:checked'),dur=$('#dur');
     $('#s-role').textContent=r.closest('.role').querySelector('.role-t').firstChild.textContent.trim();
     $('#s-dur').textContent=dur.options[dur.selectedIndex].text;
-    sendDecision('accept');
-    finish(ok,'#pane-ok',tr('mq.ac.granted.say'),tr('mq.ac.granted.status'));
+    sendDecision('accept').then(function(){
+      finish(ok,'#pane-ok',tr('mq.ac.granted.say'),tr('mq.ac.granted.status'));
+    }).catch(function(){
+      if(st)st.textContent=tr('mq.ac.denied');
+      say(tr('mq.ac.denied'));
+    });
   });
   no.addEventListener('click',function(){
     var open=cf.hidden;
@@ -525,8 +532,12 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     if(e.key==='Escape')$('#no-cancel').click();
   });
   $('#no-ok').addEventListener('click',function(){
-    sendDecision('refuse');
-    finish($('#no-ok'),'#pane-no',tr('mq.ac.refused.say'),tr('mq.ac.refused.status'));
+    sendDecision('refuse').then(function(){
+      finish($('#no-ok'),'#pane-no',tr('mq.ac.refused.say'),tr('mq.ac.refused.status'));
+    }).catch(function(){
+      if(st)st.textContent=tr('mq.ac.denied');
+      say(tr('mq.ac.denied'));
+    });
   });
   $('#undo').addEventListener('click',function(){
     revokeDecision();
