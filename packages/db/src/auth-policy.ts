@@ -29,7 +29,8 @@ export type AuthErrorCode =
   | 'oauth'
   | 'link';
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
+/** Domaine à point, ou l’hôte seul `localhost` (comptes du labo). */
+const EMAIL = /^[^\s@]+@(?:localhost|[^\s@]+\.[^\s@]+)$/iu;
 
 /** Chemin interne seulement. Refuse une redirection ouverte. */
 export function safeNextPath(

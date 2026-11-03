@@ -249,7 +249,7 @@ function onTabs(event: KeyboardEvent): void {
       <div class="fg">
         <label class="lbl" for="login-email">{t('login.email')}</label>
         <div class="ic">
-          <input class="in" id="login-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder={t('login.email.placeholder')} required bind:value={email} aria-invalid={error ? 'true' : undefined}>
+          <input class="in" id="login-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder={t('login.email.placeholder')} required bind:value={email} aria-invalid={email.length > 0 && !validEmail(email) ? 'true' : undefined}>
         </div>
       </div>
       <div class="fg">

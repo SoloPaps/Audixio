@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount } from 'svelte';
+import { storeEnglishDictionary } from '../i18n/en-pack.js';
 import { t } from '../i18n/index.js';
 
 type Choice = 'system' | 'light' | 'dark';
@@ -37,10 +38,9 @@ async function onLocale(event: Event): Promise<void> {
   if (next !== 'fr' && next !== 'en') return;
   if (next === locale) return;
   try {
-    if (next === 'en' && !localStorage.getItem('audigy-en')) {
-      const res = await fetch('/dictionnaire-en.json');
-      if (!res.ok) return;
-      localStorage.setItem('audigy-en', await res.text());
+    if (next === 'en') {
+      const stored = await storeEnglishDictionary();
+      if (!stored) return;
     }
     localStorage.setItem('audigy-locale', next);
     location.reload();

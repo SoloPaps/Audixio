@@ -7,7 +7,7 @@
 | Gratuit | `gratuit@localhost` | `Audixio-local-gratuit` | Plan gratuit, aucun site |
 | Pro | `pro@localhost` | `Audixio-local-pro` | Plan Pro, site `https://bon.audigy.test` déjà vérifié, trois audits (21 jours, 10 jours, 1 jour) |
 
-Connexion : e-mail et mot de passe sur `/connexion`, avec `netlify dev` ou l’app locale branchée sur ce Supabase.
+Connexion : e-mail et mot de passe sur `/connexion`, avec `netlify dev` ou l’app locale branchée sur ce Supabase. Les adresses `@localhost` sont acceptées (pas de point dans le domaine). Un ancien dictionnaire anglais gardé par le navigateur (textes de lien magique) est ignoré : la page repasse en français.
 
 ## Plafond des 3 audits sans compte
 

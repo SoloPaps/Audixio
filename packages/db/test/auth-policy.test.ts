@@ -8,6 +8,7 @@ import {
   safeNextPath,
   shouldShowWelcome,
   TEST_ANON_KEY,
+  validEmail,
   validPassword,
   windowStartIso,
 } from '../src/auth-policy.js';
@@ -82,6 +83,15 @@ describe('politique de connexion', () => {
         next: null,
       }),
     ).toBe('/reinitialisation?etape=nouveau');
+  });
+
+  it('accepte les comptes locaux @localhost et refuse une adresse sans domaine', () => {
+    expect(validEmail('gratuit@localhost')).toBe(true);
+    expect(validEmail('Pro@LocalHost')).toBe(true);
+    expect(validEmail('ada@exemple.fr')).toBe(true);
+    expect(validEmail('a@b')).toBe(false);
+    expect(validEmail('@localhost')).toBe(false);
+    expect(validEmail('gratuit@localhost.')).toBe(false);
   });
 
   it('exige 10 caractères et aligne la fenêtre', () => {
