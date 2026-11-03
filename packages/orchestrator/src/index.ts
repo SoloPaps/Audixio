@@ -6,7 +6,8 @@
  * - `handleCreate(req, deps)` : `POST /api/audits`, corps `{ url } | { siteId }` + `mode`
  *   (zod). Jeton Supabase en `Authorization: Bearer`. 202 créé, 200 audit existant
  *   (double clic : même site et même mode depuis moins de 15 min), 429 + `Retry-After`
- *   (10 par jour et par utilisateur, 1 par hôte et 15 min), 400, 401, 403, 404.
+ *   (10 par jour et par utilisateur, 1 par hôte et 15 min, 60 par heure et par IP),
+ *   400, 401, 403, 404.
  *   Erreurs : `{ error, messageKey: 'api.error.<code>' }`.
  * - `handleGet(req, deps, id)` : `GET /api/audits/:id`, lecture sous RLS.
  * - `handleBriefExport(req, deps, id)` : `GET|POST /api/audits/:id/brief`.
@@ -60,6 +61,7 @@ export {
   handleAccount,
   mergeArtifactPaths,
   OAUTH_EXPORT_FIELDS,
+  redactAccountExport,
 } from './account.js';
 export { accountDepsFromEnv } from './account-db.js';
 export {
@@ -107,6 +109,14 @@ export {
   type RunDeps,
   serve,
 } from './http.js';
+export {
+  handleAccessRequest,
+  handleRobotOptOut,
+  type IntakeDeps,
+  type IntakeRecord,
+  takeRateLimit,
+} from './intake.js';
+export { intakeDepsFromEnv } from './intake-db.js';
 export {
   LAB_ENV_NAME,
   type LabConfig,
@@ -183,7 +193,9 @@ export {
 } from './schedule-db.js';
 export {
   apiDepsFromEnv,
+  branchedFixKey,
   fixesFromDisk,
+  gateFallback,
   MAX_RUNNER_OUTPUT_BYTES,
   readAuditView,
   runDepsFromEnv,

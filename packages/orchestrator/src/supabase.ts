@@ -5,15 +5,21 @@ import {
   browserResultsPath,
 } from '@audigy/browser-runner/schema';
 import {
+  AUDIT_IP,
   claimNextAudit,
+  clientIp,
   createServiceClient,
   createUserClient,
   type Database,
   dbEnvFrom,
   failStaleAudits,
+  isLockedDomain,
   requestAudit,
+  retryAfterSeconds,
+  sha256Hex,
   writeAuditResults,
 } from '@audigy/db';
+import { windowStartIso } from '@audigy/db/auth-policy';
 import { type FixSheet, loadFixes, placesApiKey } from '@audigy/engine';
 import { fileFixStore } from '@audigy/engine/fixes-fs';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -197,6 +203,48 @@ function byPriority(a: FindingView, b: FindingView): number {
   return a.checkId < b.checkId ? -1 : a.checkId > b.checkId ? 1 : 0;
 }
 
+/**
+ * Sans aperçu : le service lit la note (moteur).
+ * Un client qui n’a pas la colonne reste fermé.
+ */
+export function gateFallback(
+  columnReadable: boolean,
+  score: number | null,
+): { siteVerified: boolean; globalScore: number | null } {
+  if (!columnReadable) return { siteVerified: false, globalScore: null };
+  return { siteVerified: true, globalScore: score };
+}
+
+/** Comment corriger branché : seulement si le site est prouvé. */
+export function branchedFixKey(
+  siteVerified: boolean,
+  fixKey: string | null,
+): string | null {
+  return siteVerified ? fixKey : null;
+}
+
+function hiddenDomain(
+  siteVerified: boolean,
+  locked: ReadonlySet<string>,
+  domain: string,
+): boolean {
+  if (locked.has(domain)) return true;
+  return !siteVerified && isLockedDomain(domain);
+}
+
+function lockedNames(
+  siteVerified: boolean,
+  locked: ReadonlySet<string>,
+): Set<string> {
+  const names = new Set(locked);
+  if (!siteVerified) {
+    names.add('securite');
+    names.add('vie_privee');
+    names.add('dns_email');
+  }
+  return names;
+}
+
 function parseApercu(value: unknown): {
   present: boolean;
   siteVerified: boolean;
@@ -258,9 +306,9 @@ export async function readAuditView(
       .select('global_score')
       .eq('id', auditId)
       .maybeSingle();
-    if (raw.error) throw new Error('audit_lookup_failed');
-    globalScore = raw.data?.global_score ?? null;
-    siteVerified = true;
+    const fallback = gateFallback(!raw.error, raw.data?.global_score ?? null);
+    globalScore = fallback.globalScore;
+    siteVerified = fallback.siteVerified;
   }
   const [domains, findings] = await Promise.all([
     user
@@ -296,11 +344,13 @@ export async function readAuditView(
     },
     domains: [
       ...(domains.data ?? [])
-        .filter((row) => !gate.locked.has(row.domain))
+        .filter((row) => !hiddenDomain(siteVerified, gate.locked, row.domain))
         .map((row) => ({ ...row, locked: false })),
-      ...[...gate.locked]
+      ...[...lockedNames(siteVerified, gate.locked)]
         .filter(
-          (name) => !(domains.data ?? []).some((row) => row.domain === name),
+          (name) =>
+            hiddenDomain(siteVerified, gate.locked, name) ||
+            !(domains.data ?? []).some((row) => row.domain === name),
         )
         .map((name) => ({
           domain: name,
@@ -311,7 +361,7 @@ export async function readAuditView(
         })),
     ],
     findings: (findings.data ?? [])
-      .filter((row) => !gate.locked.has(row.domain))
+      .filter((row) => !hiddenDomain(siteVerified, gate.locked, row.domain))
       .map((f) => ({
         domain: f.domain,
         checkId: f.check_id,
@@ -322,7 +372,7 @@ export async function readAuditView(
         measured: f.measured,
         messageKey: f.message_key,
         params: f.params,
-        fixKey: f.fix_key,
+        fixKey: branchedFixKey(siteVerified, f.fix_key),
         effortMinutes: f.effort_minutes,
         reason: f.reason,
       }))
@@ -401,6 +451,24 @@ export function apiDepsFromEnv(options: FromEnvOptions): ApiDeps {
       };
     },
     readAudit: (token, auditId) => readAuditView(userClient(token), auditId),
+    async guardLaunch(req) {
+      const material = await sha256Hex(
+        `${new Date().toISOString().slice(0, 10)}\n${clientIp(req)}`,
+      );
+      const key = await sha256Hex(`audixio\naudit-ip\n${material}`);
+      const { data, error } = await service.rpc('consume_rate_limit', {
+        p_key: key,
+        p_window_start: windowStartIso(Date.now(), AUDIT_IP.windowMs),
+        p_limit: AUDIT_IP.limit,
+      });
+      if (error || data !== true) {
+        return {
+          ok: false as const,
+          retryAfter: retryAfterSeconds(Date.now(), AUDIT_IP.windowMs),
+        };
+      }
+      return { ok: true as const };
+    },
   };
 }
 

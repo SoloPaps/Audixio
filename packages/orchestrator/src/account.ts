@@ -1,4 +1,9 @@
-import { type Json, TERMS_VERSION } from '@audigy/db';
+import {
+  isLockedDomain,
+  type Json,
+  LOCKED_DOMAINS,
+  TERMS_VERSION,
+} from '@audigy/db';
 import { z } from 'zod';
 import { apiError, bearerToken } from './http.js';
 import { errorCode, type Logger } from './log.js';
@@ -168,6 +173,41 @@ export function accountWindowStart(action: AccountAction, now: Date): string {
   return new Date(Math.floor(now.getTime() / size) * size).toISOString();
 }
 
+/** Retire note globale, constats et artefacts sensibles tant que le site n’est pas prouvé. */
+export function redactAccountExport(data: AccountExport): AccountExport {
+  const verified = new Set(
+    data.verifications
+      .filter((row) => row.statut === 'verified')
+      .map((row) => row.site),
+  );
+  const hidden = new Set(
+    data.audits
+      .filter((row) => !verified.has(row.site))
+      .map((row) => row.identifiant),
+  );
+  const locked = new Set<string>(LOCKED_DOMAINS);
+  return {
+    ...data,
+    audits: data.audits.map((row) =>
+      hidden.has(row.identifiant) ? { ...row, score: null } : row,
+    ),
+    scores: data.scores.filter(
+      (row) => !(hidden.has(row.audit) && locked.has(row.domaine)),
+    ),
+    constats: data.constats.flatMap((row) => {
+      if (
+        hidden.has(row.audit) &&
+        (locked.has(row.domaine) || isLockedDomain(row.domaine))
+      ) {
+        return [];
+      }
+      if (hidden.has(row.audit)) return [{ ...row, fiche: null }];
+      return [row];
+    }),
+    artefacts: data.artefacts.filter((row) => !hidden.has(row.audit)),
+  };
+}
+
 export function mergeArtifactPaths(
   ...groups: readonly (readonly string[])[]
 ): string[] {
@@ -277,9 +317,9 @@ async function handleExport(
   try {
     const limited = await allow(deps, auth.userId, 'export');
     if (limited) return limited;
-    const data = await deps
-      .gateway(auth.token, auth.userId)
-      .readExport(auth.userId);
+    const data = redactAccountExport(
+      await deps.gateway(auth.token, auth.userId).readExport(auth.userId),
+    );
     return json(200, data, {
       'content-disposition': 'attachment; filename="audigy-donnees.json"',
     });

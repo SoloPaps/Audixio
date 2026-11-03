@@ -24,6 +24,9 @@ export type ApiError =
   | 'places_limit'
   | 'terms_version'
   | 'account_limit'
+  | 'ip_limit'
+  | 'rate_limited'
+  | 'unavailable'
   | 'internal';
 
 function json(
@@ -128,6 +131,11 @@ export interface ApiDeps {
   createDeps(token: string, userId: string): CreateDeps;
   /** Lecture sous RLS : `null` si l'audit n'existe pas ou n'est pas à lui. */
   readAudit(token: string, auditId: string): Promise<AuditView | null>;
+  /** Plafond par IP. Absent : les tests qui ne le posent pas ne le consomment pas. */
+  guardLaunch?(
+    req: Request,
+    userId: string,
+  ): Promise<{ ok: true } | { ok: false; retryAfter: number }>;
 }
 
 async function authenticate(
@@ -159,6 +167,18 @@ export async function handleCreate(
     }
     const parsed = createAuditInput.safeParse(body);
     if (!parsed.success) return apiError(400, 'invalid_input');
+
+    if (deps.guardLaunch) {
+      const gate = await deps.guardLaunch(req, auth.userId);
+      if (!gate.ok) {
+        return apiError(
+          429,
+          'ip_limit',
+          { retryAfter: gate.retryAfter },
+          { 'retry-after': String(gate.retryAfter) },
+        );
+      }
+    }
 
     const result = await createAudit(
       deps.createDeps(auth.token, auth.userId),

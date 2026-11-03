@@ -134,6 +134,22 @@ describe('POST /api/audits', () => {
     });
   });
 
+  it('limite par IP : 429 sans créer l’audit', async () => {
+    const { deps, requests } = apiDeps();
+    deps.guardLaunch = async () => ({ ok: false, retryAfter: 120 });
+    const res = await handleCreate(post({ url: 'a.fr' }), deps);
+    expect(res.headers.get('retry-after')).toBe('120');
+    expect(await read(res)).toEqual({
+      status: 429,
+      body: {
+        error: 'ip_limit',
+        messageKey: 'api.error.ip_limit',
+        retryAfter: 120,
+      },
+    });
+    expect(requests).toEqual([]);
+  });
+
   it.each([
     ['site_not_found', 404],
     ['unverified', 403],

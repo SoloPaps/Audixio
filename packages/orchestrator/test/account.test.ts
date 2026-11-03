@@ -10,6 +10,7 @@ import {
   handleAccount,
   mergeArtifactPaths,
   OAUTH_EXPORT_FIELDS,
+  redactAccountExport,
 } from '../src/index.js';
 import { captureLogger } from './helpers.js';
 
@@ -85,10 +86,11 @@ class Memory {
   removed: string[] = [];
   failRemove = false;
   deleted: string[] = [];
+  exportBody: AccountExport | null = null;
 
   gateway(_userId: string): AccountGateway {
     return {
-      readExport: async () => emptyExport(),
+      readExport: async () => this.exportBody ?? emptyExport(),
       listArtifactPaths: async (id) =>
         this.rows.filter((row) => row.owner === id).map((row) => row.path),
       removeStorage: async (paths) => {
@@ -207,6 +209,118 @@ describe('API compte', () => {
     expect(body.artefacts[0]?.chemin).toBe('a/file.webp');
     expect(JSON.stringify(body)).not.toContain('refresh_token');
     expect(body.connexions).toEqual([{ fournisseur: 'google' }]);
+  });
+
+  it('retire du JSON les constats verrouillés d’un site non prouvé', async () => {
+    const secret = 'entete-hsts-secret';
+    const memory = new Memory();
+    const base = emptyExport();
+    base.audits = [
+      {
+        identifiant: 'audit-a',
+        site: 'site-a',
+        declencheur: 'manual',
+        mode: 'passive',
+        statut: 'done',
+        methode: '2026.1',
+        moteur: 'test',
+        score: 40,
+        couverture: 1,
+        creeLe: '2026-10-24T00:00:00.000Z',
+        commenceLe: null,
+        termineLe: null,
+        erreur: null,
+      },
+    ];
+    base.scores = [
+      {
+        audit: 'audit-a',
+        domaine: 'securite',
+        score: 40,
+        couverture: 1,
+        niveau: 'problem',
+      },
+      {
+        audit: 'audit-a',
+        domaine: 'performance',
+        score: 80,
+        couverture: 1,
+        niveau: 'good',
+      },
+    ];
+    base.constats = [
+      {
+        audit: 'audit-a',
+        domaine: 'securite',
+        test: 'securite.hsts',
+        statut: 'fail',
+        gravite: 4,
+        impact: 3,
+        score: 0,
+        mesure: { header: secret },
+        cle: 'finding.securite.hsts',
+        params: {},
+        fiche: 'securite.hsts',
+        effortMinutes: 10,
+        raison: null,
+      },
+      {
+        audit: 'audit-a',
+        domaine: 'performance',
+        test: 'performance.poids',
+        statut: 'warn',
+        gravite: 2,
+        impact: 2,
+        score: 1,
+        mesure: { octets: 12 },
+        cle: 'finding.performance.poids',
+        params: {},
+        fiche: 'performance.poids',
+        effortMinutes: 20,
+        raison: null,
+      },
+    ];
+    base.artefacts = [
+      {
+        audit: 'audit-a',
+        type: 'json',
+        chemin: 'a/full.json',
+        empreinte: 'cd'.repeat(32),
+        octets: 20,
+      },
+    ];
+    memory.exportBody = base;
+    const res = await call(memory, '/api/compte/export', 'GET');
+    const body = (await res.json()) as AccountExport;
+    const dumped = JSON.stringify(body);
+    expect(dumped).not.toContain(secret);
+    expect(dumped).not.toContain('securite.hsts');
+    expect(dumped).not.toContain('full.json');
+    expect(body.audits[0]?.score).toBeNull();
+    expect(body.scores.map((row) => row.domaine)).toEqual(['performance']);
+    expect(body.constats).toEqual([
+      expect.objectContaining({
+        domaine: 'performance',
+        fiche: null,
+      }),
+    ]);
+    const kept = redactAccountExport({
+      ...base,
+      verifications: [
+        {
+          identifiant: 'v',
+          site: 'site-a',
+          methode: 'meta',
+          statut: 'verified',
+          jeton: 'tok',
+          creeLe: '2026-10-24T00:00:00.000Z',
+          verifieLe: '2026-10-24T00:00:00.000Z',
+          controleLe: null,
+        },
+      ],
+    });
+    expect(JSON.stringify(kept)).toContain(secret);
+    expect(kept.audits[0]?.score).toBe(40);
   });
 
   it('bloque l’export et la suppression au-delà du plafond', async () => {
