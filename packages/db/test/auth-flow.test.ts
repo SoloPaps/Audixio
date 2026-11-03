@@ -261,6 +261,41 @@ describe('connexion Supabase local', () => {
     expect(body.error).toBeNull();
   });
 
+  it('bloque l’inscription après 5 essais depuis la même IP', async () => {
+    let status = 0;
+    let error = '';
+    for (let i = 0; i < 6; i += 1) {
+      const res = await call('/api/auth/inscription', {
+        form: {
+          email: `debit-ip-${i}@exemple.fr`,
+          password: 'phrase-de-test-12',
+          terms: 'on',
+        },
+        ip: '198.51.100.40',
+      });
+      status = res.status;
+      error = ((await res.json()) as { error?: string }).error ?? '';
+    }
+    expect(status).toBe(429);
+    expect(error).toBe('rate_limited');
+  }, 120_000);
+
+  it('bloque l’inscription après 5 essais pour le même e-mail', async () => {
+    const email = 'debit-mail@exemple.fr';
+    let status = 0;
+    let retry = '';
+    for (let i = 0; i < 6; i += 1) {
+      const res = await call('/api/auth/inscription', {
+        form: { email, password: 'phrase-de-test-12', terms: 'on' },
+        ip: `198.51.100.${i + 1}`,
+      });
+      status = res.status;
+      retry = res.headers.get('retry-after') ?? '';
+    }
+    expect(status).toBe(429);
+    expect(retry).toBe('3600');
+  }, 120_000);
+
   it('bloque après trop de tentatives de connexion', async () => {
     const email = 'debit-auth@exemple.fr';
     let status = 0;

@@ -10,6 +10,14 @@ export const AUTH_LIMITS = {
   reset: { limit: 5, windowMs: 60 * 60 * 1000 },
 } as const;
 
+/** Inscription comprise : IP et e-mail. Le message ne dit pas si l’adresse existe. */
+export function authRateParts(
+  scope: keyof typeof AUTH_LIMITS,
+): readonly ('ip' | 'mail')[] {
+  void scope;
+  return ['ip', 'mail'];
+}
+
 export type AuthErrorCode =
   | 'invalid_email'
   | 'invalid_password'

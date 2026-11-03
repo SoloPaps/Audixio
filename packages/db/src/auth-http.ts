@@ -4,10 +4,12 @@ import {
   serializeCookieHeader,
 } from '@supabase/ssr';
 import type { User } from '@supabase/supabase-js';
+import { clientIp } from './abus.js';
 import { readCookies } from './auth-guard.js';
 import {
   AUTH_LIMITS,
   type AuthErrorCode,
+  authRateParts,
   cleanDisplayName,
   landingPath,
   normalizeEmail,
@@ -37,6 +39,27 @@ export function authEnvFrom(env: NodeJS.ProcessEnv): AuthEnv | null {
 
 interface PendingCookie {
   line: string;
+}
+
+/** Identifiant de session, ou `null`. Sert au plafond par compte des formulaires. */
+export async function sessionUserId(
+  request: Request,
+  env: AuthEnv | null,
+): Promise<string | null> {
+  if (!env) return null;
+  const supabase = createServerClient<Database>(env.url, env.anonKey, {
+    cookies: {
+      getAll() {
+        return readCookies(request.headers.get('cookie') ?? '');
+      },
+      setAll() {
+        return undefined;
+      },
+    },
+  });
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) return null;
+  return data.user.id;
 }
 
 export async function handleAuthRequest(
@@ -471,16 +494,18 @@ async function allow(
   const day = new Date().toISOString().slice(0, 10);
   const ip = await digestHex(`${day}\n${clientIp(request)}`);
   const mail = await digestHex(`${day}\n${email}`);
-  const ipOk = await consume(
-    service,
-    scope,
-    `ip\n${ip}`,
-    rule.limit,
-    rule.windowMs,
-  );
-  if (!ipOk) return false;
-  if (scope === 'signup') return true;
-  return consume(service, scope, `mail\n${mail}`, rule.limit, rule.windowMs);
+  for (const part of authRateParts(scope)) {
+    const material = part === 'ip' ? `ip\n${ip}` : `mail\n${mail}`;
+    const ok = await consume(
+      service,
+      scope,
+      material,
+      rule.limit,
+      rule.windowMs,
+    );
+    if (!ok) return false;
+  }
+  return true;
 }
 
 async function consume(
@@ -508,14 +533,6 @@ async function digestHex(value: string): Promise<string> {
   return [...new Uint8Array(buf)]
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('');
-}
-
-function clientIp(request: Request): string {
-  const netlify = request.headers.get('x-nf-client-connection-ip')?.trim();
-  if (netlify) return netlify;
-  const forwarded = request.headers.get('x-forwarded-for');
-  const first = forwarded?.split(',')[0]?.trim();
-  return first && first.length > 0 ? first : 'local';
 }
 
 function callbackUrl(url: URL): string {
@@ -670,9 +687,20 @@ function answer(
       { ok: code === null, error: code, redirect: location },
       code === null ? 200 : status,
       pending,
+      status === 429 ? retryHeader(location) : {},
     );
   }
-  return redirect(location, 303, pending);
+  return redirect(
+    location,
+    303,
+    pending,
+    status === 429 ? retryHeader(location) : {},
+  );
+}
+
+function retryHeader(location: string): Record<string, string> {
+  const seconds = location.includes('/connexion') ? '900' : '3600';
+  return { 'retry-after': seconds };
 }
 
 function finish(
@@ -689,9 +717,11 @@ function json(
   body: unknown,
   status: number,
   pending: PendingCookie[],
+  extra: Record<string, string> = {},
 ): Response {
   const headers = new Headers({
     'content-type': 'application/json; charset=utf-8',
+    ...extra,
   });
   for (const cookie of pending) headers.append('set-cookie', cookie.line);
   return new Response(JSON.stringify(body), { status, headers });
@@ -701,8 +731,9 @@ function redirect(
   location: string,
   status: number,
   pending: PendingCookie[],
+  extra: Record<string, string> = {},
 ): Response {
-  const headers = new Headers({ location });
+  const headers = new Headers({ location, ...extra });
   for (const cookie of pending) headers.append('set-cookie', cookie.line);
   return new Response(null, { status, headers });
 }

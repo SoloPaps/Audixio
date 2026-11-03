@@ -22,6 +22,20 @@
  *   `SUPABASE_SERVICE_ROLE_KEY`. Aucune valeur dans le dépôt.
  * - `TERMS_VERSION` : version des CGU acceptée dans `terms_acceptances`.
  */
+
+export {
+  AUDIT_IP,
+  accessBudgets,
+  accountId,
+  clientIp,
+  hostOf,
+  INTAKE,
+  plainText,
+  type RateBudget,
+  retryAfterSeconds,
+  robotBudgets,
+  sha256Hex,
+} from './abus.js';
 export {
   type AuditResultsInput,
   claimNextAudit,
