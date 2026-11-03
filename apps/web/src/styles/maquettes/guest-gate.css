@@ -107,7 +107,17 @@ html.gg-lock[data-vue] body {
 .gg-root a.gg-btn-main {
   border-color: transparent;
   background: #3d52a0;
+  background-color: #3d52a0;
   color: #fff;
+}
+
+@media (max-width: 900px) {
+  .gg-root a.gg-btn.gg-btn-main {
+    border-color: transparent;
+    background: #3d52a0;
+    background-color: #3d52a0;
+    color: #fff;
+  }
 }
 
 .gg-root a.gg-btn-main:hover {
