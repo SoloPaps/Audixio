@@ -1,16 +1,13 @@
 ---
 import LaunchAudit from '../components/LaunchAudit.svelte';
 import { t } from '../i18n/index.js';
-import Base from '../layouts/Base.astro';
+import Canon from '../layouts/Canon.astro';
+import '../styles/maquettes/guest-gate.css';
 ---
 
-<Base title={t('meta.launch.title')} description={t('meta.launch.description')}>
-  <div class="reading">
-    <section class="glass glass-module">
-      <div class="glass-plate">
-        <h1>{t('launch.title')}</h1>
-        <LaunchAudit client:load />
-      </div>
-    </section>
-  </div>
-</Base>
+<Canon vue="lancer" title={t('meta.launch.title')} description={t('meta.launch.description')}>
+  <main id="contenu" class="launch-wait">
+    <h1>{t('launch.title')}</h1>
+    <LaunchAudit client:load />
+  </main>
+</Canon>

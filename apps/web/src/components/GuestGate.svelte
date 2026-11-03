@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { t } from '../i18n/index.js';
+import '../styles/maquettes/guest-gate.css';
 
 interface Props {
   open: boolean;
@@ -11,6 +12,15 @@ let { open, onClose }: Props = $props();
 
 let dialog = $state<HTMLElement | null>(null);
 let previous: HTMLElement | null = null;
+
+function portal(node: HTMLElement): { destroy: () => void } {
+  document.body.append(node);
+  return {
+    destroy() {
+      node.remove();
+    },
+  };
+}
 
 function controls(): HTMLElement[] {
   if (!dialog) return [];
@@ -44,10 +54,13 @@ function onKey(event: KeyboardEvent): void {
 }
 
 onMount(() => {
+  const root = document.documentElement;
+  root.classList.add('gg-lock');
   const node = dialog;
   previous = document.activeElement as HTMLElement | null;
   void tick().then(() => node?.focus());
   return () => {
+    root.classList.remove('gg-lock');
     previous?.focus();
   };
 });
@@ -55,8 +68,8 @@ onMount(() => {
 
 <svelte:window onkeydown={onKey} />
 
-<div class="gg-veil"></div>
-<div class="gg-wrap">
+<div class="gg-root" use:portal>
+  <div class="gg-veil"></div>
   <div
     class="gg"
     role="dialog"
@@ -68,7 +81,7 @@ onMount(() => {
   >
     <p class="gg-pill-k">{t('guest.gate.kicker')}</p>
     <h2 id="gg-title">{t('guest.gate.title')}</h2>
-    <p id="gg-lead">{t('guest.gate.lead')}</p>
+    <p class="gg-lead" id="gg-lead">{t('guest.gate.lead')}</p>
     <div class="gg-actions">
       <a class="gg-btn" href="/connexion">{t('guest.gate.login')}</a>
       <a class="gg-btn gg-btn-main" href="/inscription">{t('guest.gate.signup')}</a>
@@ -76,118 +89,3 @@ onMount(() => {
     <button class="gg-close" type="button" onclick={onClose}>{t('guest.gate.close')}</button>
   </div>
 </div>
-
-<style>
-  .gg-veil {
-    position: fixed;
-    inset: 0;
-    z-index: 80;
-    background: color-mix(in srgb, var(--ink) 46%, transparent);
-  }
-  .gg-wrap {
-    position: fixed;
-    inset: 0;
-    z-index: 81;
-    display: grid;
-    place-items: center;
-    padding: var(--space-3);
-  }
-  .gg {
-    box-sizing: border-box;
-    width: min(26rem, 100%);
-    max-height: calc(100vh - var(--space-5));
-    overflow: auto;
-    margin: 0;
-    padding: 1.25rem;
-    border: var(--border) solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--surface);
-    color: var(--ink);
-    box-shadow: var(--shadow-float);
-    font-family: Inter, "Segoe UI", system-ui, sans-serif;
-  }
-  .gg:focus {
-    outline: var(--focus-width) solid var(--focus);
-    outline-offset: var(--space-1);
-  }
-  .gg-pill-k {
-    display: inline-flex;
-    align-items: center;
-    margin: 0 0 0.75rem;
-    padding: 0.2rem 0.7rem;
-    border-radius: var(--radius-pill);
-    background: var(--score-good-bg);
-    color: var(--score-good);
-    font-size: var(--text-xs);
-    font-weight: 650;
-  }
-  h2 {
-    margin: 0;
-    font-size: var(--text-xl);
-    line-height: 1.25;
-    font-weight: 650;
-  }
-  #gg-lead {
-    margin: 0.75rem 0 0;
-    color: var(--ink-2);
-    font-size: var(--text-sm);
-    line-height: var(--leading-body);
-  }
-  .gg-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-  }
-  .gg-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: var(--touch-min);
-    padding: 0 1rem;
-    border: var(--border) solid var(--line);
-    border-radius: var(--radius-pill);
-    background: var(--surface);
-    color: var(--ink);
-    font: inherit;
-    font-weight: 650;
-    text-decoration: none;
-  }
-  .gg-btn-main {
-    border-color: transparent;
-    background: var(--accent);
-    color: var(--on-accent);
-  }
-  .gg-btn:focus-visible,
-  .gg-close:focus-visible {
-    outline: var(--focus-width) solid var(--focus);
-    outline-offset: var(--space-1);
-  }
-  .gg-close {
-    display: inline-flex;
-    margin-top: 0.75rem;
-    min-height: var(--touch-min);
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--ink-2);
-    font: inherit;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  @media (max-width: 360px) {
-    .gg-wrap {
-      padding: var(--space-2);
-    }
-    .gg {
-      width: 100%;
-      padding: 1rem;
-    }
-    .gg-actions {
-      flex-direction: column;
-    }
-    .gg-btn {
-      width: 100%;
-    }
-  }
-</style>

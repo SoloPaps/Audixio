@@ -174,10 +174,11 @@ test('historique, filtres et lien hors Audigy', async ({ page }) => {
   await expectNoViolations(page);
 });
 
-test('lancement et progression sont dans une plaque', async ({ page }) => {
+test('lancement Canon et progression dans une plaque', async ({ page }) => {
   await page.goto('/lancer');
   await waitForIslands(page);
-  const launch = page.locator('.glass-plate', {
+  await expect(page.locator('.axn')).toBeVisible();
+  const launch = page.locator('main#contenu', {
     has: page.getByRole('heading', { level: 1, name: 'Lancement de l’audit' }),
   });
   await expect(launch.getByRole('status')).toContainText(

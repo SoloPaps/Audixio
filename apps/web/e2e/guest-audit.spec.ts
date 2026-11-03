@@ -26,6 +26,35 @@ async function waitForIslands(page: Page): Promise<void> {
   });
 }
 
+async function expectGateChrome(page: Page): Promise<void> {
+  const dialog = page.getByRole('dialog');
+  const style = await dialog.evaluate((node) => {
+    const card = getComputedStyle(node);
+    const root = node.parentElement
+      ? getComputedStyle(node.parentElement)
+      : null;
+    const login = node.querySelector('a');
+    const loginBox = login?.getBoundingClientRect();
+    const cardBox = node.getBoundingClientRect();
+    return {
+      radius: card.borderRadius,
+      bg: card.backgroundColor,
+      z: root?.zIndex ?? '',
+      locked: document.documentElement.classList.contains('gg-lock'),
+      body: getComputedStyle(document.body).overflow,
+      loginW: loginBox?.width ?? 0,
+      cardW: cardBox.width,
+    };
+  });
+  expect(style.radius).toBe('24px');
+  expect(style.bg).toBe('rgb(255, 255, 255)');
+  expect(Number(style.z)).toBeGreaterThan(1000);
+  expect(style.locked).toBe(true);
+  expect(style.body).toBe('hidden');
+  expect(style.loginW).toBeGreaterThan(40);
+  expect(style.loginW).toBeLessThan(style.cardW - 24);
+}
+
 async function launch(page: Page): Promise<void> {
   await page.goto('/');
   await waitForIslands(page);
@@ -69,6 +98,7 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   await expect(dialog).toBeVisible();
   const box = await dialog.boundingBox();
   expect(box?.width ?? 999).toBeLessThanOrEqual(330);
+  await expectGateChrome(page);
   await expect(dialog.getByRole('link', { name: 'Connexion' })).toBeVisible();
   await expect(dialog.getByRole('link', { name: 'Inscription' })).toBeVisible();
   const narrow = await new AxeBuilder({ page })
@@ -93,6 +123,8 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
     dialog.getByRole('link', { name: 'Inscription' }),
   ).toHaveAttribute('href', '/inscription');
   await expect(page).toHaveURL(/\/lancer/);
+  await expect(page.locator('.axn')).toBeVisible();
+  await expectGateChrome(page);
   const wide = await new AxeBuilder({ page })
     .include('[role="dialog"]')
     .analyze();

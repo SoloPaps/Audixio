@@ -232,7 +232,7 @@ onMount(() => {
   <a class="pin" class:p1={item.rank === 1} class:p2={item.rank === 2} class:p3={item.rank === 3} href={`#prio-${item.rank}`} data-pin={item.rank} aria-label={t('hub.pin.label', { n: item.rank, title: item.title })} data-pos={spot?.bar ? 'b' : undefined} data-al={spot?.al ? 'r' : undefined} style={`left:${spot?.left};top:${spot?.top};--k:${index};--d:${spot?.d}`}><span aria-hidden="true">{item.rank}</span><span class="tip" aria-hidden="true"><small class:t1={item.tone === 'crit'} class:t2={item.tone === 'fix'} class:t3={item.tone === 'check'}><svg aria-hidden="true"><use href={`#${toneIcon(item.tone)}`}/></svg>{toneLabel(item.tone)}</small>{item.title}</span></a>
 {/snippet}
 
-<div style="display:contents" bind:this={root}>
+<div class:guest-hub={guest} style="display:contents" bind:this={root}>
   <div class="page-h rv">
     <div>
       <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li aria-current="page">{host}</li></ol></nav>
