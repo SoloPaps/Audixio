@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./mail-templates": "./src/mail-templates.ts"
   },
   "dependencies": {
     "@audigy/browser-runner": "workspace:*",

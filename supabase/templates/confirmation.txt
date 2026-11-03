@@ -1,0 +1,18 @@
+Bienvenue sur Audixio
+
+Merci pour votre inscription. Il reste une étape : confirmez votre adresse e-mail pour suivre vos sites et recevoir vos alertes.
+
+Confirmer mon adresse
+{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=signup
+
+Ce lien expire dans 15 minutes. Si vous n’êtes pas à l’origine de cette inscription, ignorez simplement cet e-mail.
+
+Le bouton ne fonctionne pas ? Copiez ce lien dans votre navigateur :
+{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=signup
+
+Code : {{ .Token }}
+
+Vous recevez cet e-mail car un compte Audixio vient d’être créé avec cette adresse.
+
+Se désabonner
+{{ .SiteURL }}/compte/alertes

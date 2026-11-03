@@ -1052,13 +1052,13 @@ describe('RLS Supabase local', () => {
     });
     expect(sent).toEqual({ ok: true });
 
-    let snippet = '';
+    let bodyText = '';
     for (let attempt = 0; attempt < 20; attempt += 1) {
       const res = await fetch(`${local.mailpitUrl}/api/v1/messages`);
       const body = (await res.json()) as {
         messages: {
+          ID: string;
           To: { Address: string }[];
-          Snippet: string;
           Subject: string;
         }[];
       };
@@ -1070,15 +1070,22 @@ describe('RLS Supabase local', () => {
           'Votre lien de connexion Audigy',
           'Confirmez votre adresse Audixio',
         ]).toContain(hit.Subject);
-        snippet = hit.Snippet;
+        const full = await fetch(
+          `${local.mailpitUrl}/api/v1/message/${hit.ID}`,
+        );
+        const detail = (await full.json()) as {
+          HTML?: string;
+          Text?: string;
+        };
+        bodyText = `${detail.Text ?? ''}\n${detail.HTML ?? ''}`;
         break;
       }
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
-    const token = /Code : (\d{8})/.exec(snippet)?.[1];
+    const token = /Code : (\d{8})/.exec(bodyText)?.[1];
     expect(token).toMatch(/^\d{8}$/);
 
-    const otpType = snippet.includes('Confirmez') ? 'signup' : 'email';
+    const otpType = bodyText.includes('Confirmez') ? 'signup' : 'email';
     const { data, error } = await client.auth.verifyOtp({
       email,
       token: token ?? '',

@@ -209,6 +209,120 @@ function finding(input: {
   };
 }
 
+function pdfAudit(): unknown {
+  const row = (
+    domain: string,
+    checkId: string,
+    status: string,
+    severity: number,
+    impact: number,
+    messageKey: string,
+    reason?: string,
+  ) =>
+    finding({
+      domain,
+      checkId,
+      status,
+      severity,
+      impact,
+      messageKey,
+      minutes: 15,
+      ...(reason ? { reason } : {}),
+    });
+  const fills = (domain: string, count: number): ReturnType<typeof finding>[] =>
+    Array.from({ length: count }, (_, index) =>
+      row(domain, `${domain}.fill.${index}`, 'fail', 1, 0, 'pdf.px.t2'),
+    );
+  return {
+    audit: {
+      id: AUDIT_ID,
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '2026.1',
+      engineVersion: '0.15.0',
+      globalScore: 84,
+      siteVerified: true,
+      coverage: 1,
+      createdAt: '2026-10-28T10:00:00.000Z',
+      startedAt: '2026-10-28T10:00:01.000Z',
+      finishedAt: '2026-10-28T10:05:00.000Z',
+      error: null,
+      site: {
+        id: SITE_ID,
+        url: 'https://atelier-martin.fr',
+        label: 'atelier-martin.fr',
+        scope: 'origin',
+        hosting: 'other',
+      },
+    },
+    domains: [
+      ['securite', 84],
+      ['performance', 68],
+      ['accessibilite', 82],
+      ['seo', 95],
+      ['vie_privee', 55],
+      ['ecologie', 66],
+      ['qualite', 85],
+      ['dns_email', 96],
+    ].map(([domain, score]) => ({
+      domain,
+      score,
+      coverage: 1,
+      level: 'improve',
+      locked: false,
+    })),
+    findings: [
+      row('vie_privee', 'px.1', 'fail', 4, 3, 'pdf.px.t1', 'pdf.px.d1'),
+      row('securite', 'px.2', 'fail', 3, 3, 'pdf.px.t2', 'pdf.px.d2'),
+      row('performance', 'px.3', 'fail', 3, 2, 'pdf.px.t3', 'pdf.px.d3'),
+      row('accessibilite', 'px.4', 'warn', 2, 2, 'pdf.px.t4', 'pdf.px.d4'),
+      row('ecologie', 'px.5', 'warn', 1, 2, 'pdf.px.t5', 'pdf.px.d5'),
+      row('securite', 'securite.constat', 'warn', 1, 1, 'pdf.px.note.securite'),
+      row(
+        'performance',
+        'performance.constat',
+        'warn',
+        1,
+        1,
+        'pdf.px.note.performance',
+      ),
+      row(
+        'accessibilite',
+        'accessibilite.constat',
+        'warn',
+        1,
+        1,
+        'pdf.px.note.accessibilite',
+      ),
+      row('seo', 'seo.constat', 'pass', 1, 1, 'pdf.px.note.seo'),
+      row(
+        'vie_privee',
+        'vie_privee.constat',
+        'warn',
+        1,
+        1,
+        'pdf.px.note.vie_privee',
+      ),
+      row('ecologie', 'ecologie.constat', 'warn', 1, 1, 'pdf.px.note.ecologie'),
+      row('qualite', 'qualite.constat', 'pass', 1, 1, 'pdf.px.note.qualite'),
+      row(
+        'dns_email',
+        'dns_email.constat',
+        'pass',
+        1,
+        1,
+        'pdf.px.note.dns_email',
+      ),
+      ...fills('securite', 3),
+      ...fills('performance', 2),
+      ...fills('accessibilite', 2),
+      ...fills('vie_privee', 1),
+      ...fills('ecologie', 1),
+    ],
+  };
+}
+
 function audit(
   kind:
     | 'hub'
@@ -477,7 +591,8 @@ type PixelKind =
   | 'historique'
   | 'compte'
   | 'alertes'
-  | 'bienvenue';
+  | 'bienvenue'
+  | 'pdf';
 
 function sessionFor(kind: PixelKind) {
   if (kind === 'compte') {
@@ -549,7 +664,7 @@ async function install(page: Page, kind: PixelKind): Promise<void> {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(audit(bodyKind)),
+      body: JSON.stringify(kind === 'pdf' ? pdfAudit() : audit(bodyKind)),
     });
   });
   await page.route('http://127.0.0.1:54321/**', async (route) => {
@@ -1543,6 +1658,142 @@ test.describe('portes Pro et accès, garde visuelle à 30 %', () => {
           caret: 'hide',
         });
         const live = parse(liveBuffer);
+        const w = Math.max(mock.width, live.width);
+        const h = Math.max(mock.height, live.height);
+        const a = pad(mock, w, h);
+        const b = pad(live, w, h);
+        const diff = new PNG({ width: w, height: h });
+        const mismatched = pixelmatch(a.data, b.data, diff.data, w, h, {
+          threshold: 0.1,
+          includeAA: false,
+        });
+        const ratio = mismatched / (w * h);
+        mkdirSync(OUT, { recursive: true });
+        mkdirSync('/opt/cursor/artifacts', { recursive: true });
+        const stem = `${item.id}-${width}`;
+        writeFileSync(`${OUT}/${stem}-maquette.png`, PNG.sync.write(a));
+        writeFileSync(`${OUT}/${stem}-page.png`, PNG.sync.write(b));
+        writeFileSync(`${OUT}/${stem}-diff.png`, PNG.sync.write(diff));
+        const side = PNG.sync.write(sideBySide(a, b));
+        writeFileSync(`${OUT}/${stem}-cote-a-cote.png`, side);
+        writeFileSync(`/opt/cursor/artifacts/${stem}-cote-a-cote.png`, side);
+        const mockMd5 = createHash('md5')
+          .update(PNG.sync.write(a))
+          .digest('hex');
+        const pageMd5 = createHash('md5')
+          .update(PNG.sync.write(b))
+          .digest('hex');
+        writeFileSync(
+          `${OUT}/${stem}.json`,
+          JSON.stringify({
+            ratio,
+            percent: Number((ratio * 100).toFixed(4)),
+            mockMd5,
+            pageMd5,
+            w,
+            h,
+          }),
+        );
+        expect(pageMd5, `${stem} md5 identiques`).not.toBe(mockMd5);
+        expect(ratio, `${stem} : ${(ratio * 100).toFixed(2)} %`).toBeLessThan(
+          MAX_RATIO,
+        );
+      });
+    }
+  }
+});
+
+async function stripProto(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const root = globalThis as unknown as {
+      document: {
+        querySelector: (selector: string) => { remove: () => void } | null;
+      };
+    };
+    root.document.querySelector('[data-proto]')?.remove();
+  });
+}
+
+const FINALES = [
+  {
+    id: 'pdf',
+    kind: 'pdf' as const,
+    mock: `${ROOT}/page_rapport_pdf/page_rapport_pdf.html`,
+    live: `/rapport/${AUDIT_ID}/imprimer?theme=light`,
+    ready: 'Synthèse et priorités',
+  },
+  {
+    id: 'confirmation',
+    kind: null,
+    mock: `${ROOT}/email_confirmation_inscription/email_confirmation_inscription.html`,
+    live: '/courriel/confirmation',
+    ready: 'Bienvenue sur Audixio',
+  },
+  {
+    id: 'recap',
+    kind: null,
+    mock: `${ROOT}/email_recap_lundi/email_recap_lundi.html`,
+    live: '/courriel/recap',
+    ready: 'Votre récap du lundi',
+    prep: stripProto,
+  },
+  {
+    id: 'recap-stable',
+    kind: null,
+    mock: `${ROOT}/email_recap_lundi/email_recap_lundi.html#inchange`,
+    live: '/courriel/recap-stable',
+    ready: 'Rien n’a changé cette semaine',
+    prep: stripProto,
+  },
+] as const;
+
+test.describe('pdf et courriels, garde visuelle à 30 %', () => {
+  for (const item of FINALES) {
+    for (const width of WIDTHS) {
+      test(`${item.id} ${width}px`, async ({ page }) => {
+        test.setTimeout(120_000);
+        await page.emulateMedia({
+          reducedMotion: 'reduce',
+          colorScheme: 'light',
+        });
+        const leaks: string[] = [];
+        page.on('request', (req) => {
+          const url = req.url();
+          if (
+            !url.startsWith('http://127.0.0.1') &&
+            !url.startsWith('http://localhost')
+          )
+            return;
+          const ported = url.includes('/styles/maquettes/');
+          if (
+            url.includes('docs/design') ||
+            url.includes('maquettes/finales') ||
+            (url.includes('maquettes') && !ported)
+          )
+            leaks.push(url);
+        });
+        if (item.kind) await install(page, item.kind);
+        const prep = 'prep' in item ? item.prep : undefined;
+        const mock = parse(
+          await shoot(page, `file://${item.mock}`, width, prep),
+        );
+        leaks.length = 0;
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(item.live, { waitUntil: 'load' });
+        await expect(
+          page.getByRole('heading', { name: item.ready }).first(),
+        ).toBeVisible();
+        const html = await page.content();
+        expect(html).not.toContain(MARKER);
+        expect(leaks, `requête interdite : ${leaks.join(' ')}`).toEqual([]);
+        await page.addStyleTag({ content: 'html{scrollbar-width:none}' });
+        const live = parse(
+          await page.screenshot({
+            fullPage: true,
+            animations: 'disabled',
+            caret: 'hide',
+          }),
+        );
         const w = Math.max(mock.width, live.width);
         const h = Math.max(mock.height, live.height);
         const a = pad(mock, w, h);

@@ -1,0 +1,68 @@
+import type { mailCopy } from './copy.js';
+
+/** English twin of the mail copy. Sending stays French until a locale is on the roster. */
+export const mailCopyEn: Record<keyof typeof mailCopy, string> = {
+  'mail.alert.down.subject': 'Your site is not responding',
+  'mail.alert.down.body': '{site} failed two checks in a row.',
+  'mail.alert.down.action': 'Check that the site is online.',
+  'mail.alert.up.subject': 'Your site is responding again',
+  'mail.alert.up.body': '{site} is responding again.',
+  'mail.alert.up.done': 'The incident is over.',
+  'mail.alert.score.subject': 'Your site score went down',
+  'mail.alert.score.body': 'The score of {site} moved from {avant} to {apres}.',
+  'mail.alert.score.drop': 'The drop is at least 10 points.',
+  'mail.alert.grave.subject': 'A serious issue appeared',
+  'mail.alert.grave.one': '{site} has one new serious issue.',
+  'mail.alert.grave.many': '{site} has {count} new serious issues.',
+  'mail.alert.cert.soon.subject': 'The certificate expires soon',
+  'mail.alert.cert.today': 'The certificate of {site} expires today.',
+  'mail.alert.cert.one': 'The certificate of {site} expires in one day.',
+  'mail.alert.cert.many': 'The certificate of {site} expires in {jours} days.',
+  'mail.alert.cert.action': 'Renew it before the cutoff.',
+  'mail.alert.cert.expired.subject': 'The certificate has expired',
+  'mail.alert.cert.expired.body': 'The certificate of {site} has expired.',
+  'mail.alert.cert.expired.action': 'Renew it to restore the lock.',
+  'mail.digest.subject': 'Your Monday recap',
+  'mail.digest.intro':
+    'Here is what changed on your followed sites since last Monday.',
+  'mail.digest.steady.subject': 'Nothing changed this week',
+  'mail.digest.steady.intro':
+    'No change on your followed sites. Here are the current results:',
+  'mail.digest.same': 'unchanged',
+  'mail.digest.report': 'View the report',
+  'mail.digest.question': 'A question? Write to us:',
+  'mail.digest.contact': 'Audixio@outlook.fr',
+  'mail.digest.prefs': 'Manage my preferences',
+  'mail.digest.legal': 'Legal notice',
+  'mail.digest.leave': 'Unsubscribe',
+  'mail.digest.copy': '© 2026 Audixio',
+  'mail.digest.why.change':
+    'You receive this email because the Monday recap is on for your account.',
+  'mail.digest.why.signup':
+    'You receive this email because an Audixio account was just created with this address.',
+  'mail.signup.subject': 'Confirm your address — Audixio',
+  'mail.signup.title': 'Welcome to Audixio',
+  'mail.signup.lead':
+    'Thanks for signing up. One step left: confirm your email address to follow your sites and receive alerts.',
+  'mail.signup.action': 'Confirm my address',
+  'mail.signup.expire':
+    'This link expires in 15 minutes. If you did not sign up, ignore this email.',
+  'mail.signup.fallback':
+    'The button does not work? Copy this link into your browser:',
+  'mail.signup.code': 'Code: {code}',
+  'mail.brand': 'Audixio',
+  'mail.digest.line': '{site}: score {score}, uptime {uptime}.',
+  'mail.digest.incident': 'An incident is open.',
+  'mail.digest.score.none': 'no score yet',
+  'mail.digest.uptime.none': 'not measured yet',
+  'mail.digest.uptime.pct': '{pct} %',
+  'mail.digest.footer': 'You receive this recap each Monday.',
+  'mail.digest.unsub': 'To stop these emails, use the unsubscribe link.',
+  'mail.link.open': 'Open Audixio',
+  'mail.link.unsubscribe': 'Unsubscribe',
+  'mail.unsub.title': 'Unsubscribe',
+  'mail.unsub.prompt': 'Confirm to stop these messages.',
+  'mail.unsub.button': 'Unsubscribe',
+  'mail.unsub.done': 'Done. You will no longer receive alerts or the recap.',
+  'mail.unsub.invalid': 'This link is not valid.',
+};

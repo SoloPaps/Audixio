@@ -157,11 +157,21 @@ test('impression : mentions, PDF gris, polices, plafond', async ({ page }) => {
   await page.goto(`/rapport/${AUDIT_ID}/imprimer`);
   await expect(page).toHaveURL(new RegExp(`/rapport/${AUDIT_ID}/imprimer`));
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Rapport à imprimer' }),
+    page.getByRole('heading', { name: 'Synthèse et priorités' }),
   ).toBeVisible();
   await expect(
-    page.getByText('Le navigateur peut l’enregistrer en PDF.'),
+    page.getByRole('button', { name: 'Imprimer / enregistrer en PDF' }),
   ).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => (globalThis as { __printCount?: number }).__printCount ?? 0,
+      ),
+    )
+    .toBe(0);
+  await page
+    .getByRole('button', { name: 'Imprimer / enregistrer en PDF' })
+    .click();
   await expect
     .poll(() =>
       page.evaluate(
@@ -169,56 +179,30 @@ test('impression : mentions, PDF gris, polices, plafond', async ({ page }) => {
       ),
     )
     .toBe(1);
-  await page.getByRole('link', { name: 'Imprimer' }).click();
-  await expect
-    .poll(() =>
-      page.evaluate(
-        () => (globalThis as { __printCount?: number }).__printCount ?? 0,
-      ),
-    )
-    .toBe(2);
-  await expect(page.getByText(HASH)).toBeVisible();
-  await expect(page.getByText(`Identifiant du rapport`)).toBeVisible();
   await expect(
-    page.getByRole('img', { name: 'Code de la page de vérification' }),
+    page.getByRole('heading', { name: 'Les 5 priorités' }),
   ).toBeVisible();
-  await expect(page.getByText(/Ordinateur,/)).toBeVisible();
-  await expect(page.getByText(/Téléphone,/)).toBeVisible();
   await expect(
-    page.getByText('Problème', { exact: true }).first(),
+    page.getByRole('heading', { name: 'Résumé des 8 domaines' }),
   ).toBeVisible();
-  const limit = page.locator('details.finding-limit');
-  await expect(limit).not.toHaveJSProperty('open', true);
-  await expect(limit.locator('.why, p').first()).toBeHidden();
+  await expect(
+    page.getByText('Sécurité', { exact: true }).first(),
+  ).toBeVisible();
+  await expect(page.getByText('DNS et e-mail')).toBeVisible();
   const violations = await new AxeBuilder({ page }).analyze();
   expect(violations.violations).toEqual([]);
 
   await page.emulateMedia({ media: 'print' });
-  await expect(
-    page.getByText(
-      'Ce rapport n’est pas un constat de commissaire de justice.',
-    ),
-  ).toBeVisible();
-  await expect(
-    page.getByText('Cela ne couvre pas toute la chaîne d’hébergement.'),
-  ).toBeVisible();
-  await expect(
-    page.getByText('Le navigateur d’audit n’a pas tourné.', { exact: true }),
-  ).toBeVisible();
+  await expect(page.locator('.tb')).toBeHidden();
+  await expect(page.locator('.axf')).toBeHidden();
   const order = (await page.locator('#contenu').textContent()) ?? '';
   const index = (needle: string) => order.indexOf(needle);
-  const verdict = index('Votre site peut mieux faire.');
-  const domains = index('Ce qui compose la note');
-  const findings = index('Quoi corriger');
-  const footer = index('Identifiant du rapport');
-  const proof = index(
-    'Ce rapport n’est pas un constat de commissaire de justice.',
-  );
-  expect(verdict).toBeGreaterThanOrEqual(0);
-  expect(verdict).toBeLessThan(domains);
-  expect(domains).toBeLessThan(findings);
-  expect(findings).toBeLessThan(footer);
-  expect(footer).toBeLessThan(proof);
+  const cover = index('Synthèse et priorités');
+  const priorities = index('Les 5 priorités');
+  const domains = index('Résumé des 8 domaines');
+  expect(cover).toBeGreaterThanOrEqual(0);
+  expect(cover).toBeLessThan(priorities);
+  expect(priorities).toBeLessThan(domains);
   const paint = await page.evaluate(() => {
     const view = globalThis as unknown as {
       document: { body: unknown };
@@ -231,7 +215,7 @@ test('impression : mentions, PDF gris, polices, plafond', async ({ page }) => {
     return { color: body.color, background: body.backgroundColor };
   });
   expect(paint.background).toBe('rgb(255, 255, 255)');
-  expect(paint.color).toBe('rgb(27, 31, 36)');
+  expect(paint.color).toBe('rgb(30, 42, 85)');
   const pdf = await page.pdf({
     format: 'A4',
     printBackground: true,

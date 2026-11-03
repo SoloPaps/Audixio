@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { t } from './copy.js';
 import type { Logger } from './log.js';
+import { mailGrade, renderRecapMail } from './mail-templates.js';
 
 /** API transactionnelle Brevo. Jamais le site audité. */
 export const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
@@ -263,27 +264,34 @@ export function renderDigest(input: {
   appUrl: string;
   unsubscribeUrl: string;
 }): RenderedMail {
-  const lines = [t('mail.digest.intro')];
-  for (const site of input.sites) {
+  const origin = input.appUrl.replace(/\/$/u, '');
+  const cards = input.sites.map((site) => {
     const name = siteLabel(site.label, site.host);
     const score =
       site.score === null ? t('mail.digest.score.none') : String(site.score);
-    lines.push(
+    const items = [
       t('mail.digest.line', {
         site: name,
         score,
         uptime: formatUptime(site.checks, site.failures),
       }),
-    );
-    if (site.openIncident) lines.push(t('mail.digest.incident'));
-  }
-  lines.push(t('mail.digest.footer'), t('mail.digest.unsub'));
-  const anchors = links(input.appUrl, input.unsubscribeUrl);
-  return {
-    subject: t('mail.digest.subject'),
-    text: textOf(lines, anchors),
-    html: layout(lines, anchors),
-  };
+    ];
+    if (site.openIncident) items.push(t('mail.digest.incident'));
+    return {
+      grade: mailGrade(site.score) ?? '–',
+      host: name,
+      items,
+    };
+  });
+  return renderRecapMail({
+    mode: input.sites.some((site) => site.openIncident) ? 'change' : 'steady',
+    cards,
+    reportUrl: input.appUrl,
+    prefsUrl: `${origin}/compte/alertes`,
+    legalUrl: `${origin}/mentions-legales`,
+    unsubscribeUrl: input.unsubscribeUrl,
+    logoUrl: `${origin}/marque/logo-pc.svg`,
+  });
 }
 
 export function createBrevoMailer(options: {
