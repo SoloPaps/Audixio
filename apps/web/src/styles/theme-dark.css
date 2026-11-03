@@ -1,4 +1,4 @@
-/* Thème sombre. Spécificité au-dessus des :root et html[data-vue] des maquettes. */
+/* Thème sombre : fonds, textes, bordures, ombres et logo. Pas de mise en page. */
 
 html[data-theme="dark"][data-vue],
 html[data-theme="dark"][data-board] {
@@ -506,14 +506,6 @@ html[data-theme="dark"] body.auth-gate :is(button, .btn, [type="submit"]) {
   background-color: #3d52a0;
   color: #fff;
   -webkit-text-fill-color: #fff;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html[data-theme="dark"] .fade {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
 }
 
 html:root[data-theme="dark"] {
