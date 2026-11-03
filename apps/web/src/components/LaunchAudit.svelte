@@ -56,9 +56,7 @@ onMount(async () => {
       return;
     }
     saveGuestAudit(guest.payload);
-    location.replace(
-      `/rapport?id=${encodeURIComponent(guest.payload.audit.id)}`,
-    );
+    location.replace(progressionHref(guest.payload.audit.id));
     return;
   }
   const result = await createAudit(
