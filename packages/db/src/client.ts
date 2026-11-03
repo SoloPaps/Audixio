@@ -137,7 +137,7 @@ export async function readPublicScore(
 
 /**
  * Score d'un lien `link` encore ouvert.
- * Révoqué (`revoked_at` renseigné) : `null` dès la lecture suivante.
+ * Révoqué (`revoked_at`) ou expiré (`expires_at` passé) : `null`.
  */
 export async function readSharedScore(
   client: SupabaseClient<Database>,

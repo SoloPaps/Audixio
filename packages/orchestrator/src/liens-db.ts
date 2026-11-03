@@ -18,10 +18,8 @@ import type { Logger } from './log.js';
 type Client = SupabaseClient<Database>;
 
 /**
- * Le schéma `reports` n’a pas encore `link_kind` ni `expires_at`.
- * Ces faits sont dans `audit_log` (action `share_link`), jamais le jeton en clair :
- * seulement `token_sha256`. Une migration SQL devra les porter sur `reports`
- * et filtrer `read_shared_score` pour que l’ancienne fonction ne contourne pas l’expiration.
+ * `reports.link_kind` et `reports.expires_at` sont lus par `read_shared_score`.
+ * Le journal `audit_log` (action `share_link`) ne garde que l’empreinte du jeton.
  */
 const ACTION = 'share_link';
 
@@ -153,14 +151,20 @@ export function supabaseLienStore(
     },
     async mint(input) {
       if (!asUser) throw new Error('lien_session');
+      const createdAt = new Date().toISOString();
       const { data, error } = await asUser
         .from('reports')
-        .insert({ audit_id: input.auditId, visibility: 'link' })
+        .insert({
+          audit_id: input.auditId,
+          visibility: 'link',
+          link_kind: input.kind,
+          expires_at: input.expiresAt,
+          created_at: createdAt,
+        })
         .select('id, share_token')
         .single();
       if (error || !data?.share_token) throw new Error('lien_creation');
       const tokenHash = await sha256Hex(data.share_token);
-      const createdAt = new Date().toISOString();
       const { error: logError } = await service.from('audit_log').insert({
         actor: input.ownerId,
         action: ACTION,

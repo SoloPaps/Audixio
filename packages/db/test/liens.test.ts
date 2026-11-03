@@ -119,6 +119,12 @@ describe('durée et porte', () => {
     ).toBe('closed');
   });
 
+  it('un lien public expiré ne sert aucune vue', () => {
+    const gate = gateLink(link({ expiresAt: '2026-11-03T12:00:00.000Z' }), NOW);
+    expect(gate).toEqual({ state: 'closed' });
+    expect(vueLien(gate, rapport())).toBeNull();
+  });
+
   it('ramène un lien équipe retiré au soft-gate', () => {
     expect(
       gateLink(

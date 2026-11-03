@@ -518,7 +518,10 @@ export type Database = {
       reports: {
         Row: {
           audit_id: string;
+          created_at: string;
+          expires_at: string | null;
           id: string;
+          link_kind: string | null;
           manifest_sha256: string | null;
           revoked_at: string | null;
           share_token: string;
@@ -530,7 +533,10 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           audit_id: string;
+          created_at?: string;
+          expires_at?: string | null;
           id?: string;
+          link_kind?: string | null;
           manifest_sha256?: string | null;
           revoked_at?: string | null;
           share_token?: string;
@@ -541,7 +547,10 @@ export type Database = {
         };
         Update: {
           audit_id?: string;
+          created_at?: string;
+          expires_at?: string | null;
           id?: string;
+          link_kind?: string | null;
           manifest_sha256?: string | null;
           revoked_at?: string | null;
           share_token?: string;

@@ -15,6 +15,8 @@ supabase db reset --local
 
 `db reset` rejoue `supabase/migrations/` puis `supabase/seed.sql`. Ne pas utiliser `supabase link`, `db push` ni `--linked`.
 
+L’historique distant et les fichiers locaux portent les mêmes versions : [MIGRATIONS-ALIGNEMENT.md](MIGRATIONS-ALIGNEMENT.md). Seul le propriétaire lance le `db push` décrit dans ce fichier.
+
 Les tests RLS (`packages/db/test/rls.test.ts`) démarrent le stack local et rejouent ce reset.
 
 ## Tables touchées par cette brique
@@ -40,7 +42,7 @@ Soft-gate, appliqué dans les politiques (pas dans le navigateur) :
 - Les artefacts (JSON complet) non plus.
 - `read_rapport_apercu(audit_id)` renvoie l’aperçu : domaines ouverts, pastilles verrouillées sans lettre, constats ouverts. La note globale et le correctif branché ne sont présents que si une preuve `verified` existe.
 - Libellé sans preuve : `partielle · N domaines · site non vérifié` (N = domaines ouverts notés).
-- Un lien public (`read_public_score`, `read_shared_score`) ne reçoit ni note globale, ni domaine sensible, ni constat. L’ancien drapeau `expose_security` ne rouvre pas ces données.
+- Un lien public (`read_public_score`, `read_shared_score`) ne reçoit ni note globale, ni domaine sensible, ni constat. L’ancien drapeau `expose_security` ne rouvre pas ces données. Un lien dont `expires_at` est passé ne reçoit rien (`20261103061242`).
 - Le plan Pro ne remplace pas la preuve. Il change le plafond et les alertes.
 
 `plan` n’a pas de droit `UPDATE` pour `authenticated`. `onboarding_vu` oui.
@@ -53,7 +55,7 @@ Le module TypeScript `@audigy/db` (`packages/db/src/droits.ts`) reprend la même
 
 ## Ce qui reste
 
-- Le rapport passe par `read_rapport_apercu`. `authenticated` ne lit plus `audits.global_score` ni `grade` (migration `20261101213000`).
+- Le rapport passe par `read_rapport_apercu`. `authenticated` ne lit plus `audits.global_score` ni `grade` (migration `20261101223145`).
 - Le planificateur lit `alert_settings` (défauts de `ensure_alert_settings` si la ligne manque) : `daily` / `weekly` / `monthly`. Voir [PLANIFICATEUR-ALERTES.md](PLANIFICATEUR-ALERTES.md). La table `schedules` n’est plus la source des échéances.
 - Plafonds (2 sites, 1 lien en gratuit ; 10 sites en Pro) : fonctions `withinSiteQuota` et `withinLinkQuota`. Pas de trigger : un audit crée encore une ligne par adresse, et un rapport peut être à la fois `public` et `link`.
 - Sondes `html_file`, `meta` et `well_known` en place. `dns_txt` était déjà sondé. Search Console reste un stub : voir [PREUVES-PROPRIETE.md](PREUVES-PROPRIETE.md).

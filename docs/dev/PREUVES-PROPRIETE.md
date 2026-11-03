@@ -24,4 +24,4 @@ Chaque clic « Vérifier maintenant » consomme `rate_limits` via `consume_verif
 
 `read_rapport_apercu` est la lecture du propriétaire. Sans preuve `verified`, la note globale est absente, les domaines Sécurité, Vie privée et DNS n’ont ni lettre ni constat, et l’aperçu ne nomme pas les en-têtes. Le bouton mène à la preuve.
 
-La migration `20261101213000_preuves_note.sql` retire le droit de lire `audits.global_score` et `audits.grade` aux rôles `anon` et `authenticated`. Les migrations plus anciennes ne sont pas modifiées. Rien n’est appliqué sur un projet distant.
+La migration `20261101223145_preuves_note.sql` retire le droit de lire `audits.global_score` et `audits.grade` aux rôles `anon` et `authenticated`. Les migrations plus anciennes ne sont pas modifiées. Rien n’est appliqué sur un projet distant.
