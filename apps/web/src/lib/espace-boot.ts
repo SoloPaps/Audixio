@@ -105,11 +105,27 @@ async function loadPlaces(token: string): Promise<PlacesState | null> {
   }
 }
 
+function within<T>(task: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return new Promise((resolve) => {
+    const timer = window.setTimeout(() => resolve(fallback), ms);
+    task.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      () => {
+        window.clearTimeout(timer);
+        resolve(fallback);
+      },
+    );
+  });
+}
+
 async function loadSites(session: Session): Promise<EspaceNext> {
   const supabase = browserClient();
   if (!supabase) return emptyNext('out');
   const token = session.access_token;
-  const places = await loadPlaces(token);
+  const placesTask = loadPlaces(token);
   const { data: profile } = await supabase
     .from('profiles')
     .select('plan')
@@ -125,6 +141,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
   if (error) return { ...emptyNext('error'), token, plan };
   const rows = data ?? [];
   if (rows.length === 0) return { ...emptyNext('empty'), token, plan };
+  const places = await within(placesTask, 4000, null);
   const hosts = new Set(rows.map((row) => row.host));
   if (hosts.size === DEMO.size && [...DEMO].every((host) => hosts.has(host))) {
     return { ...emptyNext('list'), token, plan };
