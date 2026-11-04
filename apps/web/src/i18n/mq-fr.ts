@@ -629,6 +629,7 @@ export const mqFr = {
   'mq.e.185': 'votre-site.fr',
   'mq.e.186': 'DNS & e-mail',
   'mq.e.187': 'Qualité du code',
+  'mq.e.188': '7 domaines testés',
   'mq.p.001': 'atelier-martin.fr',
   'mq.p.002': 'Analyse en direct',
   'mq.p.003': 'Diagnostic complet · session active',
