@@ -81,7 +81,7 @@ export function parseSitemap(xml: string): SitemapDocument | null {
     const name = localName(src.slice(nameStart, index));
     let selfClosing = false;
     let closed = false;
-    while (index < src.length && !closed) {
+    while (index < src.length) {
       const ch = src[index] ?? '';
       if (ch === '>') {
         index += 1;
