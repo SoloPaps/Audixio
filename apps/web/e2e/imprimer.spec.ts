@@ -240,3 +240,31 @@ test('impression sans identifiant', async ({ page }) => {
     )
     .toBe(0);
 });
+
+// #96 : en sombre à l'écran, le logo de la première feuille ne reste pas sombre sur la feuille sombre.
+test('#96 logo de l’aperçu lisible en sombre', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await install(page);
+  await page.goto(`/rapport/${AUDIT_ID}/imprimer?theme=dark`);
+  const logo = page.locator('.sheet .cov-top img').first();
+  await expect(logo).toBeVisible();
+  const look = await logo.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (n: unknown) => {
+        filter: string;
+        backgroundColor: string;
+      };
+    };
+    let box = (node as unknown as { parentElement: unknown }).parentElement;
+    let bg = 'rgba(0, 0, 0, 0)';
+    while (box && /rgba\(\d+, \d+, \d+, 0\)/.test(bg)) {
+      bg = view.getComputedStyle(box).backgroundColor;
+      box = (box as { parentElement: unknown }).parentElement;
+    }
+    return { filter: view.getComputedStyle(node).filter, bg };
+  });
+  const [r = 0, g = 0, b = 0] = (look.bg.match(/[\d.]+/g) ?? []).map(Number);
+  // Feuille sombre : le logo (bleu nuit d'origine) doit être éclairci.
+  expect((0.2126 * r + 0.7152 * g + 0.0722 * b) / 255).toBeLessThan(0.3);
+  expect(look.filter).toContain('invert(1)');
+});

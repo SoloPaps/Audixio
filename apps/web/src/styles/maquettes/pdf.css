@@ -855,3 +855,10 @@ html[data-vue="pdf"] .lk-d {
     print-color-adjust: exact;
   }
 }
+
+/* #96 : à l'écran en sombre, la feuille est sombre ; le logo bleu nuit passe en blanc (l'impression garde l'original). */
+@media screen {
+  html[data-theme="dark"][data-vue="pdf"] .cov-top img {
+    filter: brightness(0) invert(1);
+  }
+}
