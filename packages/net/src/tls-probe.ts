@@ -103,8 +103,6 @@ export function createTlsProbe(options: TlsProbeOptions = {}): TlsProbe {
       host: target.host,
       port: target.port,
       ...(literalIp ? {} : { servername: host }),
-      // Voulu : la sonde mesure le certificat, y compris invalide ; aucune donnée n'est envoyée.
-      rejectUnauthorized: false,
       ...((call?.minVersion ?? options.minVersion)
         ? { minVersion: call?.minVersion ?? options.minVersion }
         : {}),
@@ -115,40 +113,42 @@ export function createTlsProbe(options: TlsProbeOptions = {}): TlsProbe {
     });
 
     return new Promise<TlsProbeResult>((done, fail) => {
+      let settled = false;
       const timer = setTimeout(() => {
+        if (settled) return;
+        settled = true;
         socket.destroy();
         fail(new NetError('TIMEOUT', `Délai de ${timeoutMs} ms dépassé`));
       }, timeoutMs);
-      socket.once('secureConnect', () => {
+      let observed: TlsProbeResult | null = null;
+      const observe = (): TlsProbeResult | null => {
+        const peer = socket.getPeerCertificate(true);
+        if (!peer?.fingerprint256) return null;
+        const authError = socket.authorizationError;
+        return {
+          host,
+          ip,
+          port: TLS_PORT,
+          protocol: socket.getProtocol(),
+          cipher: socket.getCipher()?.name ?? null,
+          authorized: socket.authorized,
+          authorizationError: authError
+            ? String((authError as NodeJS.ErrnoException).code ?? authError)
+            : null,
+          hostnameMatches: checkServerIdentity(host, peer) === undefined,
+          certificate: certificateInfo(peer, now()),
+          chain: chainOf(peer),
+        };
+      };
+      const succeed = (result: TlsProbeResult) => {
+        if (settled) return;
+        settled = true;
         clearTimeout(timer);
-        try {
-          const peer = socket.getPeerCertificate(true);
-          const authError = socket.authorizationError;
-          done({
-            host,
-            ip,
-            port: TLS_PORT,
-            protocol: socket.getProtocol(),
-            cipher: socket.getCipher()?.name ?? null,
-            authorized: socket.authorized,
-            authorizationError: authError
-              ? String((authError as NodeJS.ErrnoException).code ?? authError)
-              : null,
-            hostnameMatches: checkServerIdentity(host, peer) === undefined,
-            certificate: certificateInfo(peer, now()),
-            chain: chainOf(peer),
-          });
-        } catch (error) {
-          fail(
-            new NetError('TLS_HANDSHAKE_FAILED', 'Certificat illisible', {
-              cause: error,
-            }),
-          );
-        } finally {
-          socket.end();
-        }
-      });
-      socket.once('error', (error) => {
+        done(result);
+      };
+      const failHandshake = (error: unknown) => {
+        if (settled) return;
+        settled = true;
         clearTimeout(timer);
         socket.destroy();
         fail(
@@ -156,6 +156,43 @@ export function createTlsProbe(options: TlsProbeOptions = {}): TlsProbe {
             cause: error,
           }),
         );
+      };
+      const originalDestroy = socket.destroy.bind(socket);
+      socket.destroy = ((error?: Error) => {
+        if (!observed) {
+          try {
+            observed = observe();
+          } catch {
+            observed = null;
+          }
+        }
+        return originalDestroy(error);
+      }) as typeof socket.destroy;
+      socket.once('secureConnect', () => {
+        try {
+          const result = observe();
+          if (!result) {
+            failHandshake(new Error('Certificat illisible'));
+            return;
+          }
+          succeed(result);
+        } catch (error) {
+          failHandshake(error);
+        } finally {
+          socket.end();
+        }
+      });
+      socket.once('error', (error) => {
+        if (settled) return;
+        if (observed) {
+          if (!observed.authorizationError) {
+            const code = (error as NodeJS.ErrnoException).code;
+            if (code) observed.authorizationError = code;
+          }
+          succeed(observed);
+          return;
+        }
+        failHandshake(error);
       });
     });
   };

@@ -1,6 +1,8 @@
 const ORIG = '__axOrig';
 const SKIP =
   'script, style, textarea, noscript, [data-chrome], [data-i18n-skip]';
+// Les attributs (placeholder…) d'un textarea restent traduisibles.
+const ATTR_SKIP = SKIP.replace(', textarea', '');
 
 type Marked = Text & { [ORIG]?: string };
 
@@ -89,7 +91,7 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
   for (const el of root.querySelectorAll<HTMLElement>(
     '[aria-label], [title], [placeholder], [alt]',
   )) {
-    if (el.closest(SKIP)) continue;
+    if (el.closest(ATTR_SKIP)) continue;
     for (const attr of ['aria-label', 'title', 'placeholder', 'alt']) {
       if (!el.hasAttribute(attr)) continue;
       const store = `data-ax-${attr}`;

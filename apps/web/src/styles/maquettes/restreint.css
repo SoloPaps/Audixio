@@ -2177,3 +2177,12 @@ html:where([data-vue="restreint"]) {
     gap: 0.4rem;
   }
 }
+/* QA visuels : le libellé « Vérifier la propriété pour débloquer » passe à la ligne au lieu d’être coupé. */
+@media (max-width: 400px) {
+  :where(html[data-vue="restreint"]) .hero-cta .btn {
+    white-space: normal;
+    text-align: center;
+    max-width: 100%;
+    padding-inline: 1.1rem;
+  }
+}

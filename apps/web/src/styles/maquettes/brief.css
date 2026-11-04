@@ -1113,3 +1113,9 @@
 :where(html[data-vue="brief"]) .four {
   padding-bottom: 0.1em;
 }
+/* QA visuels : sur mobile, le schéma des domaines prend toute la largeur (marges par défaut de <figure> retirées). */
+@media (max-width: 600px) {
+  :where(html[data-vue="brief"]) .hero figure.intro {
+    margin-inline: 0;
+  }
+}
