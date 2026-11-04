@@ -255,6 +255,8 @@ function onKey(event: KeyboardEvent): void {
   .sh-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;background:#EDE8F5;font-size:13px;font-weight:600;color:#4A5585}
   .sh-pill.on{color:#067647;background:#ECFDF3}
   .sh-pill svg{width:14px;height:14px}
+  /* #57 : texte de la pastille lisible en thème sombre. */
+  :global(html[data-theme="dark"]) .sh-pill.on,:global(html[data-theme="dark"]) .sh-pill.on span{color:#067647}
   .sh-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
   .sh-note{margin:22px 0 0;font-size:15px;color:#4A5585}
   .sh-st{margin:12px 0 0;font-size:14px;font-weight:600;color:#067647;min-height:0}
