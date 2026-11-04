@@ -148,6 +148,10 @@ test('la pastille de note ne chevauche pas le texte', async ({ page }) => {
   await expect(slot).toBeVisible();
   await expect(slot.getByText('À améliorer')).toBeVisible();
   const boxes = await page.evaluate(() => {
+    // Esbuild nomme les fonctions imbriquées via __name, absent de la page.
+    (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
+      target,
+    ) => target;
     const view = globalThis as unknown as {
       document: {
         querySelector: (selector: string) => Painted | null;
