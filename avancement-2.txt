@@ -53,3 +53,4 @@ Checkpoint 4 (après rebase sur origin/main) : typecheck/unit 1174 OK, build 0, 
 secu js/regex/missing-regexp-anchor (cmp.ts, 15 alertes) corrigé: signatures CMP ancrées sur l'hôte via host(), hôtes trompeurs rejetés (test cmp.test.ts).
 secu js/regex/missing-regexp-anchor (software.ts) corrigé: generator Wix ancré sur la fin du nom (wix.com.evil…, Wix.community rejetés ; test technologies.test.ts).
 secu js/regex/missing-regexp-anchor (public-score.ts) corrigé: badgeHasTracker ratait HTTPS:// en majuscules et //hôte ; chaque lien est analysé et seul l'hôte www.w3.org est admis (test public-score.test.ts).
+secu js/file-system-race (publish-policy.ts) corrigé: stat puis readFile remplacés par un seul descripteur (handle.stat + handle.readFile). Course non reproductible en test : test de non-régression html→css→police ajouté (vert avant et après).

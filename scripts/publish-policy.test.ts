@@ -133,4 +133,24 @@ describe('CSP du build', () => {
       await rm(dir, { recursive: true, force: true });
     }
   });
+  it('suit html → css → police avec un seul descripteur par fichier', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-weight-'));
+    try {
+      const html = '<link rel="stylesheet" href="/a.css">';
+      const css = '@font-face{src:url(f.woff2)}';
+      await writeFile(path.join(dir, 'index.html'), html, 'utf8');
+      await writeFile(path.join(dir, 'a.css'), css, 'utf8');
+      await writeFile(path.join(dir, 'f.woff2'), 'x'.repeat(10), 'utf8');
+      const weight = await pageWeight(dir);
+      expect(weight.fonts).toBe(10);
+      expect(weight.bytes).toBe(html.length + css.length + 10);
+      expect(weight.files.map((f) => path.basename(f))).toEqual([
+        'index.html',
+        'a.css',
+        'f.woff2',
+      ]);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
 });
