@@ -10,3 +10,8 @@ export function relaunchHref(siteId: string, url?: string): string {
   if (url) params.set('url', url);
   return `/progression?${params.toString()}`;
 }
+
+/** Relance du même site. Sans site, l’accueil — jamais `/progression` nu. */
+export function retryHref(site: { id: string; url: string } | null): string {
+  return site ? relaunchHref(site.id, site.url) : '/';
+}

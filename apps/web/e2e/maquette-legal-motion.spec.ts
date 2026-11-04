@@ -100,7 +100,7 @@ test('le bandeau cookies ouvre le tiroir et annonce chaque choix', async ({
 
 test('l’échec d’audit change de cas puis relance', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto('/audit-echoue?theme=light');
+  await page.goto('/audit-echoue?maquette=1&theme=light');
   await ready(page);
   await expect(
     page.getByRole('heading', { name: 'n’a pas abouti' }),
@@ -195,7 +195,7 @@ test('le formulaire robot refuse puis confirme', async ({ page }) => {
 
 test('le survol d’un lien d’audit le soulève', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto('/audit-echoue?theme=light');
+  await page.goto('/audit-echoue?maquette=1&theme=light');
   await ready(page);
   const link = page.locator('a.lk').first();
   const before = await page.evaluate(

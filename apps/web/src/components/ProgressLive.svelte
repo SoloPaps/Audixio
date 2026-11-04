@@ -36,6 +36,7 @@ function hostOf(url: string): string {
 
 onMount(() => {
   const params = new URLSearchParams(location.search);
+  if (params.get('maquette') === '1') return;
   const askedHost = hostFromProgressQuery(location.search);
   if (askedHost) {
     for (const node of document.querySelectorAll('.mono')) {

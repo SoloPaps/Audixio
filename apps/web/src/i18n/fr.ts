@@ -431,6 +431,8 @@ const frCore = {
   'progress.partial': 'Une partie des mesures est prête. Le reste continue.',
   'progress.done': 'L’audit est terminé.',
   'progress.failed': 'L’audit n’a pas abouti. Vous pouvez le relancer.',
+  'failure.audit.of': 'L’audit de ',
+  'failure.unmeasured': 'Aucune mesure',
   'progress.live': 'Analyse en cours.',
   'progress.ready': 'Rapport prêt.',
   'progress.ready.heading': 'Votre diagnostic est prêt pour',

@@ -110,7 +110,7 @@ const PAGES = [
   {
     id: 'progression',
     mock: `${ROOT}/page_progression/page_progression.html`,
-    live: '/progression?theme=light',
+    live: '/progression?maquette=1&theme=light',
     ready: 'Avancement de l’audit',
   },
   {
@@ -176,7 +176,7 @@ const PAGES = [
   {
     id: 'audit',
     mock: `${ROOT}/page_audit_echoue/page_audit_echoue.html`,
-    live: '/audit-echoue?theme=light',
+    live: '/audit-echoue?maquette=1&theme=light',
     ready: 'n’a pas abouti',
   },
 ] as const;

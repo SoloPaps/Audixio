@@ -1,7 +1,9 @@
+import { t } from '../i18n/index.js';
 import { etaLabel, type Sim, TICK_MS, tickSim } from './progress-sim.js';
 import { progressCountHtml } from './progress-tally.js';
 import {
   hostFromProgressQuery,
+  progressSceneSimulates,
   reportHrefFromSearch,
 } from './progress-target.js';
 
@@ -28,11 +30,17 @@ export function bindProgressScene(): void {
     ...(root ?? document).querySelectorAll<HTMLElement>(selector),
   ];
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const askedHost = hostFromProgressQuery(location.search);
-  if (askedHost) {
+  const paintHost = (value: string): void => {
     for (const node of document.querySelectorAll('.mono')) {
-      node.textContent = askedHost;
+      node.textContent = value;
     }
+  };
+  const search = location.search;
+  if (new URLSearchParams(search).get('maquette') === '1') {
+    paintHost(t('mq.p.001'));
+  } else {
+    const askedHost = hostFromProgressQuery(search);
+    if (askedHost) paintHost(askedHost);
   }
   const report = document.getElementById('reportBtn');
   if (report)
@@ -199,5 +207,7 @@ export function bindProgressScene(): void {
   (window as unknown as { audixioProgress: typeof api }).audixioProgress = api;
   counts();
   setPercent(70);
-  sim = window.setInterval(tick, TICK_MS);
+  if (progressSceneSimulates(location.search)) {
+    sim = window.setInterval(tick, TICK_MS);
+  }
 }

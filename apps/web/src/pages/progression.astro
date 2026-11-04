@@ -8,10 +8,10 @@ import Canon from '../layouts/Canon.astro';
 <Canon vue="progression" title={t('meta.progress.title')} description={t('meta.progress.description')} robots="noindex, nofollow">
 
 <main id="contenu" class="wrap"><div class="glass-plate">
-  <div class="statusbar"><span class="site"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><b class="mono">{t('mq.p.001')}</b></span><span class="live"><i aria-hidden="true"></i><span id="liveT" role="status">{t('mq.p.002')}</span></span></div>
+  <div class="statusbar"><span class="site"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><b class="mono" data-i18n-skip></b></span><span class="live"><i aria-hidden="true"></i><span id="liveT" role="status">{t('mq.p.002')}</span></span></div>
   <div class="ax-hero">
   <p class="eyebrow intro">{t('mq.p.003')}</p>
-  <h1 class="intro" id="t-h1" aria-label={t('progress.title')}><span id="h1T">{t('mq.p.004')}</span> <span class="grad mono" style="font-size:.82em;letter-spacing:-.04em">{t('mq.p.001')}</span></h1>
+  <h1 class="intro" id="t-h1" aria-label={t('progress.title')}><span id="h1T">{t('mq.p.004')}</span> <span class="grad mono" style="font-size:.82em;letter-spacing:-.04em" data-i18n-skip></span></h1>
   <p class="lead intro" id="leadT">{t('mq.p.005')}</p>
   <div id="ready-slot" hidden></div>
 
@@ -21,7 +21,7 @@ import Canon from '../layouts/Canon.astro';
       <div class="mock" id="mock" aria-hidden="true">
         <div class="mock-bar">
           <span class="lights"><i></i><i></i><i></i></span>
-          <div class="url"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="url-host mono">{t('mq.p.001')}</span>
+          <div class="url"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="url-host mono" data-i18n-skip></span>
             <span class="chip p-sec" data-key="sec" data-state="done"><span class="ic"></span>{t('mq.p.006')}</span>
           </div>
         </div>

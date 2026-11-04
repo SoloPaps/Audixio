@@ -791,3 +791,12 @@ h1 .u,
 .four {
   padding-bottom: 0.1em;
 }
+
+#failure-live,
+#failure-maquette:not([hidden]) {
+  display: contents;
+}
+
+#failure-maquette[hidden] {
+  display: none !important;
+}
