@@ -3,6 +3,6 @@
   "private": true,
   "description": "Netlify CLI des parcours e2e en CI, figé par package-lock.json (npm ci).",
   "dependencies": {
-    "netlify-cli": "23.15.1"
+    "netlify-cli": "27.16.2"
   }
 }

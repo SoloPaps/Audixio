@@ -46,7 +46,7 @@ describe('workflows figés (code scanning : zizmor, Scorecard)', () => {
     const lock = JSON.parse(
       readFileSync('.github/netlify-cli/package-lock.json', 'utf8'),
     ) as { packages: Record<string, { version?: string; integrity?: string }> };
-    expect(lock.packages['node_modules/netlify-cli']?.version).toBe('23.15.1');
+    expect(lock.packages['node_modules/netlify-cli']?.version).toBe('27.16.2');
     expect(lock.packages['node_modules/netlify-cli']?.integrity).toMatch(
       /^sha512-/,
     );
