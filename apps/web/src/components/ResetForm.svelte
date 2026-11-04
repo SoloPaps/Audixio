@@ -192,7 +192,7 @@ async function onSave(event: SubmitEvent): Promise<void> {
   <h2 id="h-aide">{t('reset.help.title')}</h2>
   <ul class="lk-grid">
     <li><a class="lk" href="/connexion"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="lk-tx"><span class="lk-t">{t('reset.back')}</span><span class="lk-d">{t('reset.help.login.hint')}</span></span>{@render arrow('link')}</a></li>
-    <li><a class="lk" href="/compte"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span class="lk-tx"><span class="lk-t">{t('reset.help.mail')}</span><span class="lk-d">{t('reset.help.mail.hint')}</span></span>{@render arrow('link')}</a></li>
+    <li><a class="lk" href="mailto:Audixio@outlook.fr?subject=R%C3%A9initialisation%20du%20mot%20de%20passe"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span class="lk-tx"><span class="lk-t">{t('reset.help.mail')}</span><span class="lk-d">{t('reset.help.mail.hint')}</span></span>{@render arrow('link')}</a></li>
     <li><a class="lk" href="/confidentialite"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></span><span class="lk-tx"><span class="lk-t">{t('reset.help.safe')}</span><span class="lk-d">{t('reset.help.safe.hint')}</span></span>{@render arrow('link')}</a></li>
   </ul>
 </section>

@@ -503,19 +503,21 @@ function ind(seg){var c=seg.querySelector('input:checked'),i=seg.querySelector('
 var segs=$$('.seg');segs.forEach(function(s){ind(s);s.addEventListener('change',function(){ind(s);upd(true)})});
 addEventListener('resize',function(){segs.forEach(ind)});
 var CJ=[{"id": "images", "t": "Images trop volumineuses", "acts": ["Convertir les 6 visuels vers un format moderne (WebP ou AVIF).", "Définir des dimensions maximales adaptées aux affichages mobiles."], "tgt": "hero-accueil.jpg, equipe-portrait.png"}, {"id": "scripts", "t": "Scripts qui s’exécutent trop tôt", "acts": ["Ajouter defer ou async sur les scripts d’avis et d’analyse.", "Différer les balises marketing après le premier rendu visuel."], "tgt": "widget-reviews.js, analytics-tag.js"}, {"id": "polices", "t": "Trop de styles d’écriture téléchargés", "acts": ["Limiter la charte à 2 polices web et supprimer les graisses non utilisées.", "Activer font-display: swap."], "tgt": "Google Fonts / webfont"}];
+var CJE={"images": {"t": "Oversized images", "acts": ["Convert the 6 visuals to a modern format (WebP or AVIF).", "Set maximum dimensions suited to mobile displays."]}, "scripts": {"t": "Scripts that run too early", "acts": ["Add defer or async to the review and analytics scripts.", "Defer marketing tags until after the first visual render."]}, "polices": {"t": "Too many font styles downloaded", "acts": ["Limit the brand to 2 web fonts and remove unused weights.", "Enable font-display: swap."]}};
+function isEn(){return d.documentElement.lang==='en'}
 function val(id){var r=d.querySelector('input[name="st-'+id+'"]:checked');return r?r.value:'none'}
 function bump(e){e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump')}
 var nF=d.getElementById('nFix'),nC=d.getElementById('nChk');
 function upd(b){var f=0,c=0;CJ.forEach(function(x){var v=val(x.id);if(v==='fix')f++;if(v==='chk')c++});if(nF.textContent!=f){nF.textContent=f;if(b&&!R)bump(nF)}if(nC.textContent!=c){nC.textContent=c;if(b&&!R)bump(nC)}}
 upd(false);
-function prompt(){var L=['Tu es un développeur web. Site : exemple.fr (exemple fictif). Domaine : Performance.',''];CJ.forEach(function(x){var v=val(x.id);if(v==='none')return;L.push((v==='fix'?'À corriger':'À vérifier')+' — '+x.t);x.acts.forEach(function(a){L.push('- '+a)});L.push('Fichiers : '+x.tgt,'')});return L.join('\n')}
+function prompt(){var en=isEn(),L=[en?'You are a web developer. Site: exemple.fr (fictional example). Domain: Performance.':'Tu es un développeur web. Site : exemple.fr (exemple fictif). Domaine : Performance.',''];CJ.forEach(function(x){var v=val(x.id);if(v==='none')return;var y=en?CJE[x.id]:x;L.push((v==='fix'?(en?'To fix':'À corriger'):(en?'To check':'À vérifier'))+' — '+y.t);y.acts.forEach(function(a){L.push('- '+a)});L.push((en?'Files: ':'Fichiers : ')+x.tgt,'')});return L.join('\n')}
 var gen=d.getElementById('gen'),live=d.getElementById('plive');
-if(gen)gen.addEventListener('click',function(ev){ev.preventDefault();var t=prompt();function ok(){live.textContent='Prompt copié dans le presse-papiers';AX.fzSend&&AX.fzSend(gen)}
+if(gen)gen.addEventListener('click',function(ev){ev.preventDefault();var t=prompt();function ok(){live.textContent=isEn()?'Prompt copied to the clipboard':'Prompt copié dans le presse-papiers';AX.fzSend&&AX.fzSend(gen)}
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,ok);else{var ta=d.createElement('textarea');ta.value=t;d.body.appendChild(ta);ta.select();try{d.execCommand('copy')}catch(e){}ta.remove();ok()}});
 var BK=4800,AK=438,net=d.getElementById('net'),oB=d.getElementById('oB'),oA=d.getElementById('oA'),fB=d.getElementById('fB'),fA=d.getElementById('fA'),dl=d.getElementById('delta'),rf=0;
-function fmt(s){return s.toFixed(1).replace('.',',')+' s'}
+function fmt(s){var v=s.toFixed(1);return (isEn()?v:v.replace('.',','))+' s'}
 function run(){cancelAnimationFrame(rf);var m=+net.value,tb=BK*8/1000/m,ta=AK*8/1000/m,D=Math.min(2600,Math.max(900,tb*900)),t0=0;dl.innerHTML='&nbsp;';
- function fin(){fB.style.setProperty('--f',1);fA.style.setProperty('--f',1);oB.textContent=fmt(tb);oA.textContent=fmt(ta);dl.textContent=fmt(tb-ta)+' gagnées sur cette connexion'}
+ function fin(){fB.style.setProperty('--f',1);fA.style.setProperty('--f',1);oB.textContent=fmt(tb);oA.textContent=fmt(ta);dl.textContent=fmt(tb-ta)+(isEn()?' saved on this connection':' gagnées sur cette connexion')}
  if(R){fin();return}
  (function f(ts){if(!t0)t0=ts;var e=ts-t0,pb=Math.min(1,e/D),pa=Math.min(1,e/(D*ta/tb));fB.style.setProperty('--f',pb);fA.style.setProperty('--f',pa);oB.textContent=fmt(tb*pb);oA.textContent=fmt(ta*pa);if(pb<1)rf=requestAnimationFrame(f);else fin()})(performance.now())}
 net.addEventListener('change',run);d.getElementById('replay').addEventListener('click',run);

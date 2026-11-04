@@ -414,7 +414,7 @@ $effect(() => {
   <div>
     <a class="back intro" href={`/rapport?id=${encodeURIComponent(auditId)}`}>{t('brief.back', { host })}</a><br>
     <span class="chip intro"><i aria-hidden="true"></i>{t('brief.sync')}</span>
-    <h1 id="t-h1"><span class="w"><span>{t('brief.h1.1')}</span></span> <span class="w"><span>{t('brief.h1.2')}</span></span> <span class="w"><span>{t('brief.h1.3')}</span></span> <span class="w"><span class="grad">{t('brief.h1.4')}</span></span> <span class="w"><span class="grad">{t('brief.h1.5')}</span></span></h1>
+    <h1 id="t-h1"><span class="w"><span>{t('brief.h1.1')}</span></span> <span class="w"><span>{t('brief.h1.2')}</span></span> <span class="w"><span>{t('brief.h1.3')}</span></span> <span class="w"><span class="grad">{t('brief.h1.4')}</span></span></h1>
     <p class="lead intro">{t('brief.lead')}</p>
     <ul class="stats intro" aria-label={t('brief.stats')}>
       <li class="stat"><b>{stats.total}</b><span>{t('brief.total')}</span></li>

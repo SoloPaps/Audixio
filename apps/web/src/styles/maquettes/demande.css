@@ -2031,3 +2031,15 @@ h1 .u,
     ),
     linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
 }
+.owner-note {
+  color: #4a5585;
+}
+.owner-note a {
+  color: #3d52a0;
+}
+html[data-theme="dark"][data-vue] .owner-note {
+  color: #c9d4ff;
+}
+html[data-theme="dark"][data-vue] .owner-note a {
+  color: #9fb4ff;
+}

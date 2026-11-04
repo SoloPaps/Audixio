@@ -67,3 +67,8 @@ html[data-theme="dark"][data-vue="bienvenue"] .bv-bg i:nth-child(3) {
   background-color: #1a2144;
   background-image: none;
 }
+html[data-theme="dark"][data-vue="bienvenue"] .mark:hover,
+html[data-theme="dark"][data-vue="bienvenue"] .mark:focus-visible {
+  background-color: #243056;
+  color: #f0f2f5;
+}

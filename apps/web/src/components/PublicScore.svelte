@@ -214,12 +214,14 @@ onMount(() => {
         <button type="button" class="button button-secondary" onclick={download}>
           {t('sites.badge')}
         </button>
-        <a
-          class="link-action"
-          href={location.pathname}
-          download={markdownFilename(view.url, stamp ?? new Date())}
-          onclick={downloadMarkdown}
-        >{t('export.markdown')}</a>
+        {#if view.domains.length > 0}
+          <a
+            class="link-action"
+            href={location.pathname}
+            download={markdownFilename(view.url, stamp ?? new Date())}
+            onclick={downloadMarkdown}
+          >{t('export.markdown')}</a>
+        {/if}
       </p>
       <p class="hint">{t('sites.badge.hint')}</p>
     </div>

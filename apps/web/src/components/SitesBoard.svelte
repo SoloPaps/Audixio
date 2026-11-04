@@ -130,7 +130,7 @@ function levelOf(metric: MesureDomaine): string {
 <p class="kicker" id="qt">{plan === 'pro' ? t('mq.sl.live.kicker.pro') : t('mq.sl.010')}</p>
 <div class="qrow"><div class="ring" class:full={sitesUsed >= siteCap} style="--p:{ratio(sitesUsed, siteCap)}" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36"/></svg><b><span><span>{t('mq.sl.live.n', { n: sitesUsed })}</span><small>{t('mq.sl.live.of', { n: siteCap })}</small></span></b></div><div><h2>{t('mq.sl.003')}</h2><p><span class="sr-only">{sitesCaption(sitesUsed, siteCap)} </span>{#if sitesUsed >= siteCap}<span class="badge b-chk">{t('mq.sl.014')}</span>{/if}</p></div></div>
 <div class="qrow"><div class="ring" class:full={linkCap !== null && linksUsed >= linkCap} style="--p:{linkCap === null ? (linksUsed > 0 ? 1 : 0) : ratio(linksUsed, linkCap)}" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36"/></svg><b><span><span>{t('mq.sl.live.n', { n: linksUsed })}</span>{#if linkCap !== null}<small>{t('mq.sl.live.of', { n: linkCap })}</small>{/if}</span></b></div><div><h2>{t('mq.sl.017')}</h2><p><span class="sr-only">{linksCaption(linksUsed, linkCap)} </span>{#if linkCap !== null && linksUsed >= linkCap}<span class="badge b-chk">{t('mq.sl.014')}</span>{/if}</p></div></div>
-<a class="qlink lk-pill" href="/passer-pro">{t('mq.sl.019')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+{#if plan !== 'pro'}<a class="qlink lk-pill" href="/passer-pro">{t('mq.sl.019')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>{/if}
 </div>
 </div>
 </section>
@@ -202,11 +202,13 @@ function levelOf(metric: MesureDomaine): string {
 <div class="norms"><span class="chip">{t('mq.sl.087')}</span><span class="chip">{t('mq.sl.088')}</span></div>
 <a class="qlink lk-pill" href="/methode">{t('mq.sl.089')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 </section>
+{#if plan !== 'pro'}
 <section class="block" aria-labelledby="pro-t">
 <div class="pzw"><div class="pin2"><div class="stars" aria-hidden="true"><i style="left:8%;top:22%"></i><i style="left:30%;top:78%;animation-delay:1s"></i><i style="left:62%;top:16%;animation-delay:2s"></i><i style="left:88%;top:70%;animation-delay:.5s"></i><i style="left:48%;top:50%;animation-delay:1.6s"></i></div>
 <div><span class="pb"><span class="up">{t('mq.sl.090')}</span></span><h2 id="pro-t">{t('mq.sl.091')}</h2><p>{t('mq.sl.092')}</p><p class="soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{t('mq.sl.093')}</p></div>
 <a class="btn btn-gold" href="/pro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></svg>{t('mq.sl.094')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>
 </section>
+{/if}
 </main>
 {:else}
 <main id="contenu" tabindex="-1">

@@ -66,6 +66,7 @@ async function loadLink(): Promise<void> {
 
 async function copy(kind: 'code' | 'link'): Promise<void> {
   const value = kind === 'code' ? snippet : link;
+  if (!value) return;
   await navigator.clipboard.writeText(value);
   copied = kind;
   say(kind === 'code' ? t('badge.copied') : t('badge.copied.link'));
@@ -138,7 +139,7 @@ onMount(() => {
     </div>
     <div class="fld">
       <label for="lnk">{t('badge.link')}</label>
-      <div class="cp"><input id="lnk" type="text" readonly value={link}><button class="btn btn-ghost" class:ok={copied === 'link'} type="button" onclick={() => copy('link')}>{copied === 'link' ? t('badge.copied.short') : t('badge.copy.link')}</button></div>
+      <div class="cp"><input id="lnk" type="text" readonly value={link}><button class="btn btn-ghost" class:ok={copied === 'link'} type="button" disabled={!link} onclick={() => copy('link')}>{copied === 'link' ? t('badge.copied.short') : t('badge.copy.link')}</button></div>
     </div>
     <div class="foot">
       <p>{t('badge.foot')}</p>
