@@ -314,4 +314,22 @@ test('la nav et le pied de Sites suivis ont la même géométrie que le compte',
     .locator('#url')
     .evaluate((node) => getComputedStyle(node).backgroundColor);
   expect(field).not.toBe('rgb(255, 255, 255)');
+  await expect(page.getByText('Quotas · Compte gratuit')).toBeVisible();
+  await expect(page.getByText('1 site suivi sur 2 autorisés.')).toBeVisible();
+  await expect(page.getByText('Performance (LCP)')).toBeVisible();
+  await expect(page.getByText('Éco-Index')).toBeVisible();
+  await expect(page.getByText('Sécurité & TLS')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Pourquoi surveiller vos domaines ?' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Calcul souverain & normes' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Allez plus loin dans le suivi' }),
+  ).toBeVisible();
+  await expect(page.getByText('Créer un lien de partage')).toBeVisible();
+  await expect(page.getByText('monsite-exemple')).toHaveCount(0);
+  await expect(page.getByText('boutique.exemple')).toHaveCount(0);
+  await expect(page.getByText('1,4')).toHaveCount(0);
 });
