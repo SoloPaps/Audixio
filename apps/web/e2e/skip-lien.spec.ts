@@ -98,7 +98,7 @@ test('Inscription de la fenêtre sans compte : même primaire bureau et 330 px',
       trigger: 'manual',
       methodVersion: '1',
       engineVersion: '1',
-      globalScore: null,
+      globalScore: 60,
       siteVerified: false,
       partialLabel: null,
       coverage: 0,
@@ -125,7 +125,16 @@ test('Inscription de la fenêtre sans compte : même primaire bureau et 330 px',
       'dns_email',
     ].map((domain) => ({
       domain,
-      score: null,
+      score:
+        (
+          {
+            performance: 80,
+            seo: 70,
+            ecologie: 60,
+            accessibilite: 50,
+            qualite: 40,
+          } as Record<string, number>
+        )[domain] ?? null,
       coverage: 0,
       level: 'untested',
       locked:
