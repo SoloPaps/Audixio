@@ -656,11 +656,6 @@ html[data-theme="dark"][data-board="vide"] .empty-art span:nth-child(3) {
   background-image: none;
 }
 
-/* Le dégradé de page couvre tout le document, pas seulement la fenêtre. */
-html body {
-  background-attachment: scroll !important;
-}
-
 html[data-theme="dark"][data-vue] .kicker,
 html[data-theme="dark"][data-vue] .card a:not(.axn-cta),
 html[data-theme="dark"][data-vue] .chap a:not(.axn-cta),

@@ -1,7 +1,5 @@
 ---
-import '../styles/maquettes/guest-gate.css';
 import '../styles/maquettes/progression.css';
-import LaunchAudit from '../components/LaunchAudit.svelte';
 import ProgressLive from '../components/ProgressLive.svelte';
 import { t } from '../i18n/index.js';
 import Canon from '../layouts/Canon.astro';
@@ -9,7 +7,7 @@ import Canon from '../layouts/Canon.astro';
 
 <Canon vue="progression" title={t('meta.progress.title')} description={t('meta.progress.description')} robots="noindex, nofollow">
 
-<main id="contenu" class="wrap"><LaunchAudit client:load /><div class="glass-plate">
+<main id="contenu" class="wrap"><div class="glass-plate">
   <div class="statusbar"><span class="site"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg><b class="mono">{t('mq.p.001')}</b></span><span class="live"><i aria-hidden="true"></i><span id="liveT" role="status">{t('mq.p.002')}</span></span></div>
   <div class="ax-hero">
   <p class="eyebrow intro">{t('mq.p.003')}</p>
