@@ -56,6 +56,10 @@ import '../styles/maquettes/theme-dark-qa.css';
 
 
 
+<script>
+import { redirectProToAccount } from '../lib/pro-redirect.js';
+void redirectProToAccount((href) => location.replace(href));
+</script>
 <script is:inline>
 function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typeof line==='string'&&line)return line;var node=document.getElementById(key);return node?node.textContent:'';}
 (function(){var d=document,R=matchMedia('(prefers-reduced-motion: reduce)'),m=d.getElementById('pro-modal'),dlg=m.querySelector('.pm-dlg'),

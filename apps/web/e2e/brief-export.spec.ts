@@ -345,3 +345,28 @@ test('le lien d’évitement de l’impression reste masqué hors focus clavier'
   const shown = await skip.boundingBox();
   expect(shown?.y ?? -1).toBeGreaterThanOrEqual(0);
 });
+
+test('le titre anglais du brief ne répète pas « AI » (bug #25/#86/#144)', async ({
+  page,
+}) => {
+  await install(page);
+  await page.setViewportSize({ width: 330, height: 900 });
+  const pack = await (await page.request.get('/dictionnaire-en.json')).text();
+  await page.addInitScript((text) => {
+    const storage = (
+      globalThis as unknown as {
+        localStorage: { setItem(k: string, v: string): void };
+      }
+    ).localStorage;
+    storage.setItem('audigy-en', text);
+    storage.setItem('audigy-locale', 'en');
+  }, pack);
+  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.locator(`a[href*="/brief?id=${AUDIT_ID}"]`).first().click();
+  await expect(page).toHaveURL(new RegExp(`/brief\\?id=${AUDIT_ID}`));
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  const h1 = page.getByRole('heading', { level: 1 });
+  await expect(h1).toHaveText(/Setup of your AI prompt/);
+  await expect(h1).not.toHaveText(/\bAI\s+AI\b/);
+});
