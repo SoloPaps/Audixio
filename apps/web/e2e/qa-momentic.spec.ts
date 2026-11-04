@@ -104,6 +104,85 @@ test('le lien Sites suivis du compte gratuit affiche la page, même si Places ne
   ).toBeVisible();
 });
 
+const PRO = {
+  ...GRATUIT,
+  user: {
+    ...GRATUIT.user,
+    id: '22222222-2222-4222-8222-222222222222',
+    email: 'pro@localhost',
+  },
+};
+
+const PRO_SITE = '7a2b3c4d-5e6f-4789-a012-bcdef0123456';
+
+test('la vérification de propriété du compte pro montre le jeton et les méthodes', async ({
+  page,
+}) => {
+  await page.route('http://127.0.0.1:54321/**', async (route) => {
+    const request = route.request();
+    if (request.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204 });
+      return;
+    }
+    const path = new URL(request.url()).pathname;
+    if (path.endsWith('/rest/v1/sites')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: PRO_SITE,
+          url: 'https://bon.audigy.test',
+          label: 'bon.audigy.test',
+          host: 'bon.audigy.test',
+          scope: 'origin',
+          path_prefix: null,
+          owner_id: PRO.user.id,
+        }),
+      });
+      return;
+    }
+    if (path.endsWith('/rest/v1/site_verifications')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            id: '33333333-3333-4333-8333-333333333333',
+            method: 'meta',
+            status: 'pending',
+            token: 'jeton-visible-preuve',
+            created_at: '2026-11-01T00:00:00.000Z',
+          },
+        ]),
+      });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: '[]',
+    });
+  });
+  await signIn(page, PRO);
+  await page.goto(`/verifier?site=${PRO_SITE}`);
+  const token = page.locator('.tokbar code');
+  await expect(token).toHaveText('audixio-verify=jeton-visible-preuve');
+  await expect(token).toBeVisible();
+  await expect(page.locator('.tokbar')).toHaveCSS('opacity', '1');
+  await expect(page.locator('.tabs')).toHaveCSS('opacity', '1');
+  await expect(
+    page.getByRole('tab', { name: 'Balise dans la page' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('tab', { name: 'Fichier HTML à la racine' }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(token).toBeVisible();
+  await expect(
+    page.getByRole('tab', { name: 'Balise dans la page' }),
+  ).toBeVisible();
+});
+
 test('un audit example.com sans domaine mesuré ouvre la page d’échec, jamais 0/100', async ({
   page,
 }) => {
