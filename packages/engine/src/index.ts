@@ -210,6 +210,7 @@ export {
   type Level,
   levelFor,
   MIN_COVERAGE,
+  mainDomainWeightPercents,
   prioritize,
   resultValue,
   scoreDomain,

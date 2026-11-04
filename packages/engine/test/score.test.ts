@@ -5,6 +5,7 @@ import {
   type Domain,
   levelFor,
   MAIN_DOMAINS,
+  mainDomainWeightPercents,
   prioritize,
   scoreDomain,
   scoreDomains,
@@ -97,6 +98,20 @@ describe('levelFor', () => {
     [null, 'untested'],
   ] as const)('%s → %s', (score, level) => {
     expect(levelFor(score)).toBe(level);
+  });
+});
+
+describe('poids des 8 domaines', () => {
+  it('totalise 100 et reste la moyenne égale de scoreGlobal', () => {
+    const weights = mainDomainWeightPercents();
+    expect(weights).toHaveLength(MAIN_DOMAINS.length);
+    expect(weights.reduce((sum, weight) => sum + weight, 0)).toBe(100);
+    expect(new Set(weights).size).toBe(1);
+    const domains = scoreDomains([
+      outcome('performance.a', 1, result('pass')),
+      outcome('seo.a', 1, result('fail')),
+    ]);
+    expect(scoreGlobal(domains).score).toBe(50);
   });
 });
 
