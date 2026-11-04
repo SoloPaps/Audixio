@@ -52,3 +52,4 @@ Checkpoint 4 (après rebase sur origin/main) : typecheck/unit 1174 OK, build 0, 
 #9 corrigé: bloc Search Console de /compte hors de <main> → aucune colonne ni style de bouton ; ajout de .blk, colonne alignée sur main (box-sizing compris) et boutons btn/btn-primary/btn-ghost du Canon (test e2e/compte-search-console.spec.ts).
 secu js/regex/missing-regexp-anchor (cmp.ts, 15 alertes) corrigé: signatures CMP ancrées sur l'hôte via host(), hôtes trompeurs rejetés (test cmp.test.ts).
 secu js/regex/missing-regexp-anchor (software.ts) corrigé: generator Wix ancré sur la fin du nom (wix.com.evil…, Wix.community rejetés ; test technologies.test.ts).
+secu js/regex/missing-regexp-anchor (public-score.ts) corrigé: badgeHasTracker ratait HTTPS:// en majuscules et //hôte ; chaque lien est analysé et seul l'hôte www.w3.org est admis (test public-score.test.ts).
