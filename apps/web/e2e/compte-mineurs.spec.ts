@@ -112,3 +112,66 @@ test('#31 textes de /compte lisibles en sombre', async ({ page }) => {
   await page.waitForTimeout(1500);
   expect(await page.evaluate<string[]>(LOW)).toEqual([]);
 });
+
+// #126/#127 : à 330 px, la légende Tendances tient dans sa carte et les libellés Plafonds ne se chevauchent pas.
+test('#126/#127 illustrations Pro lisibles à 330 px', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 330, height: 900 });
+  await install(page);
+  await page.goto('/compte?theme=light');
+  const limits = page.locator('.pf .mt');
+  await expect(limits).toBeAttached({ timeout: 15_000 });
+  await page.waitForTimeout(1500);
+  const geo = await page.evaluate(() => {
+    const rect = (el: Element) => el.getBoundingClientRect();
+    const text = (el: Element) => {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      return range.getBoundingClientRect();
+    };
+    const clipped: string[] = [];
+    for (const span of document.querySelectorAll('.pf .ill span')) {
+      if (
+        ![...span.childNodes].some(
+          (n) => n.nodeType === 3 && n.textContent?.trim(),
+        )
+      )
+        continue;
+      const r = text(span);
+      let box: Element | null = span;
+      for (; box; box = box.parentElement) {
+        const s = getComputedStyle(box);
+        if (s.overflowX !== 'visible' || box.classList.contains('pf')) break;
+      }
+      if (!box) continue;
+      const b = rect(box);
+      if (r.left < b.left - 0.5 || r.right > b.right + 0.5)
+        clipped.push(
+          `${span.textContent?.trim()} [${Math.round(r.left)},${Math.round(r.right)}] in ${box.className} [${Math.round(b.left)},${Math.round(b.right)}]`,
+        );
+    }
+    const overlaps: string[] = [];
+    for (const ill of document.querySelectorAll('.pf .ill')) {
+      const leaves = [...ill.querySelectorAll('span')].filter(
+        (el) =>
+          [...el.childNodes].some(
+            (n) => n.nodeType === 3 && n.textContent?.trim(),
+          ) && getComputedStyle(el).visibility !== 'hidden',
+      );
+      for (let i = 0; i < leaves.length; i++)
+        for (let j = i + 1; j < leaves.length; j++) {
+          const a = text(leaves[i]);
+          const b = text(leaves[j]);
+          const w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+          const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+          if (w > 1 && h > 1)
+            overlaps.push(
+              `${leaves[i].textContent?.trim()} / ${leaves[j].textContent?.trim()}`,
+            );
+        }
+    }
+    return { clipped, overlaps };
+  });
+  expect(geo.clipped).toEqual([]);
+  expect(geo.overlaps).toEqual([]);
+});

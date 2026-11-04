@@ -3242,3 +3242,24 @@ html[data-theme="dark"][data-vue="compte"] .chk a {
 html[data-theme="dark"][data-vue="compte"] .dz .sub {
   color: #ff9b8f;
 }
+
+/* #126/#127 : à 330 px, la légende passe à la ligne et le libellé de limite descend sous « PRO » sans sortir du cadre, les notifications passent à la ligne au lieu d’être tronquées. */
+@media (max-width: 480px) {
+  html[data-vue="compte"] .lg2 {
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+  html[data-vue="compte"] .mt .cap span {
+    top: 18px;
+    left: 6px;
+    right: auto;
+  }
+  html[data-vue="compte"] .tst {
+    gap: 8px;
+    padding: 0 8px;
+  }
+  html[data-vue="compte"] .tst span {
+    white-space: normal;
+    line-height: 1.15;
+  }
+}

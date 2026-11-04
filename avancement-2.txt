@@ -69,3 +69,4 @@ secu VulnerabilitiesID (GHSA-gcqx-w48m-w2h4, deepmerge 4.3.1) non corrigé: dép
 #110 déjà corrigé (7c8f926, PR #135, ecologie.css) : test e2e de non-régression ajouté (fond opaque en sombre)
 #30 corrigé: en sombre le fond de la barre .dock de /verifier devenait transparent (texte de la page visible dessous) ; fond opaque sombre (test e2e verifier-dock-sombre)
 #31 corrigé: en sombre --primary restait #3d52a0 sur fond #1c2340 (contraste 2.1) pour les sous-titres de carte et le lien de checklist de /compte, rouge de zone sensible 2.3 ; couleurs claires en sombre (test e2e compte-mineurs, contraste ≥ 4.5 de tous les textes)
+#126/#127 corrigé: à 330 px légende Tendances (site-c.fr) hors cadre, notifications d’alerte tronquées et libellé « Limite gratuite » sorti à gauche ; légende en retour à la ligne, notifications sur 2 lignes, libellé sous « PRO » (test e2e compte-mineurs)
