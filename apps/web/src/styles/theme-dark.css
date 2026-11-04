@@ -71,6 +71,7 @@ html[data-theme="dark"][data-board] {
   --peach-fill: #243056;
   --on-peach: #f0f2f5;
   --peach-border: #8ea0c8;
+  --sk: #3a466e;
 }
 
 html[data-theme="dark"][data-vue]
@@ -500,6 +501,7 @@ html[data-theme="dark"] body.auth-gate {
   --lav: #c5d0ea;
   color: #f0f2f5;
   background-color: #12162a;
+  background-image: none;
 }
 
 html[data-theme="dark"] body.auth-gate :is(button, .btn, [type="submit"]) {
@@ -539,8 +541,113 @@ html[data-theme="dark"] a.link-nav:visited {
 }
 
 html[data-theme="dark"] .axn-logo img,
-html[data-theme="dark"] .axf-logo img {
+html[data-theme="dark"] .axf-logo img,
+html[data-theme="dark"] .auth-card .brand img {
   filter: brightness(0) invert(1);
+}
+
+/* Conteneurs sans fond propre : pas de rectangle derrière le texte. */
+html[data-theme="dark"][data-vue] :is(div, nav, form, header, figure),
+html[data-theme="dark"][data-board] :is(div, nav, form, header, figure) {
+  background-color: transparent;
+}
+
+html[data-theme="dark"] body.auth-gate .auth-card {
+  background-color: #1c2340;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"] .auth-card .tabs,
+html[data-theme="dark"] .auth-card .sbtn {
+  background-color: #243056;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"] .auth-card .sbtn svg[fill] {
+  fill: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] .mock,
+html[data-theme="dark"][data-board] .mock,
+html[data-theme="dark"][data-vue] .dlg,
+html[data-theme="dark"][data-board] .dlg {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #3d4d7a;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] :is(.mock-bar, .url, .track),
+html[data-theme="dark"][data-board] :is(.mock-bar, .url, .track) {
+  background-color: #3d4d7a;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #8ea0c8;
+}
+
+html[data-theme="dark"][data-vue] .sk,
+html[data-theme="dark"][data-board] .sk,
+html[data-theme="dark"][data-vue] .mock .logo,
+html[data-theme="dark"][data-board] .mock .logo {
+  background-color: #5c6d9a;
+  background-image: none;
+}
+
+html[data-theme="dark"][data-vue] .fill,
+html[data-theme="dark"][data-board] .fill {
+  background-color: #7091e6;
+  background-image: linear-gradient(90deg, #3d52a0, #7091e6 55%, #d6e2ff);
+}
+
+html[data-theme="dark"][data-vue] .chip,
+html[data-theme="dark"][data-board] .chip,
+html[data-theme="dark"][data-vue] .cap .st,
+html[data-theme="dark"][data-board] .cap .st {
+  background-color: #243056;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"][data-vue] .cap,
+html[data-theme="dark"][data-board] .cap {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #3d4d7a;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] .cap[data-state="active"],
+html[data-theme="dark"][data-board] .cap[data-state="active"] {
+  background-color: #243056;
+  background-image: none;
+  border-color: #7091e6;
+}
+
+html[data-theme="dark"][data-vue] .btn-ghost,
+html[data-theme="dark"][data-board] .btn-ghost {
+  background-color: transparent;
+  background-image: none;
+  color: #d6e2ff;
+  border-color: #8ea0c8;
+}
+
+html[data-theme="dark"][data-board="vide"] .empty-art {
+  color: #d6e2ff;
+}
+
+html[data-theme="dark"][data-board="vide"] .empty-art span:nth-child(3) {
+  background-color: #243056;
+  background-image: none;
+}
+
+/* Le dégradé de page couvre tout le document, pas seulement la fenêtre. */
+html body {
+  background-attachment: scroll !important;
 }
 
 html[data-theme="dark"][data-vue] .kicker,
