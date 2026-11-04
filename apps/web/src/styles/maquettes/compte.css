@@ -3203,3 +3203,15 @@ html[data-vue="compte"] a.login-out {
   display: inline-flex;
   align-items: center;
 }
+
+/* 330 px : le libellé de la limite gratuite passe à gauche du trait pour ne plus chevaucher « PRO ». */
+@media (max-width: 480px) {
+  html[data-vue="compte"] .mt .cap span {
+    left: auto;
+    right: 6px;
+  }
+  html[data-vue="compte"] .mt .sc {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+}

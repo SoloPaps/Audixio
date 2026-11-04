@@ -3477,3 +3477,15 @@ h1 .u,
     transform: scale(0.8);
   }
 }
+
+/* 330 px : le libellé de la limite gratuite passe à gauche du trait pour ne plus chevaucher « PRO ». */
+@media (max-width: 480px) {
+  .mt .cap span {
+    left: auto;
+    right: 6px;
+  }
+  .mt .sc {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+}
