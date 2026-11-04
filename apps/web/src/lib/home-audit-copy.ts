@@ -28,3 +28,9 @@ export type HomeCopyKey = keyof typeof copy;
 export function t(key: HomeCopyKey): string {
   return copy[key];
 }
+
+export function messageFor(key: string): string {
+  if (key in copy && key.startsWith('api.error.'))
+    return copy[key as HomeCopyKey];
+  return copy['api.error.internal'];
+}
