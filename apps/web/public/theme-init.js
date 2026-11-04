@@ -1,6 +1,9 @@
 (() => {
   const system = () =>
-    matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    typeof matchMedia === 'function' &&
+    matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
   // Même règle que enPackUsable (apps/web/src/i18n/en-pack.ts).
   function enPackUsable(pack) {
     if (!pack || typeof pack !== 'object') return false;
@@ -35,7 +38,10 @@
           ? saved
           : system();
     root.setAttribute('data-theme', choice);
-    const meta = document.querySelector('meta[name="color-scheme"]');
+    const meta =
+      typeof document.querySelector === 'function'
+        ? document.querySelector('meta[name="color-scheme"]')
+        : null;
     if (meta) meta.setAttribute('content', choice);
     try {
       if (localStorage.getItem('audigy-locale') !== 'en') {
@@ -62,15 +68,19 @@
     }
   };
   apply();
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    let saved = null;
-    try {
-      saved = localStorage.getItem('audigy-theme');
-    } catch {
-      saved = null;
-    }
-    if (saved === 'light' || saved === 'dark') return;
-    apply();
-  });
+  if (typeof matchMedia === 'function')
+    matchMedia('(prefers-color-scheme: dark)').addEventListener(
+      'change',
+      () => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem('audigy-theme');
+        } catch {
+          saved = null;
+        }
+        if (saved === 'light' || saved === 'dark') return;
+        apply();
+      },
+    );
   document.addEventListener('astro:after-swap', apply);
 })();
