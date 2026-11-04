@@ -62,3 +62,4 @@ secu zizmor/unpinned-images (security.yml) corrigé: semgrep/semgrep:latest → 
 secu zizmor/adhoc-packages + Scorecard PinnedDependencies (ci.yml) corrigé: npm install -g netlify-cli remplacé par npm ci sur .github/netlify-cli/package-lock.json (intégrités sha512) ; actions déjà épinglées par SHA (tests workflows-pinned).
 secu SecurityPolicyID corrigé: SECURITY.md complété (contact Audixio@outlook.fr, délais 7/14/90 jours, divulgation coordonnée ; test scripts/security-policy.test.ts).
 secu VulnerabilitiesID (GHSA-gcqx-w48m-w2h4, deepmerge 4.3.1) non corrigé: dépendance transitive de @sveltejs/vite-plugin-svelte, utilisée au build seulement, aucune version corrigée publiée.
+#72 corrigé: la règle sombre globale sur les span repeignait le libellé du bouton prompt en #f0f2f5 sur sa face claire (contraste 1.1) ; couleur forcée sur .fz span (test e2e domaine-dark-contrast)
