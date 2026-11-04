@@ -18,6 +18,7 @@ const session = {
 async function openHistory(
   page: Page,
   scores: readonly [number | null, number | null],
+  theme: 'light' | 'dark' = 'light',
 ): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
@@ -117,7 +118,7 @@ async function openHistory(
     await route.fulfill({ status: 200, headers, body: 'null' });
   });
 
-  await page.goto(`/historique?site=${SITE}&theme=light`);
+  await page.goto(`/historique?site=${SITE}&theme=${theme}`);
 }
 
 test('un site réel redessine la courbe d’historique', async ({ page }) => {
@@ -231,4 +232,54 @@ test('sans mesure, la synthèse ne décerne pas « B · Bon » (bug #130)', asyn
     'Rang Pas encore de note',
   );
   await expect(page.locator('.sum-top .glass')).toHaveText('–');
+});
+
+test('en thème sombre, les libellés du graphique sont lisibles (bug #14)', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await openHistory(page, [72, 88], 'dark');
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  const ratios = await page.evaluate(() => {
+    (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
+      target,
+    ) => target;
+    type El = { parentElement: El | null; textContent: string | null };
+    const view = globalThis as unknown as {
+      document: {
+        querySelectorAll: (s: string) => Iterable<El>;
+      };
+      getComputedStyle: (n: El) => { fill: string; backgroundColor: string };
+    };
+    const rgb = (value: string): number[] =>
+      (value.match(/[\d.]+/g) ?? []).map(Number);
+    const lum = (c: number[]): number => {
+      const [r, g, b] = c.slice(0, 3).map((v) => {
+        const x = v / 255;
+        return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
+    };
+    const low: string[] = [];
+    for (const node of view.document.querySelectorAll('.chart text')) {
+      let cur: El | null = node;
+      let back = [255, 255, 255];
+      while (cur) {
+        const c = rgb(view.getComputedStyle(cur).backgroundColor);
+        if (c.length >= 3 && (c[3] ?? 1) > 0.5) {
+          back = c;
+          break;
+        }
+        cur = cur.parentElement;
+      }
+      const a = lum(rgb(view.getComputedStyle(node).fill));
+      const b = lum(back);
+      const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      if (ratio < 4.5) low.push(`${node.textContent} ${ratio.toFixed(2)}`);
+    }
+    return low;
+  });
+  expect(ratios).toEqual([]);
 });
