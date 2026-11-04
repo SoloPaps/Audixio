@@ -73,6 +73,31 @@ function retourner(octets: Uint8Array): Buffer {
   return copie;
 }
 
+test('le dépôt masque l’input natif et la barre n’a pas de page active', async ({
+  page,
+}) => {
+  for (const theme of ['light', 'dark'] as const) {
+    await page.goto(`/verifier/${ID}/?theme=${theme}`);
+    await expect(page.getByText('La signature correspond.')).toBeVisible();
+    await expect(page.locator('input[type="file"]')).toBeHidden();
+    await expect(
+      page.getByRole('button', { name: 'Choisir un fichier' }),
+    ).toBeVisible();
+    await expect(page.getByText('Aucun fichier choisi')).toBeVisible();
+    await expect(page.getByText('Émetteur')).toHaveCount(0);
+    await expect(page.locator('.qr-card')).toBeVisible();
+    await expect(page.locator('header a[aria-current="page"]')).toHaveCount(0);
+  }
+  await page.getByLabel('Fichier du rapport').setInputFiles({
+    name: 'rapport.pdf',
+    mimeType: 'application/pdf',
+    buffer: Buffer.from('vide'),
+  });
+  await expect(page.getByText('rapport.pdf')).toBeVisible();
+  await expect(page.getByText('Aucun fichier choisi')).toHaveCount(0);
+  await expect(page.locator('input[type="file"]')).toBeHidden();
+});
+
 test('mentions, horodatage, signature et code', async ({ page }) => {
   await ouvrir(page);
   await page.locator('details.preuve-mentions summary').click();

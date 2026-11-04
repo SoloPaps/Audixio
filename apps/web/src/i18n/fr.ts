@@ -727,6 +727,8 @@ const frCore = {
   'verifier.signature.wait': 'Vérification de la signature.',
   'verifier.check': 'Contrôle du fichier',
   'verifier.file': 'Fichier du rapport',
+  'verifier.file.choose': 'Choisir un fichier',
+  'verifier.file.none': 'Aucun fichier choisi',
   'verifier.hint': 'Déposez le PDF ou le JSON du rapport.',
   'verifier.tooBig': 'Ce fichier dépasse 20 Mo.',
   'verifier.match': 'Ce fichier correspond.',

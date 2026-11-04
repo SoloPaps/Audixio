@@ -687,6 +687,24 @@ html[data-theme="dark"][data-vue] .verifier-page .vcard button {
   border-color: #3d52a0;
 }
 
+html[data-theme="dark"][data-vue="verifier"] .drop,
+html[data-theme="dark"][data-vue="verifier"] .qr-card,
+html[data-theme="dark"][data-vue="verifier"] .stamp .kicker {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #3d4d7a;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue="verifier"] .drop.is-over {
+  border-color: #7091e6;
+}
+
+html[data-theme="dark"][data-vue="verifier"] .qr {
+  background-color: #1c2340;
+  color: #f0f2f5;
+}
+
 html[data-theme="dark"][data-vue] .session-wall {
   background-color: #1c2340;
   background-image: none;

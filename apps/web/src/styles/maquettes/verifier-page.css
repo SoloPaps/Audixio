@@ -112,12 +112,85 @@ html[data-vue="verifier"] body {
   cursor: pointer;
 }
 
-.verifier-page input[type="file"] {
-  max-width: 100%;
+html[data-vue="verifier"] .drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1px dashed var(--line);
+  border-radius: 20px;
+  background: var(--surface);
 }
 
-.verifier-page .qr {
+html[data-vue="verifier"] .drop.is-over {
+  border-color: var(--focus);
+}
+
+html[data-vue="verifier"] .drop label {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+html[data-vue="verifier"] .drop-name {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+html[data-vue="verifier"] .drop .hint {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.verifier-page input[type="file"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+  clip-path: inset(50%);
+}
+
+html[data-vue="verifier"] .stamp .kicker {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 0.75rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-vue="verifier"] .qr-card {
+  display: inline-flex;
+  padding: 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--paper);
+}
+
+html[data-vue="verifier"] .qr {
+  display: block;
+  width: 8rem;
+  height: 8rem;
   max-width: 100%;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 @media (max-width: 400px) {

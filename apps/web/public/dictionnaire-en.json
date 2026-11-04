@@ -637,6 +637,8 @@
   "verifier.signature.wait": "Checking the signature.",
   "verifier.check": "File check",
   "verifier.file": "Report file",
+  "verifier.file.choose": "Choose a file",
+  "verifier.file.none": "No file chosen",
   "verifier.hint": "Drop the PDF or the JSON of the report.",
   "verifier.tooBig": "This file is over 20 MB.",
   "verifier.match": "This file matches.",

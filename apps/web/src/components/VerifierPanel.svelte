@@ -24,6 +24,8 @@ let verdict = $state<VerdictFichier | null>(null);
 let fichierMessage = $state('');
 let qr = $state<{ d: string; size: number } | null>(null);
 let champFichier = $state<HTMLInputElement | null>(null);
+let nomFichier = $state('');
+let survol = $state(false);
 let lecture = 0;
 
 onMount(() => {
@@ -132,13 +134,16 @@ function fichierChoisi(event: Event): File | null {
   return input?.files?.[0] ?? null;
 }
 
-async function choisirFichier(event: Event): Promise<void> {
+async function controler(fichier: File | null): Promise<void> {
   if (!dossier) return;
-  const fichier = fichierChoisi(event);
   const ticket = ++lecture;
   verdict = null;
   fichierMessage = '';
-  if (!fichier) return;
+  if (!fichier) {
+    nomFichier = '';
+    return;
+  }
+  nomFichier = fichier.name;
   if (fichier.size > MAX_OCTETS) {
     fichierMessage = t('verifier.tooBig');
     return;
@@ -151,6 +156,25 @@ async function choisirFichier(event: Event): Promise<void> {
     versHex(new Uint8Array(empreinte)),
     dossier.manifeste,
   );
+}
+
+async function choisirFichier(event: Event): Promise<void> {
+  await controler(fichierChoisi(event));
+}
+
+function entrerDepot(event: DragEvent): void {
+  event.preventDefault();
+  survol = true;
+}
+
+function sortirDepot(): void {
+  survol = false;
+}
+
+function deposer(event: DragEvent): void {
+  event.preventDefault();
+  survol = false;
+  void controler(event.dataTransfer?.files?.[0] ?? null);
 }
 
 function sauverJeton(item: HorodatagePublic, index: number): void {
@@ -201,8 +225,10 @@ function telecharger(nom: string, blob: Blob): void {
           <dl class="facts">
             <dt>{t('verifier.time')}</dt>
             <dd>{formatReportStamp(new Date(item.genTime))}</dd>
-            <dt>{t('verifier.issuer')}</dt>
-            <dd>{item.emetteur}</dd>
+            {#if item.emetteur.trim() !== item.service.trim()}
+              <dt>{t('verifier.issuer')}</dt>
+              <dd>{item.emetteur}</dd>
+            {/if}
           </dl>
         </li>
       {/each}
@@ -239,8 +265,18 @@ function telecharger(nom: string, blob: Blob): void {
   {/if}
 
   <h2>{t('verifier.check')}</h2>
-  <div class="field">
+  <div
+    class="drop"
+    class:is-over={survol}
+    ondragover={entrerDepot}
+    ondragleave={sortirDepot}
+    ondrop={deposer}
+  >
     <label for="fichier-rapport">{t('verifier.file')}</label>
+    <p class="drop-name" id="fichier-nom">{nomFichier || t('verifier.file.none')}</p>
+    <button type="button" class="button" onclick={() => champFichier?.click()}>
+      {t('verifier.file.choose')}
+    </button>
     <input
       id="fichier-rapport"
       type="file"
@@ -248,7 +284,7 @@ function telecharger(nom: string, blob: Blob): void {
       bind:this={champFichier}
       onchange={choisirFichier}
       oninput={choisirFichier}
-      aria-describedby="fichier-hint"
+      aria-describedby="fichier-hint fichier-nom"
     />
     <p id="fichier-hint" class="hint">{t('verifier.hint')}</p>
     <p class="hint">{t('verifier.local')}</p>
@@ -274,9 +310,11 @@ function telecharger(nom: string, blob: Blob): void {
 
   {#if qr}
     <h2>{t('verifier.link')}</h2>
-    <svg class="qr" role="img" aria-label={t('verifier.qr')} viewBox={`0 0 ${qr.size} ${qr.size}`}>
-      <path fill="currentColor" d={qr.d} />
-    </svg>
+    <div class="qr-card">
+      <svg class="qr" role="img" aria-label={t('verifier.qr')} viewBox={`0 0 ${qr.size} ${qr.size}`}>
+        <path fill="currentColor" d={qr.d} />
+      </svg>
+    </div>
   {/if}
 
   <details>
