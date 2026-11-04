@@ -2593,7 +2593,7 @@
   "mq.m.076": "MDN HTTP Observatory · testssl.sh",
   "mq.m.077": "Performance and Core Web Vitals",
   "mq.m.078": "An assessment of felt speed and visual stability, without stressing the hardware.",
-  "mq.m.079": "Largest Contentful Paint (LCP target",
+  "mq.m.079": "Largest Contentful Paint (LCP target < 2.5 s)",
   "mq.m.080": "Display stability (Cumulative Layout Shift, CLS)",
   "mq.m.081": "Interaction responsiveness (INP) and modern media formats (AVIF, WebP)",
   "mq.m.082": "Google Lighthouse · Chrome UX Report",
