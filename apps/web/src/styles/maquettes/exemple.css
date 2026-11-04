@@ -558,6 +558,10 @@ h2.sec {
   }
 }
 
+html {
+  scroll-padding-top: 96px;
+}
+
 html,
 body {
   overflow-x: clip;
