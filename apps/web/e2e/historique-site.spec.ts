@@ -105,6 +105,10 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
   expect(points).toContain('890.0,53.0');
   expect(points).not.toContain('168.0');
   expect(points).not.toBe(DEMO);
+  // Bug #93 : la moyenne suit les audits réels (72 et 88), pas 80,6.
+  const average = page.locator('.legend .avg [data-count]');
+  await page.waitForTimeout(2_500);
+  await expect(average).toHaveText('80,0');
 });
 
 test('« Historique et tendances » ouvre l’historique du site de la carte', async ({

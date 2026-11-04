@@ -812,7 +812,16 @@ function bindHistory(root: HTMLElement): () => void {
     xs = built.marks.map((mark) => mark.x);
     ys = built.marks.map((mark) => mark.y);
     const average = root.querySelector('.avg [data-count]');
-    if (average) average.textContent = built.average;
+    if (average) {
+      // Le compteur animé de la maquette (80,6) écrirait encore dans l’ancien
+      // nœud : on le remplace par un nœud figé sur la vraie moyenne.
+      const fresh = document.createElement('span');
+      fresh.dataset.count = built.average.replace(',', '.');
+      fresh.dataset.dec = '1';
+      fresh.dataset.done = '1';
+      fresh.textContent = built.average;
+      average.replaceWith(fresh);
+    }
     bindHits();
   };
   void (async () => {
