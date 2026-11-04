@@ -10,7 +10,7 @@ import {
   latestReportHref,
   welcomeDone,
 } from './account-prefs.js';
-import { scoreAutorise } from './apercu.js';
+import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
 import { gradeForScore } from './grade.js';
@@ -51,6 +51,13 @@ export interface LiveSite {
   verify: string;
   when: string;
   score: number | null;
+  grade: string | null;
+  verified: boolean;
+  isPublic: boolean;
+  publicSlug: string | null;
+  performance: MesureDomaine;
+  ecologie: MesureDomaine;
+  securite: MesureDomaine;
   places: boolean;
   place: PlaceSummary | null;
 }
@@ -105,11 +112,27 @@ async function loadPlaces(token: string): Promise<PlacesState | null> {
   }
 }
 
+function within<T>(task: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return new Promise((resolve) => {
+    const timer = window.setTimeout(() => resolve(fallback), ms);
+    task.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      () => {
+        window.clearTimeout(timer);
+        resolve(fallback);
+      },
+    );
+  });
+}
+
 async function loadSites(session: Session): Promise<EspaceNext> {
   const supabase = browserClient();
   if (!supabase) return emptyNext('out');
   const token = session.access_token;
-  const places = await loadPlaces(token);
+  const placesTask = loadPlaces(token);
   const { data: profile } = await supabase
     .from('profiles')
     .select('plan')
@@ -125,6 +148,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
   if (error) return { ...emptyNext('error'), token, plan };
   const rows = data ?? [];
   if (rows.length === 0) return { ...emptyNext('empty'), token, plan };
+  const places = await within(placesTask, 4000, null);
   const hosts = new Set(rows.map((row) => row.host));
   if (hosts.size === DEMO.size && [...DEMO].every((host) => hosts.has(host))) {
     return { ...emptyNext('list'), token, plan };
@@ -141,13 +165,17 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       global_score: null,
     })),
   );
+  const cartes = new Map<string, Awaited<ReturnType<typeof apercuCarte>>>();
   await Promise.all(
     [...draft.values()].map(async (mark) => {
-      mark.score = await scoreAutorise(supabase, mark.auditId);
+      const carte = await apercuCarte(supabase, mark.auditId);
+      mark.score = carte?.score ?? null;
+      cartes.set(mark.auditId, carte);
     }),
   );
   const sites: LiveSite[] = rows.map((row) => {
     const mark = draft.get(row.id);
+    const carte = mark ? (cartes.get(mark.auditId) ?? null) : null;
     return {
       id: row.id,
       host: row.host,
@@ -156,7 +184,14 @@ async function loadSites(session: Session): Promise<EspaceNext> {
         : `/progression?site=${encodeURIComponent(row.id)}`,
       verify: `/verifier?site=${encodeURIComponent(row.id)}`,
       when: mark ? formatDate(new Date(mark.at)) : '',
-      score: mark?.score ?? null,
+      score: carte?.score ?? null,
+      grade: carte?.grade ?? null,
+      verified: carte?.verified === true,
+      isPublic: row.is_public === true,
+      publicSlug: row.public_slug,
+      performance: mesureDomaine(carte, 'performance'),
+      ecologie: mesureDomaine(carte, 'ecologie'),
+      securite: mesureDomaine(carte, 'securite'),
       places: places?.enabled === true,
       place: places?.places.find((item) => item.siteId === row.id) ?? null,
     };
@@ -435,6 +470,13 @@ async function addSite(
     verify: `/verifier?site=${encodeURIComponent(data.id)}`,
     when: '',
     score: null,
+    grade: null,
+    verified: false,
+    isPublic: data.is_public === true,
+    publicSlug: data.public_slug,
+    performance: mesureDomaine(null, 'performance'),
+    ecologie: mesureDomaine(null, 'ecologie'),
+    securite: mesureDomaine(null, 'securite'),
     places: false,
     place: null,
   };

@@ -139,6 +139,7 @@ export function bindProgressScene(): void {
 
   const finish = (): void => {
     if (finished) return;
+    if (document.documentElement.dataset.auditOutcome === 'echec') return;
     finished = true;
     window.clearInterval(sim);
     for (const key of ['perf', 'a11y', 'code']) setDomain(key, 'done');

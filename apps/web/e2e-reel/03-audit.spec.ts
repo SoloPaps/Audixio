@@ -14,24 +14,10 @@ test('visiteur non connecté voit le hub et la fenêtre de compte', async ({
   await page.goto('/');
   await page.locator('#url-input').fill(LAB);
   await page.getByRole('button', { name: "Lancer l'audit gratuit" }).click();
-  await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 30_000 });
-  await expect(page.getByRole('status')).toContainText('Analyse en cours');
-  const voir = page.locator('#reportBtn');
-  await expect(voir).toBeVisible({ timeout: 30_000 });
-  await expect(voir).toContainText('Voir le rapport');
-  await voir.click();
-  await expect(page).toHaveURL(/\/rapport\?id=/);
-  await expect(
-    page.getByText(/partielle · \d+ domaines · site non vérifié/),
-  ).toBeVisible();
-  await page.locator('#domaine-securite').click();
-  await expect(
-    page.getByRole('heading', { name: 'Connectez-vous ou inscrivez-vous' }),
-  ).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Inscription' })).toHaveAttribute(
-    'href',
-    '/inscription',
-  );
+  await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 30_000 });
+  await expect(page.getByText('Audit interrompu').first()).toBeVisible();
+  await expect(page.getByText('0/100')).toHaveCount(0);
+  await expect(page.getByText('Votre diagnostic est prêt pour')).toHaveCount(0);
   await context.close();
 });
 

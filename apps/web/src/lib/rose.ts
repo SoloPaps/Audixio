@@ -104,6 +104,7 @@ function el(
 export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const { cards, text } = input;
+  const scored = typeof input.score === 'number';
   const g = input.score ?? 0;
   const G = input.grade ?? '–';
   const N = cards.length;
@@ -478,7 +479,12 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
         'fill',
         card ? (INK[gr] ?? '#4A5585') : 'url(#gLetter)',
       );
-      cScore.textContent = `${card ? card.score : g}/100`;
+      cScore.textContent =
+        card?.score != null
+          ? `${card.score}/100`
+          : scored
+            ? `${g}/100`
+            : text.untested;
     } else {
       cGrade.textContent = '—';
       cGrade.setAttribute('fill', '#8697C4');
@@ -497,7 +503,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     sweepO =
       t < SWEEP ? clamp(t / 150, 0, 1) : 1 - clamp((t - SWEEP) / 380, 0, 1);
     const n = Math.round(g * easeOut(clamp((t - 200) / (TOTAL - 700), 0, 1)));
-    cScore.textContent = `${n}/100`;
+    cScore.textContent = scored ? `${n}/100` : text.untested;
     cGrade.textContent = t > TOTAL - 650 ? G : '';
     cLabel.textContent = LABEL;
     drawAll();
@@ -511,7 +517,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     done = true;
     cGrade.setAttribute('fill', 'url(#gLetter)');
     cGrade.textContent = G;
-    cScore.textContent = `${g}/100`;
+    cScore.textContent = scored ? `${g}/100` : text.untested;
     cLabel.textContent = LABEL;
     drawAll();
     if (!started) started = true;
