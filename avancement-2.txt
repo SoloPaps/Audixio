@@ -75,3 +75,4 @@ Correctif interne: le contrôle de type échouait (e2e ajoutés sans lib.dom, im
 #76 déjà corrigé: la rose, la phrase « Moyenne des n domaines testés » et l’illustration tiennent dans la carte à 330 px (corrigé par 7c8f926/437575f) ; vérifié par le test e2e rapport-mineurs #76/#80
 #96 corrigé: en sombre la feuille d’aperçu est sombre mais le logo SVG bleu nuit restait tel quel ; passé en blanc à l’écran (filtre), impression inchangée (test e2e imprimer #96)
 Correctif interne: lint en échec (tableaux à trous dans 2 e2e) et format non appliqué à motion/accueil.js ; corrigés (pnpm lint et pnpm format sans écart)
+- budget accueil (parcours « accueil sous 500 Ko ») : 512066 o > 512000 après #118 ; live.ts allégé (sélecteurs, ancre inline) → 511995 o, test rouge→vert.
