@@ -28,3 +28,31 @@ export function activeAccessCount(
 ): number {
   return Math.max(0, total - revoked.length);
 }
+
+export interface ReportLinkRow {
+  id: string;
+  auditId: string;
+  token: string;
+  kind: string | null;
+  visibility: string;
+  revokedAt: string | null;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface ActiveShare {
+  id: string;
+  host: string;
+  kind: 'public' | 'team';
+  urlPath: string;
+  createdAt: string;
+}
+
+/** Liens encore actifs. Le compteur vient de cette liste, pas du navigateur. */
+export function activeShareLinks(
+  _reports: readonly ReportLinkRow[],
+  _hosts: ReadonlyMap<string, string>,
+  _now: number,
+): ActiveShare[] {
+  return [];
+}

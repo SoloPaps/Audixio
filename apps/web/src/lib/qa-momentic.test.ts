@@ -1,15 +1,11 @@
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import {
-  activeAccessCount,
-  rememberRevoke,
-  revokedAccessIds,
-} from './account-access.js';
+import { activeShareLinks } from './account-access.js';
 import { badgeTargetHref } from './badge-target.js';
 import { briefScreen } from './brief-screen.js';
 import { constatShowsImageInventory } from './constat-kind.js';
-import { readChoice, rememberChoice } from './finding-choice.js';
+import { briefSelectionRow } from './finding-choice.js';
 import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import { homeUrlIssue } from './home-url-issue.js';
 import { printPriorityTitle } from './print-priority.js';
@@ -22,16 +18,67 @@ import { sslSelectValue, sslWarnDays } from './ssl-days.js';
 
 const AUDIT = '00000000-0000-4000-8000-0000000000b2';
 
+const TOKEN = 'ab'.repeat(16);
+const USER = '11111111-1111-4111-8111-111111111111';
+
 function source(name: string): string {
   return readFileSync(new URL(name, import.meta.url), 'utf8');
 }
 
+function migrations(): string {
+  const dir = new URL('../../../supabase/migrations/', import.meta.url);
+  return readdirSync(dir)
+    .filter((name) => name.endsWith('.sql'))
+    .map((name) => readFileSync(new URL(name, dir), 'utf8'))
+    .join('\n');
+}
+
 describe('bug 1 — retrait d’accès', () => {
-  it('retire marie et décompte le lien actif après rechargement', () => {
-    const stored = rememberRevoke(null, 'apr1');
-    expect(revokedAccessIds(stored)).toContain('apr1');
-    expect(activeAccessCount(1, revokedAccessIds(stored))).toBe(0);
-    expect(source('../lib/espace-boot.ts')).toContain('rememberRevoke');
+  it('compte les liens actifs du serveur et révoque la ligne en base', () => {
+    const now = Date.parse('2026-11-04T00:00:00.000Z');
+    const links = activeShareLinks(
+      [
+        {
+          id: AUDIT,
+          auditId: AUDIT,
+          token: TOKEN,
+          kind: 'team',
+          visibility: 'link',
+          revokedAt: null,
+          expiresAt: null,
+          createdAt: '2026-05-11T00:00:00.000Z',
+        },
+        {
+          id: '00000000-0000-4000-8000-0000000000c1',
+          auditId: AUDIT,
+          token: 'cd'.repeat(16),
+          kind: 'public',
+          visibility: 'link',
+          revokedAt: '2026-06-01T00:00:00.000Z',
+          expiresAt: null,
+          createdAt: '2026-05-01T00:00:00.000Z',
+        },
+      ],
+      new Map([[AUDIT, 'gratuit.audigy.test']]),
+      now,
+    );
+    expect(links).toEqual([
+      {
+        id: AUDIT,
+        host: 'gratuit.audigy.test',
+        kind: 'team',
+        urlPath: `/partage/${TOKEN}`,
+        createdAt: '2026-05-11T00:00:00.000Z',
+      },
+    ]);
+    const boot = source('../lib/espace-boot.ts');
+    const board = source('../components/AccountBoard.svelte');
+    expect(boot).toContain("from('reports')");
+    expect(boot).toContain('revoked_at');
+    expect(boot).toContain('activeShareLinks');
+    expect(boot).not.toContain('audixio-revoked-access');
+    expect(board).not.toContain('marie@exemple.fr');
+    expect(board).not.toContain('data-revoke="apr1"');
   });
 });
 
@@ -49,11 +96,31 @@ describe('bug 2 — alerte SSL', () => {
 });
 
 describe('bug 3 — action Rien', () => {
-  it('retrouve Rien sur l’adresse canonique après rechargement', () => {
-    const stored = rememberChoice(null, AUDIT, 'seo.canonical', 'none');
-    expect(readChoice(stored, AUDIT, 'seo.canonical')).toBe('none');
-    expect(source('../components/DomainView.svelte')).toContain(
-      'rememberChoice',
+  it('enregistre Rien en base pour l’adresse canonique', () => {
+    expect(
+      briefSelectionRow({
+        userId: USER,
+        auditId: AUDIT,
+        findingId: 'seo.canonical',
+        choice: 'none',
+        at: '2026-11-04T00:00:00.000Z',
+      }),
+    ).toEqual({
+      user_id: USER,
+      audit_id: AUDIT,
+      finding_id: 'seo.canonical',
+      choice: 'none',
+      updated_at: '2026-11-04T00:00:00.000Z',
+    });
+    const view = source('../components/DomainView.svelte');
+    expect(view).toContain("from('brief_selections')");
+    expect(view).toContain('briefSelectionRow');
+    expect(view).not.toContain('localStorage');
+    const sql = migrations();
+    expect(sql).toContain('create table public.brief_selections');
+    expect(sql).toContain("choice in ('none', 'chk', 'fix')");
+    expect(sql).toContain(
+      'alter table public.brief_selections enable row level security',
     );
   });
 });

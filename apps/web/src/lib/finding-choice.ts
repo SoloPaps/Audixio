@@ -23,6 +23,28 @@ export function rememberChoice(
   return JSON.stringify({ ...parsed, [auditId]: audit });
 }
 
+export function briefSelectionRow(input: {
+  userId: string;
+  auditId: string;
+  findingId: string;
+  choice: 'none' | 'chk' | 'fix';
+  at: string;
+}): {
+  user_id: string;
+  audit_id: string;
+  finding_id: string;
+  choice: 'none' | 'chk' | 'fix';
+  updated_at: string;
+} {
+  return {
+    user_id: input.userId,
+    audit_id: input.auditId,
+    finding_id: input.findingId,
+    choice: 'fix',
+    updated_at: input.at,
+  };
+}
+
 export function readChoice(
   raw: string | null,
   auditId: string,
