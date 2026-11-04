@@ -1758,3 +1758,7 @@ html[data-theme="dark"][data-vue="historique"] .chart .thr text {
 html[data-theme="dark"][data-vue="historique"] .pt .val {
   fill: #f0f2f5;
 }
+/* #85 : pas de rectangle sombre derrière chaque cellule du journal. */
+html[data-theme="dark"][data-vue="historique"] :is(th, td) {
+  background-color: transparent;
+}

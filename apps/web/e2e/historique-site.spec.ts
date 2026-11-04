@@ -283,3 +283,36 @@ test('en thème sombre, les libellés du graphique sont lisibles (bug #14)', asy
   });
   expect(ratios).toEqual([]);
 });
+
+test('en thème sombre, le journal ne dessine pas un rectangle par cellule (bug #85)', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await openHistory(page, [72, 88], 'dark');
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  const boxed = await page.evaluate(() => {
+    (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
+      target,
+    ) => target;
+    type El = { parentElement: El | null; textContent: string | null };
+    const view = globalThis as unknown as {
+      document: { querySelectorAll: (s: string) => Iterable<El> };
+      getComputedStyle: (n: El) => { backgroundColor: string };
+    };
+    const out: string[] = [];
+    for (const cell of view.document.querySelectorAll('table td, table th')) {
+      const own = view.getComputedStyle(cell).backgroundColor;
+      const row = cell.parentElement
+        ? view.getComputedStyle(cell.parentElement).backgroundColor
+        : '';
+      if (own !== 'rgba(0, 0, 0, 0)' && own !== row) {
+        out.push((cell.textContent ?? '').trim().slice(0, 20));
+      }
+    }
+    return out;
+  });
+  expect(boxed).toEqual([]);
+});
