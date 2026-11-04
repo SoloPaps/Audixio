@@ -36,3 +36,18 @@ test('#59 bouton de checklist lisible en sombre', async ({ page }) => {
   expect(c.bg).not.toMatch(/rgba\(\d+, \d+, \d+, 0\)/);
   expect(ratio(c.fg, c.bg)).toBeGreaterThanOrEqual(4.5);
 });
+
+// #110 : la barre collante de /ecoconception reste opaque en sombre.
+test('#110 barre collante opaque en sombre', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/ecoconception?theme=dark');
+  const bar = page.locator('form .bar');
+  await expect(bar).toBeVisible();
+  const bg = await bar.evaluate(
+    (node) => getComputedStyle(node).backgroundColor,
+  );
+  const alpha = Number((bg.match(/rgba\([^)]*,\s*([\d.]+)\)/) ?? [, '1'])[1]);
+  expect(alpha).toBeGreaterThanOrEqual(0.95);
+  expect(lum(bg)).toBeLessThan(0.1);
+});
