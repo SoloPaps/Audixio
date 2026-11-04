@@ -179,3 +179,25 @@ test('#72 bouton prompt lisible en sombre sur /exemple-rapport', async ({
     for (const stop of colors.stops)
       expect(ratio(fg, stop)).toBeGreaterThanOrEqual(4.5);
 });
+
+// #147 : en sombre, le fieldset des filtres ne peint pas de rectangle derrière le groupe arrondi.
+test('#147 filtres sans contour rectangulaire en sombre', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await install(page, true);
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=dark`);
+  await expect(page.locator('#flt')).toBeVisible();
+  const box = await page.locator('.tools fieldset').evaluate((node) => {
+    const c = getComputedStyle(node);
+    return {
+      bg: c.backgroundColor,
+      border: c.borderTopStyle,
+      shadow: c.boxShadow,
+      outline: c.outlineStyle,
+    };
+  });
+  expect(box.bg).toMatch(/^(transparent|rgba\(\d+, \d+, \d+, 0\))$/);
+  expect(box.border).toBe('none');
+  expect(box.shadow).toBe('none');
+  expect(box.outline).toBe('none');
+});
