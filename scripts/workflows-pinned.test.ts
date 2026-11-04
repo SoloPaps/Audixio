@@ -27,4 +27,28 @@ describe('workflows figés (code scanning : zizmor, Scorecard)', () => {
     );
     expect(loose).toEqual([]);
   });
+
+  it('n’installe aucun paquet hors fichier de verrouillage', () => {
+    const adhoc = workflows.flatMap(({ file, text }) =>
+      text
+        .split('\n')
+        .filter((line) =>
+          /\b(?:npm|pnpm|yarn)\s+(?:install|i|add)\s+(?:-g\s+)?[\w@]/.test(
+            line,
+          ),
+        )
+        .map((line) => `${file}: ${line.trim()}`),
+    );
+    expect(adhoc).toEqual([]);
+  });
+
+  it('fige la CLI Netlify par un package-lock', () => {
+    const lock = JSON.parse(
+      readFileSync('.github/netlify-cli/package-lock.json', 'utf8'),
+    ) as { packages: Record<string, { version?: string; integrity?: string }> };
+    expect(lock.packages['node_modules/netlify-cli']?.version).toBe('23.15.1');
+    expect(lock.packages['node_modules/netlify-cli']?.integrity).toMatch(
+      /^sha512-/,
+    );
+  });
 });

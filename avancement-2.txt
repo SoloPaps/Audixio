@@ -59,3 +59,4 @@ secu js/useless-assignment-to-local (abus.ts, auth-http.ts) corrigé: valeurs in
 secu js/trivial-conditional (sitemap-parse.ts) corrigé: condition !closed toujours vraie retirée de la boucle (sortie par break ; tests sitemap verts).
 secu js/unused-local-variable (motion/accueil.js, 6 alertes) corrigé: initHeader, normalize et 4 variables jamais utilisées retirées (specs e2e accueil vertes).
 secu zizmor/unpinned-images (security.yml) corrigé: semgrep/semgrep:latest → 1.182.1@sha256:451b3d87… (test scripts/workflows-pinned.test.ts : actions par SHA, images par empreinte).
+secu zizmor/adhoc-packages + Scorecard PinnedDependencies (ci.yml) corrigé: npm install -g netlify-cli remplacé par npm ci sur .github/netlify-cli/package-lock.json (intégrités sha512) ; actions déjà épinglées par SHA (tests workflows-pinned).

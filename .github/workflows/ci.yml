@@ -217,7 +217,10 @@ jobs:
         run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
 
       - name: Netlify CLI
-        run: npm install -g netlify-cli@23.15.1
+        # Version et dépendances figées par .github/netlify-cli/package-lock.json.
+        run: |
+          npm ci --prefix .github/netlify-cli --no-audit --no-fund
+          echo "$GITHUB_WORKSPACE/.github/netlify-cli/node_modules/.bin" >> "$GITHUB_PATH"
 
       - name: Parcours
         run: pnpm test:e2e
