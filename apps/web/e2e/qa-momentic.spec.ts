@@ -197,3 +197,110 @@ test('un audit example.com sans domaine mesuré ouvre la page d’échec, jamais
   await expect(page.getByText('Votre diagnostic est prêt pour')).toHaveCount(0);
   await expect(page.getByText(/0 domaine/)).toHaveCount(0);
 });
+
+async function chromeGeom(page: Page): Promise<unknown> {
+  return page.evaluate(() => {
+    const read = (selector: string) => {
+      const node = document.querySelector(selector);
+      if (!node) return null;
+      const style = getComputedStyle(node);
+      const box = node.getBoundingClientRect();
+      return {
+        left: Math.round(box.left),
+        width: Math.round(box.width),
+        padL: style.paddingLeft,
+        padT: style.paddingTop,
+        radius: style.borderTopLeftRadius,
+        gap: style.columnGap,
+      };
+    };
+    return {
+      nav: read('.axn'),
+      bar: read('.axn-bar'),
+      links: read('.axn-links'),
+      link: read('.axn-links a'),
+      foot: read('.axf'),
+      card: read('.axf-in'),
+    };
+  });
+}
+
+test('la nav et le pied de Sites suivis ont la même géométrie que le compte', async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await page.route('http://127.0.0.1:54321/**', async (route) => {
+    const request = route.request();
+    if (request.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204 });
+      return;
+    }
+    const path = new URL(request.url()).pathname;
+    if (path.endsWith('/rest/v1/profiles')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ plan: 'free' }),
+      });
+      return;
+    }
+    if (path.endsWith('/rest/v1/sites')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+            url: 'https://gratuit.audigy.test',
+            label: 'gratuit.audigy.test',
+            host: 'gratuit.audigy.test',
+            is_public: false,
+            public_slug: null,
+            expose_security: false,
+          },
+        ]),
+      });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: '[]',
+    });
+  });
+  await page.route('**/api/places', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ enabled: false, places: [] }),
+    });
+  });
+  await signIn(page, GRATUIT);
+  for (const theme of ['light', 'dark'] as const) {
+    for (const width of [1280, 330]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/sites?theme=${theme}`);
+      await expect(
+        page.getByRole('heading', { name: 'gratuit.audigy.test' }),
+      ).toBeVisible();
+      const sites = await chromeGeom(page);
+      await page.goto(`/compte?theme=${theme}`);
+      await expect(page.locator('main')).toBeVisible();
+      const compte = await chromeGeom(page);
+      expect(sites, `${theme} ${width}`).toEqual(compte);
+    }
+  }
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/sites?theme=dark');
+  await expect(
+    page.getByRole('heading', { name: 'gratuit.audigy.test' }),
+  ).toBeVisible();
+  const icon = page.locator('.inp svg');
+  await expect(icon).toBeVisible();
+  const box = await icon.boundingBox();
+  expect(box?.width ?? 0).toBeGreaterThan(10);
+  const field = await page
+    .locator('#url')
+    .evaluate((node) => getComputedStyle(node).backgroundColor);
+  expect(field).not.toBe('rgb(255, 255, 255)');
+});
