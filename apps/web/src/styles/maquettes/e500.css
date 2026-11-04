@@ -475,6 +475,9 @@ h2 {
     grid-template-columns: 1fr 1fr;
   }
 }
+.card {
+  border-radius: 22px;
+}
 .card[hidden] {
   display: none;
 }
