@@ -3,7 +3,7 @@ import {
   A11Y_ATTEMPTS,
   a11yAttempt,
   chromePathFromOutput,
-} from './lighthouse-a11y.mjs';
+} from './lighthouse-a11y.js';
 
 describe('lighthouse a11y', () => {
   it('lit le rapport seulement quand Chrome a fini', () => {

@@ -10,20 +10,31 @@ export const A11Y_CHROME_FLAGS =
   '--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage';
 export const A11Y_ATTEMPTS = 3;
 
+export type A11yAttempt = 'read' | 'retry' | 'fail';
+
 /** Relance si Chrome n’a pas publié son port. Un code 0 passe à la lecture. */
-export function a11yAttempt(code, attempt, max = A11Y_ATTEMPTS) {
+export function a11yAttempt(
+  code: number | null,
+  attempt: number,
+  max = A11Y_ATTEMPTS,
+): A11yAttempt {
   if (code === 0) return 'read';
   if (attempt < max) return 'retry';
   return 'fail';
 }
 
 /** Dernier chemin absolu, en ignorant le bruit de pnpm. */
-export function chromePathFromOutput(text) {
-  const lines = String(text)
+export function chromePathFromOutput(text: string): string {
+  const lines = text
     .trim()
     .split(/\r?\n/)
     .filter((row) => row.startsWith('/'));
   return lines[lines.length - 1] ?? '';
+}
+
+interface LighthouseReport {
+  categories?: { accessibility?: { score?: number | null } };
+  audits?: Record<string, { id?: string; score?: number | null }>;
 }
 
 const port = 4322;
@@ -59,26 +70,26 @@ const pages = [
   `http://${host}:${port}/compte?theme=dark`,
 ];
 
-function waitForPort(timeoutMs) {
+function waitForPort(timeoutMs: number): Promise<void> {
   const start = Date.now();
   return new Promise((resolve, reject) => {
-    const attempt = () => {
+    const attempt = (): void => {
       const socket = net.connect(port, host, () => {
         socket.end();
         resolve();
       });
       socket.on('error', () => {
         socket.destroy();
-        if (Date.now() - start > timeoutMs)
+        if (Date.now() - start > timeoutMs) {
           reject(new Error(`astro dev muet sur le port ${port}`));
-        else setTimeout(attempt, 200);
+        } else setTimeout(attempt, 200);
       });
     };
     attempt();
   });
 }
 
-function playwrightChrome() {
+function playwrightChrome(): string {
   try {
     const out = execFileSync(
       'pnpm',
@@ -99,7 +110,11 @@ function playwrightChrome() {
   }
 }
 
-function runLighthouse(url, output, chromePath) {
+function runLighthouse(
+  url: string,
+  output: string,
+  chromePath: string,
+): Promise<number | null> {
   const child = spawn(
     'pnpm',
     [
@@ -119,10 +134,12 @@ function runLighthouse(url, output, chromePath) {
         : process.env,
     },
   );
-  return new Promise((resolve) => child.on('exit', resolve));
+  return new Promise((resolve) => {
+    child.on('exit', (code) => resolve(code));
+  });
 }
 
-async function main() {
+async function main(): Promise<void> {
   const server = spawn(
     'pnpm',
     [
@@ -148,10 +165,10 @@ async function main() {
     await delay(300);
     const dir = await mkdtemp(path.join(tmpdir(), 'audigy-lh-'));
     const chromePath = playwrightChrome();
-    const failures = [];
+    const failures: string[] = [];
     for (const [index, url] of pages.entries()) {
       const output = path.join(dir, `${index}.json`);
-      let code = 1;
+      let code: number | null = 1;
       for (let attempt = 1; attempt <= A11Y_ATTEMPTS; attempt += 1) {
         code = await runLighthouse(url, output, chromePath);
         const next = a11yAttempt(code, attempt);
@@ -165,9 +182,9 @@ async function main() {
         failures.push(`${url} lighthouse a quitté ${code}`);
         continue;
       }
-      let report;
+      let report: LighthouseReport;
       try {
-        report = JSON.parse(await readFile(output, 'utf8'));
+        report = JSON.parse(await readFile(output, 'utf8')) as LighthouseReport;
       } catch {
         failures.push(`${url} rapport illisible`);
         continue;
@@ -175,7 +192,7 @@ async function main() {
       const score = report.categories?.accessibility?.score;
       if (score !== 1) {
         const audits = Object.values(report.audits ?? {})
-          .filter((audit) => audit.score !== null && audit.score < 1)
+          .filter((audit) => typeof audit.score === 'number' && audit.score < 1)
           .map((audit) => audit.id);
         failures.push(`${url} score ${score} : ${audits.join(', ')}`);
       }
