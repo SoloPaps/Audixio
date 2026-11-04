@@ -200,10 +200,25 @@ test('un audit example.com sans domaine mesuré ouvre la page d’échec, jamais
 
 async function chromeGeom(page: Page): Promise<unknown> {
   return page.evaluate(() => {
+    const view = globalThis as unknown as {
+      document: {
+        querySelector: (selector: string) => {
+          getBoundingClientRect: () => { left: number; width: number };
+        } | null;
+      };
+      getComputedStyle: (node: {
+        getBoundingClientRect: () => { left: number; width: number };
+      }) => {
+        paddingLeft: string;
+        paddingTop: string;
+        borderTopLeftRadius: string;
+        columnGap: string;
+      };
+    };
     const read = (selector: string) => {
-      const node = document.querySelector(selector);
+      const node = view.document.querySelector(selector);
       if (!node) return null;
-      const style = getComputedStyle(node);
+      const style = view.getComputedStyle(node);
       const box = node.getBoundingClientRect();
       return {
         left: Math.round(box.left),
@@ -310,9 +325,12 @@ test('la nav et le pied de Sites suivis ont la même géométrie que le compte',
   await expect(icon).toBeVisible();
   const box = await icon.boundingBox();
   expect(box?.width ?? 0).toBeGreaterThan(10);
-  const field = await page
-    .locator('#url')
-    .evaluate((node) => getComputedStyle(node).backgroundColor);
+  const field = await page.locator('#url').evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (elt: typeof node) => { backgroundColor: string };
+    };
+    return view.getComputedStyle(node).backgroundColor;
+  });
   expect(field).not.toBe('rgb(255, 255, 255)');
   await expect(page.getByText('Quotas · Compte gratuit')).toBeVisible();
   await expect(page.getByText('1 site suivi sur 2 autorisés.')).toBeVisible();

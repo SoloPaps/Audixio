@@ -158,7 +158,7 @@ function levelOf(metric: MesureDomaine): string {
 {#if site.when}<div class="stamp"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{t('mq.sl.030')} <time>{site.when}</time></span></div>{/if}
 </div>
 {#if mark && site.score !== null}
-<div class="score {tone(mark)}"><span class="glass" aria-hidden="true">{mark}</span><div><p class="k">{t('mq.sl.036')}</p><strong><span class="sr-only">{t('mq.sl.037')} </span>{t('mq.sl.live.grade', { grade: mark, label: levelLabel(levelForScore(site.score)) })}</strong><div class="gbar" aria-hidden="true"><i style="--v:{site.score / 100}"></i></div></div></div>
+<div class="score {tone(mark)}"><span class="glass" aria-hidden="true">{mark}</span><div><p class="k">{t('mq.sl.036')}</p><strong><span class="sr-only">{t('mq.sl.037')} </span>{t('mq.sl.live.grade', { grade: mark, label: levelLabel(levelForScore(site.score)) })} {t('mq.sl.live.score', { score: Math.round(site.score) })}</strong><div class="gbar" aria-hidden="true"><i style="--v:{site.score / 100}"></i></div></div></div>
 {:else}
 <div class="score g-d"><span class="glass" aria-hidden="true">–</span><div><p class="k">{t('mq.sl.036')}</p><strong>{t('mq.sl.live.none')}</strong></div></div>
 {/if}

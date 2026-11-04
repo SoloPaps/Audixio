@@ -7,7 +7,7 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   await page.goto('/sites');
   await expect(page.locator('#addf')).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'mauvais.audigy.test' }),
+    page.getByRole('link', { name: 'mauvais.audigy.test', exact: true }),
   ).toBeVisible();
   const verify = page.locator('a[href*="/verifier?site="]').first();
   const href = await verify.getAttribute('href');
@@ -19,14 +19,14 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   await page.locator('#url').fill('https://bon.audigy.test/');
   await page.getByRole('button', { name: 'Ajouter un site' }).click();
   await expect(
-    page.getByRole('link', { name: 'bon.audigy.test' }),
+    page.getByRole('link', { name: 'bon.audigy.test', exact: true }),
   ).toBeVisible();
 
   await page.locator('#url').fill('https://troisieme.audigy.test/');
   await page.getByRole('button', { name: 'Ajouter un site' }).click();
   await expect(page.locator('#pro-modal')).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'troisieme.audigy.test' }),
+    page.getByRole('link', { name: 'troisieme.audigy.test', exact: true }),
   ).toHaveCount(0);
 
   await page.goto(`/historique?site=${encodeURIComponent(siteId ?? '')}`);
