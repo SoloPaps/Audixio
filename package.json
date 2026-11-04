@@ -16,7 +16,7 @@
     "test": "vitest run",
     "test:ui": "pnpm --filter @audigy/web run test:ui && pnpm --filter @audigy/browser-runner run test:ui",
     "test:e2e": "pnpm --filter @audigy/web exec playwright test -c playwright.reel.config.ts",
-    "test:a11y": "node scripts/lighthouse-a11y.mjs",
+    "test:a11y": "tsx scripts/lighthouse-a11y.ts",
     "fixtures": "node fixtures/server.ts",
     "lab": "tsx fixtures/lab.ts",
     "lab:audit": "tsx scripts/lab-audit.ts",

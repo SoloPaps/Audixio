@@ -37,7 +37,7 @@ Non testés, volontairement, parce que la source n’existe pas en local : certi
 - [x] Hydratation Chromium de l’accueil avec la CSP réelle.
 - [x] Noms accessibles de la jauge (`img`) et de la liste des domaines (Playwright, page `/dev/composants`).
 - [x] axe : 0 violation sur les parcours Playwright existants.
-- [x] Lighthouse accessibilité = 100 sur les pages de `scripts/lighthouse-a11y.mjs`, clair et sombre quand les deux thèmes y sont listés.
+- [x] Lighthouse accessibilité = 100 sur les pages de `scripts/lighthouse-a11y.ts`, clair et sombre quand les deux thèmes y sont listés.
 - [x] copy-lint : 0 erreur, 0 avertissement (emoji, capitales, formules marketing, phrases de plus de 20 mots).
 - [x] Reflow 320 px (accueil, composants, vérification), largeurs 320 / 640 / 768 / 1280 sur l’accueil, mouvement réduit sur la jauge.
 - [x] `pnpm guard` : pas de déploiement Netlify dans le dépôt.
