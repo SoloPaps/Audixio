@@ -76,7 +76,7 @@ onMount(() => {
 <section aria-labelledby="add-t" class="card pad">
 <h2 id="add-t" class="sr-only">{t('mq.sl.020')}</h2>
 <form class="addf" id="addf" novalidate>
-<div class="field"><label for="url">{t('mq.sl.021')}</label><div class="inp"><input id="url" name="url" type="url" inputmode="url" autocomplete="url" placeholder={t('mq.sl.022')} required></div><p class="err" id="url-e" aria-live="polite">{notice}</p></div>
+<div class="field"><label for="url">{t('mq.sl.021')}</label><div class="inp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><input id="url" name="url" type="url" inputmode="url" autocomplete="url" placeholder={t('mq.sl.022')} required></div><p class="err" id="url-e" aria-live="polite">{notice}</p></div>
 <button class="btn btn-primary" type="submit"><span class="bl">{t('mq.sl.020')}</span></button>
 </form>
 </section>

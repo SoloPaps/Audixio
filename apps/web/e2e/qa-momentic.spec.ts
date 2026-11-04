@@ -214,13 +214,24 @@ async function chromeGeom(page: Page): Promise<unknown> {
         gap: style.columnGap,
       };
     };
+    const frame = (selector: string) => read(selector);
+    const ink = (selector: string) => {
+      const value = read(selector);
+      if (!value) return null;
+      return {
+        padL: value.padL,
+        padT: value.padT,
+        radius: value.radius,
+        gap: value.gap,
+      };
+    };
     return {
-      nav: read('.axn'),
-      bar: read('.axn-bar'),
-      links: read('.axn-links'),
-      link: read('.axn-links a'),
-      foot: read('.axf'),
-      card: read('.axf-in'),
+      nav: frame('.axn'),
+      bar: frame('.axn-bar'),
+      links: ink('.axn-links'),
+      link: ink('.axn-links a'),
+      foot: frame('.axf'),
+      card: frame('.axf-in'),
     };
   });
 }
