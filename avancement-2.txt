@@ -65,3 +65,4 @@ secu VulnerabilitiesID (GHSA-gcqx-w48m-w2h4, deepmerge 4.3.1) non corrigé: dép
 #72 corrigé: la règle sombre globale sur les span repeignait le libellé du bouton prompt en #f0f2f5 sur sa face claire (contraste 1.1) ; couleur forcée sur .fz span (test e2e domaine-dark-contrast)
 #72 (suite) corrigé: même repeinte des span sur le bouton prompt de /exemple-rapport (exemple.css, constat.css aligné)
 #147 corrigé: la règle sombre globale peignait le fieldset des filtres /domaine en rectangle opaque derrière le groupe arrondi ; fieldset transparent (test e2e)
+#59 déjà corrigé (7c8f926, PR #135, theme-dark-qa.css) : test e2e de non-régression ajouté (cliqué + survolé, contraste ≥ 4.5)
