@@ -106,3 +106,66 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
   expect(points).not.toContain('168.0');
   expect(points).not.toBe(DEMO);
 });
+
+test('« Historique et tendances » ouvre l’historique du site de la carte', async ({
+  page,
+}) => {
+  const BON = '00000000-0000-4000-8000-0000000000b1';
+  const EXAMPLE = '00000000-0000-4000-8000-0000000000e1';
+  const rows = [
+    {
+      id: BON,
+      url: 'https://bon.audigy.test',
+      label: 'bon.audigy.test',
+      host: 'bon.audigy.test',
+      owner_id: session.user.id,
+    },
+    {
+      id: EXAMPLE,
+      url: 'https://example.com',
+      label: 'example.com',
+      host: 'example.com',
+      owner_id: session.user.id,
+    },
+  ];
+  await page.addInitScript((value) => {
+    const storage = (
+      globalThis as unknown as {
+        localStorage: { setItem: (key: string, item: string) => void };
+      }
+    ).localStorage;
+    storage.setItem('audigy-auth', JSON.stringify(value));
+  }, session);
+  await page.route('http://127.0.0.1:54321/**', async (route) => {
+    const request = route.request();
+    if (request.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204 });
+      return;
+    }
+    const url = new URL(request.url());
+    if (url.pathname.endsWith('/rest/v1/sites')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(rows),
+      });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: url.pathname.includes('/rest/v1/') ? '[]' : '{}',
+    });
+  });
+  await page.goto('/sites?theme=light');
+  await expect(page.getByText('bon.audigy.test').first()).toBeVisible({
+    timeout: 15_000,
+  });
+  const links = page.locator('main a[href^="/historique"]');
+  await expect(links).toHaveCount(2);
+  await expect(links.nth(0)).toHaveAttribute('href', `/historique?site=${BON}`);
+  await expect(links.nth(1)).toHaveAttribute(
+    'href',
+    `/historique?site=${EXAMPLE}`,
+  );
+});
