@@ -13,6 +13,13 @@ export function guestBeatPhase(step: number): string {
   return tReport(GUEST_PHASES[index] ?? 'phase.dns');
 }
 
+/** Vrai si aucun domaine n’a de note numérique. Une note 0 mesurée reste une note. */
+export function nothingMeasured(
+  domains: readonly { score: number | null }[],
+): boolean {
+  return !domains.some((domain) => typeof domain.score === 'number');
+}
+
 export function guestDisplayStatus(status: string, revealed: boolean): string {
   if (revealed) return status;
   if (status === 'done' || status === 'partial' || status === 'failed') {

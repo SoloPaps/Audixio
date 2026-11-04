@@ -13,6 +13,7 @@ import { loginHref } from '../lib/nav.js';
 import {
   guestBeatPhase,
   guestDisplayStatus,
+  nothingMeasured,
   progressLive,
   progressPhase,
 } from '../lib/progress-live.js';
@@ -60,6 +61,18 @@ onMount(() => {
       .filter((domain) => typeof domain.score === 'number')
       .map((domain) => domain.domain);
     const shown = guestDisplayStatus(payload.audit.status, revealed);
+    const unmeasured =
+      (shown === 'done' || shown === 'partial') &&
+      nothingMeasured(payload.domains);
+    if (shown === 'failed' || unmeasured) {
+      document.documentElement.dataset.auditOutcome = 'echec';
+    }
+    if (unmeasured) {
+      location.replace(
+        `/audit-echoue?id=${encodeURIComponent(payload.audit.id)}`,
+      );
+      return;
+    }
     const waiting = shown === 'queued' || shown === 'running';
     if (status) status.textContent = progressLive(shown, names);
     if (home) home.hidden = !waiting;

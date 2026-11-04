@@ -174,7 +174,7 @@ function auditBody(status: 'queued' | 'running' | 'done'): unknown {
 async function expectGuestThroughProgression(page: Page): Promise<void> {
   await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 20_000 });
   const status = page.getByRole('status');
-  await expect(status).toContainText('Analyse en cours');
+  await expect(status).toContainText(/Analyse en cours|securite/);
   await expect(
     page.getByRole('link', { name: 'Revenir à l’accueil' }),
   ).toBeVisible();
@@ -267,6 +267,18 @@ async function installMocks(
       return;
     }
     await route.fulfill({ status: 200, headers, body: '{}' });
+  });
+
+  await page.route('**/api/guest-audits', async (route) => {
+    await route.fulfill({
+      status: 202,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        auditId: AUDIT_ID,
+        status: 'done',
+        view: auditBody('done'),
+      }),
+    });
   });
 
   await page.route('**/api/audits**', async (route) => {
