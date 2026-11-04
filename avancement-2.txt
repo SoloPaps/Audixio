@@ -57,3 +57,4 @@ secu js/file-system-race (publish-policy.ts) corrigé: stat puis readFile rempla
 secu js/http-to-file-access (update-retire-signatures.ts, 3 alertes) corrigé: contenu téléchargé validé avant écriture (noms de bibliothèque sûrs, motifs textuels bornés, empreintes hex, licence/notice sans caractères de contrôle ni taille excessive) ; main() ne s'exécute plus à l'import (test update-retire-signatures.test.ts).
 secu js/useless-assignment-to-local (abus.ts, auth-http.ts) corrigé: valeurs initiales jamais lues retirées (comportement inchangé, tests abus/auth existants verts).
 secu js/trivial-conditional (sitemap-parse.ts) corrigé: condition !closed toujours vraie retirée de la boucle (sortie par break ; tests sitemap verts).
+secu js/unused-local-variable (motion/accueil.js, 6 alertes) corrigé: initHeader, normalize et 4 variables jamais utilisées retirées (specs e2e accueil vertes).
