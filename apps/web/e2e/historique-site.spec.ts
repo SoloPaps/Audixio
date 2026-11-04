@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 const SITE = '00000000-0000-4000-8000-0000000000bb';
 const FIRST = '00000000-0000-4000-8000-0000000000c1';
@@ -15,7 +15,10 @@ const session = {
   },
 };
 
-test('un site réel redessine la courbe d’historique', async ({ page }) => {
+async function openHistory(
+  page: Page,
+  scores: readonly [number, number],
+): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
       globalThis as unknown as {
@@ -81,7 +84,7 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
     }
     if (url.includes('read_rapport_apercu')) {
       const raw = request.postData() ?? '';
-      const score = raw.includes(SECOND) ? 88 : 72;
+      const score = raw.includes(SECOND) ? scores[1] : scores[0];
       await route.fulfill({
         status: 200,
         headers,
@@ -97,6 +100,10 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
   });
 
   await page.goto(`/historique?site=${SITE}&theme=light`);
+}
+
+test('un site réel redessine la courbe d’historique', async ({ page }) => {
+  await openHistory(page, [72, 88]);
   const values = page.locator('text.val');
   await expect(values.nth(0)).toHaveText('72', { timeout: 15_000 });
   await expect(values.nth(1)).toHaveText('88');
@@ -175,5 +182,21 @@ test('« Historique et tendances » ouvre l’historique du site de la carte', a
   await expect(links.nth(1)).toHaveAttribute(
     'href',
     `/historique?site=${EXAMPLE}`,
+  );
+});
+
+test('la note sous le graphique décrit l’axe réellement affiché (bug #4)', async ({
+  page,
+}) => {
+  await openHistory(page, [55, 88]);
+  await expect(page.locator('text.val').nth(0)).toHaveText('55', {
+    timeout: 15_000,
+  });
+  const ticks = page.locator('.grid text');
+  const low = await ticks.first().textContent();
+  const high = await ticks.last().textContent();
+  expect(low).not.toBe('70');
+  await expect(page.locator('#rng-note')).toHaveText(
+    `Axe vertical resserré entre ${low} et ${high} pour rendre les écarts lisibles.`,
   );
 });

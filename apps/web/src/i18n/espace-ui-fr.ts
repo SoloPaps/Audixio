@@ -30,6 +30,8 @@ export const espaceUiFr = {
     'Axe vertical resserré entre 70 et 90 pour rendre les écarts lisibles.',
   'mq.ui.range.full':
     'Historique disponible depuis décembre 2025 : la courbe affiche déjà toute la période.',
+  'mq.ui.range.axis':
+    'Axe vertical resserré entre {min} et {max} pour rendre les écarts lisibles.',
   'mq.ui.report': 'Export du rapport {ref} en préparation',
   'mq.ui.legend.one': 'Note globale pondérée (1 audit)',
   'mq.ui.legend.many': 'Note globale pondérée ({n} audits)',

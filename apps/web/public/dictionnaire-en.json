@@ -3342,6 +3342,7 @@
   "mq.ui.page": "Log page {n}",
   "mq.ui.range.tight": "Vertical axis narrowed to 70–90 to make differences readable.",
   "mq.ui.range.full": "History available since December 2025: the curve already shows the whole period.",
+  "mq.ui.range.axis": "Vertical axis narrowed to {min}–{max} to make differences readable.",
   "mq.ui.report": "Preparing export of report {ref}",
   "mq.ui.legend.one": "Weighted overall grade (1 audit)",
   "mq.ui.legend.many": "Weighted overall grade ({n} audits)",

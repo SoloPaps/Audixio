@@ -757,6 +757,9 @@ function bindHistory(root: HTMLElement): () => void {
   let ys = [168, 156.5, 145, 133.5, 122, 99];
   let span: ReturnType<typeof historySpanOf> | 'unset' = 'unset';
   let latestView: HistoryView | null = null;
+  let axis: { min: string; max: string } | null = null;
+  let full = false;
+  const note = root.querySelector<HTMLElement>('#rng-note');
   const drawChart = (): void => {
     if (!latestView) return;
     const points =
@@ -807,6 +810,8 @@ function bindHistory(root: HTMLElement): () => void {
     );
     if (!built) return;
     applyEvolutionChart(svg, built);
+    axis = { min: String(built.min), max: String(built.max) };
+    if (note && !full) note.textContent = t('mq.ui.range.axis', axis);
     labels = built.marks.map((mark) => mark.label);
     values = built.marks.map((mark) => Math.round(mark.value));
     xs = built.marks.map((mark) => mark.x);
@@ -944,7 +949,6 @@ function bindHistory(root: HTMLElement): () => void {
   if (svg) off.push(() => svg.removeEventListener('pointerleave', leave));
   const seg = root.querySelector<HTMLElement>('.seg');
   const ind = seg?.querySelector<HTMLElement>('.ind');
-  const note = root.querySelector<HTMLElement>('#rng-note');
   const move = (button: HTMLButtonElement): void => {
     if (!ind) return;
     ind.style.width = `${button.offsetWidth}px`;
@@ -953,6 +957,7 @@ function bindHistory(root: HTMLElement): () => void {
   seg?.querySelectorAll('button').forEach((button, index) => {
     const click = (): void => {
       span = historySpanOf(index);
+      full = index > 0;
       seg.querySelectorAll('button').forEach((item) => {
         item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
       });
@@ -961,7 +966,9 @@ function bindHistory(root: HTMLElement): () => void {
       if (note)
         note.textContent = index
           ? t('mq.ui.range.full')
-          : t('mq.ui.range.tight');
+          : axis
+            ? t('mq.ui.range.axis', axis)
+            : t('mq.ui.range.tight');
     };
     button.addEventListener('click', click);
     off.push(() => button.removeEventListener('click', click));
