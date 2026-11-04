@@ -1917,3 +1917,8 @@ html:where([data-vue="preuve"]) {
     ),
     linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
 }
+/* Le jeton et les méthodes restent lisibles : l’opacité 0 les masquait. */
+:where(html[data-vue="preuve"]).js .rv {
+  opacity: 1 !important;
+  transform: none !important;
+}
