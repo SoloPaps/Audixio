@@ -3471,3 +3471,9 @@ h1 .u,
     ),
     linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
 }
+/* QA visuels : les pastilles de formats restent dans l’illustration sur très petit écran. */
+@media (max-width: 360px) {
+  .ex {
+    transform: scale(0.8);
+  }
+}

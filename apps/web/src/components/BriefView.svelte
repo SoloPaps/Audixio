@@ -282,6 +282,8 @@ function drawOrbit(): void {
   }
   ctx.setLineDash([]);
   const listed = domains;
+  // Bulles plus petites sur écran étroit pour que les libellés ne se chevauchent pas.
+  const node = Math.max(15, Math.min(23, size * 0.072));
   listed.forEach((domain, index) => {
     const outer = index % 2 === 1;
     const angle = (index / listed.length) * tau + (outer ? 0.35 : 0);
@@ -301,12 +303,12 @@ function drawOrbit(): void {
     ctx.setLineDash(domain.untested ? [4, 4] : []);
     ctx.fillStyle = '#fff';
     ctx.beginPath();
-    ctx.arc(x, y, 23, 0, tau);
+    ctx.arc(x, y, node, 0, tau);
     ctx.fill();
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.fillStyle = main;
-    ctx.font = '700 10px "JetBrains Mono",monospace';
+    ctx.font = `700 ${node < 20 ? 9 : 10}px "JetBrains Mono",monospace`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(domain.short, x, y);

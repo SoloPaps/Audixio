@@ -3042,3 +3042,14 @@ h1 .u,
 .wm {
   text-transform: uppercase;
 }
+/* QA visuels : l’aperçu du rapport tient dans 330 px (la jauge passe au-dessus du texte). */
+@media (max-width: 360px) {
+  .gauge-wrap {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .gauge-wrap > div:last-child {
+    min-width: 0;
+    flex-basis: 100%;
+  }
+}

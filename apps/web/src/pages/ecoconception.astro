@@ -39,7 +39,8 @@ var MSG = JSON.parse(document.getElementById('i18n-msg').textContent);
 (function(){var d=document,f=d.getElementById('qf'),K='audixio-rgesn';
 function upd(){var n=0;for(var i=1;i<=6;i++){var c=f.querySelector('[name=q'+i+']:checked');d.getElementById('f'+i).classList.toggle('ans',!!c);if(c)n++}
  d.getElementById('done').textContent=n;var r=d.getElementById('rg');r.style.setProperty('--p',n/6);r.classList.toggle('full',n===6);
- d.getElementById('prg').textContent=n+(n>1?MSG['mq.lg.414']:MSG['mq.lg.415'])+MSG['mq.lg.416']}
+ d.getElementById('prg').textContent=n+(n>1?L('mq.lg.414'):L('mq.lg.415'))+L('mq.lg.416')}
+function L(k){try{if(localStorage.getItem('audigy-locale')==='en'){var p=window.__audigy_en||JSON.parse(localStorage.getItem('audigy-en')||'null');if(p&&p[k])return p[k]}}catch(e){}return MSG[k]}
 try{var s=JSON.parse(localStorage.getItem(K)||'{}');Object.keys(s).forEach(function(k){var e=f.querySelector('[name='+k+'][value="'+s[k]+'"]');if(e)e.checked=true})}catch(e){}
 f.addEventListener('change',upd);upd();
 d.getElementById('save').addEventListener('click',function(){var o={};f.querySelectorAll('input:checked').forEach(function(e){o[e.name]=e.value});AX.busy(this,700,function(){try{localStorage.setItem(K,JSON.stringify(o))}catch(e){}AX.say(MSG['mq.lg.417'],true)})});

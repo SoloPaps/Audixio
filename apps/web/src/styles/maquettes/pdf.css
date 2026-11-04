@@ -762,6 +762,20 @@ html[data-vue="pdf"] .lk-d {
   }
 }
 
+/* QA visuels : sur petit écran, le pied de feuille suit le contenu au lieu de le recouvrir. */
+@media screen and (max-width: 500px) {
+  html[data-vue="pdf"] .sheet {
+    padding-bottom: 24px;
+  }
+
+  html[data-vue="pdf"] .sheet .pf {
+    position: static;
+    margin-top: 24px;
+    padding-top: 10px;
+    flex-wrap: wrap;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html[data-vue="pdf"] *,
   html[data-vue="pdf"] *::before,
