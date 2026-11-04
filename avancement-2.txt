@@ -51,3 +51,4 @@ Checkpoint 4 (après rebase sur origin/main) : typecheck/unit 1174 OK, build 0, 
 #143 non corrigé: décision produit — le bouton flottant passe au-dessus du texte pendant le défilement, comme partout ; en bas de page il ne masque rien.
 #9 corrigé: bloc Search Console de /compte hors de <main> → aucune colonne ni style de bouton ; ajout de .blk, colonne alignée sur main (box-sizing compris) et boutons btn/btn-primary/btn-ghost du Canon (test e2e/compte-search-console.spec.ts).
 secu js/regex/missing-regexp-anchor (cmp.ts, 15 alertes) corrigé: signatures CMP ancrées sur l'hôte via host(), hôtes trompeurs rejetés (test cmp.test.ts).
+secu js/regex/missing-regexp-anchor (software.ts) corrigé: generator Wix ancré sur la fin du nom (wix.com.evil…, Wix.community rejetés ; test technologies.test.ts).

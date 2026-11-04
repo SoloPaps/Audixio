@@ -162,7 +162,7 @@ export const SOFTWARE_RULES: readonly SoftwareRule[] = [
     precise: SEMVER,
     cve: { kind: 'osv', ecosystem: 'npm', name: 'ghost' },
   },
-  { id: 'wix', label: 'Wix', role: 'host', generator: /^wix\.com/i },
+  { id: 'wix', label: 'Wix', role: 'host', generator: /^wix\.com(?:\s|$)/i },
   {
     id: 'squarespace',
     label: 'Squarespace',
