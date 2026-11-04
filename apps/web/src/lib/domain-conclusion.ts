@@ -1,3 +1,5 @@
+import { t } from '../i18n/index.js';
+
 /** Conclusion affichée. Un domaine non testé n’en a pas. */
 export function hubConclusion(input: {
   locked: boolean;
@@ -13,4 +15,19 @@ export function hubConclusion(input: {
 export function shownConclusion(level: string, text: string): string | null {
   if (level === 'untested') return null;
   return text;
+}
+
+/** Chapeau du domaine : pas de « trois corrections » sans constat à corriger. */
+export function domainLede(
+  domainId: string,
+  level: string,
+  fixCount: number,
+  sentence: string,
+): string | null {
+  return shownConclusion(
+    level,
+    domainId === 'performance' && fixCount > 0
+      ? t('domaine.lede.speed')
+      : sentence,
+  );
 }

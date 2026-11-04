@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { hubConclusion, shownConclusion } from './domain-conclusion.js';
+import { t } from '../i18n/index.js';
+import {
+  domainLede,
+  hubConclusion,
+  shownConclusion,
+} from './domain-conclusion.js';
 
 describe('conclusion de domaine', () => {
   it('n’invente pas une conclusion quand le domaine n’est pas testé', () => {
@@ -37,5 +42,21 @@ describe('conclusion de domaine', () => {
       }),
     ).toBe('Verrouillé');
     expect(shownConclusion('improve', 'À améliorer.')).toBe('À améliorer.');
+  });
+});
+
+describe('domainLede (bug #70, #98)', () => {
+  it('ne promet pas de corrections quand il n’y a aucun constat', () => {
+    expect(domainLede('performance', 'improve', 0, 'Phrase réelle.')).toBe(
+      'Phrase réelle.',
+    );
+  });
+  it('garde le texte vitesse quand des corrections existent', () => {
+    expect(domainLede('performance', 'improve', 3, 'Phrase réelle.')).toBe(
+      t('domaine.lede.speed'),
+    );
+  });
+  it('reste vide pour un domaine non testé', () => {
+    expect(domainLede('performance', 'untested', 3, 'x')).toBeNull();
   });
 });

@@ -6,7 +6,7 @@ import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
-import { shownConclusion } from '../lib/domain-conclusion.js';
+import { domainLede, shownConclusion } from '../lib/domain-conclusion.js';
 import {
   domainPager,
   domainSentence,
@@ -60,9 +60,11 @@ const title = $derived(
       : sentence,
 );
 const lede = $derived(
-  shownConclusion(
+  domainLede(
+    domainId,
     level,
-    domainId === 'performance' ? t('domaine.lede.speed') : sentence,
+    findings.filter((item) => item.status !== 'pass').length,
+    sentence,
   ),
 );
 const cardTitle = $derived(
