@@ -656,6 +656,103 @@ html[data-theme="dark"][data-board="vide"] .empty-art span:nth-child(3) {
   background-image: none;
 }
 
+/* Les maquettes forcent un dégradé clair sur le hero, après ce fichier. */
+html[data-theme="dark"][data-vue] :is(.khero, .bv-hero, .head),
+html[data-theme="dark"][data-board] :is(.khero, .head) {
+  background-color: #12162a !important;
+  background-image:
+    radial-gradient(
+      40% 70% at 0% 0%,
+      rgba(112, 145, 230, 0.28),
+      transparent 70%
+    ),
+    radial-gradient(
+      34% 60% at 100% 100%,
+      rgba(61, 82, 160, 0.42),
+      transparent 72%
+    ),
+    linear-gradient(180deg, #1a2144, #12162a) !important;
+  border-color: #3d4d7a !important;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] :is(.aurora, .blobs),
+html[data-theme="dark"][data-board] :is(.aurora, .blobs) {
+  background-color: transparent !important;
+  background-image:
+    radial-gradient(
+      42% 60% at 0% 0%,
+      rgba(112, 145, 230, 0.22),
+      transparent 70%
+    ),
+    radial-gradient(
+      36% 55% at 100% 100%,
+      rgba(61, 82, 160, 0.28),
+      transparent 72%
+    ),
+    linear-gradient(180deg, rgba(18, 22, 42, 0.2), rgba(18, 22, 42, 0)) !important;
+}
+
+html[data-theme="dark"][data-vue] .gpanel,
+html[data-theme="dark"][data-board] .gpanel {
+  background-color: #1c2340;
+  background-image: linear-gradient(
+    160deg,
+    rgba(36, 48, 86, 0.94),
+    rgba(28, 35, 64, 0.88)
+  );
+  border-color: #3d4d7a;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] .khero .eyebrow,
+html[data-theme="dark"][data-board] .khero .eyebrow,
+html[data-theme="dark"][data-vue] .bv-hero .eyebrow {
+  background-color: #243056;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"][data-vue] .qnav a,
+html[data-theme="dark"][data-board] .qnav a {
+  background-color: #243056;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"][data-vue] .av span,
+html[data-theme="dark"][data-board] .av span {
+  background-color: #243056;
+  background-image: none;
+  color: #d6e2ff;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"][data-vue="bienvenue"] .bv-bg i:nth-child(1) {
+  background-color: #3d52a0;
+  background-image: none;
+}
+
+html[data-theme="dark"][data-vue="bienvenue"] .bv-bg i:nth-child(2) {
+  background-color: #243056;
+  background-image: none;
+}
+
+html[data-theme="dark"][data-vue="bienvenue"] .bv-bg i:nth-child(3) {
+  background-color: #1a2144;
+  background-image: none;
+}
+
+html[data-theme="dark"][data-vue] .step,
+html[data-theme="dark"][data-board] .step {
+  background-color: #1c2340 !important;
+  background-image: linear-gradient(180deg, #243056, #1c2340) !important;
+  border-color: #3d4d7a !important;
+  color: #f0f2f5;
+}
+
 html[data-theme="dark"][data-vue] .kicker,
 html[data-theme="dark"][data-vue] .card a:not(.axn-cta),
 html[data-theme="dark"][data-vue] .chap a:not(.axn-cta),
