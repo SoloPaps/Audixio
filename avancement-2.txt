@@ -58,3 +58,4 @@ secu js/http-to-file-access (update-retire-signatures.ts, 3 alertes) corrigé: c
 secu js/useless-assignment-to-local (abus.ts, auth-http.ts) corrigé: valeurs initiales jamais lues retirées (comportement inchangé, tests abus/auth existants verts).
 secu js/trivial-conditional (sitemap-parse.ts) corrigé: condition !closed toujours vraie retirée de la boucle (sortie par break ; tests sitemap verts).
 secu js/unused-local-variable (motion/accueil.js, 6 alertes) corrigé: initHeader, normalize et 4 variables jamais utilisées retirées (specs e2e accueil vertes).
+secu zizmor/unpinned-images (security.yml) corrigé: semgrep/semgrep:latest → 1.182.1@sha256:451b3d87… (test scripts/workflows-pinned.test.ts : actions par SHA, images par empreinte).
