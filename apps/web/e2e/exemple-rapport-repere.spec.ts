@@ -27,3 +27,18 @@ test('le repère 2 amène sa priorité sous la barre fixe (bug #97)', async ({
     0,
   );
 });
+
+test('la carte Brief IA ne rogne pas son texte à 330 px (bug #82)', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.goto('/exemple-rapport?theme=light');
+  await expect(page.locator('.brief .bt')).toBeAttached();
+  const overflow = await page.evaluate<number>(`(() => {
+    const card = document.querySelector('.brief');
+    const s = getComputedStyle(card);
+    const inner = card.getBoundingClientRect().right - parseFloat(s.paddingRight) - parseFloat(s.borderRightWidth);
+    return card.querySelector('.bt').getBoundingClientRect().right - inner;
+  })()`);
+  expect(overflow).toBeLessThanOrEqual(0.5);
+});
