@@ -10,6 +10,15 @@ export interface CmpSignature {
   selectors: string[];
 }
 
+/** Script servi par cet hôte ou un de ses sous-domaines : ancré sur l’hôte, jamais sur le chemin. */
+function host(name: string): RegExp {
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(
+    `^(?:https?:)?//(?:[^/?#@]*\\.)?${escaped}(?::\\d+)?(?:[/?#]|$)`,
+    'i',
+  );
+}
+
 export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'tarteaucitron',
@@ -21,21 +30,26 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'axeptio',
     name: 'Axeptio',
-    scripts: [/(^|\.)axept\.io\//i, /static\.axept\.io/i],
+    scripts: [host('axept.io')],
     globals: ['axeptioSettings', '__axeptioSDK', '_axcb'],
     selectors: ['#axeptio_overlay', '#axeptio_main_button', '.axeptio_widget'],
   },
   {
     id: 'didomi',
     name: 'Didomi',
-    scripts: [/sdk\.privacy-center\.org/i, /didomi[^/]*\.js/i],
+    scripts: [host('sdk.privacy-center.org'), /didomi[^/]*\.js/i],
     globals: ['Didomi', 'didomiConfig', 'didomiOnReady'],
     selectors: ['#didomi-host', '#didomi-notice', '.didomi-popup-container'],
   },
   {
     id: 'cookiebot',
     name: 'Cookiebot',
-    scripts: [/consent\.cookiebot\.(com|eu)/i, /consentcdn\.cookiebot/i],
+    scripts: [
+      host('consent.cookiebot.com'),
+      host('consent.cookiebot.eu'),
+      host('consentcdn.cookiebot.com'),
+      host('consentcdn.cookiebot.eu'),
+    ],
     globals: ['Cookiebot', 'CookieConsent'],
     selectors: ['#CybotCookiebotDialog', '#CookiebotWidget'],
   },
@@ -43,10 +57,10 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
     id: 'onetrust',
     name: 'OneTrust',
     scripts: [
-      /cdn\.cookielaw\.org/i,
-      /optanon\.blob\.core\.windows\.net/i,
+      host('cdn.cookielaw.org'),
+      host('optanon.blob.core.windows.net'),
       /otSDKStub\.js/i,
-      /\.onetrust\.com\//i,
+      host('onetrust.com'),
     ],
     globals: ['OneTrust', 'Optanon', 'OptanonWrapper'],
     selectors: ['#onetrust-banner-sdk', '#onetrust-consent-sdk'],
@@ -55,8 +69,8 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
     id: 'sirdata',
     name: 'Sirdata',
     scripts: [
-      /cache\.consentframework\.com/i,
-      /choices\.consentframework\.com/i,
+      host('cache.consentframework.com'),
+      host('choices.consentframework.com'),
     ],
     globals: ['Sddan'],
     selectors: ['#sd-cmp'],
@@ -64,28 +78,28 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'usercentrics',
     name: 'Usercentrics',
-    scripts: [/\.usercentrics\.eu\//i, /app\.usercentrics\.eu/i],
+    scripts: [host('usercentrics.eu')],
     globals: ['UC_UI', 'usercentrics'],
     selectors: ['#usercentrics-root', '#usercentrics-cmp-ui'],
   },
   {
     id: 'quantcast',
     name: 'Quantcast Choice',
-    scripts: [/quantcast\.mgr\.consensu\.org/i, /cmp\.inmobi\.com/i],
+    scripts: [host('quantcast.mgr.consensu.org'), host('cmp.inmobi.com')],
     globals: ['__qc'],
     selectors: ['.qc-cmp2-container', '#qc-cmp2-container'],
   },
   {
     id: 'iubenda',
     name: 'iubenda',
-    scripts: [/cdn\.iubenda\.com/i, /cs\.iubenda\.com/i],
+    scripts: [host('cdn.iubenda.com'), host('cs.iubenda.com')],
     globals: ['_iub'],
     selectors: ['#iubenda-cs-banner'],
   },
   {
     id: 'cookieyes',
     name: 'CookieYes',
-    scripts: [/cdn-cookieyes\.com/i, /cookieyes/i],
+    scripts: [host('cdn-cookieyes.com'), /cookieyes/i],
     globals: ['cookieyes', 'getCkyConsent'],
     selectors: ['.cky-consent-container', '#cookie-law-info-bar'],
   },
@@ -99,7 +113,7 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'cookiefirst',
     name: 'CookieFirst',
-    scripts: [/consent\.cookiefirst\.com/i],
+    scripts: [host('consent.cookiefirst.com')],
     globals: ['CookieFirst'],
     selectors: ['.cookiefirst-root'],
   },
@@ -120,14 +134,14 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'termly',
     name: 'Termly',
-    scripts: [/app\.termly\.io/i],
+    scripts: [host('app.termly.io')],
     globals: ['Termly'],
     selectors: ['#termly-code-snippet-support'],
   },
   {
     id: 'cookie_script',
     name: 'Cookie-Script',
-    scripts: [/cdn\.cookie-script\.com/i],
+    scripts: [host('cdn.cookie-script.com')],
     globals: ['CookieScript'],
     selectors: ['#cookiescript_injected'],
   },

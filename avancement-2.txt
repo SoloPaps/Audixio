@@ -50,3 +50,4 @@ Checkpoint 4 (après rebase sur origin/main) : typecheck/unit 1174 OK, build 0, 
 #68/#128 non corrigé: déjà corrigé en amont (étiquettes de « Plafonds relevés » sans chevauchement à 330 px, FR et EN).
 #143 non corrigé: décision produit — le bouton flottant passe au-dessus du texte pendant le défilement, comme partout ; en bas de page il ne masque rien.
 #9 corrigé: bloc Search Console de /compte hors de <main> → aucune colonne ni style de bouton ; ajout de .blk, colonne alignée sur main (box-sizing compris) et boutons btn/btn-primary/btn-ghost du Canon (test e2e/compte-search-console.spec.ts).
+secu js/regex/missing-regexp-anchor (cmp.ts, 15 alertes) corrigé: signatures CMP ancrées sur l'hôte via host(), hôtes trompeurs rejetés (test cmp.test.ts).
