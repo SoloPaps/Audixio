@@ -257,10 +257,10 @@ export function scoreBadgeSvg(label: string, score: number | null): string {
   const name = xml(label.slice(0, 42));
   return [
     '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 240 64" role="img">',
-    `<title>Audigy ${xml(shown)}</title>`,
+    `<title>Audixio ${xml(shown)}</title>`,
     '<rect x="1" y="1" width="238" height="62" fill="none" stroke="currentColor"/>',
     `<text x="16" y="28" fill="currentColor" font-family="sans-serif" font-size="16">${name}</text>`,
-    `<text x="16" y="50" fill="currentColor" font-family="sans-serif" font-size="14">Audigy ${xml(shown)}</text>`,
+    `<text x="16" y="50" fill="currentColor" font-family="sans-serif" font-size="14">Audixio ${xml(shown)}</text>`,
     '</svg>',
   ].join('');
 }

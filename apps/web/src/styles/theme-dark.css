@@ -613,6 +613,80 @@ html[data-theme="dark"][data-board] .cap .st {
   border-color: #3d4d7a;
 }
 
+html[data-theme="dark"][data-vue="score"],
+html[data-theme="dark"][data-vue="partage"],
+html[data-theme="dark"][data-vue="verifier"] {
+  --ink: #f0f2f5;
+  --ink-2: #c5d0ea;
+  --line: #3d4d7a;
+  --paper: #1c2340;
+  --surface: #243056;
+  --score-good: #9ec0ff;
+  --score-improve: #d6e2ff;
+  --score-problem: #ffb4ab;
+  --score-untested: #c5d0ea;
+}
+
+html[data-theme="dark"][data-vue="score"] body,
+html[data-theme="dark"][data-vue="partage"] body,
+html[data-theme="dark"][data-vue="verifier"] body {
+  background-color: #12162a;
+  background-image: none;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] .score-page .reading .share-banner {
+  background-color: #243056;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"][data-vue] .score-page .reading .glass,
+html[data-theme="dark"][data-vue] .verifier-page .vcard,
+html[data-theme="dark"][data-vue] .verifier-page .stamp {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #3d4d7a;
+  box-shadow: none;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue]
+  .score-page
+  .reading
+  :is(h1, h2, p, li, .kicker, .domain-plain, .domain-num),
+html[data-theme="dark"][data-vue] .verifier-page :is(h1, h2, p, .lead, dt, dd) {
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] .score-page .reading .kicker {
+  background-color: #243056;
+  background-image: none;
+}
+
+html[data-theme="dark"][data-vue] .score-page .reading .button,
+html[data-theme="dark"][data-vue] .score-page .reading .link-action {
+  background-color: #243056;
+  background-image: none;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}
+
+html[data-theme="dark"][data-vue] .verifier-page .crumbs a {
+  background-color: transparent;
+  background-image: none;
+  color: #d6e2ff;
+}
+
+html[data-theme="dark"][data-vue] .score-page .reading .button-secondary,
+html[data-theme="dark"][data-vue] .verifier-page .vcard button {
+  background-color: #3d52a0;
+  background-image: none;
+  color: #fff;
+  border-color: #3d52a0;
+}
+
 html[data-theme="dark"][data-vue] .session-wall {
   background-color: #1c2340;
   background-image: none;

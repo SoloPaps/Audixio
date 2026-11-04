@@ -142,6 +142,9 @@ onMount(() => {
 </script>
 
 <div class="reading">
+{#if mode === 'share'}
+  <p class="share-banner">{t('share.banner')}</p>
+{/if}
 {#if phase === 'loading'}
   <section class="glass glass-module">
     <div class="glass-plate">

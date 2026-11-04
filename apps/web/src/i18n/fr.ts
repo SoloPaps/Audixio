@@ -83,9 +83,9 @@ const frCore = {
   'meta.welcome.description': 'Trois étapes pour suivre un site.',
   'meta.sites.title': 'Vos sites — Audigy',
   'meta.sites.description': 'Les sites que vous suivez avec Audigy.',
-  'meta.score.title': 'Score public — Audigy',
+  'meta.score.title': 'Score public — Audixio',
   'meta.score.description': 'Notes publiées par le propriétaire du site.',
-  'meta.share.title': 'Score partagé — Audigy',
+  'meta.share.title': 'Score partagé — Audixio',
   'meta.share.description': 'Notes partagées par un lien privé.',
   'meta.gsc.title': 'Search Console — Audigy',
   'meta.gsc.description':
@@ -101,7 +101,7 @@ const frCore = {
     'Version imprimable du rapport d’audit : couverture avec la note, priorités et résumé par domaine.',
   'meta.domain.title': 'Domaine du rapport — Audigy',
   'meta.domain.description': 'Le détail d’un domaine de l’audit.',
-  'meta.verifier.title': 'Vérifier un rapport — Audigy',
+  'meta.verifier.title': 'Vérifier un rapport — Audixio',
   'meta.verifier.description':
     'Comparez un PDF ou un JSON au dossier, sans envoi.',
   'meta.callback.title': 'Retour de connexion — Audigy',
@@ -302,6 +302,7 @@ const frCore = {
     'Vous êtes propriétaire de ce nom de domaine ? Connectez-vous pour administrer, masquer ou retirer cette page.',
   'score.public.optout.action': 'Gérer ce site',
   'share.missing': 'Ce lien ne fonctionne plus.',
+  'share.banner': 'Lien équipe · Lecture seule',
   'gsc.connect': 'Connecter Search Console',
   'gsc.page.title': 'Search Console',
   'gsc.page.lead':
