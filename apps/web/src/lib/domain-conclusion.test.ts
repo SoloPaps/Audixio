@@ -3,6 +3,7 @@ import { t } from '../i18n/index.js';
 import {
   domainLede,
   hubConclusion,
+  hubSummary,
   shownConclusion,
 } from './domain-conclusion.js';
 
@@ -58,5 +59,15 @@ describe('domainLede (bug #70, #98)', () => {
   });
   it('reste vide pour un domaine non testé', () => {
     expect(domainLede('performance', 'untested', 3, 'x')).toBeNull();
+  });
+});
+
+describe('hubSummary (bug #104)', () => {
+  it('ne dit pas « pas encore analysé » pour une vie privée notée', () => {
+    expect(hubSummary('vie_privee', 80)).not.toContain('pas encore analysé');
+    expect(hubSummary('vie_privee', 80)).toBe(t('domain.vie_privee.good'));
+  });
+  it('garde les résumés des autres domaines', () => {
+    expect(hubSummary('seo', 70)).toBe(t('hub.sum.seo'));
   });
 });
