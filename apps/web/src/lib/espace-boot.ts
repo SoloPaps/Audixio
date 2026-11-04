@@ -1426,6 +1426,10 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
     cadence.textContent = t('mq.ui.cadence.daily');
   if (cadence && row.reaudit_cadence === 'weekly')
     cadence.textContent = t('mq.ui.cadence.weekly');
+  const radio = root.querySelector<HTMLInputElement>(
+    `input[name="fq"][value="${CADENCE_RADIO[row.reaudit_cadence] ?? 'h'}"]`,
+  );
+  if (radio) radio.checked = true;
   if (nextIsPro(row)) {
     const gate = root.querySelector('#gate');
     gate?.classList.remove('locked');
@@ -1433,11 +1437,22 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   }
 }
 
+const CADENCE_RADIO: Record<string, string> = {
+  daily: 'j',
+  weekly: 'h',
+  monthly: 'm',
+};
+
 function nextIsPro(row: {
   reaudit_cadence: string;
   score_drop_points: number;
 }): boolean {
   return row.reaudit_cadence !== 'monthly' || row.score_drop_points !== 0;
+}
+
+function radioCadence(value: string | undefined): string {
+  const found = Object.entries(CADENCE_RADIO).find(([, v]) => v === value);
+  return found?.[0] ?? 'weekly';
 }
 
 async function saveAlerts(next: EspaceNext): Promise<void> {
@@ -1456,6 +1471,10 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
   const { error } = await supabase
     .from('alert_settings')
     .update({
+      reaudit_cadence: radioCadence(
+        document.querySelector<HTMLInputElement>('input[name="fq"]:checked')
+          ?.value,
+      ),
       score_drop_points: drop,
       ssl_warn_days: days,
       alerts_enabled: true,
