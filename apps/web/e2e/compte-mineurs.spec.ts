@@ -69,7 +69,7 @@ const LOW = `(() => {
       const c = Number(v) / 255;
       return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
     });
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
   };
   const opaque = (el) => {
     for (let node = el; node; node = node.parentElement) {
@@ -113,23 +113,15 @@ test('#31 textes de /compte lisibles en sombre', async ({ page }) => {
   expect(await page.evaluate<string[]>(LOW)).toEqual([]);
 });
 
-// #126/#127 : à 330 px, la légende Tendances tient dans sa carte et les libellés Plafonds ne se chevauchent pas.
-test('#126/#127 illustrations Pro lisibles à 330 px', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.setViewportSize({ width: 330, height: 900 });
-  await install(page);
-  await page.goto('/compte?theme=light');
-  const limits = page.locator('.pf .mt');
-  await expect(limits).toBeAttached({ timeout: 15_000 });
-  await page.waitForTimeout(1500);
-  const geo = await page.evaluate(() => {
-    const rect = (el: Element) => el.getBoundingClientRect();
-    const text = (el: Element) => {
+// Libellés des illustrations Pro sortis de leur cadre ou superposés deux à deux.
+const GEO = `(() => {
+    const rect = (el) => el.getBoundingClientRect();
+    const text = (el) => {
       const range = document.createRange();
       range.selectNodeContents(el);
       return range.getBoundingClientRect();
     };
-    const clipped: string[] = [];
+    const clipped = [];
     for (const span of document.querySelectorAll('.pf .ill span')) {
       if (
         ![...span.childNodes].some(
@@ -138,7 +130,7 @@ test('#126/#127 illustrations Pro lisibles à 330 px', async ({ page }) => {
       )
         continue;
       const r = text(span);
-      let box: Element | null = span;
+      let box = span;
       for (; box; box = box.parentElement) {
         const s = getComputedStyle(box);
         if (s.overflowX !== 'visible' || box.classList.contains('pf')) break;
@@ -147,10 +139,10 @@ test('#126/#127 illustrations Pro lisibles à 330 px', async ({ page }) => {
       const b = rect(box);
       if (r.left < b.left - 0.5 || r.right > b.right + 0.5)
         clipped.push(
-          `${span.textContent?.trim()} [${Math.round(r.left)},${Math.round(r.right)}] in ${box.className} [${Math.round(b.left)},${Math.round(b.right)}]`,
+          \`\${span.textContent?.trim()} [\${Math.round(r.left)},\${Math.round(r.right)}] in \${box.className} [\${Math.round(b.left)},\${Math.round(b.right)}]\`,
         );
     }
-    const overlaps: string[] = [];
+    const overlaps = [];
     for (const ill of document.querySelectorAll('.pf .ill')) {
       const leaves = [...ill.querySelectorAll('span')].filter(
         (el) =>
@@ -166,12 +158,25 @@ test('#126/#127 illustrations Pro lisibles à 330 px', async ({ page }) => {
           const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
           if (w > 1 && h > 1)
             overlaps.push(
-              `${leaves[i].textContent?.trim()} / ${leaves[j].textContent?.trim()}`,
+              \`\${leaves[i].textContent?.trim()} / \${leaves[j].textContent?.trim()}\`,
             );
         }
     }
     return { clipped, overlaps };
-  });
+})()`;
+
+// #126/#127 : à 330 px, la légende Tendances tient dans sa carte et les libellés Plafonds ne se chevauchent pas.
+test('#126/#127 illustrations Pro lisibles à 330 px', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 330, height: 900 });
+  await install(page);
+  await page.goto('/compte?theme=light');
+  const limits = page.locator('.pf .mt');
+  await expect(limits).toBeAttached({ timeout: 15_000 });
+  await page.waitForTimeout(1500);
+  const geo = await page.evaluate<{ clipped: string[]; overlaps: string[] }>(
+    GEO,
+  );
   expect(geo.clipped).toEqual([]);
   expect(geo.overlaps).toEqual([]);
 });

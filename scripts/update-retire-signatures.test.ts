@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { checkedText, keptLibraries } from './update-retire-signatures.ts';
+import { checkedText, keptLibraries } from './update-retire-signatures.js';
 
 const copy = JSON.parse(
   readFileSync('packages/engine/data/retire/signatures.json', 'utf8'),

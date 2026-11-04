@@ -269,7 +269,7 @@ export function badgeHasTracker(svg: string): boolean {
   if (svg.includes('<script') || svg.includes('cookie')) return true;
   // Seul l’espace de noms SVG du W3C est admis : hôte comparé exactement, casse ignorée.
   for (const [link] of svg.matchAll(
-    /(?:[a-z][a-z\d+.-]*:)?\/\/[^\s"'<>()]*/gi,
+    /(?:[a-z][a-z\d+.-]*:)?\/\/[^\s\u0022\u0027<>()]*/gi,
   )) {
     let url: URL;
     try {

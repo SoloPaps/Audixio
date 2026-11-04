@@ -1,5 +1,21 @@
 import { expect, type Page, test } from '@playwright/test';
 
+// Le typecheck e2e n'embarque pas lib.dom : vue minimale des globals du navigateur.
+type Style = {
+  color: string;
+  backgroundColor: string;
+  backgroundImage: string;
+  borderTopStyle: string;
+  boxShadow: string;
+  outlineStyle: string;
+};
+type Dom = {
+  getComputedStyle: (node: unknown, pseudo?: string) => Style;
+  document: {
+    documentElement: { dataset: Record<string, string | undefined> };
+  };
+};
+
 const AUDIT_ID = '00000000-0000-4000-8000-0000000000aa';
 const SITE_ID = '00000000-0000-4000-8000-0000000000bb';
 
@@ -120,12 +136,12 @@ function lum(rgb: string): number {
     const c = Number(v) / 255;
     return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
   });
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
 }
 
 function ratio(a: string, b: string): number {
   const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
-  return (x + 0.05) / (y + 0.05);
+  return ((x ?? 0) + 0.05) / ((y ?? 0) + 0.05);
 }
 
 // #72 : le bouton « Générer le prompt » doit rester lisible en thème sombre.
@@ -138,7 +154,8 @@ test('#72 bouton prompt lisible en sombre', async ({ page }) => {
   await expect(button).toBeVisible();
   // Le fond visible du bouton est peint par ses pseudo-éléments (dégradé).
   const colors = await button.evaluate((node) => {
-    const label = node.querySelector('.st-def') as HTMLElement;
+    const { getComputedStyle, document } = globalThis as unknown as Dom;
+    const label = node.querySelector('.st-def');
     const face = getComputedStyle(node, '::before').backgroundImage;
     const stops = face.match(/rgba?\([^)]*\)/g) ?? [];
     return {
@@ -162,6 +179,7 @@ test('#72 bouton prompt lisible en sombre sur /exemple-rapport', async ({
   const button = page.locator('button.fz#gen');
   await expect(button).toBeAttached();
   const colors = await button.evaluate((node) => {
+    const { getComputedStyle, document } = globalThis as unknown as Dom;
     const face = getComputedStyle(node, '::before').backgroundImage;
     const labels = [...node.querySelectorAll('.st-def, .st-def span')].map(
       (el) => getComputedStyle(el).color,
@@ -188,7 +206,7 @@ test('#147 filtres sans contour rectangulaire en sombre', async ({ page }) => {
   await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=dark`);
   await expect(page.locator('#flt')).toBeVisible();
   const box = await page.locator('.tools fieldset').evaluate((node) => {
-    const c = getComputedStyle(node);
+    const c = (globalThis as unknown as Dom).getComputedStyle(node);
     return {
       bg: c.backgroundColor,
       border: c.borderTopStyle,
