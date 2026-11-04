@@ -13,6 +13,7 @@ import {
   domainShort,
   REPORT_DOMAINS,
 } from '../lib/domains.js';
+import { readChoice, rememberChoice } from '../lib/finding-choice.js';
 import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
@@ -91,8 +92,39 @@ function sevOf(item: Finding): Sev {
   if (item.status === 'fail' && item.severity >= 4) return 'crit';
   return 'fix';
 }
+const CHOICE_KEY = 'audixio-finding-choices';
+
+function choiceStore(): string | null {
+  try {
+    return localStorage.getItem(CHOICE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function storedChoice(id: string): Choice | null {
+  const saved = readChoice(choiceStore(), auditId, id);
+  if (saved === 'none' || saved === 'chk' || saved === 'fix') return saved;
+  if (saved === 'skip') return 'none';
+  if (saved === 'check') return 'chk';
+  return null;
+}
+
+function choose(id: string, choice: Choice): void {
+  choices = { ...choices, [id]: choice };
+  try {
+    localStorage.setItem(
+      CHOICE_KEY,
+      rememberChoice(choiceStore(), auditId, id, choice),
+    );
+  } catch {
+    /* stockage refusé */
+  }
+}
+
 function choiceOf(item: Finding): Choice {
   return (
+    storedChoice(item.id) ??
     choices[item.id] ??
     (item.status === 'fail' ? 'fix' : item.status === 'warn' ? 'chk' : 'none')
   );
@@ -366,9 +398,9 @@ onMount(() => {
                   <fieldset class="choice">
                     <legend class="sr-only">{t('domaine.choice', { title: item.title })}</legend>
                     <div class="seg sm"><span class="ind" aria-hidden="true"></span>
-                      <label class="o-none"><input type="radio" name={`st-${item.id}`} value="none" checked={choiceOf(item) === 'none'} onchange={() => { choices = { ...choices, [item.id]: 'none' }; }}>{t('domaine.none')}</label>
-                      <label class="o-chk"><input type="radio" name={`st-${item.id}`} value="chk" checked={choiceOf(item) === 'chk'} onchange={() => { choices = { ...choices, [item.id]: 'chk' }; }}>{t('domaine.check')}</label>
-                      <label class="o-fix"><input type="radio" name={`st-${item.id}`} value="fix" checked={choiceOf(item) === 'fix'} onchange={() => { choices = { ...choices, [item.id]: 'fix' }; }}>{t('domaine.correct')}</label>
+                      <label class="o-none"><input type="radio" name={`st-${item.id}`} value="none" checked={choiceOf(item) === 'none'} onchange={() => choose(item.id, 'none')}>{t('domaine.none')}</label>
+                      <label class="o-chk"><input type="radio" name={`st-${item.id}`} value="chk" checked={choiceOf(item) === 'chk'} onchange={() => choose(item.id, 'chk')}>{t('domaine.check')}</label>
+                      <label class="o-fix"><input type="radio" name={`st-${item.id}`} value="fix" checked={choiceOf(item) === 'fix'} onchange={() => choose(item.id, 'fix')}>{t('domaine.correct')}</label>
                     </div>
                   </fieldset>
                 {/if}

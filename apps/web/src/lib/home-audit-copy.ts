@@ -10,6 +10,8 @@ const copy = {
   'api.error.unauthorized': 'Connectez-vous pour lancer ou lire un audit.',
   'api.error.guest_limit':
     'Trois audits ont déjà été lancés aujourd’hui depuis ce réseau.',
+  'api.error.site_limit':
+    'Le plan gratuit suit déjà 2 sites. Retirez un site suivi pour en analyser un autre.',
   'api.error.internal':
     'Le service ne répond pas pour le moment. Réessayez dans quelques minutes.',
   'guest.gate.kicker': 'Sans compte',

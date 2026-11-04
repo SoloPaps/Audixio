@@ -1,4 +1,9 @@
 import { etaLabel, type Sim, TICK_MS, tickSim } from './progress-sim.js';
+import { progressCountHtml } from './progress-tally.js';
+import {
+  hostFromProgressQuery,
+  reportHrefFromSearch,
+} from './progress-target.js';
 
 type Gsap = {
   from: (target: string, vars: Record<string, unknown>) => void;
@@ -23,6 +28,15 @@ export function bindProgressScene(): void {
     ...(root ?? document).querySelectorAll<HTMLElement>(selector),
   ];
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const askedHost = hostFromProgressQuery(location.search);
+  if (askedHost) {
+    for (const node of document.querySelectorAll('.mono')) {
+      node.textContent = askedHost;
+    }
+  }
+  const report = document.getElementById('reportBtn');
+  if (report)
+    report.setAttribute('href', reportHrefFromSearch(location.search));
   const motion = gsap();
   const STATUS: Record<string, string> = {
     done: 'Analysé',
@@ -54,15 +68,11 @@ export function bindProgressScene(): void {
 
   const counts = (): void => {
     const caps = $$('.cap');
-    let done = 0;
-    let active = 0;
-    for (const el of caps) {
-      if (el.dataset.state === 'done') done += 1;
-      if (el.dataset.state === 'active') active += 1;
-    }
     const node = $('#counts');
     if (!node) return;
-    node.innerHTML = `<b>${active} en cours</b> · ${done} terminé${done > 1 ? 's' : ''} · ${caps.length - active - done} en attente`;
+    node.innerHTML = progressCountHtml(
+      caps.map((el) => el.dataset.state ?? ''),
+    );
   };
 
   const setDomain = (key: string, state: string): void => {

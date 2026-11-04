@@ -2,6 +2,7 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { badgeEmbed, badgePublicHref } from '../lib/badge-embed.js';
+import { badgeTargetHref } from '../lib/badge-target.js';
 import { browserClient } from '../lib/browser-session.js';
 import { gradeForScore } from '../lib/grade.js';
 import { say } from '../lib/motion.js';
@@ -17,19 +18,21 @@ let { auditId, host, verified, score }: Props = $props();
 
 let style = $state<'complet' | 'compact' | 'pastille'>('complet');
 let link = $state('');
+let shareToken = $state<string | null>(null);
 let dialog = $state<HTMLElement | null>(null);
 let copied = $state<'code' | 'link' | ''>('');
 
 const grade = $derived(verified ? gradeForScore(score) : null);
 const rapport = $derived(`/rapport?id=${encodeURIComponent(auditId)}`);
-const previewLabel = $derived(
-  grade ? t('badge.alt', { grade, host }) : t('badge.alt.none', { host }),
-);
 const snippet = $derived.by(() => {
   const alt = grade ? `${t('brand.ui')} : ${grade}` : t('brand.ui');
   return badgeEmbed({
     style,
-    href: link || `${location.origin}/exemple-rapport`,
+    href: badgeTargetHref({
+      origin: location.origin,
+      shareToken,
+      auditId,
+    }),
     origin: location.origin,
     alt,
   });
@@ -54,7 +57,11 @@ async function loadLink(): Promise<void> {
     .is('revoked_at', null)
     .limit(1);
   const row = Array.isArray(data) ? data[0] : null;
-  link = badgePublicHref(location.origin, row?.share_token ?? null);
+  shareToken =
+    typeof row?.share_token === 'string' && row.share_token !== ''
+      ? row.share_token
+      : null;
+  link = badgePublicHref(location.origin, shareToken);
 }
 
 async function copy(kind: 'code' | 'link'): Promise<void> {
@@ -124,12 +131,7 @@ onMount(() => {
         </div>
       {/each}
     </fieldset>
-    <div class="stage" role="region" aria-label={t('badge.preview')}>
-      <span class="bdg {style}" role="img" aria-label={previewLabel}>
-        <span class="l"><img src="/marque/logo-mobile.svg" alt="" width="28" height="28"><span class="t"><small>{t('badge.by')}</small><b>{t('badge.note')}</b></span></span>
-        {#if grade}<span class="g">{grade}</span>{/if}
-      </span>
-    </div>
+    <div class="stage" role="region" aria-label={t('badge.preview')}>{@html snippet}</div>
     <div class="fld">
       <label for="code">{t('badge.code')}</label>
       <div class="cp"><textarea id="code" readonly spellcheck="false" value={snippet}></textarea><button class="btn btn-primary" class:ok={copied === 'code'} type="button" onclick={() => copy('code')}>{copied === 'code' ? t('badge.copied.short') : t('badge.copy')}</button></div>

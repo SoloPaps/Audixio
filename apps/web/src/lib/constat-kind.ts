@@ -2,6 +2,5 @@
 export function constatShowsImageInventory(
   messageKey: string | undefined,
 ): boolean {
-  void messageKey;
-  return true;
+  return messageKey === 'constat.px.title';
 }

@@ -5,6 +5,8 @@ const SKIP =
 type Marked = Text & { [ORIG]?: string };
 
 let dictionary: Map<string, string> | null = null;
+let painting = false;
+let watching = false;
 
 function norm(value: string): string {
   return value.replace(/\s+/g, ' ').trim();
@@ -68,37 +70,72 @@ function translate(original: string, dict: Map<string, string>): string {
 function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
   const root = document.body;
   if (!root) return;
-  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  let node = walker.nextNode();
-  while (node) {
-    const text = node as Marked;
-    const parent = text.parentElement;
-    if (!parent || parent.closest(SKIP)) {
-      node = walker.nextNode();
-      continue;
-    }
-    if (text[ORIG] === undefined) text[ORIG] = text.nodeValue ?? '';
-    const original = text[ORIG] ?? '';
-    const next = locale === 'en' && dict ? translate(original, dict) : original;
-    if (text.nodeValue !== next) text.nodeValue = next;
-    node = walker.nextNode();
-  }
-  for (const el of root.querySelectorAll<HTMLElement>(
-    '[aria-label], [title], [placeholder], [alt]',
-  )) {
-    if (el.closest(SKIP)) continue;
-    for (const attr of ['aria-label', 'title', 'placeholder', 'alt']) {
-      if (!el.hasAttribute(attr)) continue;
-      const store = `data-ax-${attr}`;
-      if (!el.hasAttribute(store))
-        el.setAttribute(store, el.getAttribute(attr) ?? '');
-      const original = el.getAttribute(store) ?? '';
+  painting = true;
+  try {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode();
+    while (node) {
+      const text = node as Marked;
+      const parent = text.parentElement;
+      if (!parent || parent.closest(SKIP)) {
+        node = walker.nextNode();
+        continue;
+      }
+      if (text[ORIG] === undefined) text[ORIG] = text.nodeValue ?? '';
+      const original = text[ORIG] ?? '';
       const next =
         locale === 'en' && dict ? translate(original, dict) : original;
-      if (el.getAttribute(attr) !== next) el.setAttribute(attr, next);
+      if (text.nodeValue !== next) text.nodeValue = next;
+      node = walker.nextNode();
     }
+    for (const el of root.querySelectorAll<HTMLElement>(
+      '[aria-label], [title], [placeholder], [alt]',
+    )) {
+      if (el.closest(SKIP)) continue;
+      for (const attr of ['aria-label', 'title', 'placeholder', 'alt']) {
+        if (!el.hasAttribute(attr)) continue;
+        const store = `data-ax-${attr}`;
+        if (!el.hasAttribute(store))
+          el.setAttribute(store, el.getAttribute(attr) ?? '');
+        const original = el.getAttribute(store) ?? '';
+        const next =
+          locale === 'en' && dict ? translate(original, dict) : original;
+        if (el.getAttribute(attr) !== next) el.setAttribute(attr, next);
+      }
+    }
+    document.documentElement.lang = locale;
+  } finally {
+    painting = false;
   }
-  document.documentElement.lang = locale;
+}
+
+function watchLocale(): void {
+  if (watching || typeof MutationObserver === 'undefined') return;
+  const root = document.body;
+  if (!root) return;
+  watching = true;
+  let queued = false;
+  const observer = new MutationObserver(() => {
+    if (painting || queued) return;
+    queued = true;
+    queueMicrotask(() => {
+      queued = false;
+      let locale: 'fr' | 'en' = 'fr';
+      try {
+        if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
+      } catch {
+        return;
+      }
+      if (locale === 'en') applyLocale('en');
+    });
+  });
+  observer.observe(root, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['placeholder', 'aria-label', 'title', 'alt'],
+  });
 }
 
 export function applyLocale(locale: 'fr' | 'en'): void {
@@ -128,4 +165,5 @@ export function bootLocale(): void {
     locale = 'fr';
   }
   applyLocale(locale);
+  watchLocale();
 }

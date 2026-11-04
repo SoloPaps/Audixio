@@ -1,16 +1,26 @@
 const CHOICES = new Set(['none', 'chk', 'fix', 'skip', 'check']);
 
-/** Mémorise le choix d’action d’un constat. */
+function parse(raw: string | null): Record<string, Record<string, string>> {
+  try {
+    const value = JSON.parse(raw ?? '{}') as unknown;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+    return value as Record<string, Record<string, string>>;
+  } catch {
+    return {};
+  }
+}
+
+/** Mémorise le choix d’action d’un constat pour cet audit. */
 export function rememberChoice(
   raw: string | null,
   auditId: string,
   checkId: string,
   choice: string,
 ): string {
-  void auditId;
-  void checkId;
-  void choice;
-  return raw ?? '{}';
+  const parsed = parse(raw);
+  const audit = { ...(parsed[auditId] ?? {}) };
+  if (CHOICES.has(choice)) audit[checkId] = choice;
+  return JSON.stringify({ ...parsed, [auditId]: audit });
 }
 
 export function readChoice(
@@ -18,14 +28,6 @@ export function readChoice(
   auditId: string,
   checkId: string,
 ): string | null {
-  try {
-    const parsed = JSON.parse(raw ?? '{}') as Record<
-      string,
-      Record<string, string>
-    >;
-    const value = parsed[auditId]?.[checkId];
-    return typeof value === 'string' && CHOICES.has(value) ? value : null;
-  } catch {
-    return null;
-  }
+  const value = parse(raw)[auditId]?.[checkId];
+  return typeof value === 'string' && CHOICES.has(value) ? value : null;
 }

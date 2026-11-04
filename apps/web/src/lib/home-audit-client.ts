@@ -13,6 +13,7 @@ function textFor(key: string): string {
   if (key === 'api.error.user_limit') return t('api.error.user_limit');
   if (key === 'api.error.unauthorized') return t('api.error.unauthorized');
   if (key === 'api.error.guest_limit') return t('api.error.guest_limit');
+  if (key === 'api.error.site_limit') return t('api.error.site_limit');
   return t('api.error.internal');
 }
 

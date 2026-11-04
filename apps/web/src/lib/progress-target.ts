@@ -1,11 +1,22 @@
-/** Domaine affiché pendant l’analyse. */
+const AUDIT_ID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Domaine demandé dans l’adresse de la progression. */
 export function hostFromProgressQuery(search: string): string | null {
-  void search;
-  return 'atelier-martin.fr';
+  const raw = new URLSearchParams(search).get('url')?.trim() ?? '';
+  if (raw === '') return null;
+  try {
+    return new URL(raw).host;
+  } catch {
+    return null;
+  }
 }
 
-/** Lien « Voir le rapport » de la progression. */
+/**
+ * Lien du rapport. Sans audit, la page d’exemple : `/rapport` seul est introuvable.
+ */
 export function reportHrefFromSearch(search: string): string {
-  void search;
-  return '/rapport';
+  const id = new URLSearchParams(search).get('id')?.trim() ?? '';
+  if (AUDIT_ID.test(id)) return `/rapport?id=${encodeURIComponent(id)}`;
+  return '/exemple-rapport';
 }

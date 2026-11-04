@@ -1,10 +1,8 @@
-/** Titre de la page priorités à l’impression. */
+/** Titre de la page priorités : la liste vide ne s’appelle pas « Les 5 priorités ». */
 export function printPriorityTitle(
   count: number,
   filled: string,
   empty: string,
 ): string {
-  void count;
-  void empty;
-  return filled;
+  return count === 0 ? empty : filled;
 }

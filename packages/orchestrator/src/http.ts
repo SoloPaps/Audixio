@@ -17,6 +17,7 @@ export type ApiError =
   | 'verification_not_found'
   | 'user_limit'
   | 'host_limit'
+  | 'site_limit'
   | 'probe_limit'
   | 'oauth_unconfigured'
   | 'places_disabled'
@@ -209,6 +210,8 @@ export async function handleCreate(
           { retryAfter: result.retryAfter },
           { 'retry-after': String(result.retryAfter) },
         );
+      case 'site_limit':
+        return apiError(409, 'site_limit');
       case 'invalid_url':
         return apiError(400, 'invalid_url');
       case 'site_not_found':

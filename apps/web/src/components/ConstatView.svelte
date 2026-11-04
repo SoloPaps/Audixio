@@ -1,6 +1,7 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { t } from '../i18n/index.js';
+import { constatShowsImageInventory } from '../lib/constat-kind.js';
 import {
   drawRadar,
   pictureSample,
@@ -28,7 +29,9 @@ interface Props {
 
 let { auditId, host, verified, row, siblings, allowed }: Props = $props();
 
-const showcase = $derived(row.messageKey === 'constat.px.title' && allowed);
+const showcase = $derived(
+  constatShowsImageInventory(row.messageKey) && allowed,
+);
 const name = $derived(domainPager(row.domain ?? ''));
 const tone = $derived(severityTone(row.severity, row.catalogStatus));
 const index = $derived(
@@ -267,13 +270,16 @@ onMount(() => {
           </div>
         </div>
       </div>
+      {#if showcase}
       <ul class="stats">
         <li class="card stat rv sheen"><div class="sh"><h2>{t('constat.stat.weight')}</h2></div><p class="val"><span>{showcase ? '4,8' : '–'}</span><small>{t('constat.mo')}</small></p><p class="foot"><span>{t('constat.weight.target')}</span><b>{t('constat.weight.gain')}</b></p></li>
         <li class="card stat rv sheen"><div class="sh"><h2>{t('constat.stat.wait')}</h2></div><p class="val"><span>{showcase ? '1,2' : '–'}</span><small>{t('constat.sec')}</small></p><p class="foot"><span>{t('constat.wait.net')}</span><b>{t('constat.wait.risk')}</b></p></li>
         <li class="card stat rv sheen"><div class="sh"><h2>{t('constat.stat.files')}</h2></div><p class="val"><span>{showcase ? '6' : '–'}</span><small>{t('constat.images')}</small></p><p class="foot"><span>{t('constat.files.kind')}</span><b>{t('constat.files.modern')}</b></p></li>
       </ul>
+      {/if}
     </div>
 
+    {#if showcase}
     <section class="block sim" aria-labelledby="t-sim">
       <p class="kicker">{t('constat.sim.k')}</p>
       <h2 class="sec" id="t-sim">{t('constat.sim.h')}</h2>
@@ -337,6 +343,19 @@ onMount(() => {
         <div class="codeb"><div class="ch"><span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>{t('constat.code.file')}</span><button class="btn btn-ghost btn-sm btn-dk" type="button" onclick={onCopy}>{t('constat.copy')}</button></div><pre tabindex="0" aria-label={t('constat.code.name')}><code>{@html pictureHtml}</code></pre></div>
       </div>
     </section>
+    {:else}
+    <section class="block" id="plan" aria-labelledby="t-plan" tabindex="-1">
+      <h2 class="sec" id="t-plan">{row.title}</h2>
+      <p>{row.why}</p>
+      {#if row.steps.length > 0}
+        <ol class="steps">
+          {#each row.steps as step, i (step)}
+            <li class="step"><span class="sn" aria-hidden="true">{i + 1}</span><p>{step}</p></li>
+          {/each}
+        </ol>
+      {/if}
+    </section>
+    {/if}
 
     <section class="block" aria-labelledby="t-brief">
       <div class="card pad rv brief">

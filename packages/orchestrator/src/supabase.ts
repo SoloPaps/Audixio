@@ -183,6 +183,9 @@ async function ensureSite(
     .select('id')
     .single();
   if (data) return data.id;
+  if (error?.code === 'P0001' || error?.message?.includes('site_limit')) {
+    throw new Error('site_limit');
+  }
   // Double clic : l'autre requête vient de créer le site.
   if (error?.code === '23505') {
     const again = await find();

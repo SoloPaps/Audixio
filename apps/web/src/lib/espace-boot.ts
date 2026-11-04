@@ -3,6 +3,11 @@ import { withinSiteQuota } from '@audigy/db';
 import type { Session } from '@supabase/supabase-js';
 import { tick } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
+import {
+  activeAccessCount,
+  rememberRevoke,
+  revokedAccessIds,
+} from './account-access.js';
 import { historySource, pickHistorySite } from './account-history.js';
 import {
   alertsOpenForPlan,
@@ -22,11 +27,13 @@ import {
   historySummary,
 } from './history.js';
 import { type EvolutionChart, evolutionChart } from './history-chart.js';
+import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
 import { parsePlacesState } from './places-api.js';
 import { loadSiteHistory } from './site-history.js';
 import { latestAuditBySite } from './site-tiles.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from './site-url.js';
+import { sslSelectValue, sslWarnDays } from './ssl-days.js';
 
 export type EspacePage =
   | 'sites'
@@ -706,6 +713,19 @@ function bindHistory(root: HTMLElement): () => void {
   let values = [78, 79, 80, 81, 82, 84];
   let xs = [70, 234, 398, 562, 726, 890];
   let ys = [168, 156.5, 145, 133.5, 122, 99];
+  let span: ReturnType<typeof historySpanOf> | 'unset' = 'unset';
+  let latestView: HistoryView | null = null;
+  const drawChart = (): void => {
+    if (!latestView) return;
+    const points =
+      span === 'unset'
+        ? latestView.points
+        : filterHistoryPoints(latestView.points, span, Date.now());
+    applyChart({
+      ...latestView,
+      points: points.length > 0 ? points : latestView.points,
+    });
+  };
   const show = (index: number): void => {
     if (!svg || !tip || !chart || !cross) return;
     const box = svg.getBoundingClientRect();
@@ -808,7 +828,8 @@ function bindHistory(root: HTMLElement): () => void {
         view,
         typeof profile?.plan === 'string' ? profile.plan : null,
       );
-      applyChart(view);
+      latestView = view;
+      drawChart();
       return;
     }
     const siteId =
@@ -841,7 +862,21 @@ function bindHistory(root: HTMLElement): () => void {
     const hosting = listed?.hosting ?? 'other';
     const view = await loadSiteHistory(asked || siteId, hosting);
     if (dead || !view) return;
-    applyChart(view);
+    if (listed?.host) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      paintHistoryLive(
+        root,
+        listed.host,
+        view,
+        typeof profile?.plan === 'string' ? profile.plan : null,
+      );
+    }
+    latestView = view;
+    drawChart();
   })();
   const leave = (): void => {
     tip?.classList.remove('on');
@@ -859,10 +894,12 @@ function bindHistory(root: HTMLElement): () => void {
   };
   seg?.querySelectorAll('button').forEach((button, index) => {
     const click = (): void => {
+      span = historySpanOf(index);
       seg.querySelectorAll('button').forEach((item) => {
         item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
       });
       move(button);
+      drawChart();
       if (note)
         note.textContent = index
           ? t('mq.ui.range.full')
@@ -1081,6 +1118,28 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   };
   acc?.addEventListener('click', onAcc);
   if (acc) off.push(() => acc.removeEventListener('click', onAcc));
+  const accessKey = 'audixio-revoked-access';
+  const syncAccess = (): void => {
+    let raw: string | null = null;
+    try {
+      raw = localStorage.getItem(accessKey);
+    } catch {
+      raw = null;
+    }
+    const revoked = new Set(revokedAccessIds(raw));
+    for (const button of root.querySelectorAll<HTMLElement>('[data-revoke]')) {
+      const id = button.dataset.revoke ?? '';
+      if (revoked.has(id)) document.getElementById(id)?.remove();
+    }
+    const left = root.querySelectorAll('[data-revoke]').length;
+    const count = document.getElementById('apn');
+    if (count) count.textContent = String(left);
+    const meter = document.getElementById('apm');
+    if (meter) meter.style.setProperty('--v', left === 0 ? '0' : '1');
+    const empty = document.getElementById('ape');
+    if (empty) empty.hidden = left !== 0;
+  };
+  syncAccess();
   const revoke = root.querySelector<HTMLDialogElement>('#dlgr');
   let current: HTMLElement | null = null;
   const onRevokeClick = (event: Event): void => {
@@ -1102,9 +1161,32 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
     const who = current?.dataset.who ?? '';
     revoke?.close();
     if (!id) return;
+    const before = root.querySelectorAll('[data-revoke]').length;
+    try {
+      const prev = localStorage.getItem(accessKey);
+      localStorage.setItem(accessKey, rememberRevoke(prev, id));
+    } catch {
+      /* stockage refusé */
+    }
+    const count = document.getElementById('apn');
+    if (count) count.textContent = String(activeAccessCount(before, [id]));
+    const meter = document.getElementById('apm');
+    if (meter) {
+      meter.style.setProperty(
+        '--v',
+        activeAccessCount(before, [id]) === 0 ? '0' : '1',
+      );
+    }
     const row = document.getElementById(id);
     row?.classList.add('out');
-    window.setTimeout(() => row?.remove(), reduced() ? 0 : 560);
+    window.setTimeout(
+      () => {
+        row?.remove();
+        const empty = document.getElementById('ape');
+        if (empty) empty.hidden = root.querySelector('[data-revoke]') !== null;
+      },
+      reduced() ? 0 : 560,
+    );
     say(t('mq.ui.revoke', { who }), true);
   };
   root.querySelector('#rok')?.addEventListener('click', onRevokeOk);
@@ -1157,9 +1239,11 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   const ssl = vals[0];
   const drop = vals[1];
   const cadence = vals[3];
-  if (ssl && row.ssl_warn_days !== 14) {
-    ssl.textContent = t('mq.ui.ssl', { n: row.ssl_warn_days });
-  }
+  const selected = sslSelectValue(Number(row.ssl_warn_days));
+  const select = root.querySelector<HTMLSelectElement>('#ssl');
+  if (select && selected) select.value = selected;
+  if (ssl && selected)
+    ssl.textContent = t('mq.ui.ssl', { n: Number(selected) });
   if (drop && row.score_drop_points === 0)
     drop.textContent = t('mq.ui.drop.letter');
   else if (drop && row.score_drop_points !== 10) {
@@ -1186,17 +1270,17 @@ function nextIsPro(row: {
 async function saveAlerts(next: EspaceNext): Promise<void> {
   const siteId = new URLSearchParams(location.search).get('site');
   const supabase = browserClient();
-  if (!siteId || !supabase) {
-    say(t('mq.ui.saved'), true);
-    return;
-  }
+  if (!siteId || !supabase) return;
   const drop = Number(
     document.querySelector<HTMLInputElement>('#drop')?.value ?? 5,
   );
-  const sslLabel = document.querySelector('#ssl')?.textContent ?? '';
-  const days = Number(sslLabel.match(/\d+/)?.[0] ?? 14);
+  const select = document.querySelector<HTMLSelectElement>('#ssl');
+  const days = sslWarnDays({
+    selected: select?.value ?? '',
+    text: select?.textContent ?? '',
+  });
   await supabase.rpc('ensure_alert_settings', { p_site_id: siteId });
-  await supabase
+  const { error } = await supabase
     .from('alert_settings')
     .update({
       score_drop_points: drop,
@@ -1205,6 +1289,7 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
     })
     .eq('site_id', siteId)
     .eq('user_id', (await currentSession())?.user.id ?? '');
+  if (error) return;
   say(t('mq.ui.saved'), true);
   void next;
 }

@@ -84,9 +84,9 @@ export function scoreDomains(outcomes: readonly CheckOutcome[]): DomainScore[] {
   return DOMAINS.map((domain) => scoreDomain(domain, outcomes));
 }
 
-/** Poids affichés des 8 domaines. La note réelle reste la moyenne égale. */
+/** Poids affichés des 8 domaines : parts égales, comme `scoreGlobal`. */
 export function mainDomainWeightPercents(): number[] {
-  return [20, 15, 15, 15, 15, 10, 10, 10];
+  return MAIN_DOMAINS.map(() => 12.5);
 }
 
 /** Moyenne à poids égaux des domaines principaux notés (Q21). */
