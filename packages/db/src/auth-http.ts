@@ -413,7 +413,7 @@ async function handleCallback(
   const code = url.searchParams.get('code');
   const tokenHash = url.searchParams.get('token_hash');
   const type = url.searchParams.get('type');
-  let kind: 'signup' | 'recovery' | 'oauth' = 'oauth';
+  let kind: 'signup' | 'recovery' | 'oauth';
   if (code) {
     const exchanged = await supabase.auth.exchangeCodeForSession(code);
     if (exchanged.error) {
