@@ -105,6 +105,17 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
   }
   document.documentElement.lang = locale;
   painting = false;
+  if (locale === 'en') reanchor();
+}
+
+let anchored = false;
+
+// Le saut natif vers #ancre se fait avant la traduction : on le refait une fois.
+function reanchor(): void {
+  if (anchored) return;
+  anchored = true;
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (id) document.getElementById(id)?.scrollIntoView();
 }
 
 function storedLocale(): 'fr' | 'en' {
