@@ -1108,3 +1108,8 @@ main {
     transform: none;
   }
 }
+
+/* Sombre : la barre collante garde un fond opaque pour ne pas se superposer au texte. */
+html[data-theme="dark"][data-vue="ecologie"] .bar {
+  background-color: rgba(28, 35, 64, 0.97);
+}

@@ -206,9 +206,10 @@ const optN = $derived(findings.filter((item) => item.status !== 'pass').length);
 
 function ladderLabel(id: string): string {
   if (id === letter) return t('domaine.now');
-  if (id === 'D') return t('domaine.slow');
+  const speed = domainId === 'performance';
+  if (id === 'D') return speed ? t('domaine.slow') : t('domaine.low');
   if (id === 'C') return t('domaine.mid');
-  if (id === 'B') return t('domaine.fast');
+  if (id === 'B') return speed ? t('domaine.fast') : t('domaine.good');
   if (id === 'A') return t('domaine.goal');
   return id;
 }

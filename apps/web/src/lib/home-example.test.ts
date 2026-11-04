@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { REPORT_DOMAINS } from './domains.js';
+import { gradeForScore } from './grade.js';
 import {
   HOME_EXAMPLE_ROWS,
   HOME_EXAMPLE_SCORE,
@@ -8,9 +9,12 @@ import {
 import { levelForScore } from './score.js';
 
 describe('exemple d’accueil', () => {
-  it('fixe la jauge à 72 et deux lignes de formes différentes', () => {
-    expect(HOME_EXAMPLE_SCORE).toBe(72);
+  it('fixe la jauge à 66 (lettre C sur les deux barèmes) et deux lignes de formes différentes', () => {
+    expect(HOME_EXAMPLE_SCORE).toBe(66);
     expect(levelForScore(HOME_EXAMPLE_SCORE)).toBe('improve');
+    // Méthode publiée : C = 50 à 69. Moteur : C = 65 à 79.
+    expect(gradeForScore(HOME_EXAMPLE_SCORE)).toBe('C');
+    expect(HOME_EXAMPLE_SCORE).toBeLessThan(70);
     expect(HOME_EXAMPLE_ROWS).toEqual([
       { key: 'domain.seo.plain', score: 64 },
       { key: 'home.example.https', score: 86 },

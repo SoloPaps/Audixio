@@ -913,6 +913,7 @@ main.auth-doc .hint {
 }
 
 main.auth-doc .inp {
+  box-sizing: border-box;
   width: 100%;
   min-height: 48px;
   padding: 10px 14px;
@@ -1294,4 +1295,9 @@ main.auth-doc :focus-visible {
   main.auth-doc .lk:hover .lk-ar {
     transform: none;
   }
+}
+
+/* Sombre : le champ garde son fond sombre au focus, le texte saisi reste lisible. */
+html[data-theme="dark"] .auth-card .in:focus {
+  background-color: #243056;
 }

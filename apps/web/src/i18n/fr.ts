@@ -2237,6 +2237,8 @@ const frCore = {
   'domaine.ladder': 'Progression possible de la note',
   'domaine.slow': 'Lente',
   'domaine.fast': 'Rapide',
+  'domaine.low': 'Faible',
+  'domaine.good': 'Bonne',
   'domaine.now': 'Actuelle',
   'domaine.mid': 'Modérée',
   'domaine.goal': 'Objectif',
@@ -2659,8 +2661,7 @@ const frCore = {
   'brief.h1.1': 'Configuration',
   'brief.h1.2': 'de',
   'brief.h1.3': 'votre',
-  'brief.h1.4': 'prompt',
-  'brief.h1.5': 'IA',
+  'brief.h1.4': 'prompt IA',
   'brief.lead':
     'Personnalisez la consigne transmise à vos assistants (Cursor, ChatGPT, Claude). Pour chaque point détecté, décidez si l’assistant doit l’ignorer, l’analyser ou le corriger.',
   'brief.stats': 'Répartition des constats',

@@ -2427,3 +2427,22 @@ html:where([data-vue="domaine"]),
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* Thème sombre : couleurs seules (bouton de prompt, sélecteur de statut). */
+html[data-theme="dark"][data-vue] .fz {
+  color: #1e2a55;
+}
+html[data-theme="dark"][data-vue] .seg .ind {
+  background-color: #9fb4ff;
+}
+html[data-theme="dark"][data-vue] .seg label:has(input:checked) {
+  color: #10183a;
+}
+html[data-theme="dark"][data-vue].no-js .seg label:has(input:checked),
+html[data-theme="dark"][data-vue] .no-js .seg label:has(input:checked) {
+  background-color: #9fb4ff;
+}
+@media (max-width: 480px) {
+  html[data-theme="dark"][data-vue] .seg label:has(input:checked) {
+    background-color: #9fb4ff;
+  }
+}

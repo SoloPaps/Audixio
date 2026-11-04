@@ -359,7 +359,7 @@ export const espaceFr = {
   'mq.co.027': 'Connexions & intégrations CMS',
   'mq.co.028': 'Enrichissez vos audits sans code tiers',
   'mq.co.029':
-    'Liez vos services sans injecter de code sur vos sites. Aucun cookie ni script externe déposé. Mise à jour §9, 27 oct. 2026.',
+    'Liez vos services sans injecter de code sur vos sites. Aucun cookie ni script externe déposé. Mise à jour le 27 oct. 2026.',
   'mq.co.030': 'Optionnel · lecture seule',
   'mq.co.031': 'Google Search Console',
   'mq.co.032': 'Protocole officiel sécurisé, en lecture seule.',

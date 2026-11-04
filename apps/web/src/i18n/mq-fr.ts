@@ -591,7 +591,7 @@ export const mqFr = {
   'mq.e.152': 'images',
   'mq.e.153': 'Concernées',
   'mq.e.154': 'Simulateur de chargement',
-  'mq.e.155': 'Connexion',
+  'mq.e.155': 'Type de connexion',
   'mq.e.156': '4G (32 Mb/s)',
   'mq.e.157': '3G (3 Mb/s)',
   'mq.e.158': 'Fibre (200 Mb/s)',

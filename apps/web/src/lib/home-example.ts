@@ -2,7 +2,7 @@ import type { REPORT_DOMAINS } from './domains.js';
 
 type DomainId = (typeof REPORT_DOMAINS)[number];
 
-export const HOME_EXAMPLE_SCORE = 72;
+export const HOME_EXAMPLE_SCORE = 66;
 
 export const HOME_EXAMPLE_ROWS = [
   { key: 'domain.seo.plain', score: 64 },

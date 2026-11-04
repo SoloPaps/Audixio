@@ -676,9 +676,8 @@ export const mqLegalFr = {
   'mq.lg.544': 'Rejouer la désintégration du serveur',
   'mq.lg.545': 'Le',
   'mq.lg.546': 'serveur',
-  'mq.lg.547': 'a',
-  'mq.lg.548': 'perdu',
-  'mq.lg.549': 'le fil.',
+  'mq.lg.547': 'a perdu',
+  'mq.lg.548': 'le fil.',
   'mq.lg.550':
     'Une erreur interne est survenue de notre côté et la page n’a pas pu être générée. ',
   'mq.lg.551': 'Vous n’avez rien fait de mal :',
