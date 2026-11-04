@@ -240,8 +240,7 @@ onMount(() => {
         return;
       }
       if (
-        (stored.audit.status === 'done' ||
-          stored.audit.status === 'partial') &&
+        (stored.audit.status === 'done' || stored.audit.status === 'partial') &&
         nothingMeasured(stored.domains)
       ) {
         location.replace(
@@ -272,7 +271,9 @@ onMount(() => {
       (gated.audit.status === 'done' || gated.audit.status === 'partial') &&
       nothingMeasured(gated.domains)
     ) {
-      location.replace(`/audit-echoue?id=${encodeURIComponent(gated.audit.id)}`);
+      location.replace(
+        `/audit-echoue?id=${encodeURIComponent(gated.audit.id)}`,
+      );
       return;
     }
     payload = gated;
