@@ -5,7 +5,7 @@
  * `apps/web/dist/_headers` la remplace (Netlify donne priorité à ce fichier).
  */
 import { createHash } from 'node:crypto';
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { open, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -200,21 +200,29 @@ export async function pageWeight(
     const resolved = path.resolve(file);
     if (!resolved.startsWith(`${root}${path.sep}`) && resolved !== root) return;
     if (seen.has(resolved)) return;
-    let info: Awaited<ReturnType<typeof stat>>;
+    // Un seul descripteur pour la taille et la lecture : pas de course entre stat et readFile.
+    let handle: Awaited<ReturnType<typeof open>>;
     try {
-      info = await stat(resolved);
+      handle = await open(resolved, 'r');
     } catch {
       return;
     }
-    if (!info.isFile()) return;
-    seen.add(resolved);
-    files.push(resolved);
-    bytes += info.size;
-    if (/\.(?:woff2|woff|ttf|otf)$/i.test(resolved)) fonts += info.size;
+    let text: string | null = null;
+    try {
+      const info = await handle.stat();
+      if (!info.isFile()) return;
+      seen.add(resolved);
+      files.push(resolved);
+      bytes += info.size;
+      if (/\.(?:woff2|woff|ttf|otf)$/i.test(resolved)) fonts += info.size;
+      const css = resolved.endsWith('.css');
+      if (css || resolved.endsWith('.html'))
+        text = await handle.readFile('utf8');
+    } finally {
+      await handle.close();
+    }
+    if (text === null) return;
     const css = resolved.endsWith('.css');
-    const html = resolved.endsWith('.html');
-    if (!css && !html) return;
-    const text = await readFile(resolved, 'utf8');
     const base = path.dirname(resolved);
     for (const ref of refsIn(text, css)) {
       const target = ref.startsWith('/')

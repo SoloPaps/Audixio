@@ -80,3 +80,54 @@ describe('détection des plateformes de consentement', () => {
     );
   });
 });
+
+describe('signatures de script ancrées sur l’hôte (code scanning)', () => {
+  it.each([
+    'https://evil.example/static.axept.io/sdk.js',
+    'https://static.axept.io.evil.example/sdk.js',
+    'https://evil.example/?u=sdk.privacy-center.org/x.js',
+    'https://consent.cookiebot.com.evil.example/uc.js',
+    'https://notcdn.cookielaw.org.evil.example/x.js',
+    'https://evil.example/cdn.cookielaw.org/x.js',
+    'https://evil-onetrust.com/x.js',
+    'https://cache.consentframework.com.evil.example/stub',
+    'https://evil.example/app.usercentrics.eu/loader.js',
+    'https://quantcast.mgr.consensu.org.evil.example/cmp.js',
+    'https://cmp.inmobi.com.evil.example/cmp.js',
+    'https://cdn.iubenda.com.evil.example/cs.js',
+    'https://consent.cookiefirst.com.evil.example/x.js',
+    'https://app.termly.io.evil.example/x.js',
+    'https://cdn.cookie-script.com.evil.example/s.js',
+  ])('ignore l’hôte trompeur %s', (url) => {
+    expect(detectCmp([url], none)).toEqual([]);
+  });
+
+  it.each([
+    ['axeptio', '//static.axept.io/sdk.js'],
+    ['axeptio', 'https://client.axept.io/sdk.js'],
+    ['cookiebot', 'https://consent.cookiebot.eu/uc.js'],
+    ['cookiebot', 'https://consentcdn.cookiebot.com/sdk/bc-v4.min.js'],
+    ['onetrust', 'https://geolocation.onetrust.com/cookieconsentpub/v1/geo'],
+    ['onetrust', 'https://optanon.blob.core.windows.net/consent/x.json'],
+    ['sirdata', 'https://choices.consentframework.com/js/pa/1/c/2/cmp'],
+    ['usercentrics', 'https://web.cmp.usercentrics.eu/ui/loader.js'],
+    ['quantcast', 'https://quantcast.mgr.consensu.org/choice/x/choice.js'],
+    ['quantcast', 'https://cmp.inmobi.com/choice/x/choice.js'],
+    ['iubenda', 'https://cs.iubenda.com/autoblocking/1.js'],
+    ['cookiefirst', 'https://consent.cookiefirst.com/sites/x/consent.js'],
+    ['termly', 'https://app.termly.io/resource-blocker/x'],
+    ['cookie_script', 'https://cdn.cookie-script.com/s/x.js'],
+    ['cookieyes', 'https://cdn-cookieyes.com/client_data/x/script.js'],
+    ['didomi', 'https://sdk.privacy-center.org:443/abc/loader.js'],
+  ])('reconnaît toujours %s sur %s', (id, url) => {
+    expect(detectCmp([url], none).map((m) => m.id)).toContain(id);
+  });
+});
+
+describe('hôtes de CMP déclarés en clair (CodeQL)', () => {
+  it('aucun motif de script ne code un nom d’hôte', () => {
+    for (const s of CMP_SIGNATURES)
+      for (const re of s.scripts)
+        expect(re.source, s.id).not.toMatch(/\\\.(?:com|org|io|eu|net)\b/);
+  });
+});

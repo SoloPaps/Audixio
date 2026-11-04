@@ -124,11 +124,11 @@ async function revoke(): Promise<void> {
   {/if}
   {#if connected}
     <p>{t('gsc.page.connected')}</p>
-    <button type="button" class="button button-secondary" onclick={revoke} disabled={pending}>
+    <button type="button" class="btn btn-ghost" onclick={revoke} disabled={pending}>
       {pending ? t('gsc.page.revoking') : t('gsc.page.revoke')}
     </button>
   {:else}
-    <button type="button" class="button button-primary" onclick={start} disabled={pending}>
+    <button type="button" class="btn btn-primary" onclick={start} disabled={pending}>
       {t('gsc.connect')}
     </button>
   {/if}

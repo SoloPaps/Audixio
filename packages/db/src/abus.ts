@@ -83,7 +83,7 @@ export function accountId(value: string | null): string | null {
 export function hostOf(raw: string): string | null {
   const text = raw.trim().toLowerCase();
   if (text.length === 0 || text.length > 253) return null;
-  let host = text;
+  let host: string;
   try {
     host = new URL(text.includes('://') ? text : `https://${text}`).hostname;
   } catch {

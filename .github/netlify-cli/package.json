@@ -1,0 +1,8 @@
+{
+  "name": "audigy-ci-netlify-cli",
+  "private": true,
+  "description": "Netlify CLI des parcours e2e en CI, figé par package-lock.json (npm ci).",
+  "dependencies": {
+    "netlify-cli": "27.16.2"
+  }
+}

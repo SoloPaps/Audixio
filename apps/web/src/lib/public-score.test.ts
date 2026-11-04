@@ -162,4 +162,17 @@ describe('score public', () => {
     expect(svg).toContain('72');
     expect(svg).not.toMatch(/https?:\/\/(?!www\.w3\.org\/)/);
   });
+  it('repère tout lien externe dans un badge, quelle que soit la casse', () => {
+    const svg = scoreBadgeSvg('Exemple', 72);
+    expect(badgeHasTracker(svg)).toBe(false);
+    for (const url of [
+      'HTTPS://evil.example/p.gif',
+      'http://www.w3.org.evil.example/p.gif',
+      'https://evil.example/www.w3.org/',
+      '//evil.example/p.gif',
+    ])
+      expect(
+        badgeHasTracker(svg.replace('</svg>', `<image href="${url}"/></svg>`)),
+      ).toBe(true);
+  });
 });

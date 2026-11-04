@@ -316,52 +316,6 @@
   }
 
   /* ============================================================
-     6) MENU + HEADER
-     ============================================================ */
-  function initHeader() {
-    const menuBtn = $('#menu-btn'),
-      nav = $('#nav'),
-      header = $('.site-header');
-    if (!menuBtn || !nav || !header) return;
-    const setMenu = (open) => {
-      nav.classList.toggle('open', open);
-      menuBtn.setAttribute('aria-expanded', String(open));
-      menuBtn.setAttribute(
-        'aria-label',
-        open ? 'Fermer le menu' : 'Ouvrir le menu',
-      );
-    };
-    menuBtn.addEventListener('click', () =>
-      setMenu(!nav.classList.contains('open')),
-    );
-    nav.addEventListener('click', (e) => {
-      if (e.target.closest('a')) setMenu(false);
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && nav.classList.contains('open')) {
-        setMenu(false);
-        menuBtn.focus();
-      }
-    });
-    const onScroll = () => header.classList.toggle('scrolled', scrollY > 8);
-    addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-    const field = $('#audit-field');
-    if (field && 'IntersectionObserver' in window) {
-      new IntersectionObserver(
-        (en) => {
-          document.body.classList.toggle(
-            'show-cta',
-            !en[0].isIntersecting && en[0].boundingClientRect.top < 0,
-          );
-        },
-        { threshold: 0 },
-      ).observe(field);
-    }
-  }
-
-  /* ============================================================
      7) ECG
      ============================================================ */
   function initEcg() {
@@ -545,25 +499,7 @@
       errEl = $('#url-error'),
       btn = $('#audit-btn');
     if (!form || !input || !btn) return;
-    const repSite = $('#rep-site'),
-      urlSite = $('#url-site'),
-      tagEl = $('#rep-tag'),
-      live = $('#scan-status');
     const busy = false;
-
-    function normalize(v) {
-      v = v.trim();
-      if (!v || /\s/.test(v)) return null;
-      if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(v)) v = 'https://' + v;
-      try {
-        const u = new URL(v);
-        if (!/^https?:$/.test(u.protocol) || !u.hostname.includes('.'))
-          return null;
-        return u;
-      } catch (e) {
-        return null;
-      }
-    }
 
     form.addEventListener('submit', () => {
       if (busy) return;

@@ -2492,7 +2492,8 @@
     linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
 }
 /* Thème sombre : couleurs seules (bouton de prompt, sélecteur de statut). */
-html[data-theme="dark"][data-vue] .fz {
+html[data-theme="dark"][data-vue] .fz,
+html[data-theme="dark"][data-vue] .fz span {
   color: #1e2a55;
 }
 html[data-theme="dark"][data-vue] .seg .ind {

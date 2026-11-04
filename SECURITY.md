@@ -10,6 +10,8 @@ Utilise le signalement privé de GitHub :
 
 Ton message reste visible uniquement par les mainteneurs jusqu'à la publication d'un correctif.
 
+Tu peux aussi écrire à **Audixio@outlook.fr** (objet : « Vulnérabilité »).
+
 ## Ce qu'il est utile d'indiquer
 
 - la page, la fonction ou le fichier concerné ;
@@ -19,7 +21,15 @@ Ton message reste visible uniquement par les mainteneurs jusqu'à la publication
 
 ## Ce que tu peux attendre
 
-Le projet est maintenu par une seule personne : les délais de réponse ne sont pas garantis. Je ferai au mieux pour accuser réception, évaluer la gravité et publier un correctif avant toute divulgation publique. Merci de laisser un délai raisonnable avant de rendre le problème public.
+Le projet est maintenu par une seule personne ; les délais ci-dessous sont des objectifs :
+
+- accusé de réception sous 7 jours ;
+- première évaluation de la gravité sous 14 jours ;
+- correctif publié, ou plan de correction communiqué, sous 90 jours.
+
+## Divulgation coordonnée
+
+Merci de garder la vulnérabilité confidentielle jusqu'à la publication du correctif, ou au plus tard 90 jours après ton signalement. Une fois le correctif en ligne, un avis de sécurité GitHub décrit le problème et, si tu le souhaites, te crédite.
 
 ## Périmètre
 

@@ -1213,3 +1213,17 @@ describe('texte, fiches et méthode', () => {
     expect(keys.filter((key) => !seen.has(key)).sort()).toEqual([]);
   });
 });
+
+describe('generator Wix ancré (code scanning)', () => {
+  it('reconnaît « Wix.com Website Builder »', () => {
+    expect(
+      softwareFromGenerator('Wix.com Website Builder', 'generator')?.id,
+    ).toBe('wix');
+  });
+  it.each(['wix.com.evil.example', 'Wix.community 2.0', 'wix.comet'])(
+    'ne confond pas %s avec Wix',
+    (value) => {
+      expect(softwareFromGenerator(value, 'generator')?.id).not.toBe('wix');
+    },
+  );
+});

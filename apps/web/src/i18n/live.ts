@@ -1,8 +1,7 @@
 const ORIG = '__axOrig';
-const SKIP =
-  'script, style, textarea, noscript, [data-chrome], [data-i18n-skip]';
+const SKIP = 'script,style,textarea,noscript,[data-chrome],[data-i18n-skip]';
 // Les attributs (placeholder…) d'un textarea restent traduisibles.
-const ATTR_SKIP = SKIP.replace(', textarea', '');
+const ATTR_SKIP = SKIP.replace(',textarea', '');
 
 type Marked = Text & { [ORIG]?: string };
 
@@ -88,11 +87,12 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
     if (text.nodeValue !== next) text.nodeValue = next;
     node = walker.nextNode();
   }
+  const attrs = ['aria-label', 'title', 'placeholder', 'alt'];
   for (const el of root.querySelectorAll<HTMLElement>(
-    '[aria-label], [title], [placeholder], [alt]',
+    attrs.map((attr) => `[${attr}]`).join(),
   )) {
     if (el.closest(ATTR_SKIP)) continue;
-    for (const attr of ['aria-label', 'title', 'placeholder', 'alt']) {
+    for (const attr of attrs) {
       if (!el.hasAttribute(attr)) continue;
       const store = `data-ax-${attr}`;
       if (!el.hasAttribute(store))
@@ -105,7 +105,14 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
   }
   document.documentElement.lang = locale;
   painting = false;
+  // Le saut natif vers #ancre se fait avant la traduction : on le refait une fois.
+  if (locale === 'en' && !anchored) {
+    anchored = true;
+    document.getElementById(location.hash.slice(1))?.scrollIntoView();
+  }
 }
+
+let anchored = false;
 
 function storedLocale(): 'fr' | 'en' {
   try {

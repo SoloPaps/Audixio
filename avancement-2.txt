@@ -45,3 +45,36 @@ Checkpoint 4 (après rebase sur origin/main) : typecheck/unit 1174 OK, build 0, 
 #66 non corrigé: déjà corrigé en amont (piste de l'interrupteur off visible).
 #111 corrigé (1/2): read_public_score ignore les rapports expirés (migration 20261104181500_public_score_expiration.sql, non appliquée en prod). Test packages/db/test/rls.test.ts.
 #111 corrigé (2/2): bouton « Dépublier » / « Unpublish » sur la carte d'un site public (is_public=false, RLS propriétaire), lisible en sombre. Tests e2e/sites-lien-public.spec.ts.
+#111 (read_shared_score) non corrigé: déjà vérifié en amont — 20261103064721_liens_partage.sql filtre déjà expires_at, couvert par packages/db/test/liens-expiration.test.ts ; aucune migration nécessaire.
+#118 corrigé: en anglais, le saut natif vers #ancre se faisait avant la traduction (live.ts asynchrone), le libellé finissait sous la barre ; live.ts refait une fois le scrollIntoView après la première peinture EN. Test e2e/ancre-anglais.spec.ts.
+#68/#128 non corrigé: déjà corrigé en amont (étiquettes de « Plafonds relevés » sans chevauchement à 330 px, FR et EN).
+#143 non corrigé: décision produit — le bouton flottant passe au-dessus du texte pendant le défilement, comme partout ; en bas de page il ne masque rien.
+#9 corrigé: bloc Search Console de /compte hors de <main> → aucune colonne ni style de bouton ; ajout de .blk, colonne alignée sur main (box-sizing compris) et boutons btn/btn-primary/btn-ghost du Canon (test e2e/compte-search-console.spec.ts).
+secu js/regex/missing-regexp-anchor (cmp.ts, 15 alertes) corrigé: signatures CMP ancrées sur l'hôte via host(), hôtes trompeurs rejetés (test cmp.test.ts).
+secu js/regex/missing-regexp-anchor (software.ts) corrigé: generator Wix ancré sur la fin du nom (wix.com.evil…, Wix.community rejetés ; test technologies.test.ts).
+secu js/regex/missing-regexp-anchor (public-score.ts) corrigé: badgeHasTracker ratait HTTPS:// en majuscules et //hôte ; chaque lien est analysé et seul l'hôte www.w3.org est admis (test public-score.test.ts).
+secu js/file-system-race (publish-policy.ts) corrigé: stat puis readFile remplacés par un seul descripteur (handle.stat + handle.readFile). Course non reproductible en test : test de non-régression html→css→police ajouté (vert avant et après).
+secu js/http-to-file-access (update-retire-signatures.ts, 3 alertes) corrigé: contenu téléchargé validé avant écriture (noms de bibliothèque sûrs, motifs textuels bornés, empreintes hex, licence/notice sans caractères de contrôle ni taille excessive) ; main() ne s'exécute plus à l'import (test update-retire-signatures.test.ts).
+secu js/useless-assignment-to-local (abus.ts, auth-http.ts) corrigé: valeurs initiales jamais lues retirées (comportement inchangé, tests abus/auth existants verts).
+secu js/trivial-conditional (sitemap-parse.ts) corrigé: condition !closed toujours vraie retirée de la boucle (sortie par break ; tests sitemap verts).
+secu js/unused-local-variable (motion/accueil.js, 6 alertes) corrigé: initHeader, normalize et 4 variables jamais utilisées retirées (specs e2e accueil vertes).
+secu zizmor/unpinned-images (security.yml) corrigé: semgrep/semgrep:latest → 1.182.1@sha256:451b3d87… (test scripts/workflows-pinned.test.ts : actions par SHA, images par empreinte).
+secu zizmor/adhoc-packages + Scorecard PinnedDependencies (ci.yml) corrigé: npm install -g netlify-cli remplacé par npm ci sur .github/netlify-cli/package-lock.json (intégrités sha512) ; actions déjà épinglées par SHA (tests workflows-pinned).
+secu SecurityPolicyID corrigé: SECURITY.md complété (contact Audixio@outlook.fr, délais 7/14/90 jours, divulgation coordonnée ; test scripts/security-policy.test.ts).
+secu VulnerabilitiesID (GHSA-gcqx-w48m-w2h4, deepmerge 4.3.1) non corrigé: dépendance transitive de @sveltejs/vite-plugin-svelte, utilisée au build seulement, aucune version corrigée publiée.
+#72 corrigé: la règle sombre globale sur les span repeignait le libellé du bouton prompt en #f0f2f5 sur sa face claire (contraste 1.1) ; couleur forcée sur .fz span (test e2e domaine-dark-contrast)
+#72 (suite) corrigé: même repeinte des span sur le bouton prompt de /exemple-rapport (exemple.css, constat.css aligné)
+#147 corrigé: la règle sombre globale peignait le fieldset des filtres /domaine en rectangle opaque derrière le groupe arrondi ; fieldset transparent (test e2e)
+#59 déjà corrigé (7c8f926, PR #135, theme-dark-qa.css) : test e2e de non-régression ajouté (cliqué + survolé, contraste ≥ 4.5)
+#110 déjà corrigé (7c8f926, PR #135, ecologie.css) : test e2e de non-régression ajouté (fond opaque en sombre)
+#30 corrigé: en sombre le fond de la barre .dock de /verifier devenait transparent (texte de la page visible dessous) ; fond opaque sombre (test e2e verifier-dock-sombre)
+#31 corrigé: en sombre --primary restait #3d52a0 sur fond #1c2340 (contraste 2.1) pour les sous-titres de carte et le lien de checklist de /compte, rouge de zone sensible 2.3 ; couleurs claires en sombre (test e2e compte-mineurs, contraste ≥ 4.5 de tous les textes)
+#126/#127 corrigé: à 330 px légende Tendances (site-c.fr) hors cadre, notifications d’alerte tronquées et libellé « Limite gratuite » sorti à gauche ; légende en retour à la ligne, notifications sur 2 lignes, libellé sous « PRO » (test e2e compte-mineurs)
+Correctif interne: le contrôle de type échouait (e2e ajoutés sans lib.dom, import .ts dans update-retire-signatures.test) et copy-lint signalait public-score.ts (guillemets de la regex badgeHasTracker lus comme une chaîne) ; types DOM minimaux, import .js, guillemets en \\u0022/\\u0027 (tests copy-lint « accepte ce dépôt » et typecheck), clic #59 rejoué tant que l’état ne bascule pas
+#80 corrigé: à 330 px la grille .dom gardait 3 colonnes, le résumé du domaine tombait à 52 px de large à côté de la barre ; la note passe sous le résumé (test e2e rapport-mineurs, FR sombre et EN clair)
+#76 déjà corrigé: la rose, la phrase « Moyenne des n domaines testés » et l’illustration tiennent dans la carte à 330 px (corrigé par 7c8f926/437575f) ; vérifié par le test e2e rapport-mineurs #76/#80
+#96 corrigé: en sombre la feuille d’aperçu est sombre mais le logo SVG bleu nuit restait tel quel ; passé en blanc à l’écran (filtre), impression inchangée (test e2e imprimer #96)
+Correctif interne: lint en échec (tableaux à trous dans 2 e2e) et format non appliqué à motion/accueil.js ; corrigés (pnpm lint et pnpm format sans écart)
+- budget accueil (parcours « accueil sous 500 Ko ») : 512066 o > 512000 après #118 ; live.ts allégé (sélecteurs, ancre inline) → 511995 o, test rouge→vert.
+CodeQL PR #140 (31 alertes regex cmp.ts) : hôtes CMP déclarés en clair et comparés au hostname analysé, plus de RegExp construite ; test cmp « hôtes déclarés en clair »
+CI PR #140 e2e + Revue des dépendances : lockfile netlify-cli 23.15.1 inutilisable par npm 10 (paquets de plateforme non optionnels → EBADPLATFORM) et 60+ vulnérabilités ≥ high ; passé à 27.16.2 (version locale), lockfile régénéré avec npm 10, 0 high ; test scripts/netlify-cli-lock

@@ -267,7 +267,19 @@ export function scoreBadgeSvg(label: string, score: number | null): string {
 
 export function badgeHasTracker(svg: string): boolean {
   if (svg.includes('<script') || svg.includes('cookie')) return true;
-  return /https?:\/\/(?!www\.w3\.org\/)/.test(svg);
+  // Seul l’espace de noms SVG du W3C est admis : hôte comparé exactement, casse ignorée.
+  for (const [link] of svg.matchAll(
+    /(?:[a-z][a-z\d+.-]*:)?\/\/[^\s\u0022\u0027<>()]*/gi,
+  )) {
+    let url: URL;
+    try {
+      url = new URL(link, 'https://badge.invalid');
+    } catch {
+      return true;
+    }
+    if (url.hostname !== 'www.w3.org') return true;
+  }
+  return false;
 }
 
 type ScoreClient = SupabaseClient<Database>;
