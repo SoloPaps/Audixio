@@ -42,13 +42,16 @@ export type Vue =
   | 'maintenance'
   | 'cookies'
   | 'audit'
-  | 'lancer';
+  | 'lancer'
+  | 'score'
+  | 'partage'
+  | 'verifier';
 
 interface Props {
   title: string;
   description: string;
   vue: Vue;
-  robots?: string;
+  robots?: string | false;
 }
 
 const { title, description, vue, robots = 'noindex, nofollow' } = Astro.props;
@@ -62,7 +65,7 @@ const canonical = Astro.url.pathname || '/';
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="robots" content={robots} />
+    {robots ? <meta name="robots" content={robots} /> : null}
     <meta name="referrer" content="no-referrer" />
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#EDE8F5" />

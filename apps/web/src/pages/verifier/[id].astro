@@ -3,7 +3,8 @@ import { EXEMPLE_DOSSIER_ID } from '@audigy/evidence/browser';
 import PreuveMentions from '../../components/PreuveMentions.svelte';
 import VerifierPanel from '../../components/VerifierPanel.svelte';
 import { t } from '../../i18n/index.js';
-import Base from '../../layouts/Base.astro';
+import Canon from '../../layouts/Canon.astro';
+import '../../styles/maquettes/verifier-page.css';
 
 export function getStaticPaths() {
   return [{ params: { id: EXEMPLE_DOSSIER_ID } }];
@@ -12,9 +13,23 @@ export function getStaticPaths() {
 void Astro.params.id;
 ---
 
-<Base title={t('meta.verifier.title')} description={t('meta.verifier.description')}>
-  <h1>{t('verifier.heading')}</h1>
-  <p class="prose">{t('verifier.lead')}</p>
-  <PreuveMentions />
-  <VerifierPanel client:load />
-</Base>
+<Canon
+  vue="verifier"
+  title={t('meta.verifier.title')}
+  description={t('meta.verifier.description')}
+>
+  <main id="contenu" class="verifier-page">
+    <nav class="crumbs" aria-label={t('nav.pages')}>
+      <ol>
+        <li><a href="/">{t('nav.home')}</a></li>
+        <li><span aria-current="page">{t('verifier.heading')}</span></li>
+      </ol>
+    </nav>
+    <h1>{t('verifier.heading')}</h1>
+    <p class="lead">{t('verifier.lead')}</p>
+    <section class="vcard">
+      <PreuveMentions />
+      <VerifierPanel client:load />
+    </section>
+  </main>
+</Canon>

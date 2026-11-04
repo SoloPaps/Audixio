@@ -25,7 +25,6 @@ let sheet: HTMLDivElement | undefined = $state();
 const REPORT_PATHS = [
   '/rapport',
   '/domaine',
-  '/verifier',
   '/plan',
   '/constat',
   '/badge',
@@ -35,6 +34,8 @@ const REPORT_PATHS = [
 function normalize(path: string): string {
   const clean =
     path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
+  // La fiche /verifier/:id n’est aucune des quatre destinations.
+  if (clean === '/verifier') return '/sites';
   return REPORT_PATHS.some(
     (item) => clean === item || clean.startsWith(`${item}/`),
   )

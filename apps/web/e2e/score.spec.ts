@@ -58,6 +58,7 @@ test('le lien partagé est en noindex et la révocation est immédiate', async (
   page,
 }) => {
   await page.goto(`/partage/${SHARE}/?theme=dark`);
+  await expect(page.getByText('Lien équipe · Lecture seule')).toBeVisible();
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
     'noindex',
