@@ -811,6 +811,13 @@ function bindHistory(root: HTMLElement): () => void {
     values = built.marks.map((mark) => Math.round(mark.value));
     xs = built.marks.map((mark) => mark.x);
     ys = built.marks.map((mark) => mark.y);
+    const legend = root.querySelector('.legend > span:first-child');
+    if (legend?.lastChild) {
+      legend.lastChild.textContent =
+        built.marks.length === 1
+          ? t('mq.ui.legend.one')
+          : t('mq.ui.legend.many', { n: String(built.marks.length) });
+    }
     const average = root.querySelector('.avg [data-count]');
     if (average) {
       // Le compteur animé de la maquette (80,6) écrirait encore dans l’ancien

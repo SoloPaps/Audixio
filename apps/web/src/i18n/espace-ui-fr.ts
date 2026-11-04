@@ -31,6 +31,8 @@ export const espaceUiFr = {
   'mq.ui.range.full':
     'Historique disponible depuis décembre 2025 : la courbe affiche déjà toute la période.',
   'mq.ui.report': 'Export du rapport {ref} en préparation',
+  'mq.ui.legend.one': 'Note globale pondérée (1 audit)',
+  'mq.ui.legend.many': 'Note globale pondérée ({n} audits)',
   'mq.ui.gsc': 'Redirection vers Search Console',
   'mq.ui.terms.on': 'Acceptation mise à jour',
   'mq.ui.terms.off': 'Consentement statistique retiré',

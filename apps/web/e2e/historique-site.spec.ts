@@ -109,6 +109,10 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
   const average = page.locator('.legend .avg [data-count]');
   await page.waitForTimeout(2_500);
   await expect(average).toHaveText('80,0');
+  // Bug #5 : la légende compte les audits affichés, pas « 6 audits ».
+  await expect(page.locator('.legend > span').first()).toHaveText(
+    'Note globale pondérée (2 audits)',
+  );
 });
 
 test('« Historique et tendances » ouvre l’historique du site de la carte', async ({
