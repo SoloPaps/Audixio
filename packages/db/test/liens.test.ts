@@ -159,7 +159,7 @@ describe('vue servie', () => {
     expect(raw).not.toContain(BRIEF_COMPLET);
     expect(raw).not.toContain(BRIEF_PARTIEL);
     expect(raw).not.toContain('fix.seo');
-    expect(vue?.noteGlobale).toBeNull();
+    expect(vue?.noteGlobale).toBe(72);
     expect(vue?.brief).toBe('aucun');
     expect(vue?.constats.map((row) => row.checkId)).toEqual(['seo.titre']);
     expect(vue?.constats[0]?.fixKey).toBeNull();

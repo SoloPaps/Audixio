@@ -1,4 +1,5 @@
 <script lang="ts">
+import { isLockedDomain } from '@audigy/db';
 import { onMount } from 'svelte';
 import { type MessageKey, t } from '../i18n/index.js';
 import { browserClient } from '../lib/browser-session.js';
@@ -170,7 +171,10 @@ onMount(() => {
           <h1>{t(HEAD[levelForScore(view.globalScore)])}</h1>
           <p class="detail">{t('score.public.lead')}</p>
           <p class="hint">
-            {t('report.coverage', { scored, total: REPORT_DOMAINS.length })}
+            {t('report.coverage', {
+              scored,
+              total: REPORT_DOMAINS.filter((id) => !isLockedDomain(id)).length,
+            })}
           </p>
         </div>
       </header>

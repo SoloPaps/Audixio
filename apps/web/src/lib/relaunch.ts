@@ -3,7 +3,10 @@ export function progressionHref(auditId: string): string {
   return `/progression?id=${encodeURIComponent(auditId)}`;
 }
 
-/** Nouvelle demande pour ce site. */
-export function relaunchHref(siteId: string): string {
-  return `/progression?site=${encodeURIComponent(siteId)}`;
+/** Nouvelle demande : directement la progression, sans page /lancer. */
+export function relaunchHref(siteId: string, url?: string): string {
+  const params = new URLSearchParams();
+  params.set('site', siteId);
+  if (url) params.set('url', url);
+  return `/progression?${params.toString()}`;
 }

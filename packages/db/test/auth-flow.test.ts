@@ -1,6 +1,7 @@
 import postgres, { type Sql } from 'postgres';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { type AuthEnv, handleAuthRequest } from '../src/auth-http.js';
+import { LOCAL_TEST_ACCOUNTS, seedLocalAccounts } from '../src/local-seed.js';
 import {
   ensureLocalSupabase,
   type LocalSupabase,
@@ -154,6 +155,36 @@ describe('connexion Supabase local', () => {
       svc_rate: true,
       anon_note: false,
     });
+  });
+
+  it('connecte les deux comptes seed du labo', async () => {
+    await seedLocalAccounts(admin, {
+      apiUrl: local.apiUrl,
+      dbUrl: local.dbUrl,
+    });
+    for (const [index, account] of LOCAL_TEST_ACCOUNTS.entries()) {
+      const res = await call('/api/auth/connexion', {
+        form: {
+          email: account.email,
+          password: account.password,
+          remember: 'on',
+        },
+        ip: `203.0.113.${70 + index}`,
+      });
+      const body = (await res.json()) as {
+        ok?: boolean;
+        error?: string | null;
+      };
+      expect(res.status, account.email).toBe(200);
+      expect(body.ok, account.email).toBe(true);
+      expect(body.error, account.email).toBeNull();
+      expect(
+        res.headers
+          .getSetCookie()
+          .some((line) => line.startsWith('audixio_connecte=1')),
+        account.email,
+      ).toBe(true);
+    }
   });
 
   it('inscrit, confirme, et ne dit pas si l’adresse existe', async () => {

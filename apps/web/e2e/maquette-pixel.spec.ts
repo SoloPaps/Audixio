@@ -1025,9 +1025,9 @@ test.describe('maquettes finales, garde visuelle à 30 %', () => {
         }
         if (item.id === 'preuve') {
           await expect(page.getByText('Copier le snippet')).toBeVisible();
-          await expect(
-            page.getByText('Résultat simulé (aperçu)'),
-          ).toBeVisible();
+          await expect(page.getByText('Résultat simulé (aperçu)')).toHaveCount(
+            0,
+          );
           await expect(
             page.getByRole('heading', { name: 'Où en est la détection' }),
           ).toBeVisible();

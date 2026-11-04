@@ -613,6 +613,17 @@ html[data-theme="dark"][data-board] .cap .st {
   border-color: #3d4d7a;
 }
 
+html[data-theme="dark"][data-vue] .session-wall {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #3d4d7a;
+  box-shadow: none;
+}
+
+html[data-theme="dark"][data-vue] .session-wall :is(h1, p, .lede) {
+  color: #f0f2f5;
+}
+
 html[data-theme="dark"][data-vue] .cap,
 html[data-theme="dark"][data-board] .cap {
   background-color: #1c2340;

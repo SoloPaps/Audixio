@@ -238,6 +238,32 @@ test.describe('animations Pro et accès', () => {
   });
 
   test('acces : tiroir de refus, acceptation et retrait', async ({ page }) => {
+    await page.route('**/api/**', async (route) => {
+      const path = new URL(route.request().url()).pathname;
+      if (path === '/api/auth/session') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            access_token: 'jeton-test',
+            user: { id: 'u' },
+          }),
+        });
+        return;
+      }
+      if (path === '/api/liens/decision' || path === '/api/liens') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            url: '/partage/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            id: 'lien-test',
+          }),
+        });
+        return;
+      }
+      await route.continue();
+    });
     await open(
       page,
       '/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light',
@@ -262,6 +288,33 @@ test.describe('animations Pro et accès', () => {
     await expect(page.locator('#eb')).toHaveText(
       'Demande en attente de votre réponse',
     );
+  });
+
+  test('acces : une réponse 401 n’affiche pas l’accès accordé', async ({
+    page,
+  }) => {
+    await page.route('**/api/**', async (route) => {
+      const path = new URL(route.request().url()).pathname;
+      if (path === '/api/auth/session' || path === '/api/liens/decision') {
+        await route.fulfill({
+          status: 401,
+          contentType: 'application/json',
+          body: JSON.stringify({ error: 'unauthorized' }),
+        });
+        return;
+      }
+      await route.continue();
+    });
+    await open(
+      page,
+      '/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light',
+      'reduce',
+    );
+    await page.locator('#ok').click();
+    await expect(page.locator('#status')).toHaveText(
+      'La demande n’a pas abouti. Connectez-vous pour répondre.',
+    );
+    await expect(page.locator('#pane-ok')).toBeHidden();
   });
 
   test('acces : le survol d’une puce change le fond', async ({ page }) => {

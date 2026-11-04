@@ -1,7 +1,9 @@
 <script lang="ts">
 import { t } from '../i18n/index.js';
 import { currentSession } from '../lib/browser-session.js';
+import { readGuestAudit } from '../lib/guest-store.js';
 import { badgeHref } from '../lib/hub-view.js';
+import { newShareToken, saveLocalShare } from '../lib/local-share.js';
 
 interface Props {
   auditId: string;
@@ -64,7 +66,19 @@ async function load(): Promise<void> {
 
 async function create(): Promise<void> {
   const token = await bearer();
-  if (!token || pending) {
+  if (!token) {
+    const stored = readGuestAudit(auditId);
+    if (!stored || pending) {
+      error = t('share.error');
+      return;
+    }
+    const share = newShareToken();
+    saveLocalShare(share, stored);
+    link = `${location.origin}/partage/${share}`;
+    linkId = share;
+    return;
+  }
+  if (pending) {
     error = t('share.error');
     return;
   }

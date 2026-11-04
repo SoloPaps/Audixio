@@ -501,7 +501,8 @@ test('parcours invité : le plafond ouvre la fenêtre sans rapport', async ({
   await page.goto('/');
   await page.getByLabel('Adresse du site').fill('https://exemple.fr');
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
-  await expect(page).toHaveURL(/\/progression\?url=/);
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page).not.toHaveURL(/\/lancer/);
   const gate = page.getByRole('dialog', {
     name: 'Connectez-vous ou inscrivez-vous',
   });

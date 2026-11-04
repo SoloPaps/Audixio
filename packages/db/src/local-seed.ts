@@ -26,6 +26,10 @@ export const LOCAL_TEST_ACCOUNTS: readonly LocalAccount[] = [
   },
 ];
 
+const FREE_SITE = '00000000-0000-4000-8000-0000000000a2';
+const FREE_AUDIT = '00000000-0000-4000-8000-0000000000a3';
+const FREE_URL = 'https://gratuit.audigy.test/';
+const FREE_HOST = 'gratuit.audigy.test';
 const PRO_SITE = '00000000-0000-4000-8000-0000000000b2';
 const PRO_URL = 'https://bon.audigy.test/';
 const PRO_HOST = 'bon.audigy.test';
@@ -68,7 +72,7 @@ export function guestLiftLine(envText: string, local: boolean): string {
 export function localAccountsMessage(): string {
   const lines = LOCAL_TEST_ACCOUNTS.map(
     (account) =>
-      `- ${account.email} / ${account.password} (${account.plan === 'pro' ? 'Pro, site https://bon.audigy.test déjà vérifié, 3 audits' : 'gratuit'})`,
+      `- ${account.email} / ${account.password} (${account.plan === 'pro' ? 'Pro, site https://bon.audigy.test déjà vérifié, 3 audits' : 'gratuit, site https://gratuit.audigy.test déjà vérifié, 1 audit'})`,
   );
   return [
     'Comptes de test locaux (impossibles hors Supabase local) :',
@@ -133,33 +137,38 @@ async function upsertUser(
   `;
 }
 
-async function seedProHistory(
+async function seedDoneSite(
   sql: TransactionSql,
   ownerId: string,
+  site: { id: string; url: string; host: string; label: string },
+  rows: readonly { id: string; days: number; score: number }[],
 ): Promise<void> {
   await sql`
     insert into public.sites (
       id, owner_id, url, scope, host, label, hosting, is_public
     ) values (
-      ${PRO_SITE}::uuid,
+      ${site.id}::uuid,
       ${ownerId}::uuid,
-      ${PRO_URL},
+      ${site.url},
       'origin',
-      ${PRO_HOST},
-      'Exemple vérifié',
+      ${site.host},
+      ${site.label},
       'other',
       false
     )
     on conflict (id) do update set
       label = excluded.label,
+      owner_id = excluded.owner_id,
+      url = excluded.url,
+      host = excluded.host,
       deleted_at = null
   `;
-  await sql`delete from public.site_verifications where site_id = ${PRO_SITE}::uuid`;
+  await sql`delete from public.site_verifications where site_id = ${site.id}::uuid`;
   await sql`
     insert into public.site_verifications (
       site_id, method, token, status, verified_at, last_checked_at
     ) values (
-      ${PRO_SITE}::uuid,
+      ${site.id}::uuid,
       'file',
       ${VERIFY_TOKEN},
       'verified',
@@ -167,14 +176,14 @@ async function seedProHistory(
       now()
     )
   `;
-  for (const row of HISTORY) {
+  for (const row of rows) {
     await sql`
       insert into public.audits (
         id, site_id, trigger, mode, status, method_version, engine_version,
         global_score, coverage, created_at, started_at, finished_at
       ) values (
         ${row.id}::uuid,
-        ${PRO_SITE}::uuid,
+        ${site.id}::uuid,
         'manual',
         'passive',
         'done',
@@ -196,9 +205,9 @@ async function seedProHistory(
         error = null
     `;
   }
-  const ids = HISTORY.map((row) => row.id);
+  const ids = rows.map((row) => row.id);
   await sql`delete from public.domain_scores where audit_id in ${sql(ids)}`;
-  for (const row of HISTORY) {
+  for (const row of rows) {
     for (const domain of DOMAINS) {
       await sql`
         insert into public.domain_scores (audit_id, domain, score, coverage, level)
@@ -214,6 +223,38 @@ async function seedProHistory(
   }
 }
 
+async function seedOwnedHistory(
+  sql: TransactionSql,
+  ownerId: string,
+  plan: 'free' | 'pro',
+): Promise<void> {
+  if (plan === 'pro') {
+    await seedDoneSite(
+      sql,
+      ownerId,
+      {
+        id: PRO_SITE,
+        url: PRO_URL,
+        host: PRO_HOST,
+        label: 'Exemple vérifié',
+      },
+      HISTORY,
+    );
+    return;
+  }
+  await seedDoneSite(
+    sql,
+    ownerId,
+    {
+      id: FREE_SITE,
+      url: FREE_URL,
+      host: FREE_HOST,
+      label: 'Site gratuit',
+    },
+    [{ id: FREE_AUDIT, days: 2, score: 72 }],
+  );
+}
+
 /**
  * Comptes de test. Jette `hors_local` avant toute requête si l’URL
  * d’API ou de base n’est pas locale.
@@ -224,13 +265,11 @@ export async function seedLocalAccounts(
 ): Promise<readonly LocalAccount[]> {
   assertLocalSupabase(urls.apiUrl);
   assertLocalSupabase(urls.dbUrl);
-  const pro = LOCAL_TEST_ACCOUNTS.find((account) => account.plan === 'pro');
-  if (!pro) throw new Error('compte_pro_absent');
   await sql.begin(async (tx) => {
     for (const account of LOCAL_TEST_ACCOUNTS) {
       await upsertUser(tx, account);
+      await seedOwnedHistory(tx, account.id, account.plan);
     }
-    await seedProHistory(tx, pro.id);
   });
   return LOCAL_TEST_ACCOUNTS;
 }

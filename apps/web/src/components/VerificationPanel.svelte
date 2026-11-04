@@ -2,7 +2,6 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
-import { loginHref } from '../lib/nav.js';
 import {
   checkVerification,
   createVerification,
@@ -11,6 +10,7 @@ import {
 } from '../lib/verify-api.js';
 import { localChallenge } from '../lib/verify-challenge.js';
 import { guidesFor, type VerifyMethod } from '../lib/verify-guides.js';
+import SessionWall from './SessionWall.svelte';
 
 interface SiteRow {
   id: string;
@@ -48,7 +48,6 @@ let site = $state<SiteRow | null>(null);
 let rows = $state<StoredVerification[]>([]);
 let method = $state<VerifyMethod>('meta');
 let reportId = $state<string | null>(null);
-let sim = $state<'ok' | 'fail' | null>(null);
 let accessToken = '';
 
 function isMethod(value: string): value is VerifyMethod {
@@ -240,12 +239,12 @@ async function onCopy(value: string): Promise<void> {
 {#if loading}
   <p role="status">{t('verify.loading')}</p>
 {:else if needLogin}
-  <section class="khero" data-st="idle" aria-labelledby="h1">
-    <h1 id="h1">{t('verify.title')}</h1>
-    <p>{t('verify.consent')}</p>
-    <p role="status">{t('verify.need_login')}</p>
-    <p><a class="btn btn-primary" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a></p>
-  </section>
+  <SessionWall
+    title={t('verify.title')}
+    lead={t('verify.consent')}
+    status={t('verify.need_login')}
+    next={`${location.pathname}${location.search}`}
+  />
 {:else if missing}
   <h1>{t('verify.missing')}</h1>
   <p><a class="btn btn-ghost" href="/sites">{t('verify.back')}</a></p>
@@ -374,12 +373,11 @@ async function onCopy(value: string): Promise<void> {
         </div>
       {/if}
     {/if}
-    <div class="sim"><span id="siml">{t('preuve.sim')}</span><div class="seg" role="group" aria-labelledby="siml"><button type="button" aria-pressed={sim !== 'fail'} onclick={() => { sim = 'ok'; }}>{t('preuve.sim.ok')}</button><button type="button" aria-pressed={sim === 'fail'} onclick={() => { sim = 'fail'; }}>{t('preuve.sim.fail')}</button></div></div>
   </section>
   <section class="blk" aria-labelledby="hs">
     <p class="kicker">{t('preuve.detect.kicker')}</p>
     <h2 class="sec" id="hs">{t('preuve.detect')}</h2>
-    <div class="card stat" data-st={sim ?? (phase === 'checking' ? 'scan' : phase)} aria-live="polite">
+    <div class="card stat" data-st={phase === 'checking' ? 'scan' : phase} aria-live="polite">
       <div class="sbadge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
       <div>
         <div class="sv idle"><span class="badge b-nt">{t('preuve.sv.idle.b')}</span><h3>{t('preuve.sv.idle.t')}</h3><p>{t('preuve.sv.idle.p')}</p></div>

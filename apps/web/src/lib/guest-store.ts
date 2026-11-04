@@ -10,21 +10,43 @@ function storage(): Storage | null {
   }
 }
 
+function valid(value: AuditPayload): boolean {
+  return (
+    typeof value?.audit?.id === 'string' &&
+    Array.isArray(value.findings) &&
+    Array.isArray(value.domains)
+  );
+}
+
+function readAll(): Record<string, AuditPayload> {
+  const raw = storage()?.getItem(KEY);
+  if (!raw) return {};
+  try {
+    const value = JSON.parse(raw) as
+      | AuditPayload
+      | Record<string, AuditPayload>;
+    if (value && typeof value === 'object' && 'audit' in value) {
+      const one = value as AuditPayload;
+      return valid(one) ? { [one.audit.id]: one } : {};
+    }
+    const out: Record<string, AuditPayload> = {};
+    if (!value || typeof value !== 'object') return out;
+    for (const [id, item] of Object.entries(value)) {
+      if (item?.audit?.id === id && valid(item)) out[id] = item;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
 export function saveGuestAudit(payload: AuditPayload): void {
-  storage()?.setItem(KEY, JSON.stringify(payload));
+  const all = readAll();
+  if (!valid(payload)) return;
+  all[payload.audit.id] = payload;
+  storage()?.setItem(KEY, JSON.stringify(all));
 }
 
 export function readGuestAudit(id: string): AuditPayload | null {
-  const raw = storage()?.getItem(KEY);
-  if (!raw) return null;
-  try {
-    const value = JSON.parse(raw) as AuditPayload;
-    if (value?.audit?.id !== id) return null;
-    if (!Array.isArray(value.findings) || !Array.isArray(value.domains)) {
-      return null;
-    }
-    return value;
-  } catch {
-    return null;
-  }
+  return readAll()[id] ?? null;
 }

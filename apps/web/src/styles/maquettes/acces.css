@@ -373,6 +373,10 @@ h1 .word {
   display: inline-block;
   overflow: hidden;
   vertical-align: bottom;
+  margin-right: 0.28em;
+}
+h1 .word:last-child {
+  margin-right: 0;
 }
 h1 .word > span {
   display: inline-block;

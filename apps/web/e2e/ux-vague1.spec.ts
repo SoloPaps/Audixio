@@ -119,10 +119,17 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
   await expect(prose).toHaveCSS('text-decoration-line', /underline/);
 
   await page.goto('/compte');
-  const action = page.getByRole('link', { name: 'Aller à la connexion' });
+  const wall = page.locator('.session-wall');
+  const action = wall.getByRole('link', { name: 'Connexion' });
   await expect(action).toHaveCSS('font-weight', '600');
   await expect(action).toHaveCSS('border-top-width', '1px');
-  await expect(action).toHaveCSS('min-height', '44px');
+  await expect(action).toHaveCSS('min-height', '50px');
+  await expect(action).toHaveCSS('color', 'rgb(255, 255, 255)');
+  await expect(action).toHaveCSS('text-decoration-line', 'none');
+  await expect(wall.getByRole('link', { name: 'Inscription' })).toHaveAttribute(
+    'href',
+    '/inscription?next=%2Fcompte',
+  );
   await expect(
     page.locator('.axn-tools').getByRole('button', { name: 'Thème' }),
   ).toBeVisible();

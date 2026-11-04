@@ -1,23 +1,60 @@
 <script lang="ts">
 import { t } from '../i18n/slim.js';
+import { saveGuestAudit } from '../lib/guest-store.js';
+import { launchFromHome } from '../lib/home-audit-client.js';
+import { t as gateText } from '../lib/home-audit-copy.js';
+import { homeFormAlert } from '../lib/home-audit-notice.js';
+import { progressionHref } from '../lib/relaunch.js';
 import { isCompleteHttpUrl } from '../lib/site-url.js';
+import '../styles/maquettes/guest-gate.css';
 
 let invalid = $state(false);
+let apiMessage = $state('');
+let gate = $state(false);
+let busy = $state(false);
 
-function onSubmit(event: SubmitEvent): void {
+function fail(message: string): void {
+  invalid = true;
+  apiMessage = message;
+}
+
+$effect(() => {
+  if (!gate) return;
+  document.documentElement.classList.add('gg-lock');
+  return () => {
+    document.documentElement.classList.remove('gg-lock');
+  };
+});
+
+async function onSubmit(event: SubmitEvent): Promise<void> {
+  event.preventDefault();
   const form = event.currentTarget;
-  if (!(form instanceof HTMLFormElement)) return;
+  if (!(form instanceof HTMLFormElement) || busy) return;
   const raw = String(new FormData(form).get('url') ?? '').trim();
-  if (isCompleteHttpUrl(raw)) {
-    invalid = false;
+  if (!isCompleteHttpUrl(raw)) {
+    invalid = true;
+    apiMessage = '';
     return;
   }
-  event.preventDefault();
-  invalid = true;
+  invalid = false;
+  apiMessage = '';
+  busy = true;
+  try {
+    const result = await launchFromHome(raw);
+    if (!result.ok) {
+      if (result.limit) gate = true;
+      else fail(result.message);
+      return;
+    }
+    if (result.guest) saveGuestAudit(result.guest);
+    location.assign(progressionHref(result.auditId));
+  } finally {
+    busy = false;
+  }
 }
 </script>
 
-<form id="audit-form" class="form" action="/progression" method="get" novalidate onsubmit={onSubmit}>
+<form id="audit-form" class="form" novalidate onsubmit={onSubmit}>
   <label for="url-input">
     <span>{t('home.url.long')}</span>
     <kbd class="kbd">URL</kbd>
@@ -46,7 +83,26 @@ function onSubmit(event: SubmitEvent): void {
       <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </button>
   </div>
-  <p class="error" id="url-error" role="alert">{invalid ? t('home.url.error') : ''}</p>
+  <p class="error" id="url-error" role="alert">{homeFormAlert({
+    invalidUrl: invalid,
+    apiMessage,
+    urlError: t('home.url.error'),
+  })}</p>
   <p class="hint" id="url-hint">{t('home.url.format')}</p>
 </form>
 <p><a class="link-inline" href="/methode">{t('home.method')}</a></p>
+{#if gate}
+  <div class="gg-root">
+    <div class="gg-veil"></div>
+    <div class="gg" role="dialog" aria-modal="true" aria-labelledby="gg-title" aria-describedby="gg-lead" tabindex="-1">
+      <p class="gg-pill-k">{gateText('guest.gate.kicker')}</p>
+      <h2 id="gg-title">{gateText('guest.gate.title')}</h2>
+      <p class="gg-lead" id="gg-lead">{gateText('guest.gate.lead')}</p>
+      <div class="gg-actions">
+        <a class="gg-btn" href="/connexion">{gateText('guest.gate.login')}</a>
+        <a class="gg-btn gg-btn-main" href="/inscription">{gateText('guest.gate.signup')}</a>
+      </div>
+      <button class="gg-close" type="button" onclick={() => { gate = false; }}>{gateText('guest.gate.close')}</button>
+    </div>
+  </div>
+{/if}

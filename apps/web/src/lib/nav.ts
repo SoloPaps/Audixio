@@ -38,3 +38,7 @@ export function takeNext(fallback = '/sites'): string {
 export function loginHref(next: string): string {
   return `/connexion?next=${encodeURIComponent(safeNext(next, '/sites'))}`;
 }
+
+export function signupHref(next: string): string {
+  return `/inscription?next=${encodeURIComponent(safeNext(next, '/sites'))}`;
+}
