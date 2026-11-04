@@ -44,7 +44,7 @@ onMount(() => {
 <div class="gate locked" id="gate">
 <form class="panel gate-in" id="fPro" inert>
 <div class="ctl"><label class="lbl" for="drop">{t('mq.al.027')}</label><span class="hint">{t('mq.al.028')} <output id="dropv" for="drop">{t('mq.al.029')}</output> {t('mq.al.030')}</span><input type="range" id="drop" min="1" max="30" value="5"></div>
-<div class="ctl"><label class="lbl" for="ssl">{t('mq.al.031')}</label><select class="inp" id="ssl"><option>{t('mq.al.032')}</option><option>{t('mq.al.014')}</option><option selected>{t('mq.al.033')}</option><option>{t('mq.al.034')}</option></select></div>
+<div class="ctl"><label class="lbl" for="ssl">{t('mq.al.031')}</label><select class="inp" id="ssl"><option value="7">{t('mq.al.032')}</option><option value="14">{t('mq.al.014')}</option><option value="30" selected>{t('mq.al.033')}</option><option value="60">{t('mq.al.034')}</option></select></div>
 <fieldset class="ctl"><legend class="lbl">{t('mq.al.035')}</legend><div class="radios">
 <label><input type="radio" name="fq" value="j"><span>{t('mq.al.036')}</span></label><label><input type="radio" name="fq" value="h" checked><span>{t('mq.al.037')}</span></label><label><input type="radio" name="fq" value="m"><span>{t('mq.al.023')}</span></label></div></fieldset>
 <div class="ctl sw-row"><div><span class="lbl" id="dg-l">{t('mq.al.038')}</span><span class="hint" id="dg-d">{t('mq.al.039')}</span></div><span class="sw" role="switch" aria-checked="true" aria-disabled="true" aria-labelledby="dg-l" aria-describedby="dg-d"><i></i></span></div>

@@ -6,6 +6,7 @@ import { currentSession } from '../lib/browser-session.js';
 import { revealAll } from '../lib/motion.js';
 import { loginHref } from '../lib/nav.js';
 import { buildPdfReport, type PdfReport } from '../lib/pdf-report.js';
+import { printPriorityTitle } from '../lib/print-priority.js';
 import { printAuditId } from '../lib/print-proof.js';
 
 const scales = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
@@ -160,7 +161,7 @@ function onPrint(): void {
       </article>
       <article class="sheet rv" style="--i:1" aria-label={t('pdf.pager', { page: 2 })}>
         <p class="kicker">{t('pdf.prio.kicker')}</p>
-        <h2 class="sh">{t('pdf.prio.title')}</h2>
+        <h2 class="sh">{printPriorityTitle(view.priorities.length, t('pdf.prio.title'), t('pdf.prio.empty'))}</h2>
         <p class="lede muted">{t('pdf.prio.lede')}</p>
         {#if view.priorities.length === 0}
           <p>{t('pdf.prio.empty')}</p>

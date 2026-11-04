@@ -3,6 +3,7 @@ import { onMount, tick } from 'svelte';
 import { type MessageKey, t } from '../i18n/index.js';
 import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
+import { briefScreen } from '../lib/brief-screen.js';
 import { currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
 import { REPORT_DOMAINS } from '../lib/domains.js';
@@ -23,7 +24,7 @@ interface Props {
 
 type Mode = 'skip' | 'check' | 'fix';
 
-let { auditId, host, verified, items, rows }: Props = $props();
+let { auditId, host, url, verified, items, rows }: Props = $props();
 
 const NAMES: Record<string, MessageKey> = {
   performance: 'brief.name.performance',
@@ -135,37 +136,24 @@ function esc(value: string): string {
 }
 
 const previewHtml = $derived.by(() => {
-  const lines: string[] = [];
-  lines.push(`<div class="l l-h1">${esc(t('brief.title', { host }))}</div>`);
-  lines.push(`<div class="l l-i">${esc(t('brief.generated'))}</div>`);
-  lines.push(`<div class="l l-p"><b>${esc(t('brief.role.line'))}</b></div>`);
-  lines.push(
-    `<div class="l l-p"><b>${esc(t('brief.mission', { host }))}</b></div>`,
+  const chosen = domains.flatMap((domain) =>
+    domain.issues.flatMap((issue) => {
+      const mode = modeOf(issue);
+      if (mode === 'skip') return [];
+      return [
+        {
+          checkId: issue.checkId,
+          title: issue.title,
+          proof: issue.proof || issue.why,
+          mode: mode === 'fix' ? ('fix' as const) : ('verif' as const),
+        },
+      ];
+    }),
   );
-  let any = false;
-  for (const [index, domain] of domains.entries()) {
-    if (domain.issues.length === 0) continue;
-    const fix = domain.issues.filter((issue) => modeOf(issue) === 'fix');
-    const check = domain.issues.filter((issue) => modeOf(issue) === 'check');
-    if (fix.length === 0 && check.length === 0) continue;
-    any = true;
-    lines.push(
-      `<div class="l l-h2">${esc(`## ${index + 1}. ${domain.name}`)}</div>`,
-    );
-    const group = (list: ReportRow[], title: string, cls: string): void => {
-      if (list.length === 0) return;
-      lines.push(`<div class="l l-h3">${esc(`### ${title}`)}</div>`);
-      for (const issue of list) {
-        lines.push(
-          `<div class="l l-li ${cls}"><b>${esc(issue.title)} :</b> ${esc(issue.why)}</div>`,
-        );
-      }
-    };
-    group(fix, t('brief.h.fix'), 'fix');
-    group(check, t('brief.h.check'), 'check');
-  }
-  if (!any) lines.push(`<div class="l l-empty">${esc(t('brief.empty'))}</div>`);
-  return lines.join('');
+  return briefScreen({ url, items: chosen })
+    .split('\n')
+    .map((line) => `<div class="l">${esc(line)}</div>`)
+    .join('');
 });
 
 const tokenCount = $derived(Math.max(1, Math.round(previewHtml.length / 3.8)));

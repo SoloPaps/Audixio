@@ -17,6 +17,7 @@ import {
   progressLive,
   progressPhase,
 } from '../lib/progress-live.js';
+import { hostFromProgressQuery } from '../lib/progress-target.js';
 import { progressionHref } from '../lib/relaunch.js';
 import GuestGate from './GuestGate.svelte';
 
@@ -35,6 +36,12 @@ function hostOf(url: string): string {
 
 onMount(() => {
   const params = new URLSearchParams(location.search);
+  const askedHost = hostFromProgressQuery(location.search);
+  if (askedHost) {
+    for (const node of document.querySelectorAll('.mono')) {
+      node.textContent = askedHost;
+    }
+  }
   let id = params.get('id');
   const status = document.getElementById('liveT');
   const home = document.getElementById('home-back');

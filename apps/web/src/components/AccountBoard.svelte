@@ -55,16 +55,11 @@ onMount(() => {
 <section class="blk" id="acces-partages" aria-labelledby="hap"><p class="kicker rv2">{t('mq.co.058')}</p>
 <div class="ap-head"><div><h2 class="sec rv2" style="--i:1" id="hap">{t('mq.co.007')}</h2>
 <p class="sec-lede rv2" style="--i:2;margin-bottom:0">{t('mq.co.059')}</p></div>
-<p class="ap-cap rv2" style="--i:3"><span>{t('mq.co.060')} <b><span id="apn">{t('mq.co.061')}</span> {t('mq.co.062')}</b></span><span class="ap-meter" aria-hidden="true"><i id="apm"></i></span><span class="sr-only">{t('mq.co.063')}</span></p></div>
+<p class="ap-cap rv2" style="--i:3"><span>{t('mq.co.060')} <b><span id="apn">0</span><span id="apd">{t('mq.co.062')}</span></b></span><span class="ap-meter" aria-hidden="true"><i id="apm"></i></span><span class="sr-only">{t('mq.co.063')}</span></p></div>
 <div class="card rv2" style="--i:2">
 <ul class="ap-types" aria-label={t('mq.co.064')}><li><b>{t('mq.co.065')}</b> {t('mq.co.066')}</li><li><b>{t('mq.co.067')}</b> {t('mq.co.068')}</li></ul>
-<ul class="ap-list" id="apl" aria-label={t('mq.co.069')}>
-<li class="ap-row rv2" style="--i:3" id="apr1"><span class="ap-av" aria-hidden="true">{t('mq.co.070')}</span>
-<div class="ap-who"><b>{t('mq.co.071')}</b><div class="ap-meta"><span class="ap-tag">{t('mq.co.072')}</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>{t('mq.co.073')}</span><span class="badge b-own"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg>{t('mq.co.074')}</span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>{t('mq.co.075')} <small>{t('mq.co.076')}</small></span><span>{t('mq.co.077')}</span></div></div>
-<div class="ap-act"><button type="button" class="btn btn-ghost btn-sm btn-copy" id="apc" data-copy="https://exemple.fr/rapport-partage-demo" data-msg={t('mq.co.078')}><span class="bl">{t('mq.co.079')}</span></button>
-<button type="button" class="btn btn-sm btn-revoke" data-revoke="apr1" data-who="marie@exemple.fr" data-site="exemple.fr" aria-label={t('mq.co.080')}><span class="bl">{t('mq.co.081')}</span></button></div></li>
-</ul>
-<div class="ap-empty" id="ape" hidden><div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></div><h3 id="apeh" tabindex="-1">{t('mq.co.082')}</h3><p>{t('mq.co.083')}</p></div>
+<ul class="ap-list" id="apl" aria-label={t('mq.co.069')}></ul>
+<div class="ap-empty" id="ape"><div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></div><h3 id="apeh" tabindex="-1">{t('mq.co.082')}</h3><p>{t('mq.co.083')}</p></div>
 <p class="ap-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg><span>{t('mq.co.084')}</span></p>
 </div></section>
 

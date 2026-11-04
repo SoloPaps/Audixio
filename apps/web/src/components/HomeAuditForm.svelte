@@ -4,10 +4,11 @@ import { saveGuestAudit } from '../lib/guest-store.js';
 import { launchFromHome } from '../lib/home-audit-client.js';
 import { t as gateText } from '../lib/home-audit-copy.js';
 import { homeFormAlert } from '../lib/home-audit-notice.js';
+import { homeUrlIssue } from '../lib/home-url-issue.js';
 import { progressionHref } from '../lib/relaunch.js';
-import { isCompleteHttpUrl } from '../lib/site-url.js';
 import '../styles/maquettes/guest-gate.css';
 
+let formEl = $state<HTMLFormElement | null>(null);
 let invalid = $state(false);
 let apiMessage = $state('');
 let gate = $state(false);
@@ -28,10 +29,10 @@ $effect(() => {
 
 async function onSubmit(event: SubmitEvent): Promise<void> {
   event.preventDefault();
-  const form = event.currentTarget;
-  if (!(form instanceof HTMLFormElement) || busy) return;
+  const form = formEl;
+  if (!form || busy) return;
   const raw = String(new FormData(form).get('url') ?? '').trim();
-  if (!isCompleteHttpUrl(raw)) {
+  if (homeUrlIssue(raw, t('home.url.error'))) {
     invalid = true;
     apiMessage = '';
     return;
@@ -54,7 +55,7 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
 }
 </script>
 
-<form id="audit-form" class="form" novalidate onsubmit={onSubmit}>
+<form id="audit-form" class="form" novalidate bind:this={formEl} onsubmit={onSubmit}>
   <label for="url-input">
     <span>{t('home.url.long')}</span>
     <kbd class="kbd">URL</kbd>

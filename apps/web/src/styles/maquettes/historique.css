@@ -1037,6 +1037,7 @@ html[data-vue="historique"] .seg button[aria-pressed="true"] {
   color: #fff;
 }
 html[data-vue="historique"] .seg .ind {
+  pointer-events: none;
   position: absolute;
   top: 4px;
   bottom: 4px;

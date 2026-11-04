@@ -21,7 +21,7 @@ export interface CreateDeps {
 export type CreateResult =
   | { kind: 'created' | 'existing'; auditId: string }
   | { kind: 'host_limit' | 'user_limit'; retryAfter: number }
-  | { kind: 'site_not_found' | 'unverified' | 'invalid_url' };
+  | { kind: 'site_not_found' | 'unverified' | 'invalid_url' | 'site_limit' };
 
 export async function createAudit(
   deps: CreateDeps,
@@ -39,7 +39,14 @@ export async function createAudit(
       if (error instanceof InvalidSiteUrl) return { kind: 'invalid_url' };
       throw error;
     }
-    siteId = await deps.ensureSite(site);
+    try {
+      siteId = await deps.ensureSite(site);
+    } catch (error) {
+      if (error instanceof Error && error.message === 'site_limit') {
+        return { kind: 'site_limit' };
+      }
+      throw error;
+    }
   }
 
   const res = await deps.requestAudit({

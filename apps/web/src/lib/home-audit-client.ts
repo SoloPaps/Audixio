@@ -1,25 +1,15 @@
 import type { AuditPayload } from './audit-api.js';
 import { storedAccessToken } from './auth-storage.js';
-import { t } from './home-audit-copy.js';
+import { messageFor, t } from './home-audit-copy.js';
 
 export type HomeLaunch =
   | { ok: true; auditId: string; guest: AuditPayload | null }
   | { ok: false; limit: boolean; message: string };
 
-function textFor(key: string): string {
-  if (key === 'api.error.host_limit') return t('api.error.host_limit');
-  if (key === 'api.error.invalid_url') return t('api.error.invalid_url');
-  if (key === 'api.error.invalid_input') return t('api.error.invalid_input');
-  if (key === 'api.error.user_limit') return t('api.error.user_limit');
-  if (key === 'api.error.unauthorized') return t('api.error.unauthorized');
-  if (key === 'api.error.guest_limit') return t('api.error.guest_limit');
-  return t('api.error.internal');
-}
-
 function messageFromBody(body: unknown): string {
   if (!body || typeof body !== 'object') return t('api.error.internal');
   const key = (body as { messageKey?: unknown }).messageKey;
-  return textFor(typeof key === 'string' ? key : '');
+  return messageFor(typeof key === 'string' ? key : '');
 }
 
 async function readBody(response: Response): Promise<unknown> {
