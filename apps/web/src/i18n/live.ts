@@ -2,7 +2,7 @@ const ORIG = '__axOrig';
 const SKIP =
   'script, style, textarea, noscript, [data-chrome], [data-i18n-skip]';
 // Les attributs (placeholder…) d'un textarea restent traduisibles.
-const ATTR_SKIP = 'script, style, noscript, [data-chrome], [data-i18n-skip]';
+const ATTR_SKIP = SKIP.replace(', textarea', '');
 
 type Marked = Text & { [ORIG]?: string };
 
