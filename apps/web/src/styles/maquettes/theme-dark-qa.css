@@ -46,13 +46,13 @@ html[data-theme="dark"][data-vue="plan"] .lvl i b {
 html[data-theme="dark"][data-vue="plan"] .lvl i b.on {
   background-color: #9fb4ff;
 }
-html[data-theme="dark"] .sw span {
+html[data-theme="dark"][data-vue="cookies"] .sw span {
   background-color: #3d4d7a;
 }
-html[data-theme="dark"] .sw input:checked + span {
+html[data-theme="dark"][data-vue="cookies"] .sw input:checked + span {
   background-color: #6f86e8;
 }
-html[data-theme="dark"] .sw input:disabled + span {
+html[data-theme="dark"][data-vue="cookies"] .sw input:disabled + span {
   background-color: #4a5a8a;
 }
 html[data-theme="dark"][data-vue="bienvenue"] .bv-bg i:nth-child(1) {

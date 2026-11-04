@@ -1296,3 +1296,8 @@ main.auth-doc :focus-visible {
     transform: none;
   }
 }
+
+/* Sombre : le champ garde son fond sombre au focus, le texte saisi reste lisible. */
+html[data-theme="dark"] .auth-card .in:focus {
+  background-color: #243056;
+}
