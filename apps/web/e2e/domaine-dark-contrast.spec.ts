@@ -151,3 +151,31 @@ test('#72 bouton prompt lisible en sombre', async ({ page }) => {
   for (const stop of colors.stops)
     expect(ratio(colors.fg, stop)).toBeGreaterThanOrEqual(4.5);
 });
+
+// Même bouton sur le rapport d'exemple public.
+test('#72 bouton prompt lisible en sombre sur /exemple-rapport', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/exemple-rapport?theme=dark');
+  const button = page.locator('button.fz#gen');
+  await expect(button).toBeAttached();
+  const colors = await button.evaluate((node) => {
+    const face = getComputedStyle(node, '::before').backgroundImage;
+    const labels = [...node.querySelectorAll('.st-def, .st-def span')].map(
+      (el) => getComputedStyle(el).color,
+    );
+    return {
+      labels,
+      stops: face.match(/rgba?\([^)]*\)/g) ?? [],
+      theme: document.documentElement.dataset.theme,
+    };
+  });
+  expect(colors.theme).toBe('dark');
+  expect(colors.stops.length).toBeGreaterThan(0);
+  expect(colors.labels.length).toBeGreaterThan(0);
+  for (const fg of colors.labels)
+    for (const stop of colors.stops)
+      expect(ratio(fg, stop)).toBeGreaterThanOrEqual(4.5);
+});
