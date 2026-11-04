@@ -67,3 +67,4 @@ secu VulnerabilitiesID (GHSA-gcqx-w48m-w2h4, deepmerge 4.3.1) non corrigé: dép
 #147 corrigé: la règle sombre globale peignait le fieldset des filtres /domaine en rectangle opaque derrière le groupe arrondi ; fieldset transparent (test e2e)
 #59 déjà corrigé (7c8f926, PR #135, theme-dark-qa.css) : test e2e de non-régression ajouté (cliqué + survolé, contraste ≥ 4.5)
 #110 déjà corrigé (7c8f926, PR #135, ecologie.css) : test e2e de non-régression ajouté (fond opaque en sombre)
+#30 corrigé: en sombre le fond de la barre .dock de /verifier devenait transparent (texte de la page visible dessous) ; fond opaque sombre (test e2e verifier-dock-sombre)
