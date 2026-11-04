@@ -4,7 +4,7 @@ import { t } from '../i18n/index.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
 import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
-import { currentSession } from '../lib/browser-session.js';
+import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
 import { shownConclusion } from '../lib/domain-conclusion.js';
 import {
@@ -13,7 +13,7 @@ import {
   domainShort,
   REPORT_DOMAINS,
 } from '../lib/domains.js';
-import { readChoice, rememberChoice } from '../lib/finding-choice.js';
+import { briefSelectionRow } from '../lib/finding-choice.js';
 import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
@@ -92,39 +92,60 @@ function sevOf(item: Finding): Sev {
   if (item.status === 'fail' && item.severity >= 4) return 'crit';
   return 'fix';
 }
-const CHOICE_KEY = 'audixio-finding-choices';
-
-function choiceStore(): string | null {
-  try {
-    return localStorage.getItem(CHOICE_KEY);
-  } catch {
-    return null;
-  }
+function isChoice(value: string): value is Choice {
+  return value === 'none' || value === 'chk' || value === 'fix';
 }
 
-function storedChoice(id: string): Choice | null {
-  const saved = readChoice(choiceStore(), auditId, id);
-  if (saved === 'none' || saved === 'chk' || saved === 'fix') return saved;
-  if (saved === 'skip') return 'none';
-  if (saved === 'check') return 'chk';
-  return null;
+async function loadChoices(): Promise<void> {
+  const session = await currentSession();
+  const supabase = browserClient();
+  if (!session || !supabase) return;
+  const { data, error } = await supabase
+    .from('brief_selections')
+    .select('finding_id, choice')
+    .eq('audit_id', auditId);
+  if (error || !data) return;
+  const next = { ...choices };
+  for (const row of data) {
+    if (isChoice(row.choice)) next[row.finding_id] = row.choice;
+  }
+  choices = next;
+}
+
+async function persistChoice(
+  id: string,
+  choice: Choice,
+  previous: Choice | undefined,
+): Promise<void> {
+  const session = await currentSession();
+  const supabase = browserClient();
+  if (!session || !supabase) return;
+  const { error } = await supabase.from('brief_selections').upsert(
+    briefSelectionRow({
+      userId: session.user.id,
+      auditId,
+      findingId: id,
+      choice,
+      at: new Date().toISOString(),
+    }),
+    { onConflict: 'user_id,audit_id,finding_id' },
+  );
+  if (!error) return;
+  const next = { ...choices };
+  if (previous === undefined) delete next[id];
+  else next[id] = previous;
+  choices = next;
+  say(t('api.error.internal'), document.getElementById('live'));
 }
 
 function choose(id: string, choice: Choice): void {
+  const previous = choices[id];
   choices = { ...choices, [id]: choice };
-  try {
-    localStorage.setItem(
-      CHOICE_KEY,
-      rememberChoice(choiceStore(), auditId, id, choice),
-    );
-  } catch {
-    /* stockage refusé */
-  }
+  void persistChoice(id, choice, previous);
 }
 
 function choiceOf(item: Finding): Choice {
   return (
-    storedChoice(item.id) ??
     choices[item.id] ??
     (item.status === 'fail' ? 'fix' : item.status === 'warn' ? 'chk' : 'none')
   );
@@ -295,6 +316,7 @@ $effect(() => {
 
 onMount(() => {
   signedIn = storedSessionPresent();
+  void loadChoices();
   document.documentElement.dataset.vue = 'domaine';
   document.documentElement.classList.add('has-ind');
   let stop = (): void => {};

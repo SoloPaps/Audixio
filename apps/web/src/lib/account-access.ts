@@ -48,11 +48,37 @@ export interface ActiveShare {
   createdAt: string;
 }
 
-/** Liens encore actifs. Le compteur vient de cette liste, pas du navigateur. */
+const SHARE_TOKEN = /^[0-9a-f]{32}$/;
+
+function shareKind(value: string | null): 'public' | 'team' | null {
+  if (value === 'public' || value === 'team') return value;
+  return null;
+}
+
+/** Liens encore ouverts. Révoqués, expirés ou sans hôte ne comptent pas. */
 export function activeShareLinks(
-  _reports: readonly ReportLinkRow[],
-  _hosts: ReadonlyMap<string, string>,
-  _now: number,
+  reports: readonly ReportLinkRow[],
+  hosts: ReadonlyMap<string, string>,
+  now: number,
 ): ActiveShare[] {
-  return [];
+  const links: ActiveShare[] = [];
+  for (const row of reports) {
+    const kind = shareKind(row.kind);
+    const host = hosts.get(row.auditId);
+    if (!kind || !host) continue;
+    if (row.visibility !== 'link' || row.revokedAt !== null) continue;
+    if (!SHARE_TOKEN.test(row.token)) continue;
+    if (row.expiresAt !== null) {
+      const end = Date.parse(row.expiresAt);
+      if (!Number.isFinite(end) || end <= now) continue;
+    }
+    links.push({
+      id: row.id,
+      host,
+      kind,
+      urlPath: `/partage/${row.token}`,
+      createdAt: row.createdAt,
+    });
+  }
+  return links;
 }

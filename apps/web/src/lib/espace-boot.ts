@@ -4,9 +4,9 @@ import type { Session } from '@supabase/supabase-js';
 import { tick } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
 import {
-  activeAccessCount,
-  rememberRevoke,
-  revokedAccessIds,
+  type ActiveShare,
+  activeShareLinks,
+  type ReportLinkRow,
 } from './account-access.js';
 import { historySource, pickHistorySite } from './account-history.js';
 import {
@@ -935,6 +935,115 @@ function bindHistory(root: HTMLElement): () => void {
   };
 }
 
+function shareAccessRow(link: ActiveShare): HTMLLIElement {
+  const row = document.createElement('li');
+  row.className = 'ap-row';
+  row.id = link.id;
+  const avatar = document.createElement('span');
+  avatar.className = 'ap-av';
+  avatar.setAttribute('aria-hidden', 'true');
+  avatar.textContent = link.host.slice(0, 1).toLocaleUpperCase('fr');
+  const who = document.createElement('div');
+  who.className = 'ap-who';
+  const name = document.createElement('b');
+  name.textContent = link.host;
+  const meta = document.createElement('div');
+  meta.className = 'ap-meta';
+  const tag = document.createElement('span');
+  tag.className = 'ap-tag';
+  tag.textContent = link.kind === 'team' ? t('mq.co.072') : t('mq.co.067');
+  const when = document.createElement('span');
+  const date = new Date(link.createdAt);
+  when.textContent = Number.isNaN(date.getTime()) ? '' : formatDate(date);
+  meta.append(tag, when);
+  who.append(name, meta);
+  const act = document.createElement('div');
+  act.className = 'ap-act';
+  const copy = document.createElement('button');
+  copy.type = 'button';
+  copy.className = 'btn btn-ghost btn-sm btn-copy';
+  copy.dataset.copy = `${location.origin}${link.urlPath}`;
+  copy.dataset.msg = t('mq.co.078');
+  const copyLabel = document.createElement('span');
+  copyLabel.className = 'bl';
+  copyLabel.textContent = t('mq.co.079');
+  copy.append(copyLabel);
+  copy.addEventListener('click', () => {
+    const text = copy.dataset.copy ?? '';
+    const done = (): void => {
+      say(copy.dataset.msg || t('mq.ui.copied.long'), true);
+    };
+    const clip = navigator.clipboard;
+    if (clip?.writeText) void clip.writeText(text).then(done, done);
+    else done();
+  });
+  const revoke = document.createElement('button');
+  revoke.type = 'button';
+  revoke.className = 'btn btn-sm btn-revoke';
+  revoke.dataset.revoke = link.id;
+  revoke.dataset.who = link.host;
+  revoke.dataset.site = link.host;
+  revoke.setAttribute('aria-label', `${t('mq.co.081')} ${link.host}`);
+  const revokeLabel = document.createElement('span');
+  revokeLabel.className = 'bl';
+  revokeLabel.textContent = t('mq.co.081');
+  revoke.append(revokeLabel);
+  act.append(copy, revoke);
+  row.append(avatar, who, act);
+  return row;
+}
+
+async function readActiveShares(): Promise<ActiveShare[] | null> {
+  const supabase = browserClient();
+  const session = await currentSession();
+  if (!supabase || !session) return null;
+  const { data, error } = await supabase
+    .from('reports')
+    .select(
+      'id, audit_id, share_token, link_kind, visibility, revoked_at, expires_at, created_at',
+    )
+    .eq('visibility', 'link');
+  if (error || !data) return null;
+  const hosts = new Map<string, string>();
+  const auditIds = [...new Set(data.map((row) => row.audit_id))];
+  if (auditIds.length > 0) {
+    const { data: audits, error: auditError } = await supabase
+      .from('audits')
+      .select('id, site_id')
+      .in('id', auditIds);
+    if (auditError || !audits) return null;
+    const siteIds = [...new Set(audits.map((row) => row.site_id))];
+    const { data: sites, error: siteError } =
+      siteIds.length > 0
+        ? await supabase
+            .from('sites')
+            .select('id, host, owner_id')
+            .in('id', siteIds)
+        : { data: [], error: null };
+    if (siteError || !sites) return null;
+    const owned = new Map(
+      sites
+        .filter((site) => site.owner_id === session.user.id)
+        .map((site) => [site.id, site.host]),
+    );
+    for (const audit of audits) {
+      const host = owned.get(audit.site_id);
+      if (host) hosts.set(audit.id, host);
+    }
+  }
+  const rows: ReportLinkRow[] = data.map((row) => ({
+    id: row.id,
+    auditId: row.audit_id,
+    token: row.share_token,
+    kind: row.link_kind,
+    visibility: row.visibility,
+    revokedAt: row.revoked_at,
+    expiresAt: row.expires_at,
+    createdAt: row.created_at,
+  }));
+  return activeShareLinks(rows, hosts, Date.now());
+}
+
 function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   const off: (() => void)[] = [];
   const emailNode = root.querySelector('.em');
@@ -1118,28 +1227,24 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   };
   acc?.addEventListener('click', onAcc);
   if (acc) off.push(() => acc.removeEventListener('click', onAcc));
-  const accessKey = 'audixio-revoked-access';
-  const syncAccess = (): void => {
-    let raw: string | null = null;
-    try {
-      raw = localStorage.getItem(accessKey);
-    } catch {
-      raw = null;
-    }
-    const revoked = new Set(revokedAccessIds(raw));
-    for (const button of root.querySelectorAll<HTMLElement>('[data-revoke]')) {
-      const id = button.dataset.revoke ?? '';
-      if (revoked.has(id)) document.getElementById(id)?.remove();
-    }
-    const left = root.querySelectorAll('[data-revoke]').length;
+  const paintShares = (links: readonly ActiveShare[]): void => {
+    const list = root.querySelector('#apl');
+    list?.replaceChildren(...links.map((link) => shareAccessRow(link)));
     const count = document.getElementById('apn');
-    if (count) count.textContent = String(left);
+    if (count) count.textContent = String(links.length);
+    const cap = document.getElementById('apd');
+    if (cap && next.plan === 'pro') cap.textContent = '';
     const meter = document.getElementById('apm');
-    if (meter) meter.style.setProperty('--v', left === 0 ? '0' : '1');
+    if (meter) meter.style.setProperty('--v', links.length === 0 ? '0' : '1');
     const empty = document.getElementById('ape');
-    if (empty) empty.hidden = left !== 0;
+    if (empty) empty.hidden = links.length !== 0;
   };
-  syncAccess();
+  const refreshShares = async (): Promise<ActiveShare[] | null> => {
+    const links = await readActiveShares();
+    if (links) paintShares(links);
+    return links;
+  };
+  void refreshShares();
   const revoke = root.querySelector<HTMLDialogElement>('#dlgr');
   let current: HTMLElement | null = null;
   const onRevokeClick = (event: Event): void => {
@@ -1161,33 +1266,29 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
     const who = current?.dataset.who ?? '';
     revoke?.close();
     if (!id) return;
-    const before = root.querySelectorAll('[data-revoke]').length;
-    try {
-      const prev = localStorage.getItem(accessKey);
-      localStorage.setItem(accessKey, rememberRevoke(prev, id));
-    } catch {
-      /* stockage refusé */
-    }
-    const count = document.getElementById('apn');
-    if (count) count.textContent = String(activeAccessCount(before, [id]));
-    const meter = document.getElementById('apm');
-    if (meter) {
-      meter.style.setProperty(
-        '--v',
-        activeAccessCount(before, [id]) === 0 ? '0' : '1',
-      );
-    }
-    const row = document.getElementById(id);
-    row?.classList.add('out');
-    window.setTimeout(
-      () => {
-        row?.remove();
-        const empty = document.getElementById('ape');
-        if (empty) empty.hidden = root.querySelector('[data-revoke]') !== null;
-      },
-      reduced() ? 0 : 560,
-    );
-    say(t('mq.ui.revoke', { who }), true);
+    void (async () => {
+      const supabase = browserClient();
+      if (!supabase) {
+        say(t('api.error.internal'), true);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('reports')
+        .update({ revoked_at: new Date().toISOString() })
+        .eq('id', id)
+        .is('revoked_at', null)
+        .select('id');
+      if (error || !data || data.length === 0) {
+        say(t('api.error.internal'), true);
+        return;
+      }
+      const links = await refreshShares();
+      if (!links) {
+        say(t('api.error.internal'), true);
+        return;
+      }
+      say(t('mq.ui.revoke', { who }), true);
+    })();
   };
   root.querySelector('#rok')?.addEventListener('click', onRevokeOk);
   root.querySelector('#rc')?.addEventListener('click', () => revoke?.close());

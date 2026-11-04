@@ -26,7 +26,7 @@ function source(name: string): string {
 }
 
 function migrations(): string {
-  const dir = new URL('../../../supabase/migrations/', import.meta.url);
+  const dir = new URL('../../../../supabase/migrations/', import.meta.url);
   return readdirSync(dir)
     .filter((name) => name.endsWith('.sql'))
     .map((name) => readFileSync(new URL(name, dir), 'utf8'))

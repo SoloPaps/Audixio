@@ -40,7 +40,7 @@ export function briefSelectionRow(input: {
     user_id: input.userId,
     audit_id: input.auditId,
     finding_id: input.findingId,
-    choice: 'fix',
+    choice: input.choice,
     updated_at: input.at,
   };
 }
