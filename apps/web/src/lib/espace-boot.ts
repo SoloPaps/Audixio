@@ -10,7 +10,7 @@ import {
   latestReportHref,
   welcomeDone,
 } from './account-prefs.js';
-import { scoreAutorise } from './apercu.js';
+import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
 import { gradeForScore } from './grade.js';
@@ -51,6 +51,13 @@ export interface LiveSite {
   verify: string;
   when: string;
   score: number | null;
+  grade: string | null;
+  verified: boolean;
+  isPublic: boolean;
+  publicSlug: string | null;
+  performance: MesureDomaine;
+  ecologie: MesureDomaine;
+  securite: MesureDomaine;
   places: boolean;
   place: PlaceSummary | null;
 }
@@ -158,13 +165,17 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       global_score: null,
     })),
   );
+  const cartes = new Map<string, Awaited<ReturnType<typeof apercuCarte>>>();
   await Promise.all(
     [...draft.values()].map(async (mark) => {
-      mark.score = await scoreAutorise(supabase, mark.auditId);
+      const carte = await apercuCarte(supabase, mark.auditId);
+      mark.score = carte?.score ?? null;
+      cartes.set(mark.auditId, carte);
     }),
   );
   const sites: LiveSite[] = rows.map((row) => {
     const mark = draft.get(row.id);
+    const carte = mark ? (cartes.get(mark.auditId) ?? null) : null;
     return {
       id: row.id,
       host: row.host,
@@ -173,7 +184,14 @@ async function loadSites(session: Session): Promise<EspaceNext> {
         : `/progression?site=${encodeURIComponent(row.id)}`,
       verify: `/verifier?site=${encodeURIComponent(row.id)}`,
       when: mark ? formatDate(new Date(mark.at)) : '',
-      score: mark?.score ?? null,
+      score: carte?.score ?? null,
+      grade: carte?.grade ?? null,
+      verified: carte?.verified === true,
+      isPublic: row.is_public === true,
+      publicSlug: row.public_slug,
+      performance: mesureDomaine(carte, 'performance'),
+      ecologie: mesureDomaine(carte, 'ecologie'),
+      securite: mesureDomaine(carte, 'securite'),
       places: places?.enabled === true,
       place: places?.places.find((item) => item.siteId === row.id) ?? null,
     };
@@ -452,6 +470,13 @@ async function addSite(
     verify: `/verifier?site=${encodeURIComponent(data.id)}`,
     when: '',
     score: null,
+    grade: null,
+    verified: false,
+    isPublic: data.is_public === true,
+    publicSlug: data.public_slug,
+    performance: mesureDomaine(null, 'performance'),
+    ecologie: mesureDomaine(null, 'ecologie'),
+    securite: mesureDomaine(null, 'securite'),
     places: false,
     place: null,
   };
