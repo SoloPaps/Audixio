@@ -3233,3 +3233,12 @@ html[data-vue="compte"] a.login-out {
     gap: 4px 12px;
   }
 }
+
+/* #31 : en sombre, les sous-titres de carte et le lien de checklist restent lisibles. */
+html[data-theme="dark"][data-vue="compte"] .box .sub,
+html[data-theme="dark"][data-vue="compte"] .chk a {
+  color: #9fb4ff;
+}
+html[data-theme="dark"][data-vue="compte"] .dz .sub {
+  color: #ff9b8f;
+}
