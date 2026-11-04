@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { REPORT_DOMAINS } from './domains.js';
+import { gradeForScore } from './grade.js';
 import {
   HOME_EXAMPLE_ROWS,
   HOME_EXAMPLE_SCORE,
   HOME_OFFER_SCORES,
 } from './home-example.js';
-import { gradeForScore } from './grade.js';
 import { levelForScore } from './score.js';
 
 describe('exemple d’accueil', () => {
