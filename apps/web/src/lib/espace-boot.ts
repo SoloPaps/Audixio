@@ -1285,6 +1285,31 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
     consent.checked = consentChecked(stored, consent.checked);
   }
   const acc = root.querySelector<HTMLButtonElement>('#acc');
+  let termsVersion = '';
+  const paintTerms = async (init?: RequestInit): Promise<boolean> => {
+    if (!next.token) return false;
+    const res = await fetch('/api/compte/cgu', {
+      ...init,
+      headers: {
+        authorization: `Bearer ${next.token}`,
+        'content-type': 'application/json',
+      },
+    }).catch(() => null);
+    if (!res?.ok) return false;
+    const body = (await res.json().catch(() => ({}))) as {
+      version?: string;
+      acceptedAt?: string | null;
+    };
+    if (typeof body.version === 'string') termsVersion = body.version;
+    if (init) return paintTerms();
+    const when = body.acceptedAt ? new Date(body.acceptedAt) : null;
+    const date = root.querySelector('#acd');
+    if (date)
+      date.textContent =
+        when && !Number.isNaN(when.getTime()) ? formatDate(when) : '—';
+    return true;
+  };
+  void paintTerms();
   const onAcc = (): void => {
     if (!acc) return;
     busy(acc, 700, () => {
@@ -1294,7 +1319,13 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
       } catch {
         /* stockage refusé */
       }
-      say(box?.checked ? t('mq.ui.terms.on') : t('mq.ui.terms.off'), true);
+      void paintTerms({
+        method: 'post'.toUpperCase(),
+        body: JSON.stringify({ version: termsVersion }),
+      }).then((ok) => {
+        if (!ok) return;
+        say(box?.checked ? t('mq.ui.terms.on') : t('mq.ui.terms.off'), true);
+      });
     });
   };
   acc?.addEventListener('click', onAcc);
