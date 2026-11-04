@@ -5,24 +5,32 @@ import type { CmpMatch } from './schema.js';
 export interface CmpSignature {
   id: string;
   name: string;
+  /** Hôtes servant le script (sous-domaines compris), comparés au nom d’hôte analysé. */
+  hosts: string[];
+  /** Motifs de nom de fichier, pour les scripts auto-hébergés. */
   scripts: RegExp[];
   globals: string[];
   selectors: string[];
 }
 
-/** Script servi par cet hôte ou un de ses sous-domaines : ancré sur l’hôte, jamais sur le chemin. */
-function host(name: string): RegExp {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp(
-    `^(?:https?:)?//(?:[^/?#@]*\\.)?${escaped}(?::\\d+)?(?:[/?#]|$)`,
-    'i',
-  );
+/** Nom d’hôte d’une URL de script (absolue ou sans schéma), sinon null. */
+function hostOf(url: string): string | null {
+  try {
+    return new URL(url, 'https://invalid.invalid/').hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+function servedBy(hostname: string, name: string): boolean {
+  return hostname === name || hostname.endsWith(`.${name}`);
 }
 
 export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'tarteaucitron',
     name: 'tarteaucitron',
+    hosts: [],
     scripts: [/tarteaucitron[^/]*\.js/i],
     globals: ['tarteaucitron'],
     selectors: ['#tarteaucitronRoot', '#tarteaucitronAlertBig'],
@@ -30,82 +38,88 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'axeptio',
     name: 'Axeptio',
-    scripts: [host('axept.io')],
+    hosts: ['axept.io'],
+    scripts: [],
     globals: ['axeptioSettings', '__axeptioSDK', '_axcb'],
     selectors: ['#axeptio_overlay', '#axeptio_main_button', '.axeptio_widget'],
   },
   {
     id: 'didomi',
     name: 'Didomi',
-    scripts: [host('sdk.privacy-center.org'), /didomi[^/]*\.js/i],
+    hosts: ['sdk.privacy-center.org'],
+    scripts: [/didomi[^/]*\.js/i],
     globals: ['Didomi', 'didomiConfig', 'didomiOnReady'],
     selectors: ['#didomi-host', '#didomi-notice', '.didomi-popup-container'],
   },
   {
     id: 'cookiebot',
     name: 'Cookiebot',
-    scripts: [
-      host('consent.cookiebot.com'),
-      host('consent.cookiebot.eu'),
-      host('consentcdn.cookiebot.com'),
-      host('consentcdn.cookiebot.eu'),
+    hosts: [
+      'consent.cookiebot.com',
+      'consent.cookiebot.eu',
+      'consentcdn.cookiebot.com',
+      'consentcdn.cookiebot.eu',
     ],
+    scripts: [],
     globals: ['Cookiebot', 'CookieConsent'],
     selectors: ['#CybotCookiebotDialog', '#CookiebotWidget'],
   },
   {
     id: 'onetrust',
     name: 'OneTrust',
-    scripts: [
-      host('cdn.cookielaw.org'),
-      host('optanon.blob.core.windows.net'),
-      /otSDKStub\.js/i,
-      host('onetrust.com'),
+    hosts: [
+      'cdn.cookielaw.org',
+      'optanon.blob.core.windows.net',
+      'onetrust.com',
     ],
+    scripts: [/otSDKStub\.js/i],
     globals: ['OneTrust', 'Optanon', 'OptanonWrapper'],
     selectors: ['#onetrust-banner-sdk', '#onetrust-consent-sdk'],
   },
   {
     id: 'sirdata',
     name: 'Sirdata',
-    scripts: [
-      host('cache.consentframework.com'),
-      host('choices.consentframework.com'),
-    ],
+    hosts: ['cache.consentframework.com', 'choices.consentframework.com'],
+    scripts: [],
     globals: ['Sddan'],
     selectors: ['#sd-cmp'],
   },
   {
     id: 'usercentrics',
     name: 'Usercentrics',
-    scripts: [host('usercentrics.eu')],
+    hosts: ['usercentrics.eu'],
+    scripts: [],
     globals: ['UC_UI', 'usercentrics'],
     selectors: ['#usercentrics-root', '#usercentrics-cmp-ui'],
   },
   {
     id: 'quantcast',
     name: 'Quantcast Choice',
-    scripts: [host('quantcast.mgr.consensu.org'), host('cmp.inmobi.com')],
+    hosts: ['quantcast.mgr.consensu.org', 'cmp.inmobi.com'],
+    scripts: [],
     globals: ['__qc'],
     selectors: ['.qc-cmp2-container', '#qc-cmp2-container'],
   },
   {
     id: 'iubenda',
     name: 'iubenda',
-    scripts: [host('cdn.iubenda.com'), host('cs.iubenda.com')],
+    hosts: ['cdn.iubenda.com', 'cs.iubenda.com'],
+    scripts: [],
     globals: ['_iub'],
     selectors: ['#iubenda-cs-banner'],
   },
   {
     id: 'cookieyes',
     name: 'CookieYes',
-    scripts: [host('cdn-cookieyes.com'), /cookieyes/i],
+    hosts: ['cdn-cookieyes.com'],
+    scripts: [/cookieyes/i],
     globals: ['cookieyes', 'getCkyConsent'],
     selectors: ['.cky-consent-container', '#cookie-law-info-bar'],
   },
   {
     id: 'complianz',
     name: 'Complianz',
+    hosts: [],
     scripts: [/complianz-gdpr/i, /cmplz/i],
     globals: ['complianz', 'cmplz_set_cookie'],
     selectors: ['#cmplz-cookiebanner-container', '.cmplz-cookiebanner'],
@@ -113,13 +127,15 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'cookiefirst',
     name: 'CookieFirst',
-    scripts: [host('consent.cookiefirst.com')],
+    hosts: ['consent.cookiefirst.com'],
+    scripts: [],
     globals: ['CookieFirst'],
     selectors: ['.cookiefirst-root'],
   },
   {
     id: 'klaro',
     name: 'Klaro',
+    hosts: [],
     scripts: [/klaro[^/]*\.js/i],
     globals: ['klaro', 'klaroConfig'],
     selectors: ['.klaro .cookie-notice', '#klaro'],
@@ -127,6 +143,7 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'orejime',
     name: 'Orejime',
+    hosts: [],
     scripts: [/orejime[^/]*\.js/i],
     globals: ['orejime', 'orejimeConfig'],
     selectors: ['.orejime-Notice', '#orejime'],
@@ -134,14 +151,16 @@ export const CMP_SIGNATURES: readonly CmpSignature[] = [
   {
     id: 'termly',
     name: 'Termly',
-    scripts: [host('app.termly.io')],
+    hosts: ['app.termly.io'],
+    scripts: [],
     globals: ['Termly'],
     selectors: ['#termly-code-snippet-support'],
   },
   {
     id: 'cookie_script',
     name: 'Cookie-Script',
-    scripts: [host('cdn.cookie-script.com')],
+    hosts: ['cdn.cookie-script.com'],
+    scripts: [],
     globals: ['CookieScript'],
     selectors: ['#cookiescript_injected'],
   },
@@ -173,7 +192,12 @@ export function detectCmp(
   for (const signature of CMP_SIGNATURES) {
     const evidence: string[] = [];
     for (const url of scriptUrls) {
-      if (signature.scripts.some((re) => re.test(url)))
+      const hostname = hostOf(url);
+      if (
+        (hostname !== null &&
+          signature.hosts.some((name) => servedBy(hostname, name))) ||
+        signature.scripts.some((re) => re.test(url))
+      )
         evidence.push(`script:${url.slice(0, 290)}`);
     }
     for (const name of signature.globals)

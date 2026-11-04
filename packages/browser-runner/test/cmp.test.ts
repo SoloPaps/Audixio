@@ -123,3 +123,11 @@ describe('signatures de script ancrées sur l’hôte (code scanning)', () => {
     expect(detectCmp([url], none).map((m) => m.id)).toContain(id);
   });
 });
+
+describe('hôtes de CMP déclarés en clair (CodeQL)', () => {
+  it('aucun motif de script ne code un nom d’hôte', () => {
+    for (const s of CMP_SIGNATURES)
+      for (const re of s.scripts)
+        expect(re.source, s.id).not.toMatch(/\\\.(?:com|org|io|eu|net)\b/);
+  });
+});
