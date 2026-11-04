@@ -599,6 +599,47 @@ describe('RLS Supabase local', () => {
     expect(gone).toHaveLength(0);
   });
 
+  it("n'expose pas un rapport public expiré sur /score", async () => {
+    const auditId = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbb21';
+    await admin`
+      insert into public.audits (
+        id, site_id, trigger, mode, status, method_version, engine_version,
+        global_score, coverage, started_at, finished_at
+      ) values (
+        ${auditId}::uuid, ${B_PUBLIC}::uuid, 'manual', 'passive', 'done',
+        '2026.1', 'test', 70, 1, now(), now() + interval '1 hour'
+      )
+    `;
+    const [expired] = await admin<{ id: string }[]>`
+      insert into public.reports (audit_id, visibility, manifest_sha256, expires_at)
+      values (${auditId}::uuid, 'public', ${SHA}, now() - interval '1 day')
+      returning id::text as id
+    `;
+    if (!expired) throw new Error('rapport absent');
+    const before = await asUser(
+      null,
+      (tx) => tx<{ audit_id: string; report_id: string | null }[]>`
+        select audit_id::text, report_id::text
+        from public.read_public_score('public-b1')
+      `,
+    );
+    expect(before[0]?.audit_id).toBe(auditId);
+    expect(before[0]?.report_id).toBeNull();
+
+    await admin`
+      update public.reports
+      set expires_at = now() + interval '1 day'
+      where id = ${expired.id}::uuid
+    `;
+    const after = await asUser(
+      null,
+      (tx) => tx<{ report_id: string | null }[]>`
+        select report_id::text from public.read_public_score('public-b1')
+      `,
+    );
+    expect(after[0]?.report_id).toBe(expired.id);
+  });
+
   it("le jeton OAuth n'est pas lisible", async () => {
     await expectDenied(
       B,
