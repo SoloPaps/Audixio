@@ -150,7 +150,7 @@ const previewHtml = $derived.by(() => {
       ];
     }),
   );
-  return briefScreen({ url, items: chosen })
+  return briefScreen({ url, items: chosen, verified })
     .split('\n')
     .map((line) => `<div class="l">${esc(line)}</div>`)
     .join('');

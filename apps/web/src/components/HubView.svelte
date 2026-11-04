@@ -3,7 +3,7 @@ import { onMount, tick } from 'svelte';
 import { formatDate, formatNumber } from '../i18n/format.js';
 import { type MessageKey, t } from '../i18n/index.js';
 import type { AuditPayload } from '../lib/audit-api.js';
-import { hubConclusion } from '../lib/domain-conclusion.js';
+import { hubConclusion, hubSummary } from '../lib/domain-conclusion.js';
 import { domainShort, domainSymbol } from '../lib/domains.js';
 import {
   badgeHref,
@@ -113,22 +113,11 @@ function toneLabel(tone: SeverityTone): string {
 function gradeOf(item: CategoryItem): string | null {
   return domainLetter(item.score, item.locked);
 }
-const SUM: Record<string, MessageKey> = {
-  performance: 'hub.sum.performance',
-  seo: 'hub.sum.seo',
-  securite: 'hub.sum.securite',
-  ecologie: 'hub.sum.ecologie',
-  accessibilite: 'hub.sum.accessibilite',
-  qualite: 'hub.sum.qualite',
-  vie_privee: 'hub.sum.vie_privee',
-  dns_email: 'hub.sum.dns_email',
-};
 function blurb(item: CategoryItem): string | null {
-  const key = SUM[item.id];
   return hubConclusion({
     locked: item.locked,
     score: item.score,
-    summary: key ? t(key) : item.detail,
+    summary: hubSummary(item.id, item.score) ?? item.detail,
     detail: item.detail,
   });
 }

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { hubConclusion, shownConclusion } from './domain-conclusion.js';
+import { t } from '../i18n/index.js';
+import {
+  domainLede,
+  hubConclusion,
+  hubSummary,
+  shownConclusion,
+} from './domain-conclusion.js';
 
 describe('conclusion de domaine', () => {
   it('n’invente pas une conclusion quand le domaine n’est pas testé', () => {
@@ -37,5 +43,31 @@ describe('conclusion de domaine', () => {
       }),
     ).toBe('Verrouillé');
     expect(shownConclusion('improve', 'À améliorer.')).toBe('À améliorer.');
+  });
+});
+
+describe('domainLede (bug #70, #98)', () => {
+  it('ne promet pas de corrections quand il n’y a aucun constat', () => {
+    expect(domainLede('performance', 'improve', 0, 'Phrase réelle.')).toBe(
+      'Phrase réelle.',
+    );
+  });
+  it('garde le texte vitesse quand des corrections existent', () => {
+    expect(domainLede('performance', 'improve', 3, 'Phrase réelle.')).toBe(
+      t('domaine.lede.speed'),
+    );
+  });
+  it('reste vide pour un domaine non testé', () => {
+    expect(domainLede('performance', 'untested', 3, 'x')).toBeNull();
+  });
+});
+
+describe('hubSummary (bug #104)', () => {
+  it('ne dit pas « pas encore analysé » pour une vie privée notée', () => {
+    expect(hubSummary('vie_privee', 80)).not.toContain('pas encore analysé');
+    expect(hubSummary('vie_privee', 80)).toBe(t('domain.vie_privee.good'));
+  });
+  it('garde les résumés des autres domaines', () => {
+    expect(hubSummary('seo', 70)).toBe(t('hub.sum.seo'));
   });
 });

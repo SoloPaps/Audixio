@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 const SITE = '00000000-0000-4000-8000-0000000000bb';
 const FIRST = '00000000-0000-4000-8000-0000000000c1';
@@ -15,7 +15,11 @@ const session = {
   },
 };
 
-test('un site réel redessine la courbe d’historique', async ({ page }) => {
+async function openHistory(
+  page: Page,
+  scores: readonly [number | null, number | null],
+  theme: 'light' | 'dark' = 'light',
+): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
       globalThis as unknown as {
@@ -79,9 +83,27 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
       });
       return;
     }
+    if (url.includes('/rest/v1/sites')) {
+      await route.fulfill({
+        status: 200,
+        headers,
+        body: JSON.stringify([
+          { id: SITE, host: 'bon.audigy.test', hosting: 'other' },
+        ]),
+      });
+      return;
+    }
+    if (url.includes('/rest/v1/profiles')) {
+      await route.fulfill({
+        status: 200,
+        headers,
+        body: JSON.stringify({ plan: 'free' }),
+      });
+      return;
+    }
     if (url.includes('read_rapport_apercu')) {
       const raw = request.postData() ?? '';
-      const score = raw.includes(SECOND) ? 88 : 72;
+      const score = raw.includes(SECOND) ? scores[1] : scores[0];
       await route.fulfill({
         status: 200,
         headers,
@@ -96,7 +118,11 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
     await route.fulfill({ status: 200, headers, body: 'null' });
   });
 
-  await page.goto(`/historique?site=${SITE}&theme=light`);
+  await page.goto(`/historique?site=${SITE}&theme=${theme}`);
+}
+
+test('un site réel redessine la courbe d’historique', async ({ page }) => {
+  await openHistory(page, [72, 88]);
   const values = page.locator('text.val');
   await expect(values.nth(0)).toHaveText('72', { timeout: 15_000 });
   await expect(values.nth(1)).toHaveText('88');
@@ -105,6 +131,14 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
   expect(points).toContain('890.0,53.0');
   expect(points).not.toContain('168.0');
   expect(points).not.toBe(DEMO);
+  // Bug #93 : la moyenne suit les audits réels (72 et 88), pas 80,6.
+  const average = page.locator('.legend .avg [data-count]');
+  await page.waitForTimeout(2_500);
+  await expect(average).toHaveText('80,0');
+  // Bug #5 : la légende compte les audits affichés, pas « 6 audits ».
+  await expect(page.locator('.legend > span').first()).toHaveText(
+    'Note globale pondérée (2 audits)',
+  );
 });
 
 test('« Historique et tendances » ouvre l’historique du site de la carte', async ({
@@ -168,4 +202,117 @@ test('« Historique et tendances » ouvre l’historique du site de la carte', a
     'href',
     `/historique?site=${EXAMPLE}`,
   );
+});
+
+test('la note sous le graphique décrit l’axe réellement affiché (bug #4)', async ({
+  page,
+}) => {
+  await openHistory(page, [55, 88]);
+  await expect(page.locator('text.val').nth(0)).toHaveText('55', {
+    timeout: 15_000,
+  });
+  const ticks = page.locator('.grid text');
+  const low = await ticks.first().textContent();
+  const high = await ticks.last().textContent();
+  expect(low).not.toBe('70');
+  await expect(page.locator('#rng-note')).toHaveText(
+    `Axe vertical resserré entre ${low} et ${high} pour rendre les écarts lisibles.`,
+  );
+});
+
+test('sans mesure, la synthèse ne décerne pas « B · Bon » (bug #130)', async ({
+  page,
+}) => {
+  await openHistory(page, [null, null]);
+  await expect(page.locator('.trend > span')).toHaveText(
+    'Pas encore de mesure.',
+    { timeout: 15_000 },
+  );
+  await expect(page.locator('.sum-top strong')).toHaveText(
+    'Rang Pas encore de note',
+  );
+  await expect(page.locator('.sum-top .glass')).toHaveText('–');
+});
+
+test('en thème sombre, les libellés du graphique sont lisibles (bug #14)', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await openHistory(page, [72, 88], 'dark');
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  const ratios = await page.evaluate(() => {
+    (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
+      target,
+    ) => target;
+    type El = { parentElement: El | null; textContent: string | null };
+    const view = globalThis as unknown as {
+      document: {
+        querySelectorAll: (s: string) => Iterable<El>;
+      };
+      getComputedStyle: (n: El) => { fill: string; backgroundColor: string };
+    };
+    const rgb = (value: string): number[] =>
+      (value.match(/[\d.]+/g) ?? []).map(Number);
+    const lum = (c: number[]): number => {
+      const [r, g, b] = c.slice(0, 3).map((v) => {
+        const x = v / 255;
+        return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (b ?? 0);
+    };
+    const low: string[] = [];
+    for (const node of view.document.querySelectorAll('.chart text')) {
+      let cur: El | null = node;
+      let back = [255, 255, 255];
+      while (cur) {
+        const c = rgb(view.getComputedStyle(cur).backgroundColor);
+        if (c.length >= 3 && (c[3] ?? 1) > 0.5) {
+          back = c;
+          break;
+        }
+        cur = cur.parentElement;
+      }
+      const a = lum(rgb(view.getComputedStyle(node).fill));
+      const b = lum(back);
+      const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+      if (ratio < 4.5) low.push(`${node.textContent} ${ratio.toFixed(2)}`);
+    }
+    return low;
+  });
+  expect(ratios).toEqual([]);
+});
+
+test('en thème sombre, le journal ne dessine pas un rectangle par cellule (bug #85)', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await openHistory(page, [72, 88], 'dark');
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  const boxed = await page.evaluate(() => {
+    (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
+      target,
+    ) => target;
+    type El = { parentElement: El | null; textContent: string | null };
+    const view = globalThis as unknown as {
+      document: { querySelectorAll: (s: string) => Iterable<El> };
+      getComputedStyle: (n: El) => { backgroundColor: string };
+    };
+    const out: string[] = [];
+    for (const cell of view.document.querySelectorAll('table td, table th')) {
+      const own = view.getComputedStyle(cell).backgroundColor;
+      const row = cell.parentElement
+        ? view.getComputedStyle(cell.parentElement).backgroundColor
+        : '';
+      if (own !== 'rgba(0, 0, 0, 0)' && own !== row) {
+        out.push((cell.textContent ?? '').trim().slice(0, 20));
+      }
+    }
+    return out;
+  });
+  expect(boxed).toEqual([]);
 });

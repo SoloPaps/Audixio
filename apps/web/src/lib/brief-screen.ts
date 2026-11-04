@@ -11,9 +11,10 @@ export interface BriefScreenItem {
 export function briefScreen(input: {
   url: string;
   items: readonly BriefScreenItem[];
+  verified?: boolean;
 }): string {
   return renderBriefMarkdown({
-    level: 'partiel',
+    level: input.verified === true ? 'complet' : 'partiel',
     url: input.url,
     at: null,
     items: input.items,

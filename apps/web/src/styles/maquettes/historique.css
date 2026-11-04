@@ -1748,3 +1748,17 @@ html[data-vue="historique"] .khero {
     ),
     linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
 }
+/* #14 : libellés du graphique lisibles sur le fond sombre. */
+html[data-theme="dark"][data-vue="historique"] .chart text {
+  fill: #c9d0e4;
+}
+html[data-theme="dark"][data-vue="historique"] .chart .thr text {
+  fill: #d6e2ff;
+}
+html[data-theme="dark"][data-vue="historique"] .pt .val {
+  fill: #f0f2f5;
+}
+/* #85 : pas de rectangle sombre derrière chaque cellule du journal. */
+html[data-theme="dark"][data-vue="historique"] :is(th, td) {
+  background-color: transparent;
+}

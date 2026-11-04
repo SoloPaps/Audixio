@@ -294,6 +294,42 @@ function bindPage(
   };
 }
 
+async function publishSite(
+  button: HTMLButtonElement,
+  current: EspaceNext,
+  publish: (value: EspaceNext) => void,
+): Promise<void> {
+  const supabase = browserClient();
+  const id = button.dataset.publish ?? '';
+  const site = current.sites.find((item) => item.id === id);
+  if (!supabase || !site || button.getAttribute('aria-busy') === 'true') return;
+  button.setAttribute('aria-busy', 'true');
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  const slug =
+    site.publicSlug ||
+    [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+  const { data, error } = await supabase
+    .from('sites')
+    .update({ is_public: true, public_slug: slug })
+    .eq('id', id)
+    .select('is_public, public_slug')
+    .single();
+  button.removeAttribute('aria-busy');
+  if (error || !data) {
+    say(t('sites.error'), true);
+    return;
+  }
+  publish({
+    ...current,
+    sites: current.sites.map((item) =>
+      item.id === id
+        ? { ...item, isPublic: data.is_public, publicSlug: data.public_slug }
+        : item,
+    ),
+  });
+}
+
 function bindSites(
   root: HTMLElement,
   next: EspaceNext,
@@ -405,6 +441,15 @@ function bindSites(
   withdraw?.addEventListener('click', onWithdraw);
   if (withdraw)
     off.push(() => withdraw.removeEventListener('click', onWithdraw));
+  const onPublish = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest<HTMLButtonElement>('button[data-publish]');
+    if (!button || !root.contains(button)) return;
+    void publishSite(button, current, publish);
+  };
+  root.addEventListener('click', onPublish);
+  off.push(() => root.removeEventListener('click', onPublish));
   root.querySelectorAll<HTMLElement>('[data-pro]').forEach((node) => {
     const open = (): void =>
       openPro(root, node.dataset.pro === 'liens' ? 'liens' : 'sites');
@@ -716,6 +761,13 @@ function paintHistoryLive(
   const strong = root.querySelector('.sum-top strong');
   if (strong && grade && numeric !== null) {
     strong.textContent = `${grade} · ${Math.round(numeric)}`;
+  } else {
+    // Sans mesure, la maquette « B · Bon » ne doit pas rester affichée.
+    if (glass) glass.textContent = '–';
+    if (strong?.lastChild) strong.lastChild.textContent = t('mq.ui.grade.none');
+    root
+      .querySelector<HTMLElement>('.sum-top .gbar i')
+      ?.style.setProperty('--v', '0');
   }
   const trend = root.querySelector('.trend span');
   if (trend) trend.textContent = historySummary(view.points, GLOBAL_SERIES);
@@ -757,6 +809,9 @@ function bindHistory(root: HTMLElement): () => void {
   let ys = [168, 156.5, 145, 133.5, 122, 99];
   let span: ReturnType<typeof historySpanOf> | 'unset' = 'unset';
   let latestView: HistoryView | null = null;
+  let axis: { min: string; max: string } | null = null;
+  let full = false;
+  const note = root.querySelector<HTMLElement>('#rng-note');
   const drawChart = (): void => {
     if (!latestView) return;
     const points =
@@ -807,12 +862,30 @@ function bindHistory(root: HTMLElement): () => void {
     );
     if (!built) return;
     applyEvolutionChart(svg, built);
+    axis = { min: String(built.min), max: String(built.max) };
+    if (note && !full) note.textContent = t('mq.ui.range.axis', axis);
     labels = built.marks.map((mark) => mark.label);
     values = built.marks.map((mark) => Math.round(mark.value));
     xs = built.marks.map((mark) => mark.x);
     ys = built.marks.map((mark) => mark.y);
+    const legend = root.querySelector('.legend > span:first-child');
+    if (legend?.lastChild) {
+      legend.lastChild.textContent =
+        built.marks.length === 1
+          ? t('mq.ui.legend.one')
+          : t('mq.ui.legend.many', { n: String(built.marks.length) });
+    }
     const average = root.querySelector('.avg [data-count]');
-    if (average) average.textContent = built.average;
+    if (average) {
+      // Le compteur animé de la maquette (80,6) écrirait encore dans l’ancien
+      // nœud : on le remplace par un nœud figé sur la vraie moyenne.
+      const fresh = document.createElement('span');
+      fresh.dataset.count = built.average.replace(',', '.');
+      fresh.dataset.dec = '1';
+      fresh.dataset.done = '1';
+      fresh.textContent = built.average;
+      average.replaceWith(fresh);
+    }
     bindHits();
   };
   void (async () => {
@@ -928,7 +1001,6 @@ function bindHistory(root: HTMLElement): () => void {
   if (svg) off.push(() => svg.removeEventListener('pointerleave', leave));
   const seg = root.querySelector<HTMLElement>('.seg');
   const ind = seg?.querySelector<HTMLElement>('.ind');
-  const note = root.querySelector<HTMLElement>('#rng-note');
   const move = (button: HTMLButtonElement): void => {
     if (!ind) return;
     ind.style.width = `${button.offsetWidth}px`;
@@ -937,6 +1009,7 @@ function bindHistory(root: HTMLElement): () => void {
   seg?.querySelectorAll('button').forEach((button, index) => {
     const click = (): void => {
       span = historySpanOf(index);
+      full = index > 0;
       seg.querySelectorAll('button').forEach((item) => {
         item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
       });
@@ -945,7 +1018,9 @@ function bindHistory(root: HTMLElement): () => void {
       if (note)
         note.textContent = index
           ? t('mq.ui.range.full')
-          : t('mq.ui.range.tight');
+          : axis
+            ? t('mq.ui.range.axis', axis)
+            : t('mq.ui.range.tight');
     };
     button.addEventListener('click', click);
     off.push(() => button.removeEventListener('click', click));
@@ -1255,6 +1330,31 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
     consent.checked = consentChecked(stored, consent.checked);
   }
   const acc = root.querySelector<HTMLButtonElement>('#acc');
+  let termsVersion = '';
+  const paintTerms = async (init?: RequestInit): Promise<boolean> => {
+    if (!next.token) return false;
+    const res = await fetch('/api/compte/cgu', {
+      ...init,
+      headers: {
+        authorization: `Bearer ${next.token}`,
+        'content-type': 'application/json',
+      },
+    }).catch(() => null);
+    if (!res?.ok) return false;
+    const body = (await res.json().catch(() => ({}))) as {
+      version?: string;
+      acceptedAt?: string | null;
+    };
+    if (typeof body.version === 'string') termsVersion = body.version;
+    if (init) return paintTerms();
+    const when = body.acceptedAt ? new Date(body.acceptedAt) : null;
+    const date = root.querySelector('#acd');
+    if (date)
+      date.textContent =
+        when && !Number.isNaN(when.getTime()) ? formatDate(when) : '—';
+    return true;
+  };
+  void paintTerms();
   const onAcc = (): void => {
     if (!acc) return;
     busy(acc, 700, () => {
@@ -1264,7 +1364,13 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
       } catch {
         /* stockage refusé */
       }
-      say(box?.checked ? t('mq.ui.terms.on') : t('mq.ui.terms.off'), true);
+      void paintTerms({
+        method: 'post'.toUpperCase(),
+        body: JSON.stringify({ version: termsVersion }),
+      }).then((ok) => {
+        if (!ok) return;
+        say(box?.checked ? t('mq.ui.terms.on') : t('mq.ui.terms.off'), true);
+      });
     });
   };
   acc?.addEventListener('click', onAcc);
@@ -1396,6 +1502,10 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
     cadence.textContent = t('mq.ui.cadence.daily');
   if (cadence && row.reaudit_cadence === 'weekly')
     cadence.textContent = t('mq.ui.cadence.weekly');
+  const radio = root.querySelector<HTMLInputElement>(
+    `input[name="fq"][value="${CADENCE_RADIO[row.reaudit_cadence] ?? 'h'}"]`,
+  );
+  if (radio) radio.checked = true;
   if (nextIsPro(row)) {
     const gate = root.querySelector('#gate');
     gate?.classList.remove('locked');
@@ -1403,11 +1513,22 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   }
 }
 
+const CADENCE_RADIO: Record<string, string> = {
+  daily: 'j',
+  weekly: 'h',
+  monthly: 'm',
+};
+
 function nextIsPro(row: {
   reaudit_cadence: string;
   score_drop_points: number;
 }): boolean {
   return row.reaudit_cadence !== 'monthly' || row.score_drop_points !== 0;
+}
+
+function radioCadence(value: string | undefined): string {
+  const found = Object.entries(CADENCE_RADIO).find(([, v]) => v === value);
+  return found?.[0] ?? 'weekly';
 }
 
 async function saveAlerts(next: EspaceNext): Promise<void> {
@@ -1426,6 +1547,10 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
   const { error } = await supabase
     .from('alert_settings')
     .update({
+      reaudit_cadence: radioCadence(
+        document.querySelector<HTMLInputElement>('input[name="fq"]:checked')
+          ?.value,
+      ),
       score_drop_points: drop,
       ssl_warn_days: days,
       alerts_enabled: true,
