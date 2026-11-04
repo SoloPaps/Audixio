@@ -133,6 +133,24 @@ html[data-vue="compte"] main {
     padding: var(--s5) 20px var(--s4);
   }
 }
+/* Le bloc Search Console suit main : même colonne, mêmes marges (bug #9). */
+html[data-vue="compte"] #search-console {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1160px;
+  margin-inline: auto;
+  padding: 0 32px var(--s5);
+}
+@media (max-width: 600px) {
+  html[data-vue="compte"] #search-console {
+    padding-inline: 20px;
+  }
+}
+@media (max-width: 360px) {
+  html[data-vue="compte"] #search-console {
+    padding-inline: 16px;
+  }
+}
 html[data-vue="compte"] .crumbs ol {
   display: flex;
   flex-wrap: wrap;
