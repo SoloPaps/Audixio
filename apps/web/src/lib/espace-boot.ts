@@ -716,6 +716,13 @@ function paintHistoryLive(
   const strong = root.querySelector('.sum-top strong');
   if (strong && grade && numeric !== null) {
     strong.textContent = `${grade} · ${Math.round(numeric)}`;
+  } else {
+    // Sans mesure, la maquette « B · Bon » ne doit pas rester affichée.
+    if (glass) glass.textContent = '–';
+    if (strong?.lastChild) strong.lastChild.textContent = t('mq.ui.grade.none');
+    root
+      .querySelector<HTMLElement>('.sum-top .gbar i')
+      ?.style.setProperty('--v', '0');
   }
   const trend = root.querySelector('.trend span');
   if (trend) trend.textContent = historySummary(view.points, GLOBAL_SERIES);

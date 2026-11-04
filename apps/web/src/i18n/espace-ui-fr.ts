@@ -32,6 +32,7 @@ export const espaceUiFr = {
     'Historique disponible depuis décembre 2025 : la courbe affiche déjà toute la période.',
   'mq.ui.range.axis':
     'Axe vertical resserré entre {min} et {max} pour rendre les écarts lisibles.',
+  'mq.ui.grade.none': 'Pas encore de note',
   'mq.ui.report': 'Export du rapport {ref} en préparation',
   'mq.ui.legend.one': 'Note globale pondérée (1 audit)',
   'mq.ui.legend.many': 'Note globale pondérée ({n} audits)',

@@ -17,7 +17,7 @@ const session = {
 
 async function openHistory(
   page: Page,
-  scores: readonly [number, number],
+  scores: readonly [number | null, number | null],
 ): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
@@ -79,6 +79,24 @@ async function openHistory(
             finished_at: '2026-05-15T10:05:00.000Z',
           },
         ]),
+      });
+      return;
+    }
+    if (url.includes('/rest/v1/sites')) {
+      await route.fulfill({
+        status: 200,
+        headers,
+        body: JSON.stringify([
+          { id: SITE, host: 'bon.audigy.test', hosting: 'other' },
+        ]),
+      });
+      return;
+    }
+    if (url.includes('/rest/v1/profiles')) {
+      await route.fulfill({
+        status: 200,
+        headers,
+        body: JSON.stringify({ plan: 'free' }),
       });
       return;
     }
@@ -199,4 +217,18 @@ test('la note sous le graphique décrit l’axe réellement affiché (bug #4)', 
   await expect(page.locator('#rng-note')).toHaveText(
     `Axe vertical resserré entre ${low} et ${high} pour rendre les écarts lisibles.`,
   );
+});
+
+test('sans mesure, la synthèse ne décerne pas « B · Bon » (bug #130)', async ({
+  page,
+}) => {
+  await openHistory(page, [null, null]);
+  await expect(page.locator('.trend > span')).toHaveText(
+    'Pas encore de mesure.',
+    { timeout: 15_000 },
+  );
+  await expect(page.locator('.sum-top strong')).toHaveText(
+    'Rang Pas encore de note',
+  );
+  await expect(page.locator('.sum-top .glass')).toHaveText('–');
 });
