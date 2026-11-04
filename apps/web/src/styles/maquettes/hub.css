@@ -2183,3 +2183,13 @@ html:where([data-vue="hub"]) {
   background: var(--nt-bg);
   border-color: var(--nt-bd);
 }
+
+/* #80 : à 330 px, la note passe sous le résumé du domaine au lieu de l'écraser en colonne étroite. */
+@media (max-width: 480px) {
+  :where(html[data-vue="hub"]) .dom {
+    grid-template-columns: auto 1fr;
+  }
+  :where(html[data-vue="hub"]) .dom-score {
+    grid-column: 2;
+  }
+}
