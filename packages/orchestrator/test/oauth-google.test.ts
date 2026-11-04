@@ -191,7 +191,7 @@ describe('OAuth Google', () => {
     );
     expect(response.status).toBe(302);
     const location = response.headers.get('location') ?? '';
-    expect(location).toBe('https://audigy.example/search-console?etat=ok');
+    expect(location).toBe('https://audigy.example/compte?etat=ok');
     const packed =
       location +
       (await response.text()) +
@@ -438,7 +438,7 @@ describe('OAuth Google', () => {
     );
     expect(response.status).toBe(302);
     expect(response.headers.get('location')).toBe(
-      'http://127.0.0.1:8888/search-console?etat=ok',
+      'http://127.0.0.1:8888/compte?etat=ok',
     );
     expect(exchangedUri).toBe(
       'http://127.0.0.1:8888/api/oauth/google/callback',

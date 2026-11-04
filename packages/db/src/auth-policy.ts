@@ -84,7 +84,6 @@ export function protectedPath(pathname: string): boolean {
     pathname.length > 1 && pathname.endsWith('/')
       ? pathname.slice(0, -1)
       : pathname;
-  if (path === '/compte/retour') return false;
   return path === '/sites' || path === '/compte' || path === '/bienvenue';
 }
 

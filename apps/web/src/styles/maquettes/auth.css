@@ -31,7 +31,7 @@ body.auth-gate {
   position: relative;
   overflow-x: hidden;
   color: var(--text);
-  background: var(--bg);
+  background: linear-gradient(180deg, #f7f5fc, #ede8f5 40%, #d5dcf0);
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
   perspective: 1000px;
 }

@@ -1,4 +1,5 @@
 ---
+import AuthCallback from '../components/AuthCallback.svelte';
 import LoginForm from '../components/LoginForm.svelte';
 import { t } from '../i18n/index.js';
 import AuthGate from '../layouts/AuthGate.astro';
@@ -6,4 +7,5 @@ import AuthGate from '../layouts/AuthGate.astro';
 
 <AuthGate title={t('meta.login.title')} description={t('meta.login.description')}>
   <LoginForm mode="login" client:load />
+  <AuthCallback client:load />
 </AuthGate>

@@ -304,6 +304,7 @@ async function audit(site: LocalSite): Promise<{
 interface AuditPage {
   on(event: 'pageerror', listener: (error: Error) => void): void;
   on(event: 'console', listener: (msg: { text(): string }) => void): void;
+  emulateMedia(options: { colorScheme: 'light' | 'dark' }): Promise<void>;
   goto(url: string, options: { waitUntil: 'load' }): Promise<unknown>;
   waitForFunction(
     expression: string,
@@ -311,6 +312,12 @@ interface AuditPage {
     options: { timeout: number },
   ): Promise<unknown>;
   getByLabel(name: string): { selectOption(value: string): Promise<unknown> };
+  locator(selector: string): {
+    getByRole(
+      role: 'button',
+      options: { name: string },
+    ): { click(): Promise<void> };
+  };
   evaluate(expression: string): Promise<unknown>;
 }
 
@@ -362,13 +369,17 @@ async function assertHydrated(origin: string): Promise<void> {
       const text = msg.text();
       if (/content security policy|refused to/i.test(text)) refused.push(text);
     });
+    await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(`${origin}/`, { waitUntil: 'load' });
     await page.waitForFunction(
       "() => { const island = document.querySelector('astro-island'); return Boolean(island && !island.hasAttribute('ssr')); }",
       undefined,
       { timeout: 20_000 },
     );
-    await page.getByLabel('Thème').selectOption('dark');
+    await page
+      .locator('.axn-tools')
+      .getByRole('button', { name: 'Thème' })
+      .click();
     const theme = await page.evaluate(
       "document.documentElement.getAttribute('data-theme')",
     );

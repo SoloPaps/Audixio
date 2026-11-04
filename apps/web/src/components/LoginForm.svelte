@@ -70,8 +70,11 @@ const meter = $derived.by(() => {
 
 onMount(() => {
   const params = new URLSearchParams(location.search);
-  next = safeNext(params.get('next'), '/sites');
-  rememberNext(next);
+  const asked = params.get('next');
+  if (asked) {
+    next = safeNext(asked, '/sites');
+    rememberNext(next);
+  }
   const code = params.get('erreur');
   if (code && messages[code]) error = messages[code];
   if (code === 'lien' || code === 'link') expired = true;

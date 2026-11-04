@@ -2707,7 +2707,23 @@ main {
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--soft);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+@media (max-width: 480px) {
+  .cmp {
+    overflow-x: auto;
+  }
+  .cmp table {
+    table-layout: auto;
+    min-width: 36rem;
+    font-size: 13px;
+  }
+  .cmp th,
+  .cmp td {
+    overflow-wrap: normal;
+    word-break: normal;
+  }
 }
 .cmp thead th {
   background: var(--tint);

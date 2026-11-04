@@ -902,3 +902,13 @@ html[data-vue="alertes"] .hero h1 .w {
 html[data-vue="alertes"] .four {
   padding-bottom: 0.1em;
 }
+@media (max-width: 480px) {
+  html[data-vue="alertes"] .gate.locked .gate-cta {
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    max-width: calc(100vw - 1rem);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+  }
+}

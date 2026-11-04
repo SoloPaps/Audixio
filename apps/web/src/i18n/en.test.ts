@@ -13,6 +13,13 @@ const pack = JSON.parse(
   ),
 ) as Record<string, string>;
 
+const frenchFile = JSON.parse(
+  readFileSync(
+    new URL('../../public/dictionnaire-fr.json', import.meta.url),
+    'utf8',
+  ),
+) as Record<string, string>;
+
 function holes(value: string): string[] {
   return [...value.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map(
     (match) => match[1] ?? '',
@@ -22,6 +29,10 @@ function holes(value: string): string[] {
 describe('dictionnaire anglais', () => {
   afterEach(() => {
     installPack(null);
+  });
+
+  it('sert le français hors du JavaScript, clé pour clé', () => {
+    expect(frenchFile).toEqual(fr);
   });
 
   it('couvre chaque clé française et chaque texte de rapport', () => {

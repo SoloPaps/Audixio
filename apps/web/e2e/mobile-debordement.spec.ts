@@ -71,10 +71,7 @@ const GUEST_PATHS = [
   '/passer-pro',
   '/demande-acces',
   '/ecoconception',
-  '/lancer',
-  '/search-console',
   '/verifier',
-  '/compte/retour',
   '/partage',
   '/score',
   '/dev/composants',
@@ -641,6 +638,10 @@ async function collect(
 ): Promise<string[]> {
   return page.evaluate(
     ({ width: viewWidth, state: label }) => {
+      // Esbuild nomme les fonctions imbriquées via __name, absent de la page.
+      (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
+        target,
+      ) => target;
       type El = {
         nodeType: number;
         tagName: string;

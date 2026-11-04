@@ -175,16 +175,9 @@ test('historique, filtres et lien hors Audigy', async ({ page }) => {
 });
 
 test('lancement Canon et progression dans une plaque', async ({ page }) => {
-  await page.goto('/lancer');
-  await waitForIslands(page);
+  const gone = await page.goto('/lancer');
+  expect(gone?.status()).toBe(404);
   await expect(page.locator('.axn')).toBeVisible();
-  const launch = page.locator('main#contenu', {
-    has: page.getByRole('heading', { level: 1, name: 'Lancement de l’audit' }),
-  });
-  await expect(launch.getByRole('status')).toContainText(
-    'Indiquez l’adresse du site sur l’accueil.',
-  );
-  await expectNoViolations(page);
 
   await page.goto('/progression');
   await waitForIslands(page);
@@ -264,7 +257,7 @@ test('la liste des sites garde une tuile et replie les actions', async ({
   await waitForIslands(page);
   const gsc = page.getByRole('link', { name: 'Connecter Search Console' });
   await expect(gsc).toHaveCount(1);
-  await expect(gsc).toHaveAttribute('href', '/search-console');
+  await expect(gsc).toHaveAttribute('href', '#search-console');
 });
 
 test('aucun site utilise la plaque vide, pas l’erreur réseau', async ({

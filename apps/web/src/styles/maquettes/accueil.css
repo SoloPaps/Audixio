@@ -1238,19 +1238,28 @@ input {
   margin-block: 2.25rem;
 }
 .score-slot {
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  z-index: 4;
-  width: 92px;
+  position: relative;
+  z-index: 1;
+  width: 11rem;
+  max-width: 100%;
+  margin-top: 1.75rem;
 }
-.score-slot .gauge {
-  width: 92px;
+.w-left .score-slot .gauge {
+  width: 8.5rem;
+  max-width: none;
   height: auto;
-  background: #fff;
+  background: transparent;
   border-radius: 12px;
 }
-.score-slot .gauge svg {
+.w-left .score-slot .status {
+  white-space: nowrap;
+  max-width: none;
+}
+.gauge-wrap > div:last-child {
+  flex: 1;
+  min-width: 9rem;
+}
+.w-left .score-slot .gauge svg {
   transform: none;
   width: 100%;
   height: auto;
@@ -2612,6 +2621,13 @@ a.link-inline {
   }
 }
 @media (max-width: 400px) {
+  .btn,
+  .field .btn {
+    overflow: visible;
+    height: auto;
+    min-height: 48px;
+    white-space: normal;
+  }
   .w-left,
   .w-right {
     padding: 1.25rem 1rem;

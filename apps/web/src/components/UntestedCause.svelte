@@ -20,7 +20,7 @@ let { coverageNote = null, causes = null }: Props = $props();
         <p>
           {causes.primary.text}
           {#if causes.primary.searchConsole}
-            <a class="link-action" href="/search-console">{t('domain.cause.gsc.link')}</a>
+            <a class="link-action" href="/compte#search-console">{t('domain.cause.gsc.link')}</a>
           {/if}
         </p>
       {/if}
@@ -33,7 +33,7 @@ let { coverageNote = null, causes = null }: Props = $props();
               <li>
                 {line.text}
                 {#if line.searchConsole}
-                  <a class="link-action" href="/search-console">{t('domain.cause.gsc.link')}</a>
+                  <a class="link-action" href="/compte#search-console">{t('domain.cause.gsc.link')}</a>
                 {/if}
               </li>
             {/each}

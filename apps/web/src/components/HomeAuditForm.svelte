@@ -66,7 +66,7 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
         class="input"
         id="url-input"
         name="url"
-        type="url"
+        type="text"
         inputmode="url"
         autocomplete="url"
         autocapitalize="off"

@@ -48,7 +48,7 @@ async function start(): Promise<void> {
   error = '';
   const session = await currentSession();
   if (!session) {
-    location.assign(loginHref('/search-console'));
+    location.assign(loginHref('/compte'));
     return;
   }
   pending = true;
@@ -81,7 +81,7 @@ async function revoke(): Promise<void> {
   error = '';
   const session = await currentSession();
   if (!session) {
-    location.assign(loginHref('/search-console'));
+    location.assign(loginHref('/compte'));
     return;
   }
   pending = true;
@@ -111,10 +111,10 @@ async function revoke(): Promise<void> {
   <p role="status">{t('gsc.page.loading')}</p>
 {:else if !configured}
   <p>{t('gsc.page.missing')}</p>
-  <p><a class="link-action" href={loginHref('/search-console')}>{t('gsc.connect')}</a></p>
+  <p><a class="link-action" href={loginHref('/compte')}>{t('gsc.connect')}</a></p>
 {:else if needLogin}
   <p>{t('gsc.page.need_login')}</p>
-  <p><a class="link-action" href={loginHref('/search-console')}>{t('gsc.connect')}</a></p>
+  <p><a class="link-action" href={loginHref('/compte')}>{t('gsc.connect')}</a></p>
 {:else}
   {#if notice}
     <p role="status">{notice}</p>

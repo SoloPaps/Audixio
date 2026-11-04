@@ -203,7 +203,7 @@ export const mqFr = {
     "Audixio Pro, bientôt disponible, s'adresse aux agences et équipes web : suivi continu multi-sites, historique long (au moins 10 audits), alertes de régression et plafonds d'équipe étendus, avec exports PDF client, Excel, CSV, Word, JSON et XML.",
   'mq.a.176': 'Explorer Audixio',
   'mq.a.177': 'Voir un rapport complet, note et priorités.',
-  'mq.a.178': 'Comment chaque note A–F est calculée.',
+  'mq.a.178': 'Comment chaque note A–D est calculée.',
   'mq.a.179': 'Gratuit ou Pro : ce qui change. Liste d’attente.',
   'mq.a.180': 'Ce que notre robot visite, et comment le bloquer.',
   'mq.a.181': 'Écoconception',

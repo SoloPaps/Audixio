@@ -344,10 +344,10 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
     },
     {
       value: session,
-      next: '/lancer?url=https%3A%2F%2Fexemple.fr',
+      next: '/progression?url=https%3A%2F%2Fexemple.fr',
     },
   );
-  await page.goto('/compte/retour');
+  await page.goto('/connexion?retour=1');
   await expect(page).toHaveURL(/\/progression/, { timeout: 15_000 });
 
   const status = page.getByRole('status');
@@ -509,7 +509,7 @@ test('parcours invité : le plafond ouvre la fenêtre sans rapport', async ({
   await expect(gate).toBeVisible();
   await expect(gate.getByRole('link', { name: 'Connexion' })).toBeVisible();
   await expect(gate.getByRole('link', { name: 'Inscription' })).toBeVisible();
-  await expect(page).not.toHaveURL(/\/progression/);
+  await expect(page).not.toHaveURL(/\/progression\?id=/);
   await expect(page).not.toHaveURL(/\/rapport/);
 });
 
@@ -523,7 +523,11 @@ test('connexion et sites vides sans violation, clair et sombre', async ({
   await expectNoViolations(page);
   await page.goto('/connexion?theme=dark');
   await waitForIslands(page);
-  await expect(page.getByLabel('Thème')).toHaveValue('dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByRole('button', { name: 'Thème' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
   await expectNoViolations(page);
   await page.goto('/sites?theme=light');
   await waitForIslands(page);

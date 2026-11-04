@@ -5,6 +5,7 @@ import { t } from '../i18n/index.js';
 import '../styles/polices.css';
 import '../styles/chrome.css';
 import '../styles/mobile-fit.css';
+import '../styles/theme-dark.css';
 
 export type Vue =
   | 'hub'
@@ -87,5 +88,9 @@ const canonical = Astro.url.pathname || '/';
     <CanonBar pathname={Astro.url.pathname} client:load />
     <slot />
     <CanonFooter classic={vue === 'accueil' || vue === 'methode'} />
+    <script>
+      import { bootLocale } from '../i18n/live';
+      bootLocale();
+    </script>
   </body>
 </html>
