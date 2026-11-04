@@ -18,7 +18,7 @@ import {
 import { loginHref } from '../lib/nav.js';
 import { detailAllowed } from '../lib/plan-board.js';
 import { pickPriorities } from '../lib/priorities.js';
-import { progressLive } from '../lib/progress-live.js';
+import { nothingMeasured, progressLive } from '../lib/progress-live.js';
 import { relaunchHref } from '../lib/relaunch.js';
 import {
   markdownFilename,
@@ -239,6 +239,15 @@ onMount(() => {
         location.replace(loginHref(`${location.pathname}${location.search}`));
         return;
       }
+      if (
+        (stored.audit.status === 'done' || stored.audit.status === 'partial') &&
+        nothingMeasured(stored.domains)
+      ) {
+        location.replace(
+          `/audit-echoue?id=${encodeURIComponent(stored.audit.id)}`,
+        );
+        return;
+      }
       guest = true;
       payload = stored;
       phase = 'ready';
@@ -258,6 +267,15 @@ onMount(() => {
       return;
     }
     const gated = await applyGate(result.payload);
+    if (
+      (gated.audit.status === 'done' || gated.audit.status === 'partial') &&
+      nothingMeasured(gated.domains)
+    ) {
+      location.replace(
+        `/audit-echoue?id=${encodeURIComponent(gated.audit.id)}`,
+      );
+      return;
+    }
     payload = gated;
     phase = 'ready';
     void loadStatuses(gated.audit.site.id);

@@ -44,9 +44,10 @@ html[data-board="liste"] {
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --out: cubic-bezier(0.16, 1, 0.3, 1);
 }
-html[data-board="liste"] *,
-html[data-board="liste"] *::before,
-html[data-board="liste"] *::after {
+html[data-board="liste"] main,
+html[data-board="liste"] main *,
+html[data-board="liste"] main *::before,
+html[data-board="liste"] main *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -1034,7 +1035,7 @@ html[data-board="liste"] .inp input {
   padding: 0 18px 0 50px;
   border-radius: 18px;
   border: 1.5px solid var(--line);
-  background: #fff;
+  background: var(--solid);
   font:
     500 16px Inter,
     sans-serif;

@@ -81,45 +81,86 @@ async function launch(page: Page): Promise<void> {
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
 }
 
+const MEASURED = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10';
+
+function measuredGuest(): unknown {
+  const domain = (
+    name: string,
+    score: number | null,
+    locked = false,
+  ): unknown => ({
+    domain: name,
+    score,
+    coverage: score === null ? 0 : 1,
+    level: score === null ? 'untested' : 'good',
+    locked,
+  });
+  return {
+    audit: {
+      id: MEASURED,
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '1',
+      engineVersion: '1',
+      globalScore: 80,
+      siteVerified: false,
+      partialLabel: null,
+      coverage: 1,
+      createdAt: '2026-11-03T00:00:00.000Z',
+      startedAt: '2026-11-03T00:00:00.000Z',
+      finishedAt: '2026-11-03T00:00:01.000Z',
+      error: null,
+      site: {
+        id: '7a2b3c4d-5e6f-4789-a012-bcdef0123456',
+        url: 'https://exemple.fr',
+        label: 'exemple.fr',
+        scope: 'origin',
+        hosting: 'unknown',
+      },
+    },
+    domains: [
+      domain('performance', 80),
+      domain('seo', 70),
+      domain('securite', null, true),
+      domain('ecologie', 60),
+      domain('accessibilite', 50),
+      domain('qualite', 40),
+      domain('vie_privee', null, true),
+      domain('dns_email', null, true),
+    ],
+    findings: [],
+  };
+}
+
 test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   page,
 }) => {
   test.setTimeout(120_000);
-  const ids: string[] = [];
   for (let index = 0; index < 3; index += 1) {
     await launch(page);
-    await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 20_000 });
-    const voir = page.locator('#reportBtn');
-    await expect(voir).toBeVisible();
-    await expect(voir).toContainText('Voir le rapport');
-    const place = await voir.evaluate((node) => {
-      const root = globalThis as unknown as {
-        document: {
-          getElementById: (
-            id: string,
-          ) => { getBoundingClientRect: () => { top: number } } | null;
-        };
-      };
-      const mock = root.document.getElementById('mock');
-      const btn = node.getBoundingClientRect();
-      const stage = mock?.getBoundingClientRect();
-      return { gap: stage ? stage.top - btn.bottom : 0 };
-    });
-    expect(place.gap).toBeGreaterThan(16);
-    await voir.click();
-    await expect(page).toHaveURL(/\/rapport\?id=/);
-    ids.push(new URL(page.url()).searchParams.get('id') ?? '');
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
-    ).toBeVisible();
-    await expect(
-      page.getByText(/partielle · \d+ domaines · site non vérifié/),
-    ).toBeVisible();
-    await expect(page.getByRole('dialog')).toHaveCount(0);
-    await expect(page.getByText('Verrouillé').first()).toBeVisible();
+    await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
+    await expect(page.getByText('Audit interrompu').first()).toBeVisible();
+    await expect(page.getByText('0/100')).toHaveCount(0);
+    await expect(page.getByText('Votre diagnostic est prêt pour')).toHaveCount(
+      0,
+    );
   }
 
-  await page.goto(`/rapport?id=${ids[0]}`);
+  await page.goto('/');
+  await page.evaluate((payload) => {
+    const storage = (
+      globalThis as unknown as {
+        sessionStorage: { setItem: (key: string, value: string) => void };
+      }
+    ).sessionStorage;
+    const body = payload as { audit: { id: string } };
+    storage.setItem(
+      'audixio-guest-audit',
+      JSON.stringify({ [body.audit.id]: payload }),
+    );
+  }, measuredGuest());
+  await page.goto(`/rapport?id=${MEASURED}`);
   await expect(page).not.toHaveURL(/connexion/);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),

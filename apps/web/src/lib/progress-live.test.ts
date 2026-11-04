@@ -2,11 +2,21 @@ import { describe, expect, it } from 'vitest';
 import {
   guestBeatPhase,
   guestDisplayStatus,
+  nothingMeasured,
   progressEta,
   progressLive,
   progressPhase,
   runnerGap,
 } from './progress-live.js';
+
+describe('nothingMeasured', () => {
+  it('refuse une note absente et garde une note 0 mesurée', () => {
+    expect(nothingMeasured([])).toBe(true);
+    expect(nothingMeasured([{ score: null }, { score: null }])).toBe(true);
+    expect(nothingMeasured([{ score: 0 }])).toBe(false);
+    expect(nothingMeasured([{ score: null }, { score: 72 }])).toBe(false);
+  });
+});
 
 describe('guestBeatPhase', () => {
   it('avance de DNS aux pages, puis à la vie privée', () => {
