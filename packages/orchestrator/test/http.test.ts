@@ -113,6 +113,23 @@ describe('POST /api/audits', () => {
     expect(lines.join('\n')).toContain('audit_trigger_failed');
   });
 
+  it('plafond de 2 sites : message dédié, pas une panne du service', async () => {
+    const { deps } = apiDeps(
+      {},
+      {
+        ensureSite: async () => {
+          throw new Error('site_limit');
+        },
+      },
+    );
+    expect(
+      await read(await handleCreate(post({ url: 'exemple.fr' }), deps)),
+    ).toEqual({
+      status: 409,
+      body: { error: 'site_limit', messageKey: 'api.error.site_limit' },
+    });
+  });
+
   it.each([
     ['host_limit', 900],
     ['user_limit', 3600],

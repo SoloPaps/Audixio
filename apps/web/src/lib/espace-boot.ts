@@ -3,6 +3,11 @@ import { withinSiteQuota } from '@audigy/db';
 import type { Session } from '@supabase/supabase-js';
 import { tick } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
+import {
+  type ActiveShare,
+  activeShareLinks,
+  type ReportLinkRow,
+} from './account-access.js';
 import { historySource, pickHistorySite } from './account-history.js';
 import {
   alertsOpenForPlan,
@@ -22,11 +27,13 @@ import {
   historySummary,
 } from './history.js';
 import { type EvolutionChart, evolutionChart } from './history-chart.js';
+import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
 import { parsePlacesState } from './places-api.js';
 import { loadSiteHistory } from './site-history.js';
 import { latestAuditBySite } from './site-tiles.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from './site-url.js';
+import { sslSelectValue, sslWarnDays } from './ssl-days.js';
 
 export type EspacePage =
   | 'sites'
@@ -748,6 +755,19 @@ function bindHistory(root: HTMLElement): () => void {
   let values = [78, 79, 80, 81, 82, 84];
   let xs = [70, 234, 398, 562, 726, 890];
   let ys = [168, 156.5, 145, 133.5, 122, 99];
+  let span: ReturnType<typeof historySpanOf> | 'unset' = 'unset';
+  let latestView: HistoryView | null = null;
+  const drawChart = (): void => {
+    if (!latestView) return;
+    const points =
+      span === 'unset'
+        ? latestView.points
+        : filterHistoryPoints(latestView.points, span, Date.now());
+    applyChart({
+      ...latestView,
+      points: points.length > 0 ? points : latestView.points,
+    });
+  };
   const show = (index: number): void => {
     if (!svg || !tip || !chart || !cross) return;
     const box = svg.getBoundingClientRect();
@@ -850,7 +870,8 @@ function bindHistory(root: HTMLElement): () => void {
         view,
         typeof profile?.plan === 'string' ? profile.plan : null,
       );
-      applyChart(view);
+      latestView = view;
+      drawChart();
       return;
     }
     const siteId =
@@ -883,7 +904,21 @@ function bindHistory(root: HTMLElement): () => void {
     const hosting = listed?.hosting ?? 'other';
     const view = await loadSiteHistory(asked || siteId, hosting);
     if (dead || !view) return;
-    applyChart(view);
+    if (listed?.host) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('plan')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      paintHistoryLive(
+        root,
+        listed.host,
+        view,
+        typeof profile?.plan === 'string' ? profile.plan : null,
+      );
+    }
+    latestView = view;
+    drawChart();
   })();
   const leave = (): void => {
     tip?.classList.remove('on');
@@ -901,10 +936,12 @@ function bindHistory(root: HTMLElement): () => void {
   };
   seg?.querySelectorAll('button').forEach((button, index) => {
     const click = (): void => {
+      span = historySpanOf(index);
       seg.querySelectorAll('button').forEach((item) => {
         item.setAttribute('aria-pressed', item === button ? 'true' : 'false');
       });
       move(button);
+      drawChart();
       if (note)
         note.textContent = index
           ? t('mq.ui.range.full')
@@ -938,6 +975,115 @@ function bindHistory(root: HTMLElement): () => void {
     dead = true;
     for (const fn of off) fn();
   };
+}
+
+function shareAccessRow(link: ActiveShare): HTMLLIElement {
+  const row = document.createElement('li');
+  row.className = 'ap-row';
+  row.id = link.id;
+  const avatar = document.createElement('span');
+  avatar.className = 'ap-av';
+  avatar.setAttribute('aria-hidden', 'true');
+  avatar.textContent = link.host.slice(0, 1).toLocaleUpperCase('fr');
+  const who = document.createElement('div');
+  who.className = 'ap-who';
+  const name = document.createElement('b');
+  name.textContent = link.host;
+  const meta = document.createElement('div');
+  meta.className = 'ap-meta';
+  const tag = document.createElement('span');
+  tag.className = 'ap-tag';
+  tag.textContent = link.kind === 'team' ? t('mq.co.072') : t('mq.co.067');
+  const when = document.createElement('span');
+  const date = new Date(link.createdAt);
+  when.textContent = Number.isNaN(date.getTime()) ? '' : formatDate(date);
+  meta.append(tag, when);
+  who.append(name, meta);
+  const act = document.createElement('div');
+  act.className = 'ap-act';
+  const copy = document.createElement('button');
+  copy.type = 'button';
+  copy.className = 'btn btn-ghost btn-sm btn-copy';
+  copy.dataset.copy = `${location.origin}${link.urlPath}`;
+  copy.dataset.msg = t('mq.co.078');
+  const copyLabel = document.createElement('span');
+  copyLabel.className = 'bl';
+  copyLabel.textContent = t('mq.co.079');
+  copy.append(copyLabel);
+  copy.addEventListener('click', () => {
+    const text = copy.dataset.copy ?? '';
+    const done = (): void => {
+      say(copy.dataset.msg || t('mq.ui.copied.long'), true);
+    };
+    const clip = navigator.clipboard;
+    if (clip?.writeText) void clip.writeText(text).then(done, done);
+    else done();
+  });
+  const revoke = document.createElement('button');
+  revoke.type = 'button';
+  revoke.className = 'btn btn-sm btn-revoke';
+  revoke.dataset.revoke = link.id;
+  revoke.dataset.who = link.host;
+  revoke.dataset.site = link.host;
+  revoke.setAttribute('aria-label', `${t('mq.co.081')} ${link.host}`);
+  const revokeLabel = document.createElement('span');
+  revokeLabel.className = 'bl';
+  revokeLabel.textContent = t('mq.co.081');
+  revoke.append(revokeLabel);
+  act.append(copy, revoke);
+  row.append(avatar, who, act);
+  return row;
+}
+
+async function readActiveShares(): Promise<ActiveShare[] | null> {
+  const supabase = browserClient();
+  const session = await currentSession();
+  if (!supabase || !session) return null;
+  const { data, error } = await supabase
+    .from('reports')
+    .select(
+      'id, audit_id, share_token, link_kind, visibility, revoked_at, expires_at, created_at',
+    )
+    .eq('visibility', 'link');
+  if (error || !data) return null;
+  const hosts = new Map<string, string>();
+  const auditIds = [...new Set(data.map((row) => row.audit_id))];
+  if (auditIds.length > 0) {
+    const { data: audits, error: auditError } = await supabase
+      .from('audits')
+      .select('id, site_id')
+      .in('id', auditIds);
+    if (auditError || !audits) return null;
+    const siteIds = [...new Set(audits.map((row) => row.site_id))];
+    const { data: sites, error: siteError } =
+      siteIds.length > 0
+        ? await supabase
+            .from('sites')
+            .select('id, host, owner_id')
+            .in('id', siteIds)
+        : { data: [], error: null };
+    if (siteError || !sites) return null;
+    const owned = new Map(
+      sites
+        .filter((site) => site.owner_id === session.user.id)
+        .map((site) => [site.id, site.host]),
+    );
+    for (const audit of audits) {
+      const host = owned.get(audit.site_id);
+      if (host) hosts.set(audit.id, host);
+    }
+  }
+  const rows: ReportLinkRow[] = data.map((row) => ({
+    id: row.id,
+    auditId: row.audit_id,
+    token: row.share_token,
+    kind: row.link_kind,
+    visibility: row.visibility,
+    revokedAt: row.revoked_at,
+    expiresAt: row.expires_at,
+    createdAt: row.created_at,
+  }));
+  return activeShareLinks(rows, hosts, Date.now());
 }
 
 function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
@@ -1123,6 +1269,24 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   };
   acc?.addEventListener('click', onAcc);
   if (acc) off.push(() => acc.removeEventListener('click', onAcc));
+  const paintShares = (links: readonly ActiveShare[]): void => {
+    const list = root.querySelector('#apl');
+    list?.replaceChildren(...links.map((link) => shareAccessRow(link)));
+    const count = document.getElementById('apn');
+    if (count) count.textContent = String(links.length);
+    const cap = document.getElementById('apd');
+    if (cap && next.plan === 'pro') cap.textContent = '';
+    const meter = document.getElementById('apm');
+    if (meter) meter.style.setProperty('--v', links.length === 0 ? '0' : '1');
+    const empty = document.getElementById('ape');
+    if (empty) empty.hidden = links.length !== 0;
+  };
+  const refreshShares = async (): Promise<ActiveShare[] | null> => {
+    const links = await readActiveShares();
+    if (links) paintShares(links);
+    return links;
+  };
+  void refreshShares();
   const revoke = root.querySelector<HTMLDialogElement>('#dlgr');
   let current: HTMLElement | null = null;
   const onRevokeClick = (event: Event): void => {
@@ -1144,10 +1308,29 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
     const who = current?.dataset.who ?? '';
     revoke?.close();
     if (!id) return;
-    const row = document.getElementById(id);
-    row?.classList.add('out');
-    window.setTimeout(() => row?.remove(), reduced() ? 0 : 560);
-    say(t('mq.ui.revoke', { who }), true);
+    void (async () => {
+      const supabase = browserClient();
+      if (!supabase) {
+        say(t('api.error.internal'), true);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('reports')
+        .update({ revoked_at: new Date().toISOString() })
+        .eq('id', id)
+        .is('revoked_at', null)
+        .select('id');
+      if (error || !data || data.length === 0) {
+        say(t('api.error.internal'), true);
+        return;
+      }
+      const links = await refreshShares();
+      if (!links) {
+        say(t('api.error.internal'), true);
+        return;
+      }
+      say(t('mq.ui.revoke', { who }), true);
+    })();
   };
   root.querySelector('#rok')?.addEventListener('click', onRevokeOk);
   root.querySelector('#rc')?.addEventListener('click', () => revoke?.close());
@@ -1199,9 +1382,11 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   const ssl = vals[0];
   const drop = vals[1];
   const cadence = vals[3];
-  if (ssl && row.ssl_warn_days !== 14) {
-    ssl.textContent = t('mq.ui.ssl', { n: row.ssl_warn_days });
-  }
+  const selected = sslSelectValue(Number(row.ssl_warn_days));
+  const select = root.querySelector<HTMLSelectElement>('#ssl');
+  if (select && selected) select.value = selected;
+  if (ssl && selected)
+    ssl.textContent = t('mq.ui.ssl', { n: Number(selected) });
   if (drop && row.score_drop_points === 0)
     drop.textContent = t('mq.ui.drop.letter');
   else if (drop && row.score_drop_points !== 10) {
@@ -1228,17 +1413,17 @@ function nextIsPro(row: {
 async function saveAlerts(next: EspaceNext): Promise<void> {
   const siteId = new URLSearchParams(location.search).get('site');
   const supabase = browserClient();
-  if (!siteId || !supabase) {
-    say(t('mq.ui.saved'), true);
-    return;
-  }
+  if (!siteId || !supabase) return;
   const drop = Number(
     document.querySelector<HTMLInputElement>('#drop')?.value ?? 5,
   );
-  const sslLabel = document.querySelector('#ssl')?.textContent ?? '';
-  const days = Number(sslLabel.match(/\d+/)?.[0] ?? 14);
+  const select = document.querySelector<HTMLSelectElement>('#ssl');
+  const days = sslWarnDays({
+    selected: select?.value ?? '',
+    text: select?.textContent ?? '',
+  });
   await supabase.rpc('ensure_alert_settings', { p_site_id: siteId });
-  await supabase
+  const { error } = await supabase
     .from('alert_settings')
     .update({
       score_drop_points: drop,
@@ -1247,6 +1432,7 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
     })
     .eq('site_id', siteId)
     .eq('user_id', (await currentSession())?.user.id ?? '');
+  if (error) return;
   say(t('mq.ui.saved'), true);
   void next;
 }

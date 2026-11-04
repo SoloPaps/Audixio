@@ -55,6 +55,46 @@ export type Database = {
           },
         ];
       };
+      brief_selections: {
+        Row: {
+          audit_id: string;
+          choice: string;
+          finding_id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          audit_id: string;
+          choice: string;
+          finding_id: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          audit_id?: string;
+          choice?: string;
+          finding_id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'brief_selections_audit_id_fkey';
+            columns: ['audit_id'];
+            isOneToOne: false;
+            referencedRelation: 'audits';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'brief_selections_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       alert_settings: {
         Row: {
           alerts_enabled: boolean;

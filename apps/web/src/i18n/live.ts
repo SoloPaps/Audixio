@@ -5,6 +5,8 @@ const SKIP =
 type Marked = Text & { [ORIG]?: string };
 
 let dictionary: Map<string, string> | null = null;
+let painting = false;
+let watching = false;
 
 function norm(value: string): string {
   return value.replace(/\s+/g, ' ').trim();
@@ -68,6 +70,7 @@ function translate(original: string, dict: Map<string, string>): string {
 function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
   const root = document.body;
   if (!root) return;
+  painting = true;
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
   let node = walker.nextNode();
   while (node) {
@@ -99,6 +102,29 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
     }
   }
   document.documentElement.lang = locale;
+  painting = false;
+}
+
+function storedLocale(): 'fr' | 'en' {
+  try {
+    return localStorage.getItem('audigy-locale') === 'en' ? 'en' : 'fr';
+  } catch {
+    return 'fr';
+  }
+}
+
+function watchLocale(): void {
+  const root = document.body;
+  if (watching || !root) return;
+  watching = true;
+  new MutationObserver(() => {
+    if (!painting && storedLocale() === 'en') applyLocale('en');
+  }).observe(root, {
+    subtree: true,
+    childList: true,
+    characterData: true,
+    attributes: true,
+  });
 }
 
 export function applyLocale(locale: 'fr' | 'en'): void {
@@ -121,11 +147,6 @@ export function applyLocale(locale: 'fr' | 'en'): void {
 }
 
 export function bootLocale(): void {
-  let locale: 'fr' | 'en' = 'fr';
-  try {
-    if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
-  } catch {
-    locale = 'fr';
-  }
-  applyLocale(locale);
+  applyLocale(storedLocale());
+  watchLocale();
 }
