@@ -130,6 +130,13 @@ d.querySelectorAll('.fz').forEach(function(b){
  if('IntersectionObserver' in window){var o=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){b.classList.add('in');o.disconnect()}})});o.observe(b)}else b.classList.add('in');
  setTimeout(function(){b.classList.add('in')},2500);
 });
+/* Les lettres animées suivent la langue affichée (le traducteur ne voit pas une lettre seule). */
+function fzLetters(b){var name=b.querySelector('.fz-name'),def=b.querySelector('.st-def .lt'),ok=b.querySelector('.st-ok .lt');
+ function fill(box,text,from){if(!box||box.dataset.txt===text)return;box.dataset.txt=text;box.textContent='';
+  Array.from(text).forEach(function(ch,i){var sp=d.createElement('span');sp.style.setProperty('--i',String(from+i));sp.textContent=ch===' '?'\u00a0':ch;box.appendChild(sp)})}
+ fill(def,(name&&name.textContent||'').trim(),0);fill(ok,d.documentElement.lang==='en'?'Prompt copied':'Prompt copié',4)}
+d.querySelectorAll('.fz').forEach(fzLetters);
+new MutationObserver(function(){d.querySelectorAll('.fz').forEach(fzLetters)}).observe(d.documentElement,{attributes:true,attributeFilter:['lang']});
 AX.fzSend=function(b,msg){if(b.classList.contains('go'))return;b.classList.add('go');AX.say(msg,true);
  setTimeout(function(){b.classList.remove('go');b.classList.remove('in');void b.offsetWidth;b.classList.add('in')},R?1800:3200)};
 (function(){

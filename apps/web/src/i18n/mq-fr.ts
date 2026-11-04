@@ -312,7 +312,7 @@ export const mqFr = {
   'mq.m.077': 'Performance & Core Web Vitals',
   'mq.m.078':
     'Évaluation de la vitesse réelle ressentie et de la fluidité visuelle, sans surcharge matérielle.',
-  'mq.m.079': 'Largest Contentful Paint (cible LCP',
+  'mq.m.079': 'Largest Contentful Paint (cible LCP < 2,5 s)',
   'mq.m.080': 'Stabilité d’affichage (Cumulative Layout Shift, CLS)',
   'mq.m.081':
     'Réactivité à l’interaction (INP) et formats médias modernes (AVIF, WebP)',
@@ -629,6 +629,7 @@ export const mqFr = {
   'mq.e.185': 'votre-site.fr',
   'mq.e.186': 'DNS & e-mail',
   'mq.e.187': 'Qualité du code',
+  'mq.e.188': '7 domaines testés',
   'mq.p.001': 'atelier-martin.fr',
   'mq.p.002': 'Analyse en direct',
   'mq.p.003': 'Diagnostic complet · session active',

@@ -438,6 +438,8 @@ const frCore = {
   'progress.ready.heading': 'Votre diagnostic est prêt pour',
   'progress.ready.lead':
     'L’analyse est terminée. Votre rapport complet, avec les priorités et le plan d’action, vous attend.',
+  'progress.done.live': 'Analyse terminée',
+  'progress.done.phrase': 'Diagnostic terminé : votre rapport est disponible',
   'progress.home': 'Revenir à l’accueil',
   'progress.report': 'Voir le rapport',
   'progress.notify.title': 'Recevoir les résultats dès finalisation',

@@ -166,15 +166,14 @@ export function bindProgressScene(): void {
     const heading = $('#h1T');
     const lead = $('#leadT');
     const live = $('#liveT');
-    if (heading) heading.textContent = 'Votre diagnostic est prêt pour';
+    if (heading) heading.textContent = t('progress.ready.heading');
     if (lead) {
-      lead.textContent =
-        "L'analyse est terminée. Votre rapport complet, avec les priorités et le plan d'action, vous attend.";
+      lead.textContent = t('progress.ready.lead');
     }
-    if (live && live.textContent !== 'Rapport prêt.') {
-      live.textContent = 'Analyse terminée';
+    if (live && live.textContent !== t('progress.ready')) {
+      live.textContent = t('progress.done.live');
     }
-    setPhrase('Diagnostic terminé : votre rapport est disponible');
+    setPhrase(t('progress.done.phrase'));
     const notify = $('#notify') as HTMLDialogElement | null;
     if (notify?.open) notify.close();
     burst();

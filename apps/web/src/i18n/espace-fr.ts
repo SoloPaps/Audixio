@@ -109,6 +109,7 @@ export const espaceFr = {
   'mq.sl.077': 'Gérer les accès partagés de boutique.exemple.fr',
   'mq.sl.078': 'Alertes de boutique.exemple.fr',
   'mq.sl.079': 'Créer un lien de partage',
+  'sites.unpublish': 'Dépublier',
   'mq.sl.080': 'Surveillance et méthode',
   'mq.sl.081': 'Pourquoi surveiller vos domaines ?',
   'mq.sl.082':

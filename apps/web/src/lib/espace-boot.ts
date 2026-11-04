@@ -298,9 +298,11 @@ async function publishSite(
   button: HTMLButtonElement,
   current: EspaceNext,
   publish: (value: EspaceNext) => void,
+  visible = true,
 ): Promise<void> {
   const supabase = browserClient();
-  const id = button.dataset.publish ?? '';
+  const id =
+    (visible ? button.dataset.publish : button.dataset.unpublish) ?? '';
   const site = current.sites.find((item) => item.id === id);
   if (!supabase || !site || button.getAttribute('aria-busy') === 'true') return;
   button.setAttribute('aria-busy', 'true');
@@ -311,7 +313,7 @@ async function publishSite(
     [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
   const { data, error } = await supabase
     .from('sites')
-    .update({ is_public: true, public_slug: slug })
+    .update({ is_public: visible, public_slug: slug })
     .eq('id', id)
     .select('is_public, public_slug')
     .single();
@@ -444,9 +446,11 @@ function bindSites(
   const onPublish = (event: Event): void => {
     const target = event.target;
     if (!(target instanceof Element)) return;
-    const button = target.closest<HTMLButtonElement>('button[data-publish]');
+    const button = target.closest<HTMLButtonElement>(
+      'button[data-publish], button[data-unpublish]',
+    );
     if (!button || !root.contains(button)) return;
-    void publishSite(button, current, publish);
+    void publishSite(button, current, publish, !button.dataset.unpublish);
   };
   root.addEventListener('click', onPublish);
   off.push(() => root.removeEventListener('click', onPublish));

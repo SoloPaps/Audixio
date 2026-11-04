@@ -1,0 +1,47 @@
+#93 corrigé: moyenne de l'historique figée sur la vraie valeur (le compteur animé réécrivait 80,6) – test e2e historique-site
+#5 corrigé: légende du graphique d'historique compte les audits réels (plus « 6 audits ») – test e2e historique-site
+#4 corrigé: note « Axe vertical resserré entre X et Y » calculée depuis l'axe réel (plus 70–90 fixe) – test e2e historique-site
+#130 corrigé: synthèse d'historique sans mesure affiche « – / Pas encore de note » au lieu de « B · Bon » – test e2e historique-site
+#24/#83 non corrigé: non reproductible à 330px, défilement horizontal du graphique voulu (min-width 660px, overflow-x auto)
+#13 corrigé: la fréquence (quotidienne/hebdo/mensuelle) est envoyée à l'enregistrement et recochée au chargement depuis reaudit_cadence
+#18 corrigé: l'aperçu du brief IA utilise le niveau complet quand la propriété est vérifiée (comme l'export serveur) – test brief-screen.test
+#109/#151 corrigé: « Mettre à jour l'acceptation » appelle POST /api/compte/cgu (avant: localStorage seulement) et la date vient de GET /api/compte/cgu au lieu du « 24 oct. 2026 » figé; l'export JSON contient donc l'acceptation – test e2e compte-cgu
+#111 corrigé: le bouton « Créer un lien de partage » de la carte site n'avait aucun gestionnaire; il rend le site public (slug généré) et affiche « Copier le lien » – test e2e sites-lien-public
+#38 non corrigé: /passer-pro est une page statique de la modale d'upgrade qui ignore le plan; le comportement attendu pour un Pro (redirection ou message « déjà Pro ») est un choix produit non spécifié
+#152 non corrigé: non reproductible (FR 330px et EN 1280px: le lien ouvre bien /sites/exemple.fr/demandes/req_948f2a1b7e)
+#70/#98 corrigé: le chapeau Performance « Trois corrections simples… » n'est affiché que s'il reste des constats à corriger, sinon la phrase réelle du niveau – test domain-conclusion.test
+#104 corrigé: résumé hub Vie privée suit le niveau réel (hubSummary dans domain-conclusion.ts), test unitaire
+#155 non corrigé: déjà corrigé dans fix/momentic-apres-midi (2115847, lien masqué si aucun domaine)
+#57 corrigé: le span interne de .sh-pill.on héritait du blanc forcé par theme-dark.css (ratio 1.06), couleur verte rétablie dans ShareSheet.svelte; test e2e/partage-sombre.spec.ts (sous-titre du badge mesuré lisible, non modifié)
+#14 corrigé: historique.css n'avait pas de fill sombre pour .chart text/.val (ratios 1.1–2.2), ajout de règles dark; test dans e2e/historique-site.spec.ts
+#85 corrigé: la règle sombre générique (th, td → #243056) dessinait un bloc par cellule, fond transparent sur /historique; test e2e/historique-site.spec.ts
+#105 corrigé: #pm-mv gardait var(--primary) bleu foncé sur la carte sombre (ratio 2,1), couleur claire dans theme-dark-qa.css; test e2e/passer-pro-sombre.spec.ts
+#114 non corrigé: non reproductible (à 330 px, clair et sombre, la pastille .dot ne chevauche pas #eb; seul l'anneau animé de 6 px déborde par conception)
+Checkpoint 3 (après #105): build 0, format sans diff, lint 0, Playwright 474 passés / 1 ignoré
+Checkpoint 4 (après rebase sur origin/main) : typecheck/unit 1174 OK, build 0, format sans diff, lint 0, Playwright 473/1 skip, 4 flaky en parallèle (guest-audit 330px, lot-a x2, liens-regles) repassent seuls ×2. #111 audit sécu : voir rapport (read_public_score ignore expires_at, migration requise).
+#88/#116 corrigé: le mot « à » (1 caractère) était ignoré par buildMap (live.ts, longueur < 2) ; fusionné dans mq.acces.008 « l’accès à » / « for access to ». Test e2e/demande-acces-en.spec.ts.
+#15/#125 corrigé: « (cible LCP » + « < 2,5 s) » littéral formaient un seul nœud texte absent du dictionnaire ; libellé complet dans mq.m.079 (FR/EN). Test e2e/methode-en.spec.ts.
+#78 non corrigé: déjà corrigé upstream (HOME_EXAMPLE_SCORE=66 → C, home-example.test.ts).
+#17 non corrigé: déjà corrigé upstream (/confidentialite se traduit en EN).
+#21/#91/#92 et #2/#12/… (« Copier l’adresse ») non corrigés: déjà corrigés upstream (vérifié en EN : « The server lost the thread. », « Copy the address »).
+#134 non corrigé: « $9 » absent du code actuel (mq.co.029 FR/EN propres), non reproductible.
+#11 non corrigé: non reproductible (330 px EN sombre : champ 58–272 dans le panneau 37–293).
+#43/#95/#121 corrigé: le libellé « 7 domaines testés » écrit par le script de la rosace n'avait pas d'entrée dictionnaire ; ajout mq.e.188 (FR/EN). Test e2e/exemple-rapport-en.spec.ts.
+#60/#101/#122 corrigé: lettres animées du bouton Générer/copier le prompt reconstruites depuis le texte traduit (exemple-rapport.astro), test e2e/exemple-rapport-en.spec.ts
+#140/#148 non corrigé: déjà corrigé en amont (Lente/Rapide réservés au domaine Performance dans DomainView)
+#108 non corrigé: « Horodatage A/B » sont les noms des autorités de test locales (données), pas un libellé d'interface
+#154 non corrigé: décision produit (publier des plages IP ou retirer la promesse)
+#71/#103/#106/#124 non corrigé: déjà corrigé en amont (libellé « Connection type » et gain anglais, y compris après bascule ; test écrit passait déjà)
+#35/#56/#81 corrigé: progress-scene.ts utilisait des chaînes FR codées en dur ; passe par t() + clés progress.done.*, test e2e/progression-en.spec.ts
+#37 non corrigé: non reproductible (le lien de /email-confirme ouvre /methode en anglais, titre et intro traduits)
+#27/#90 non corrigé: le prompt du brief n'a aucune version anglaise (61 clés brief-fr sans entrée EN) ; c'est une fonctionnalité et une décision produit, pas un correctif minimal
+#97 corrigé: exemple.css ne définissait pas scroll-padding-top (arc.css absent de la page) ; ajout de 96px comme accueil.css, test e2e/exemple-rapport-repere.spec.ts
+#82 corrigé: .brief .bt min-width:230px dépassait la carte à 330 px ; min(230px, 100%), test dans e2e/exemple-rapport-repere.spec.ts
+#20 non corrigé: non reproductible (à 1280 px, FR clair, le texte « À corriger » 522–586 px reste dans sa pastille 511–598 px une fois l'animation terminée)
+#87 corrigé: en sombre, la règle générique peignait li.card (#1c2340) à angles droits derrière le lien arrondi ; li.card reçoit le même rayon 22px (e500.css). Test e2e/e500-sombre.spec.ts.
+#49 non corrigé: non reproductible (ratio du bouton 11.5:1).
+#54 non corrigé: déjà corrigé en amont (libellé sélectionné lisible).
+#74 non corrigé: non reproductible (champ mot de passe sombre correct au focus).
+#66 non corrigé: déjà corrigé en amont (piste de l'interrupteur off visible).
+#111 corrigé (1/2): read_public_score ignore les rapports expirés (migration 20261104181500_public_score_expiration.sql, non appliquée en prod). Test packages/db/test/rls.test.ts.
+#111 corrigé (2/2): bouton « Dépublier » / « Unpublish » sur la carte d'un site public (is_public=false, RLS propriétaire), lisible en sombre. Tests e2e/sites-lien-public.spec.ts.
