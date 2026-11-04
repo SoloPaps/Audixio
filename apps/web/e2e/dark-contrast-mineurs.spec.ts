@@ -70,7 +70,7 @@ test('#110 barre collante opaque en sombre', async ({ page }) => {
     (node) =>
       (globalThis as unknown as Dom).getComputedStyle(node).backgroundColor,
   );
-  const alpha = Number((bg.match(/rgba\([^)]*,\s*([\d.]+)\)/) ?? [, '1'])[1]);
+  const alpha = Number((bg.match(/rgba\([^)]*,\s*([\d.]+)\)/) ?? ['', '1'])[1]);
   expect(alpha).toBeGreaterThanOrEqual(0.95);
   expect(lum(bg)).toBeLessThan(0.1);
 });

@@ -85,7 +85,9 @@ test('#30 barre du bas opaque en sombre', async ({ page }) => {
     const p = node.querySelector('p');
     return { bg: s.backgroundColor, fg: getComputedStyle(p).color };
   });
-  const alpha = Number((c.bg.match(/rgba\([^)]*,\s*([\d.]+)\)/) ?? [, '1'])[1]);
+  const alpha = Number(
+    (c.bg.match(/rgba\([^)]*,\s*([\d.]+)\)/) ?? ['', '1'])[1],
+  );
   expect(alpha).toBeGreaterThanOrEqual(0.95);
   // Fond sombre sous un texte clair : pas de voile blanc translucide.
   const lum = (rgb: string): number => {
