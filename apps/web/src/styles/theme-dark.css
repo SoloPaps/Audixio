@@ -859,20 +859,61 @@ html[data-theme="dark"][data-board] .eco-line a {
 }
 
 /* ── QA visuels : correctifs couleurs uniquement (aucun changement de mise en page) ── */
-html[data-theme="dark"] .axn-burger i b { background-color: currentColor; }
-html[data-theme="dark"] .pm .pm-dlg { background-color: #1c2340; border-color: #3d4d7a; color: #f0f2f5; }
-html[data-theme="dark"] .pm .pm-scrim { background-color: rgba(8, 11, 24, 0.66); }
-html[data-theme="dark"][data-vue="alertes"] .gate.locked .gate-cta { background-color: #1c2340; border-color: #3d4d7a; }
-html[data-theme="dark"][data-vue="alertes"] .row .val { color: #c9d4ff; background-color: #243056; }
-html[data-theme="dark"][data-vue="bienvenue"] .step .num { background-color: #243056; color: #d6e2ff; }
+html[data-theme="dark"] .axn-burger i b {
+  background-color: currentColor;
+}
+html[data-theme="dark"] .pm .pm-dlg {
+  background-color: #1c2340;
+  border-color: #3d4d7a;
+  color: #f0f2f5;
+}
+html[data-theme="dark"] .pm .pm-scrim {
+  background-color: rgba(8, 11, 24, 0.66);
+}
+html[data-theme="dark"][data-vue="alertes"] .gate.locked .gate-cta {
+  background-color: #1c2340;
+  border-color: #3d4d7a;
+}
+html[data-theme="dark"][data-vue="alertes"] .row .val {
+  color: #c9d4ff;
+  background-color: #243056;
+}
+html[data-theme="dark"][data-vue="bienvenue"] .step .num {
+  background-color: #243056;
+  color: #d6e2ff;
+}
 html[data-theme="dark"][data-vue="bienvenue"] .step .num .n,
-html[data-theme="dark"][data-vue="bienvenue"] .step h3 .st { color: #d6e2ff; }
-html[data-theme="dark"][data-vue="bienvenue"] .step h3 .st { background-color: #243056; }
-html[data-theme="dark"] .fm { color: #1e2a55; }
-html[data-theme="dark"][data-vue="compte"] .cm:hover { background-color: #243056; }
-html[data-theme="dark"][data-vue="brief"] .seg3 input[value="skip"]:checked + span { background-color: #3d4d7a; color: #f0f2f5; }
-html[data-theme="dark"][data-vue="plan"] .lvl i b { background-color: #4a5a8a; }
-html[data-theme="dark"][data-vue="plan"] .lvl i b.on { background-color: #9fb4ff; }
-html[data-theme="dark"] .sw span { background-color: #3d4d7a; }
-html[data-theme="dark"] .sw input:checked + span { background-color: #6f86e8; }
-html[data-theme="dark"] .sw input:disabled + span { background-color: #4a5a8a; }
+html[data-theme="dark"][data-vue="bienvenue"] .step h3 .st {
+  color: #d6e2ff;
+}
+html[data-theme="dark"][data-vue="bienvenue"] .step h3 .st {
+  background-color: #243056;
+}
+html[data-theme="dark"] .fm {
+  color: #1e2a55;
+}
+html[data-theme="dark"][data-vue="compte"] .cm:hover {
+  background-color: #243056;
+}
+html[data-theme="dark"][data-vue="brief"]
+  .seg3
+  input[value="skip"]:checked
+  + span {
+  background-color: #3d4d7a;
+  color: #f0f2f5;
+}
+html[data-theme="dark"][data-vue="plan"] .lvl i b {
+  background-color: #4a5a8a;
+}
+html[data-theme="dark"][data-vue="plan"] .lvl i b.on {
+  background-color: #9fb4ff;
+}
+html[data-theme="dark"] .sw span {
+  background-color: #3d4d7a;
+}
+html[data-theme="dark"] .sw input:checked + span {
+  background-color: #6f86e8;
+}
+html[data-theme="dark"] .sw input:disabled + span {
+  background-color: #4a5a8a;
+}
