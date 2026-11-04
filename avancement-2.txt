@@ -44,3 +44,4 @@ Checkpoint 4 (après rebase sur origin/main) : typecheck/unit 1174 OK, build 0, 
 #74 non corrigé: non reproductible (champ mot de passe sombre correct au focus).
 #66 non corrigé: déjà corrigé en amont (piste de l'interrupteur off visible).
 #111 corrigé (1/2): read_public_score ignore les rapports expirés (migration 20261104181500_public_score_expiration.sql, non appliquée en prod). Test packages/db/test/rls.test.ts.
+#111 corrigé (2/2): bouton « Dépublier » / « Unpublish » sur la carte d'un site public (is_public=false, RLS propriétaire), lisible en sombre. Tests e2e/sites-lien-public.spec.ts.
