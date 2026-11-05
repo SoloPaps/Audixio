@@ -15,3 +15,12 @@ test('/reinitialisation : la confirmation ne laisse pas un e-mail vide', async (
     'Si un compte existe pour camille@exemple.fr, un e-mail vient de partir.',
   );
 });
+
+test('/sites/…/demandes : « rapport d’audit de exemple.fr » garde son espace', async ({
+  page,
+}) => {
+  await page.goto('/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light');
+  await expect(page.locator('main .lede').first()).toContainText(
+    'rapport d’audit de exemple.fr',
+  );
+});
