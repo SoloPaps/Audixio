@@ -77,3 +77,13 @@ test('/exemple-rapport : pas de handler inline (CSP script-src-attr) et le formu
   await page.waitForTimeout(300);
   expect(page.url()).toBe(url);
 });
+
+test('/audit-echoue sans id : le titre ne laisse pas un domaine vide', async ({
+  page,
+}) => {
+  await page.goto('/audit-echoue?theme=light');
+  const title = page.locator('main h1').first();
+  await expect(title).toHaveText('L’audit n’a pas abouti', {
+    useInnerText: true,
+  });
+});
