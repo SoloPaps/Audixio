@@ -26,7 +26,15 @@ import {
   type HistoryView,
   historySummary,
 } from './history.js';
-import { type EvolutionChart, evolutionChart } from './history-chart.js';
+import {
+  CHART_NARROW,
+  CHART_WIDE,
+  type ChartFrame,
+  type EvolutionChart,
+  evolutionChart,
+  NARROW_LABEL_GAP,
+  shownLabels,
+} from './history-chart.js';
 import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import { historySince } from './history-since.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
@@ -633,7 +641,34 @@ function bindProModal(_root: HTMLElement): () => void {
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
-function applyEvolutionChart(svg: SVGSVGElement, chart: EvolutionChart): void {
+/** Graphique d’historique en variante mobile (C11). */
+const CHART_NARROW_QUERY = '(max-width: 480px)';
+
+function applyChartFrame(svg: SVGSVGElement, frame: ChartFrame): void {
+  svg.setAttribute('viewBox', `0 0 ${frame.width} 300`);
+  svg.classList.toggle('narrow', frame === CHART_NARROW);
+  const left = String(frame.x0 - 14);
+  const right = String(frame.width - 30);
+  svg.querySelectorAll('.grid line, .thr line').forEach((line) => {
+    line.setAttribute('x1', left);
+    line.setAttribute('x2', right);
+  });
+  svg.querySelectorAll('.grid text').forEach((text) => {
+    text.setAttribute('x', String(frame.x0 - 26));
+  });
+  svg.querySelector('.thr text')?.setAttribute('x', String(frame.width - 34));
+}
+
+function applyEvolutionChart(
+  svg: SVGSVGElement,
+  chart: EvolutionChart,
+  frame: ChartFrame = CHART_WIDE,
+): void {
+  applyChartFrame(svg, frame);
+  const shown = shownLabels(
+    chart.marks.map((mark) => mark.x),
+    frame === CHART_NARROW ? NARROW_LABEL_GAP : null,
+  );
   svg.querySelector('polyline.ln')?.setAttribute('points', chart.polyline);
   svg.querySelector('path.area')?.setAttribute('d', chart.area);
   const lines = svg.querySelectorAll('.grid line');
@@ -676,9 +711,11 @@ function applyEvolutionChart(svg: SVGSVGElement, chart: EvolutionChart): void {
     value.setAttribute('y', String(mark.y - 20));
     value.setAttribute('text-anchor', 'middle');
     value.textContent = String(Math.round(mark.value));
-    group.append(halo, dot, value);
+    const visible = shown[mark.index] !== false;
+    if (visible) group.append(halo, dot, value);
+    else group.append(halo, dot);
     anchor?.parentNode?.insertBefore(group, anchor);
-    if (labels) {
+    if (labels && visible) {
       const label = document.createElementNS(SVG_NS, 'text');
       label.setAttribute('x', String(mark.x));
       label.setAttribute('y', '290');
@@ -849,7 +886,7 @@ function bindHistory(root: HTMLElement): () => void {
   const show = (index: number): void => {
     if (!svg || !tip || !chart || !cross) return;
     const box = svg.getBoundingClientRect();
-    const scale = box.width / 960;
+    const scale = box.width / (svg.viewBox.baseVal?.width || 960);
     const x = xs[index] ?? 0;
     const y = ys[index] ?? 0;
     tip.innerHTML = `${labels[index] ?? ''} · <b>${values[index] ?? ''}</b>`;
@@ -877,14 +914,18 @@ function bindHistory(root: HTMLElement): () => void {
     const names = axisLabels(
       scored.map((point) => Date.parse(point.at) / 1000),
     );
+    const frame = globalThis.matchMedia?.(CHART_NARROW_QUERY).matches
+      ? CHART_NARROW
+      : CHART_WIDE;
     const built = evolutionChart(
       scored.map((point, index) => ({
         label: names[index] ?? '',
         value: point.value,
       })),
+      frame,
     );
     if (!built) return;
-    applyEvolutionChart(svg, built);
+    applyEvolutionChart(svg, built, frame);
     axis = { min: String(built.min), max: String(built.max) };
     if (note && !full) note.textContent = t('mq.ui.range.axis', axis);
     const desc = svg.querySelector('#ch-d');
@@ -952,6 +993,12 @@ function bindHistory(root: HTMLElement): () => void {
     }
     bindHits();
   };
+  const narrowQuery = globalThis.matchMedia?.(CHART_NARROW_QUERY);
+  if (narrowQuery) {
+    const redraw = (): void => drawChart();
+    narrowQuery.addEventListener('change', redraw);
+    off.push(() => narrowQuery.removeEventListener('change', redraw));
+  }
   void (async () => {
     const session = await currentSession();
     const supabase = browserClient();

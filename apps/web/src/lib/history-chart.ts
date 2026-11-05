@@ -32,8 +32,23 @@ export interface EvolutionChart {
   average: string;
 }
 
-const X0 = 70;
-const X1 = 890;
+/** Cadre horizontal du graphique : largeur du viewBox et abscisses extrêmes. */
+export interface ChartFrame {
+  width: number;
+  x0: number;
+  x1: number;
+}
+
+/** Bureau : viewBox 960×300 des maquettes. */
+export const CHART_WIDE: ChartFrame = { width: 960, x0: 70, x1: 890 };
+/**
+ * Mobile (≤ 480 px) : viewBox 360×300, soit environ 190 px de haut à 330 px
+ * de large, au lieu de 60 px pour le 960×300 réduit.
+ */
+export const CHART_NARROW: ChartFrame = { width: 360, x0: 60, x1: 318 };
+/** Écart minimal entre deux libellés d’abscisse sur mobile (unités viewBox). */
+export const NARROW_LABEL_GAP = 96;
+
 const Y_TOP = 30;
 const Y_BOTTOM = 260;
 const SPAN = Y_BOTTOM - Y_TOP;
@@ -60,16 +75,18 @@ function range(values: readonly number[]): { min: number; max: number } {
 /** Courbe, aires et pastilles. `null` s’il n’y a aucun point. */
 export function evolutionChart(
   points: readonly EvolutionPoint[],
+  frame: ChartFrame = CHART_WIDE,
 ): EvolutionChart | null {
+  const { x0, x1 } = frame;
   const rows = points.filter((point) => Number.isFinite(point.value));
   if (rows.length === 0) return null;
   const { min, max } = range(rows.map((point) => point.value));
-  const step = rows.length === 1 ? 0 : (X1 - X0) / (rows.length - 1);
-  const hitWidth = rows.length === 1 ? X1 - X0 : step;
+  const step = rows.length === 1 ? 0 : (x1 - x0) / (rows.length - 1);
+  const hitWidth = rows.length === 1 ? x1 - x0 : step;
   const yOf = (value: number): number =>
     Y_BOTTOM - ((value - min) / (max - min)) * SPAN;
   const marks: EvolutionMark[] = rows.map((point, index) => {
-    const x = rows.length === 1 ? (X0 + X1) / 2 : X0 + index * step;
+    const x = rows.length === 1 ? (x0 + x1) / 2 : x0 + index * step;
     return {
       index,
       x,
@@ -100,4 +117,32 @@ export function evolutionChart(
     ticks,
     average: (sum / rows.length).toFixed(1).replace('.', ','),
   };
+}
+
+/**
+ * Libellés d’abscisse (et valeurs) à afficher : tous sur bureau ; sur mobile,
+ * le premier, le dernier et ceux qui gardent `gap` unités d’écart, pour que
+ * les dates ne se chevauchent pas.
+ */
+export function shownLabels(
+  xs: readonly number[],
+  gap: number | null,
+): boolean[] {
+  if (gap === null) return xs.map(() => true);
+  const last = xs.length - 1;
+  const shown = xs.map(() => false);
+  if (last < 0) return shown;
+  shown[0] = true;
+  shown[last] = true;
+  let previous = xs[0] ?? 0;
+  const end = xs[last] ?? 0;
+  for (let index = 1; index < last; index += 1) {
+    const x = xs[index] ?? 0;
+    if (x - previous >= gap && end - x >= gap) {
+      shown[index] = true;
+      previous = x;
+    }
+  }
+  if (last > 0 && end - (xs[0] ?? 0) < gap) shown[last] = false;
+  return shown;
 }
