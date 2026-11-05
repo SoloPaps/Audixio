@@ -109,7 +109,36 @@ async function lowContrast(page: Page): Promise<Low[]> {
   });
 }
 
-test('feuille de partage lisible en thème sombre (#57)', async ({ page }) => {
+const SESSION = {
+  access_token: 'header.payload.signature',
+  refresh_token: 'refresh-token-placeholder-value',
+  expires_in: 3600,
+  expires_at: 2_000_000_000,
+  token_type: 'bearer',
+  user: {
+    id: '11111111-1111-4111-8111-111111111111',
+    aud: 'authenticated',
+    role: 'authenticated',
+    email: 'ada@exemple.fr',
+    app_metadata: { provider: 'email', providers: ['email'] },
+    user_metadata: {},
+    created_at: '2026-10-23T00:00:00.000Z',
+  },
+};
+
+async function darkSheet(page: Page): Promise<void> {
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await page.goto(`/rapport?id=${AUDIT_ID}&theme=dark`);
+  await page.locator('#shareBtn').click();
+  await expect(page.locator('.sh-dlg')).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+}
+
+// Visiteur : plus de création de lien (matrice), l’appel à créer un compte reste lisible.
+test('feuille de partage lisible en thème sombre (#57), visiteur', async ({
+  page,
+}) => {
   await page.route('**/api/auth/session', (route) =>
     route.fulfill({ status: 401, body: '{}' }),
   );
@@ -122,12 +151,63 @@ test('feuille de partage lisible en thème sombre (#57)', async ({ page }) => {
     },
     ['audixio-guest-audit', JSON.stringify(payload())] as const,
   );
-  await page.setViewportSize({ width: 330, height: 900 });
-  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=dark`);
-  await page.locator('#shareBtn').click();
-  await expect(page.locator('.sh-dlg')).toBeVisible();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await darkSheet(page);
+  await expect(
+    page.locator('.sh-dlg').getByRole('link', { name: 'Créer un compte' }),
+  ).toBeVisible();
+  expect(await lowContrast(page)).toEqual([]);
+});
+
+// Compte : le lien créé et sa pastille « Lien actif » restent lisibles.
+test('feuille de partage lisible en thème sombre (#57), compte', async ({
+  page,
+}) => {
+  await page.addInitScript((value) => {
+    (
+      globalThis as unknown as {
+        localStorage: { setItem: (key: string, item: string) => void };
+      }
+    ).localStorage.setItem('audigy-auth', JSON.stringify(value));
+  }, SESSION);
+  await page.route('**/api/auth/session', (route) =>
+    route.fulfill({ status: 401, body: '{}' }),
+  );
+  await page.route('**/auth/v1/**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(SESSION.user),
+    }),
+  );
+  await page.route('http://127.0.0.1:54321/**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: route.request().url().includes('/auth/v1/')
+        ? JSON.stringify(SESSION.user)
+        : '[]',
+    }),
+  );
+  await page.route('**/api/audits/**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(payload()),
+    }),
+  );
+  await page.route('**/api/liens**', (route) => {
+    const write = route.request().method().toLowerCase() === 'post';
+    return route.fulfill({
+      status: write ? 201 : 200,
+      contentType: 'application/json',
+      body: JSON.stringify(
+        write
+          ? { id: 'lien-1', url: '/partage/k7Qm2xVaPq9Zt3Lw' }
+          : { liens: [] },
+      ),
+    });
+  });
+  await darkSheet(page);
   await page.locator('.sh-dlg .sh-main').click();
   await expect(page.locator('.sh-pill.on')).toBeVisible();
   expect(await lowContrast(page)).toEqual([]);

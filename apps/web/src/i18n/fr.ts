@@ -2147,6 +2147,8 @@ const frCore = {
   'share.badge.hint': 'Affichez votre note sur votre site.',
   'share.create': 'Créer le lien',
   'share.notyet': 'Le lien public n’est pas encore créé.',
+  'share.guest': 'Créez un compte gratuit pour partager ce rapport par lien.',
+  'share.guest.signup': 'Créer un compte',
   'share.error': 'Le lien n’a pas pu être créé.',
   'badge.title': 'Afficher votre note sur votre site',
   'badge.lead':

@@ -241,7 +241,7 @@ onMount(() => {
     const id = params.get('id');
     domainId = params.get('domaine') ?? '';
     checkId = params.get('check') ?? '';
-    if (!id && (mode === 'brief' || mode === 'badge')) {
+    if (!id && (mode === 'brief' || mode === 'badge' || mode === 'plan')) {
       const visitor = await currentSession();
       if (!visitor) {
         phase = 'brief-gate';
@@ -255,7 +255,8 @@ onMount(() => {
     }
     const session = await currentSession();
     if (session) userId = session.user.id;
-    if (!session && mode === 'brief') {
+    // Le plan vient du brief : comme le brief, pas de plan sans compte.
+    if (!session && (mode === 'brief' || mode === 'plan')) {
       phase = 'brief-gate';
       return;
     }
