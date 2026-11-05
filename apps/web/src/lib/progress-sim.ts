@@ -1,3 +1,5 @@
+import { t } from '../i18n/index.js';
+
 /** Pas de la maquette finale : +0,5 % toutes les 400 ms, pas des paliers. */
 export const PER_TICK = 0.5;
 export const TICK_MS = 400;
@@ -6,25 +8,21 @@ export const STAGES = [
   {
     key: 'perf',
     until: 82,
-    phrases: [
-      'Analyse de la compression des images et du poids global',
-      'Vérification de la fluidité et du confort de lecture sur smartphone',
-    ],
+    phrases: ['progress.sim.images', 'progress.sim.mobile'],
   },
   {
     key: 'a11y',
     until: 91,
-    phrases: ['Contrôle des contrastes et de la navigation au clavier'],
+    phrases: ['progress.sim.a11y'],
   },
   {
     key: 'code',
     until: 99,
-    phrases: [
-      'Lecture du code source et recherche des erreurs',
-      'Génération de la synthèse finale et des recommandations',
-    ],
+    phrases: ['progress.sim.code', 'progress.sim.summary'],
   },
 ] as const;
+
+export type PhraseKey = (typeof STAGES)[number]['phrases'][number];
 
 export interface DomainUpdate {
   key: string;
@@ -36,7 +34,8 @@ export interface Sim {
   si: number;
   spoke: number;
   finished: boolean;
-  phrase: string | null;
+  /** Clé du message d’activité (traduite à l’affichage). */
+  phrase: PhraseKey | null;
   domains: DomainUpdate[];
 }
 
@@ -51,7 +50,7 @@ export function createSim(): Sim {
   };
 }
 
-/** Texte sous la barre. Vide à 100 % : plus de délai affiché. */
+/** Texte sous la barre, dans la langue active. Vide à 100 % : plus de délai affiché. */
 export function etaLabel(percent: number): string {
   if (percent >= 100) return '';
   const seconds = Math.max(
@@ -59,7 +58,9 @@ export function etaLabel(percent: number): string {
     Math.ceil(((100 - percent) / PER_TICK) * (TICK_MS / 1000)),
   );
   if (seconds <= 0) return '';
-  return `~${seconds} seconde${seconds > 1 ? 's' : ''}`;
+  return t(seconds > 1 ? 'progress.eta.many' : 'progress.eta.one', {
+    seconds,
+  });
 }
 
 export function tickSim(sim: Sim): Sim {
@@ -70,7 +71,7 @@ export function tickSim(sim: Sim): Sim {
   const previous = sim.si > 0 ? (STAGES[sim.si - 1]?.until ?? 70) : 70;
   const mid = (stage.until - previous) / 2 + previous;
   let spoke = sim.spoke;
-  let phrase: string | null = null;
+  let phrase: PhraseKey | null = null;
   if (stage.phrases.length > 1 && spoke === 0 && percent >= mid) {
     spoke = 1;
     phrase = stage.phrases[1] ?? null;

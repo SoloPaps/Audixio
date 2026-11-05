@@ -1,6 +1,11 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import { storeEnglishDictionary } from '../i18n/en-pack.js';
+import {
+  rememberLocaleChoice,
+  resumeEnglishChoice,
+  settleLocaleChoice,
+  storeEnglishDictionary,
+} from '../i18n/en-pack.js';
 import { applyLocale } from '../i18n/live.js';
 import { packLine } from '../i18n/pack.js';
 import { type SlimKey, t } from '../i18n/slim.js';
@@ -124,10 +129,15 @@ async function setLocale(event: MouseEvent, next: 'fr' | 'en'): Promise<void> {
   event.preventDefault();
   if (next === locale) return;
   try {
+    rememberLocaleChoice(next);
     if (next === 'en') {
       const stored = await storeEnglishDictionary();
-      if (!stored) return;
+      if (!stored) {
+        settleLocaleChoice();
+        return;
+      }
     }
+    settleLocaleChoice();
     localStorage.setItem('audigy-locale', next);
     locale = next;
     applyLocale(next);
@@ -179,6 +189,9 @@ onMount(() => {
   loggedIn = storedSessionPresent();
   if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
   applyLocale(locale);
+  void resumeEnglishChoice().then((resumed) => {
+    if (resumed) location.reload();
+  });
   void followLangQuery();
   onScroll();
   const wide = window.matchMedia('(min-width: 901px)');
