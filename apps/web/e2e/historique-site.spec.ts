@@ -19,6 +19,7 @@ async function openHistory(
   page: Page,
   scores: readonly [number | null, number | null] | readonly [number],
   theme: 'light' | 'dark' = 'light',
+  host = 'bon.audigy.test',
 ): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
@@ -89,9 +90,7 @@ async function openHistory(
       await route.fulfill({
         status: 200,
         headers,
-        body: JSON.stringify([
-          { id: SITE, host: 'bon.audigy.test', hosting: 'other' },
-        ]),
+        body: JSON.stringify([{ id: SITE, host, hosting: 'other' }]),
       });
       return;
     }
@@ -176,6 +175,52 @@ test('filtre « 1 an » : la moyenne ne dit plus « sur 6 mois »', async ({
   await expect(avg).toContainText('Moyenne sur 1 an');
   await page.getByRole('button', { name: 'Tout' }).click();
   await expect(avg).toContainText('Moyenne sur toute la période');
+});
+
+test('330 px : le nom de domaine ne se coupe qu’après un point', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 330, height: 900 });
+  const host = 'gratuit.audixioexemple.test';
+  await openHistory(page, [72, 88], 'light', host);
+  const title = page.locator('#t');
+  await expect(title).toHaveText(host, { timeout: 15_000 });
+  const breaks = await title.evaluate((node) => {
+    const view = globalThis as unknown as {
+      document: {
+        createRange: () => {
+          setStart: (n: unknown, o: number) => void;
+          setEnd: (n: unknown, o: number) => void;
+          getBoundingClientRect: () => { top: number };
+        };
+        createTreeWalker: (
+          n: unknown,
+          w: number,
+        ) => { nextNode: () => { data: string } | null };
+      };
+    };
+    const walker = view.document.createTreeWalker(node, 4);
+    const chars: { c: string; top: number }[] = [];
+    for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+      for (let i = 0; i < text.data.length; i += 1) {
+        const range = view.document.createRange();
+        range.setStart(text, i);
+        range.setEnd(text, i + 1);
+        chars.push({
+          c: text.data[i] ?? '',
+          top: Math.round(range.getBoundingClientRect().top),
+        });
+      }
+    }
+    const before: string[] = [];
+    for (let i = 1; i < chars.length; i += 1) {
+      const prev = chars[i - 1];
+      const cur = chars[i];
+      if (prev && cur && cur.top > prev.top + 4) before.push(prev.c);
+    }
+    return before;
+  });
+  for (const c of breaks) expect(c).toBe('.');
 });
 
 test('« Historique et tendances » ouvre l’historique du site de la carte', async ({

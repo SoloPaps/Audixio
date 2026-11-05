@@ -751,7 +751,14 @@ function paintHistoryLive(
   plan: string | null,
 ): void {
   const title = root.querySelector('#t');
-  if (title) title.textContent = host;
+  if (title) {
+    // Coupure permise seulement après un point : pas de « …te / st ».
+    title.replaceChildren();
+    host.split('.').forEach((part, index, parts) => {
+      title.append(index < parts.length - 1 ? `${part}.` : part);
+      if (index < parts.length - 1) title.append(document.createElement('wbr'));
+    });
+  }
   const crumb = root.querySelector('.crumbs li:nth-child(2) a');
   if (crumb) crumb.textContent = host;
   if (plan !== 'pro') root.querySelector('.pb')?.remove();
