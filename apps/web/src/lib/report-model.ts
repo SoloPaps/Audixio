@@ -172,6 +172,21 @@ export function scoredDomainCount(items: readonly CategoryItem[]): number {
   ).length;
 }
 
+/**
+ * Pastille d’un rapport partiel, dans la langue active.
+ * Le serveur envoie un libellé français : seul son nombre de domaines est repris.
+ */
+export function partialPillText(
+  serverLabel: string | null | undefined,
+  verified: boolean,
+  scored: number,
+): string {
+  if (!serverLabel && verified) return '';
+  const fromServer = serverLabel ? /\d+/.exec(serverLabel)?.[0] : undefined;
+  const n = fromServer === undefined ? scored : Number(fromServer);
+  return t(n === 1 ? 'report.partial.one' : 'report.partial', { n });
+}
+
 export interface ReputationAside {
   score: number | null;
   rating: number | null;

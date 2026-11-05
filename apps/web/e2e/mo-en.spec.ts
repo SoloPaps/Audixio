@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { stubSession, toEnglish } from './en-session.js';
 
 // QA Mo 05/11 : plus de français quand l’anglais est actif.
@@ -161,4 +161,78 @@ test('M17 : le choix EN survit à une navigation pendant le téléchargement', a
   ]) {
     await expect(card).not.toContainText(french);
   }
+});
+
+const AUDIT_ID = '00000000-0000-4000-8000-0000000000aa';
+
+async function lockedReport(page: Page, partial: string): Promise<void> {
+  const body = {
+    audit: {
+      id: AUDIT_ID,
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '2026.1',
+      engineVersion: '0.1.0',
+      globalScore: null,
+      siteVerified: false,
+      partialLabel: partial,
+      coverage: 1,
+      createdAt: '2026-10-28T10:00:00.000Z',
+      startedAt: '2026-10-28T10:00:01.000Z',
+      finishedAt: '2026-10-28T10:05:00.000Z',
+      error: null,
+      site: {
+        id: '00000000-0000-4000-8000-0000000000bb',
+        url: 'https://bon.audigy.test',
+        label: 'bon.audigy.test',
+        scope: 'origin',
+        hosting: 'other',
+      },
+    },
+    domains: [
+      { domain: 'performance', score: 58, coverage: 1, level: 'improve' },
+      { domain: 'accessibilite', score: 80, coverage: 1, level: 'good' },
+      ...['seo', 'ecoconception', 'rgpd', 'qualite', 'mobile', 'securite'].map(
+        (domain) => ({
+          domain,
+          score: null,
+          coverage: 0,
+          level: 'locked',
+          locked: true,
+        }),
+      ),
+    ],
+    findings: [],
+  };
+  await stubSession(page);
+  await page.route('**/api/audits/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(body),
+    });
+  });
+}
+
+test('B-1 : /rapport EN, pastille « partial · 2 domains · site not verified »', async ({
+  page,
+}) => {
+  await lockedReport(page, 'partielle · 2 domaines · site non vérifié');
+  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  const pill = page.locator('.verified.partial');
+  await expect(pill).toHaveText('partielle · 2 domaines · site non vérifié');
+  await toEnglish(page);
+  await expect(pill).toHaveText('partial · 2 domains · site not verified');
+});
+
+test('B-1 : un seul domaine ouvert, pastille au singulier', async ({
+  page,
+}) => {
+  await lockedReport(page, 'partielle · 1 domaines · site non vérifié');
+  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  const pill = page.locator('.verified.partial');
+  await expect(pill).toHaveText('partielle · 1 domaine · site non vérifié');
+  await toEnglish(page);
+  await expect(pill).toHaveText('partial · 1 domain · site not verified');
 });

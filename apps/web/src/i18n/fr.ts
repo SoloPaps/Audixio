@@ -545,6 +545,7 @@ const frCore = {
     'Aperçu fermé. Le détail s’ouvre après la preuve de propriété.',
   'domain.locked.cta': 'Prouver la propriété',
   'report.partial': 'partielle · {n} domaines · site non vérifié',
+  'report.partial.one': 'partielle · {n} domaine · site non vérifié',
   'domain.ecologie.good': 'La page reste légère à charger.',
   'domain.ecologie.improve': 'La page peut être allégée.',
   'domain.ecologie.problem': 'La page est lourde à charger.',

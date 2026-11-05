@@ -27,6 +27,7 @@ import {
 } from '../lib/report-export.js';
 import {
   categoryItems,
+  partialPillText,
   reportFindings,
   reportRows,
   scoredDomainCount,
@@ -83,8 +84,11 @@ const siteVerified = $derived(payload?.audit.siteVerified !== false);
 const host = $derived(payload ? hostLabel(payload.audit.site.url) : '');
 const letter = $derived(domainLetter(global, !siteVerified));
 const partialText = $derived(
-  payload?.audit.partialLabel ??
-    (siteVerified ? '' : t('report.partial', { n: scoredDomainCount(items) })),
+  partialPillText(
+    payload?.audit.partialLabel,
+    siteVerified,
+    scoredDomainCount(items),
+  ),
 );
 const domainRow = $derived(items.find((item) => item.id === domainId));
 const domainScore = $derived(

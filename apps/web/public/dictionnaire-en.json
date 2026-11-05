@@ -462,6 +462,7 @@
   "domain.locked.teaser": "Preview closed. The detail opens after proof of ownership.",
   "domain.locked.cta": "Prove ownership",
   "report.partial": "partial · {n} domains · site not verified",
+  "report.partial.one": "partial · {n} domain · site not verified",
   "domain.ecologie.good": "The page stays light to load.",
   "domain.ecologie.improve": "The page can be made lighter.",
   "domain.ecologie.problem": "The page is heavy to load.",
