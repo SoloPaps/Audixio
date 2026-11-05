@@ -183,13 +183,16 @@ test('la vérification de propriété du compte pro montre le jeton et les méth
   ).toBeVisible();
 });
 
-test('un audit example.com sans domaine mesuré ouvre la page d’échec, jamais 0/100', async ({
+test('un audit injoignable sans domaine mesuré ouvre la page d’échec, jamais 0/100', async ({
   page,
 }) => {
   test.setTimeout(60_000);
+  await page.setExtraHTTPHeaders({
+    'x-nf-client-connection-ip': '203.0.113.210',
+  });
   await page.goto('/');
   await waitForIslands(page);
-  await page.getByLabel('Adresse du site').fill('https://example.com');
+  await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
   await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
   await expect(page.getByText('Audit interrompu').first()).toBeVisible();
@@ -198,17 +201,20 @@ test('un audit example.com sans domaine mesuré ouvre la page d’échec, jamais
   await expect(page.getByText(/0 domaine/)).toHaveCount(0);
 });
 
-test('l’échec d’example.com nomme ce site, pas la maquette', async ({
+test('l’échec d’un site injoignable nomme ce site, pas la maquette', async ({
   page,
 }) => {
   test.setTimeout(60_000);
+  await page.setExtraHTTPHeaders({
+    'x-nf-client-connection-ip': '203.0.113.211',
+  });
   await page.goto('/');
   await waitForIslands(page);
-  await page.getByLabel('Adresse du site').fill('https://example.com');
+  await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
   await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
   await expect(page.getByText('Audit interrompu').first()).toBeVisible();
-  await expect(page.getByText('example.com').first()).toBeVisible();
+  await expect(page.getByText('absent.audigy.test').first()).toBeVisible();
   await expect(page.getByText('monsite-exemple.fr')).toHaveCount(0);
   await expect(page.getByText('30 oct. 2026, 14 h 32')).toHaveCount(0);
 });
@@ -217,15 +223,20 @@ test('« Relancer l’audit » relance le même site, jamais la progression nue 
   page,
 }) => {
   test.setTimeout(60_000);
+  await page.setExtraHTTPHeaders({
+    'x-nf-client-connection-ip': '203.0.113.212',
+  });
   await page.goto('/');
   await waitForIslands(page);
-  await page.getByLabel('Adresse du site').fill('https://example.com');
+  await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
   await expect(page).toHaveURL(/\/audit-echoue\?id=/, { timeout: 20_000 });
   await page.getByRole('button', { name: 'Relancer l’audit' }).click();
   await expect(page).toHaveURL(/\/progression\?/, { timeout: 10_000 });
   const url = new URL(page.url());
-  expect(new URL(url.searchParams.get('url') ?? 'x:').host).toBe('example.com');
+  expect(new URL(url.searchParams.get('url') ?? 'x:').host).toBe(
+    'absent.audigy.test',
+  );
   await expect(page).not.toHaveURL(/exemple-rapport/);
 });
 
