@@ -114,7 +114,10 @@ export function supabaseLienStore(
       return data?.plan === 'pro' ? 'pro' : 'free';
     },
     async owns(userId, auditId) {
-      const { data: audit, error } = await service
+      // La propriété seule ne suffit plus : un gratuit ne doit pas créer un
+      // lien d’un ancien audit pour contourner la profondeur 1 de la RLS.
+      if (!asUser) return false;
+      const { data: audit, error } = await asUser
         .from('audits')
         .select('site_id')
         .eq('id', auditId)

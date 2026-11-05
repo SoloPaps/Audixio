@@ -6,7 +6,7 @@ import { openHistory } from './h-history.js';
 test('M4 : le seuil 70 est tracé entre les graduations 60 et 75', async ({
   page,
 }) => {
-  await openHistory(page, [64, 86]);
+  await openHistory(page, [64, 86], 'light', 'bon.audigy.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('86', {
     timeout: 15_000,
   });

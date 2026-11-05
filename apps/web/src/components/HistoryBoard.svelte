@@ -39,6 +39,11 @@ onMount(() => {
 </div></div>
 </section>
 
+<section id="history-upgrade" class="card pad history-upgrade" aria-labelledby="history-upgrade-title" hidden>
+<div><span class="pb">Pro</span><h2 id="history-upgrade-title">{t('history.depth.title')}</h2><p>{t('history.depth.body')}</p></div>
+<a class="btn btn-primary" href="/pro">{t('history.depth.cta')} <span aria-hidden="true">→</span></a>
+</section>
+
 <section class="card pad rv chartc" aria-labelledby="ch-t" id="chartc">
 <div class="ch-h"><div><p class="kicker">{t('mq.hi.020')}</p><h2 id="ch-t">{t('mq.hi.021')} <span class="badge b-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>{t('mq.hi.022')}</span></h2></div>
 <div class="seg" role="group" aria-label={t('mq.hi.023')}><span class="ind" aria-hidden="true"></span><button type="button" aria-pressed="true">{t('mq.hi.024')}</button><button type="button" aria-pressed="false">{t('mq.hi.025')}</button><button type="button" aria-pressed="false">{t('mq.hi.026')}</button></div></div>

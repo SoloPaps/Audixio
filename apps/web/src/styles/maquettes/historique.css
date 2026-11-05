@@ -1880,3 +1880,53 @@ html[data-theme="dark"][data-vue="historique"] .hexm li svg {
     display: none;
   }
 }
+
+/* U5 : profondeur gratuite 1. Même disposition en clair et sombre. */
+html[data-vue="historique"] :is(#history-upgrade, #chartc, .trend)[hidden] {
+  display: none;
+}
+html[data-vue="historique"] .history-upgrade {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: linear-gradient(120deg, #f6f3fc, #fff);
+  border-color: var(--line);
+}
+html[data-vue="historique"] .history-upgrade > div {
+  min-width: 0;
+}
+html[data-vue="historique"] .history-upgrade .pb {
+  margin: 0 0 12px;
+}
+html[data-vue="historique"] .history-upgrade h2 {
+  font-size: clamp(20px, 3vw, 27px);
+  line-height: 1.2;
+}
+html[data-vue="historique"] .history-upgrade p {
+  margin-top: 12px;
+  max-width: 60ch;
+  color: var(--muted);
+  line-height: 1.6;
+}
+html[data-vue="historique"] .history-upgrade a {
+  flex-shrink: 0;
+  white-space: normal;
+  text-align: center;
+}
+@media (max-width: 700px) {
+  html[data-vue="historique"] .history-upgrade {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+html[data-theme="dark"][data-vue="historique"] .history-upgrade {
+  background: linear-gradient(120deg, #242e50, #1c2340);
+  border-color: #6577a6;
+}
+html[data-theme="dark"][data-vue="historique"] .history-upgrade h2 {
+  color: #f0f2f5;
+}
+html[data-theme="dark"][data-vue="historique"] .history-upgrade p {
+  color: #c9d0e4;
+}

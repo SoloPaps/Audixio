@@ -4,16 +4,18 @@ import { scoreAutorise } from './apercu.js';
 import { browserClient } from './browser-session.js';
 import { fixesFor, hostingOf } from './fix-catalog.js';
 import { type HistoryView, rowsToHistory } from './history.js';
+import { historyRowsForPlan } from './history-depth.js';
 import { toFinding } from './report-model.js';
 
 export async function loadSiteHistory(
   siteId: string,
   hosting: string,
+  plan: string | null,
 ): Promise<HistoryView | null> {
   const supabase = browserClient();
   if (!supabase || siteId === '') return null;
   try {
-    return await readHistory(supabase, siteId, hosting);
+    return await readHistory(supabase, siteId, hosting, plan);
   } catch {
     return null;
   }
@@ -23,16 +25,20 @@ async function readHistory(
   supabase: SupabaseClient<Database>,
   siteId: string,
   hosting: string,
+  plan: string | null,
 ): Promise<HistoryView | null> {
-  const audits = await supabase
+  let query = supabase
     .from('audits')
     .select('id, status, created_at, finished_at')
     .eq('site_id', siteId)
     .in('status', ['done', 'partial', 'failed'])
-    .order('created_at', { ascending: true });
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false });
+  if (plan !== 'pro') query = query.limit(1);
+  const audits = await query;
   if (audits.error || !audits.data || audits.data.length === 0) return null;
   const withScore = await Promise.all(
-    audits.data.map(async (row) => ({
+    historyRowsForPlan(audits.data, plan).map(async (row) => ({
       ...row,
       global_score: await scoreAutorise(supabase, row.id),
     })),

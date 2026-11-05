@@ -7,7 +7,7 @@ import { openHistory } from './h-history.js';
 test('M7 : « Exporter » de /historique télécharge l’historique en CSV', async ({
   page,
 }) => {
-  await openHistory(page, [72, 88]);
+  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('88', {
     timeout: 15_000,
   });

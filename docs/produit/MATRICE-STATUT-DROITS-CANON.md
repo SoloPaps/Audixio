@@ -63,7 +63,7 @@ SSOT décisions soir : ``docs/00-DECISIONS.md``. Aussi : `SOFT-GATE-PARTIEL-CANO
 | **Tests actifs** | NON | NON | OUI si propriété **revérifiée juste avant** | OUI (idem) | NON | NON |
 | **Plafond sites** | 0 suivi durable (1 dernier audit navigateur) | **2 sites** | **2 sites** | **10 sites** | n/a | n/a |
 | **Plafond liens actifs** | 0 | **1** (public ou équipe) | **1** | Plus haut (Pro) | n/a | n/a |
-| **Pro extras** (historique long, surveillance, alertes, rapports signés, Excel) | NON | NON | NON | OUI | NON | NON |
+| **Pro extras** (historique long, surveillance, alertes, rapports signés, Excel, JSON) | NON | NON | NON | OUI | NON | NON |
 
 ### Brief — détail
 

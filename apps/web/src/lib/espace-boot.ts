@@ -756,9 +756,14 @@ function applyEvolutionChart(
   }
 }
 
-function paintHistoryEmpty(root: HTMLElement, host: string | null): void {
+function paintHistoryEmpty(
+  root: HTMLElement,
+  host: string | null,
+  plan: string | null,
+): void {
   const main = root.querySelector('main');
   if (!main) return;
+  const upgrade = root.querySelector<HTMLElement>('#history-upgrade');
   main.replaceChildren();
   const section = document.createElement('section');
   section.className = 'khero';
@@ -772,6 +777,10 @@ function paintHistoryEmpty(root: HTMLElement, host: string | null): void {
   lead.textContent = host ? t('score.public.empty') : t('sites.empty');
   section.append(eyebrow, heading, lead);
   main.append(section);
+  if (upgrade && plan !== 'pro') {
+    upgrade.hidden = false;
+    main.append(upgrade);
+  }
 }
 
 function historyRow(point: HistoryPoint, latest: boolean): HTMLTableRowElement {
@@ -821,6 +830,14 @@ function paintHistoryLive(
   const crumb = root.querySelector('.crumbs li:nth-child(2) a');
   if (crumb) crumb.textContent = host;
   if (plan !== 'pro') root.querySelector('.eyebrow .pb')?.remove();
+  const limited = plan !== 'pro';
+  const upgrade = root.querySelector<HTMLElement>('#history-upgrade');
+  if (upgrade) upgrade.hidden = !limited;
+  const chartSection = root.querySelector<HTMLElement>('#chartc');
+  if (chartSection) chartSection.hidden = limited;
+  const trendLine = root.querySelector<HTMLElement>('.trend');
+  if (trendLine) trendLine.hidden = limited;
+
   // Matrice : CSV + PDF pour tout compte, Excel en extra Pro (sinon CTA /pro).
   const formats = historyFormats(plan);
   for (const item of root.querySelectorAll<HTMLElement>('#hexpm .pro-only')) {
@@ -1035,6 +1052,13 @@ function bindHistory(root: HTMLElement): () => void {
     const session = await currentSession();
     const supabase = browserClient();
     if (!session || !supabase || dead) return;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', session.user.id)
+      .maybeSingle();
+    if (dead) return;
+    latestPlan = typeof profile?.plan === 'string' ? profile.plan : null;
     const { data: owned } = await supabase
       .from('sites')
       .select('id, host, hosting')
@@ -1070,15 +1094,10 @@ function bindHistory(root: HTMLElement): () => void {
       return;
     }
     if (source.kind === 'empty' && asked === '') {
-      paintHistoryEmpty(root, null);
+      paintHistoryEmpty(root, null, latestPlan);
       return;
     }
     if (source.kind === 'live' && asked === '') {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', session.user.id)
-        .maybeSingle();
       const ids = source.sites.map((site) => site.id);
       const { data: latest } = await supabase
         .from('audits')
@@ -1094,13 +1113,13 @@ function bindHistory(root: HTMLElement): () => void {
         typeof audited === 'string' ? audited : null,
       );
       if (!site) {
-        paintHistoryEmpty(root, null);
+        paintHistoryEmpty(root, null, latestPlan);
         return;
       }
-      const view = await loadSiteHistory(site.id, site.hosting);
+      const view = await loadSiteHistory(site.id, site.hosting, latestPlan);
       if (dead) return;
       if (!view || view.points.length === 0) {
-        paintHistoryEmpty(root, site.host);
+        paintHistoryEmpty(root, site.host, latestPlan);
         return;
       }
       paintHistoryLive(
@@ -1143,14 +1162,13 @@ function bindHistory(root: HTMLElement): () => void {
         ? (source.sites.find((site) => site.id === siteId) ?? source.sites[0])
         : null);
     const hosting = listed?.hosting ?? 'other';
-    const view = await loadSiteHistory(asked || siteId, hosting);
-    if (dead || !view) return;
+    const view = await loadSiteHistory(asked || siteId, hosting, latestPlan);
+    if (dead) return;
+    if (!view || view.points.length === 0) {
+      paintHistoryEmpty(root, listed?.host ?? null, latestPlan);
+      return;
+    }
     if (listed?.host) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', session.user.id)
-        .maybeSingle();
       latestPlan = typeof profile?.plan === 'string' ? profile.plan : null;
       paintHistoryLive(root, listed.host, view, latestPlan);
     }

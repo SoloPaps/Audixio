@@ -8,7 +8,7 @@ test('U1 : un compte gratuit exporte en CSV ou PDF, Excel reste un appel Pro', a
   page,
 }) => {
   await openHistory(page, [72, 88]);
-  await expect(page.locator('text.val').nth(1)).toHaveText('88', {
+  await expect(page.locator('table tbody')).toContainText('88', {
     timeout: 15_000,
   });
   const trigger = page.locator('#hexpb');
@@ -41,7 +41,7 @@ test('U1 : un compte gratuit exporte en CSV ou PDF, Excel reste un appel Pro', a
   expect(bytes.subarray(0, 8).toString('latin1')).toBe('%PDF-1.4');
   const text = bytes.toString('latin1');
   expect(text).toContain('bon.audigy.test');
-  expect(text).toContain('(72)');
+  expect(text).not.toContain('(72)');
   expect(text).toContain('(88)');
   await expect(page.locator('#toast')).toContainText(
     'Historique téléchargé (fichier PDF).',
@@ -83,7 +83,7 @@ test('U1 : en anglais, le menu d’export ne garde aucun français', async ({
   await page.goto(`${page.url()}&lang=en`);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await page.waitForLoadState('networkidle');
-  await expect(page.locator('text.val').nth(1)).toHaveText('88', {
+  await expect(page.locator('table tbody')).toContainText('88', {
     timeout: 15_000,
   });
   await page.locator('#hexpb').click();
