@@ -1,6 +1,7 @@
 const ORIG = '__axOrig';
 const DONE = '__axDone';
-const SKIP = 'script,style,textarea,noscript,[data-chrome],[data-i18n-skip]';
+const SKIP =
+  'script,style,textarea,noscript,[data-chrome],[data-i18n-skip],[data-i18n-key]';
 // Les attributs (placeholder…) d'un textarea restent traduisibles.
 const ATTR_SKIP = SKIP.replace(',textarea', '');
 
@@ -113,6 +114,17 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
       if (el.getAttribute(attr) !== next) el.setAttribute(attr, next);
       if (el.getAttribute(done) !== next) el.setAttribute(done, next);
     }
+  }
+  // Bloc traduit d’un seul tenant par sa clé (ordre des mots différent en anglais).
+  const pack = locale === 'en' ? englishPack() : null;
+  for (const el of root.querySelectorAll<HTMLElement & { [ORIG]?: string }>(
+    '[data-i18n-key]',
+  )) {
+    el[ORIG] ??= el.innerHTML;
+    const english = pack?.[el.dataset.i18nKey ?? ''];
+    if (english) {
+      if (el.textContent !== english) el.textContent = english;
+    } else if (el.innerHTML !== el[ORIG]) el.innerHTML = el[ORIG];
   }
   document.documentElement.lang = locale;
   painting = false;
