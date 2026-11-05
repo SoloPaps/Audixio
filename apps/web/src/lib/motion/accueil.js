@@ -397,7 +397,13 @@
       await wait(reduce ? 0 : 350);
       for (let i = 0; i < rows.length; i++) {
         rows[i].classList.add('active');
-        if (sub) sub.textContent = 'Lecture passive : ' + names[i] + '…';
+        if (sub)
+          sub.textContent =
+            (document.documentElement.lang === 'en'
+              ? 'Passive read: '
+              : 'Lecture passive : ') +
+            names[i] +
+            '…';
         await wait(reduce ? 0 : step);
         rows[i].classList.add('done');
         await wait(reduce ? 0 : step * 0.55);

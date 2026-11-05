@@ -325,7 +325,13 @@ export function bindReadingAids(copyPrefix: string): void {
         button.classList.remove('done');
         void button.offsetWidth;
         button.classList.add('done');
-        api?.say(`${copyPrefix}${value}`, true);
+        // Le préfixe vient d’un data-attribut que la traduction live ne voit pas.
+        const english =
+          document.documentElement.lang === 'en'
+            ? (globalThis as { __audigy_en?: Record<string, string> })
+                .__audigy_en?.['mq.lg.111']
+            : undefined;
+        api?.say(`${english ?? copyPrefix}${value}`, true);
         window.setTimeout(() => button.classList.remove('done'), 2400);
       };
       if (navigator.clipboard) {
