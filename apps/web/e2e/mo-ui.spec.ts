@@ -196,3 +196,25 @@ test('B-4 : /domaine Sécurité à 330 px en EN, le texte reste dans la carte de
   })()`);
   expect(out).toEqual([]);
 });
+
+test('B-5 : /rapport sombre à 330 px, la note 86/100 se lit sur le disque blanc', async ({
+  page,
+}) => {
+  await verifiedReport(page);
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.goto(`/rapport?id=${AUDIT_ID}&theme=dark`);
+  const score = page.locator('#rose .c-score');
+  await expect(score).toHaveText('86/100', { timeout: 15_000 });
+  const fill = await page.evaluate<string>(
+    `getComputedStyle(document.querySelector('#rose .c-score')).fill`,
+  );
+  // Disque central blanc (#gDisc) : contraste mesuré contre le blanc.
+  const [r, g, b] = (fill.match(/\d+/g) ?? []).map(Number);
+  const lin = (v = 0): number => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  const lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  expect(1.05 / (lum + 0.05)).toBeGreaterThanOrEqual(4.5);
+});
