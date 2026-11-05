@@ -96,6 +96,9 @@ document.dispatchEvent(new Event('audixio-motion'));
 </script>
 <script is:inline>
 var MSG = JSON.parse(document.getElementById('i18n-msg').textContent);
+var EN=false;
+/* Textes posés par le script : version anglaise quand EN est actif. */
+function L(k){try{if(localStorage.getItem('audigy-locale')==='en'){EN=true;var p=window.__audigy_en||JSON.parse(localStorage.getItem('audigy-en')||'null');if(p&&p[k])return p[k]}}catch(e){}return MSG[k]}
 
 (function(){
 MSG['mq.lg.533'];
@@ -109,8 +112,8 @@ $('#backBtn').addEventListener('click',function(){ if(history.length>1)history.b
 document.addEventListener('click',function(e){var a=e.target.closest('a[href="#"]');if(a)e.preventDefault();});
 /* lien mailto pré-rempli (modifiable par l'utilisateur avant envoi) */
 (function(){
-  var body=MSG['mq.lg.535']+location.href+(document.referrer?MSG['mq.lg.536']+document.referrer:'')+MSG['mq.lg.537'];
-  $('#mailLink').href='mailto:Audixio@outlook.fr?subject='+encodeURIComponent(MSG['mq.lg.538'])+'&body='+encodeURIComponent(body);
+  var body=L('mq.lg.535')+location.href+(document.referrer?L('mq.lg.536')+document.referrer:'')+L('mq.lg.537');
+  $('#mailLink').href='mailto:Audixio@outlook.fr?subject='+encodeURIComponent(L('mq.lg.538'))+'&body='+encodeURIComponent(body);
 })();
 
 /* ---------- filtre des accès rapides ---------- */
@@ -128,8 +131,8 @@ q.addEventListener('input',function(){
 /* ---------- LA FEUILLE QUI S'ÉVAPORE ---------- */
 var sheet=$('#sheet'),cv=$('#vapor'),fsize=$('#fsize'),replay=$('#replay');
 var FILE_KB=48.2,TAU=Math.PI*2;
-function fmt(f){return f<=0.001?MSG['mq.lg.501']:(FILE_KB*f).toFixed(1).replace('.',',')+MSG['mq.lg.539'];}
-if(reduce||!cv.getContext){fsize.textContent=MSG['mq.lg.501'];return;}
+function fmt(f){if(f<=0.001)return L('mq.lg.501');var n=(FILE_KB*f).toFixed(1);return (EN?n:n.replace('.',','))+L('mq.lg.539');}
+if(reduce||!cv.getContext){fsize.textContent=L('mq.lg.501');return;}
 fsize.textContent=fmt(1);replay.hidden=false;sheet.classList.remove('gone');
 
 var ctx=cv.getContext('2d'),SW,SH,STEP,OX,OY,CW,CH,P=[],V=[],T0=0,last=0,visible=true,mx=-999,my=-999,started=false,doneFlag=false,lastTxt='';

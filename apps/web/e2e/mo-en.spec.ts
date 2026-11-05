@@ -40,3 +40,46 @@ test('M14 : /bienvenue EN, connecté : fil, titre et étapes en anglais', async 
     await expect(main).not.toContainText(french);
   }
 });
+
+test('M15 : /courriel (404) EN se traduit sans attendre un dictionnaire lent', async ({
+  page,
+}) => {
+  await page.goto('/courriel?theme=light');
+  await expect(page.locator('main h1')).toContainText('évaporée');
+  const link = page
+    .locator('.axn-tools')
+    .getByRole('link', { name: 'EN — English' });
+  await link.waitFor();
+  await page.waitForLoadState('networkidle');
+  // Après le choix EN, la page rechargée ne doit plus attendre le réseau (tunnel lent de Mo).
+  let slow = false;
+  await page.route(
+    (url) => url.pathname === '/dictionnaire-fr.json',
+    async (route) => {
+      if (slow) await new Promise((done) => setTimeout(done, 8000));
+      await route.continue().catch(() => undefined);
+    },
+  );
+  const reloaded = page.waitForEvent('framenavigated');
+  page.on('framenavigated', () => {
+    slow = true;
+  });
+  await link.click();
+  await reloaded;
+  const main = page.locator('main');
+  await expect(main.locator('h1')).toContainText('evaporated', {
+    timeout: 4000,
+  });
+  await expect(main).toContainText('Quick access', { timeout: 1000 });
+  await expect(page.locator('footer')).toContainText('Legal notice', {
+    timeout: 1000,
+  });
+  await expect(main).not.toContainText('Accès rapide');
+  await expect(page.locator('footer')).not.toContainText('Mentions légales');
+  // Textes posés par le script de la page : taille du fichier et courriel prérempli.
+  await expect(page.locator('#fsize')).toHaveText(/ KB$|bytes$/);
+  await expect(page.locator('#mailLink')).toHaveAttribute(
+    'href',
+    /subject=Broken%20link.*reporting%20a%20broken%20link/,
+  );
+});

@@ -35,15 +35,41 @@ function englishPack(): Record<string, string> | null {
 let frenchPack: Record<string, string> | null = null;
 let frenchTask: Promise<Record<string, string> | null> | null = null;
 
+function parsePack(raw: string | null): Record<string, string> | null {
+  if (!raw) return null;
+  try {
+    const pack = JSON.parse(raw) as unknown;
+    return pack && typeof pack === 'object'
+      ? (pack as Record<string, string>)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Copie posée au choix de l’anglais : la page se traduit sans attendre le réseau. */
+function cachedFrench(): Record<string, string> | null {
+  try {
+    return parsePack(localStorage.getItem('audigy-fr'));
+  } catch {
+    return null;
+  }
+}
+
 function loadFrench(): Promise<Record<string, string> | null> {
-  if (frenchPack) return Promise.resolve(frenchPack);
   if (!frenchTask) {
     frenchTask = fetch('/dictionnaire-fr.json')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((pack: unknown) => {
-        if (!pack || typeof pack !== 'object') return null;
-        frenchPack = pack as Record<string, string>;
-        return frenchPack;
+      .then((res) => (res.ok ? res.text() : null))
+      .then((raw) => {
+        const pack = parsePack(raw);
+        if (!pack || raw === null) return null;
+        try {
+          if (localStorage.getItem('audigy-fr') !== null)
+            localStorage.setItem('audigy-fr', raw);
+        } catch {
+          // Copie locale facultative.
+        }
+        return pack;
       })
       .catch(() => null);
   }
@@ -168,6 +194,8 @@ function watchLocale(): void {
   });
 }
 
+let frenchFresh = false;
+
 export function applyLocale(locale: 'fr' | 'en'): void {
   if (locale === 'fr') {
     paint('fr', null);
@@ -175,15 +203,19 @@ export function applyLocale(locale: 'fr' | 'en'): void {
   }
   const pack = englishPack();
   if (!pack) return;
+  frenchPack ??= cachedFrench();
   if (frenchPack) {
     dictionary ??= buildMap(pack, frenchPack);
     paint('en', dictionary);
-    return;
+    if (frenchFresh) return;
   }
+  // Le dictionnaire du réseau fait foi : la copie locale peut dater d’un ancien déploiement.
   void loadFrench().then((french) => {
-    if (!french || !englishPack()) return;
-    dictionary ??= buildMap(pack, french);
-    paint('en', dictionary);
+    if (!french || !englishPack() || frenchFresh) return;
+    frenchFresh = true;
+    frenchPack = french;
+    dictionary = buildMap(pack, french);
+    if (storedLocale() === 'en') paint('en', dictionary);
   });
 }
 
