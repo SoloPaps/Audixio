@@ -45,8 +45,11 @@ export interface BriefExportDeps {
   readAudit(token: string, auditId: string): Promise<AuditView | null>;
   /** Politique d’accès. La production s’appuie sur `siteVerified`, jamais sur le client. */
   viewerFor(view: AuditView): Viewer;
-  /** Libellés serveur. Ignoré pour un constat retiré par le soft-gate. */
-  label(finding: FindingView): { title: string; proof: string };
+  /**
+   * Libellés serveur. Ignoré pour un constat retiré par le soft-gate.
+   * `viewer` dit si le lecteur voit les domaines sensibles (site vérifié).
+   */
+  label(finding: FindingView, viewer: Viewer): { title: string; proof: string };
   /** Corps du fichier. N’a pas les constats retirés. */
   render(input: BriefRenderInput): string;
 }
@@ -165,6 +168,7 @@ function chosenItems(
   allowed: readonly FindingView[],
   selection: readonly { checkId: string; mode: 'fix' | 'verif' }[] | null,
   label: BriefExportDeps['label'],
+  viewer: Viewer,
 ): BriefExportItem[] {
   const byId = new Map(allowed.map((finding) => [finding.checkId, finding]));
   const picked: { finding: FindingView; mode: 'fix' | 'verif' }[] = [];
@@ -185,7 +189,7 @@ function chosenItems(
     }
   }
   return picked.map(({ finding, mode }) => {
-    const named = label(finding);
+    const named = label(finding, viewer);
     return {
       checkId: finding.checkId,
       title: oneLine(named.title),
@@ -230,7 +234,7 @@ export async function handleBriefExport(
       (finding) => !allowed.some((item) => item.checkId === finding.checkId),
     );
     const level = rights.brief === 'complet' ? 'complet' : 'partiel';
-    const items = chosenItems(allowed, selection.selection, deps.label);
+    const items = chosenItems(allowed, selection.selection, deps.label, viewer);
     let markdown = '';
     try {
       markdown = deps.render({

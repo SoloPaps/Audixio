@@ -1,4 +1,4 @@
-import { isLockedDomain } from '@audigy/db';
+import { isLockedDomain, seesFullReport } from '@audigy/db';
 import {
   type AuditView,
   apiDepsFromEnv,
@@ -43,16 +43,20 @@ export function briefLocaleOf(request: Request): BriefLocale {
   return request.headers.get('x-audigy-locale') === 'en' ? 'en' : 'fr';
 }
 
-/** Libellé serveur. Un domaine verrouillé ne sort pas son texte. */
+/**
+ * Libellé serveur. Un domaine verrouillé ne sort pas son texte, sauf pour un
+ * lecteur qui voit le rapport complet (site vérifié) : `open`.
+ */
 export function labelBriefFinding(
   finding: FindingView,
   locale: BriefLocale = 'fr',
+  open = false,
 ): {
   title: string;
   proof: string;
 } {
   const generic = locale === 'en' ? GENERIC_EN : GENERIC;
-  if (isLockedDomain(finding.domain)) {
+  if (!open && isLockedDomain(finding.domain)) {
     return { title: generic, proof: generic };
   }
   const params = asParams(finding.params);
@@ -81,7 +85,8 @@ export function briefDeps(
         siteVerified: view.audit.siteVerified === true,
       };
     },
-    label: (finding) => labelBriefFinding(finding, locale),
+    label: (finding, viewer) =>
+      labelBriefFinding(finding, locale, seesFullReport(viewer)),
     render: (input) => renderBriefMarkdown({ ...input, locale }),
   };
 }
