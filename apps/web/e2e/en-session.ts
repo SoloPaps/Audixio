@@ -41,10 +41,11 @@ export async function stubSession(
       'access-control-allow-origin':
         request.headers().origin ?? 'http://127.0.0.1:4321',
       'access-control-allow-headers': '*',
-      'access-control-allow-methods': 'GET,POST,PATCH,OPTIONS',
+      // Joker CORS (pas de cookies) : comme allow-headers, aucune liste de méthodes.
+      'access-control-allow-methods': '*',
       'content-type': 'application/json',
     };
-    if (request.method() === 'OPTIONS') {
+    if (request.method().toLowerCase() === 'options') {
       await route.fulfill({ status: 204, headers });
       return;
     }
