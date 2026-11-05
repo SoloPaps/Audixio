@@ -43,3 +43,17 @@ test('/mentions-legales EN : « browser » n’est pas répété autour de local
   );
   await expect(page.locator('main')).not.toContainText('browser’s');
 });
+
+test('/mentions-legales EN : le toast de copie est en anglais', async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('/mentions-legales?theme=light');
+  await toEnglish(page);
+  await page.locator('button.copy').first().click();
+  await expect(
+    page.getByText('Address copied: Audixio@outlook.fr').first(),
+  ).toBeAttached();
+  await expect(page.getByText('Adresse copiée')).toHaveCount(0);
+});
