@@ -21,6 +21,7 @@ import {
 } from './account-prefs.js';
 import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
+import { DELETE_TOKEN, deleteConfirmed } from './delete-confirm.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
 import { gradeForScore } from './grade.js';
 import {
@@ -1537,13 +1538,14 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   if (del) off.push(() => del.removeEventListener('click', onDel));
   const onConfirm = (): void => {
     if (!ok || !confirm) return;
-    ok.disabled = confirm.value.trim().toLocaleLowerCase('fr') !== 'supprimer';
+    ok.disabled = !deleteConfirmed(confirm.value, t('mq.co.180'));
   };
   confirm?.addEventListener('input', onConfirm);
   if (confirm) off.push(() => confirm.removeEventListener('input', onConfirm));
   const onCancel = (): void => dialog?.close();
   root.querySelector('#dc')?.addEventListener('click', onCancel);
   const onDelete = (): void => {
+    if (!confirm || !deleteConfirmed(confirm.value, t('mq.co.180'))) return;
     dialog?.close();
     void fetch('/api/compte/suppression', {
       method: 'post'.toUpperCase(),
@@ -1551,7 +1553,7 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
         authorization: `Bearer ${next.token}`,
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ confirm: 'supprimer' }),
+      body: JSON.stringify({ confirm: DELETE_TOKEN }),
     }).then(async (res) => {
       if (!res.ok) return;
       await signOut();
