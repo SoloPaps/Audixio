@@ -45,7 +45,9 @@ function finding(
   };
 }
 
-function body(): unknown {
+function body(
+  extra: { domains: unknown[]; findings: unknown[] } | null = null,
+): unknown {
   return {
     audit: {
       id: AUDIT_ID,
@@ -70,8 +72,10 @@ function body(): unknown {
         hosting: 'other',
       },
     },
-    domains: [{ domain: 'securite', score: 40, coverage: 1, level: 'problem' }],
-    findings: [
+    domains: extra?.domains ?? [
+      { domain: 'securite', score: 40, coverage: 1, level: 'problem' },
+    ],
+    findings: extra?.findings ?? [
       finding('securite', 'securite.frames', 'fail', 3, 'securite.frames.fail'),
       finding(
         'securite',
@@ -84,7 +88,11 @@ function body(): unknown {
   };
 }
 
-async function install(page: Page, lang: 'fr' | 'en'): Promise<void> {
+async function install(
+  page: Page,
+  lang: 'fr' | 'en',
+  extra: { domains: unknown[]; findings: unknown[] } | null = null,
+): Promise<void> {
   await page.addInitScript(
     ([value, locale]) => {
       localStorage.setItem('audigy-auth', JSON.stringify(value));
@@ -99,7 +107,7 @@ async function install(page: Page, lang: 'fr' | 'en'): Promise<void> {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(body()),
+      body: JSON.stringify(body(extra)),
     });
   });
   await page.route('http://127.0.0.1:54321/**', async (route) => {
@@ -177,3 +185,35 @@ for (const lang of ['fr', 'en'] as const) {
     }
   });
 }
+
+test('M9 : la carte modérée reste visible après Critique → Modéré → Tout', async ({
+  page,
+}) => {
+  await install(page, 'en', {
+    domains: [{ domain: 'seo', score: 70, coverage: 1, level: 'improve' }],
+    findings: [
+      finding(
+        'seo',
+        'seo.description',
+        'warn',
+        2,
+        'seo.description.warn_missing',
+      ),
+      finding('seo', 'seo.title', 'pass', 1, 'seo.title.pass'),
+    ],
+  });
+  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=seo&lang=en`);
+  const card = page.locator('#list > li.cst[data-sev="fix"]');
+  await expect(card).toHaveCount(1);
+  const filter = (value: string) =>
+    page.locator(`#flt input[value="${value}"]`).check({ force: true });
+  await filter('crit');
+  await expect(card).toHaveCount(0);
+  await filter('fix');
+  await expect(card).toHaveCount(1);
+  await expect(card).toHaveCSS('opacity', '1');
+  await filter('all');
+  await expect(card).toHaveCount(1);
+  await expect(card).toHaveCSS('opacity', '1');
+  await expect(card).toHaveClass(/\bin\b/u);
+});
