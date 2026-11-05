@@ -1808,3 +1808,75 @@ html[data-theme="dark"][data-vue="historique"] .delta {
 html[data-theme="dark"][data-vue="historique"] .gbar {
   background: #243056;
 }
+
+/* U1 : menu « Exporter » de /historique (CSV, PDF ; Excel en extra Pro). */
+html[data-vue="historique"] .hexm {
+  position: relative;
+}
+html[data-vue="historique"] .hexm ul {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 10px);
+  z-index: 30;
+  min-width: 230px;
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid var(--soft);
+  box-shadow: 0 30px 60px -24px rgba(30, 42, 85, 0.45);
+}
+html[data-vue="historique"] .hexm ul[hidden],
+html[data-vue="historique"] .hexm li[hidden] {
+  display: none;
+}
+html[data-vue="historique"] .hexm li :is(button, a) {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  font:
+    600 14.5px Inter,
+    sans-serif;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+}
+html[data-vue="historique"] .hexm li :is(button, a):hover,
+html[data-vue="historique"] .hexm li :is(button, a):focus-visible {
+  background: var(--pill);
+}
+html[data-vue="historique"] .hexm li svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  color: var(--primary);
+}
+html[data-vue="historique"] .hexm .pro-cta {
+  color: var(--muted);
+}
+html[data-vue="historique"] .hexm .pro-cta .pb {
+  margin-left: auto;
+}
+html[data-theme="dark"][data-vue="historique"] .hexm ul {
+  background: #1c2340;
+  border-color: rgba(201, 208, 228, 0.18);
+}
+html[data-theme="dark"][data-vue="historique"] .hexm li :is(button, a) {
+  color: #e6eaf5;
+}
+html[data-theme="dark"][data-vue="historique"] .hexm li svg {
+  color: #a9bcf5;
+}
+@media print {
+  html[data-vue="historique"] .hexm ul {
+    display: none;
+  }
+}

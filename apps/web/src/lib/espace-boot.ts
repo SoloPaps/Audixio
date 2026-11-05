@@ -40,6 +40,13 @@ import {
   shownLabels,
 } from './history-chart.js';
 import { historyCsv, historyCsvName } from './history-csv.js';
+import {
+  type HistoryFormat,
+  historyFileName,
+  historyFormats,
+  historyPdf,
+  historyXlsx,
+} from './history-export.js';
 import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import { historySince } from './history-since.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
@@ -811,7 +818,15 @@ function paintHistoryLive(
   }
   const crumb = root.querySelector('.crumbs li:nth-child(2) a');
   if (crumb) crumb.textContent = host;
-  if (plan !== 'pro') root.querySelector('.pb')?.remove();
+  if (plan !== 'pro') root.querySelector('.eyebrow .pb')?.remove();
+  // Matrice : CSV + PDF pour tout compte, Excel en extra Pro (sinon CTA /pro).
+  const formats = historyFormats(plan);
+  for (const item of root.querySelectorAll<HTMLElement>('#hexpm .pro-only')) {
+    const fmt = item.querySelector<HTMLElement>('[data-hfmt]')?.dataset.hfmt;
+    if (fmt && formats.includes(fmt as HistoryFormat)) item.hidden = false;
+    else item.remove();
+  }
+  if (plan === 'pro') root.querySelector('#hexpm .pro-cta')?.remove();
   const points = [...view.points].reverse();
   const latest = points[0];
   const score = latest?.scores[GLOBAL_SERIES];
@@ -883,6 +898,7 @@ function bindHistory(root: HTMLElement): () => void {
   let span: ReturnType<typeof historySpanOf> | 'unset' = 'unset';
   let latestView: HistoryView | null = null;
   let latestHost = '';
+  let latestPlan: string | null = null;
   let axis: { min: string; max: string } | null = null;
   let full = false;
   const note = root.querySelector<HTMLElement>('#rng-note');
@@ -1093,6 +1109,7 @@ function bindHistory(root: HTMLElement): () => void {
       );
       latestView = view;
       latestHost = site.host;
+      latestPlan = typeof profile?.plan === 'string' ? profile.plan : null;
       drawChart();
       return;
     }
@@ -1132,12 +1149,8 @@ function bindHistory(root: HTMLElement): () => void {
         .select('plan')
         .eq('id', session.user.id)
         .maybeSingle();
-      paintHistoryLive(
-        root,
-        listed.host,
-        view,
-        typeof profile?.plan === 'string' ? profile.plan : null,
-      );
+      latestPlan = typeof profile?.plan === 'string' ? profile.plan : null;
+      paintHistoryLive(root, listed.host, view, latestPlan);
     }
     latestView = view;
     latestHost = listed?.host ?? '';
@@ -1176,31 +1189,101 @@ function bindHistory(root: HTMLElement): () => void {
     off.push(() => button.removeEventListener('click', click));
     if (button.getAttribute('aria-pressed') === 'true') move(button);
   });
+  const download = (data: BlobPart, type: string, name: string): void => {
+    const url = URL.createObjectURL(new Blob([data], { type }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  const exportHistory = (button: HTMLElement, fmt: HistoryFormat): void => {
+    say(t('mq.ui.export.prep'), true);
+    busy(button, 900, () => {
+      // Sans audit terminé, une erreur claire plutôt qu’un toast muet.
+      if (!latestView || latestView.points.length === 0) {
+        say(t('mq.ui.history.export.none'), true);
+        return;
+      }
+      if (fmt === 'pdf') {
+        download(
+          historyPdf(latestView, latestHost),
+          'application/pdf',
+          historyFileName(latestHost, 'pdf'),
+        );
+        say(t('mq.ui.history.export.pdf'), true);
+        return;
+      }
+      if (fmt === 'xlsx') {
+        download(
+          historyXlsx(latestView),
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          historyFileName(latestHost, 'xlsx'),
+        );
+        say(t('mq.ui.history.export.xlsx'), true);
+        return;
+      }
+      download(
+        historyCsv(latestView),
+        'text/csv;charset=utf-8',
+        historyCsvName(latestHost),
+      );
+      say(t('mq.ui.history.export.done'), true);
+    });
+  };
   root.querySelectorAll<HTMLButtonElement>('.exp').forEach((button) => {
-    const click = (): void => {
-      say(t('mq.ui.export.prep'), true);
-      busy(button, 900, () => {
-        // Sans audit terminé, une erreur claire plutôt qu’un toast muet.
-        if (!latestView || latestView.points.length === 0) {
-          say(t('mq.ui.history.export.none'), true);
-          return;
-        }
-        const blob = new Blob([historyCsv(latestView)], {
-          type: 'text/csv;charset=utf-8',
-        });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = historyCsvName(latestHost);
-        document.body.append(link);
-        link.click();
-        link.remove();
-        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-        say(t('mq.ui.history.export.done'), true);
-      });
-    };
+    const click = (): void => exportHistory(button, 'csv');
     button.addEventListener('click', click);
     off.push(() => button.removeEventListener('click', click));
+  });
+  const hMenuButton = root.querySelector<HTMLButtonElement>('#hexpb');
+  const hMenu = root.querySelector<HTMLElement>('#hexpm');
+  const closeHMenu = (): void => {
+    if (!hMenu || !hMenuButton) return;
+    hMenu.hidden = true;
+    hMenuButton.setAttribute('aria-expanded', 'false');
+  };
+  const onHMenu = (): void => {
+    if (!hMenu || !hMenuButton) return;
+    const open = hMenu.hidden;
+    hMenu.hidden = !open;
+    hMenuButton.setAttribute('aria-expanded', String(open));
+    if (open) hMenu.querySelector<HTMLElement>('button, a')?.focus();
+  };
+  hMenuButton?.addEventListener('click', onHMenu);
+  if (hMenuButton)
+    off.push(() => hMenuButton.removeEventListener('click', onHMenu));
+  const onHPick = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest<HTMLButtonElement>('button[data-hfmt]');
+    if (!button || !hMenu?.contains(button)) return;
+    const fmt = button.dataset.hfmt as HistoryFormat;
+    // Garde-fou : un format absent de la matrice du compte n’est jamais servi.
+    if (!historyFormats(latestPlan).includes(fmt)) return;
+    closeHMenu();
+    hMenuButton?.focus();
+    if (hMenuButton) exportHistory(hMenuButton, fmt);
+  };
+  hMenu?.addEventListener('click', onHPick);
+  if (hMenu) off.push(() => hMenu.removeEventListener('click', onHPick));
+  const onHDoc = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof Element) || !target.closest('.hexm')) closeHMenu();
+  };
+  const onHKey = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape' && hMenu && !hMenu.hidden) {
+      closeHMenu();
+      hMenuButton?.focus();
+    }
+  };
+  document.addEventListener('click', onHDoc);
+  document.addEventListener('keydown', onHKey);
+  off.push(() => {
+    document.removeEventListener('click', onHDoc);
+    document.removeEventListener('keydown', onHKey);
   });
   root.querySelectorAll<HTMLButtonElement>('.pag button').forEach((button) => {
     const click = (): void => {
