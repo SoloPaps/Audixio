@@ -694,7 +694,8 @@ html:where([data-vue="hub"]) {
   font:
     700 16px "JetBrains Mono",
     monospace;
-  fill: var(--text);
+  /* Le disque central reste blanc en thème sombre : encre foncée fixe, pas var(--text). */
+  fill: #1e2a55;
   text-anchor: middle;
 }
 :where(html[data-vue="hub"]) .pop {

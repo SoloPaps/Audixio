@@ -35,6 +35,8 @@ const snippet = $derived.by(() => {
     }),
     origin: location.origin,
     alt,
+    label: t('badge.by'),
+    grade,
   });
 });
 

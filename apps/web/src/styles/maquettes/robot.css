@@ -1330,3 +1330,14 @@ main {
     transform: none;
   }
 }
+
+/* Exemple robots.txt : lavande en clair, foncé en sombre (QA Mo B-9). Couleurs seulement. */
+.robots-ex {
+  background: #ede8f5;
+}
+html[data-theme="dark"][data-vue] .robots-ex,
+html[data-theme="dark"][data-vue] .robots-ex code {
+  background: #1c2340;
+  color: #f0f2f5;
+  border-color: #3d4d7a;
+}

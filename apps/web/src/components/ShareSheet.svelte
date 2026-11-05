@@ -268,6 +268,10 @@ function onKey(event: KeyboardEvent): void {
   .sh-lk-ico svg{width:22px;height:22px}
   .sh-lk b{display:block}
   .sh-lk span span{display:block;font-size:14px;color:#4A5585}
+  /* Sombre explicite (#57, QA Mo B-6) : la carte badge ne dépend plus des règles génériques du thème. */
+  :global(html[data-theme="dark"]) .sh-lk{background:#1c2340;color:#f0f2f5;border-color:#3d4d7a}
+  :global(html[data-theme="dark"]) .sh-lk span span{color:#c5d0ea}
+  :global(html[data-theme="dark"]) .sh-lk-ico{background:#243056;color:#d6e2ff}
   .sh-lk>span:nth-child(2){flex:1;min-width:0}
   .sh-ar{width:20px;height:20px;color:#3D52A0;flex:none;transition:transform .25s}
   .sh-lk:hover .sh-ar{transform:translateX(4px)}
