@@ -8,7 +8,11 @@ import {
   activeShareLinks,
   type ReportLinkRow,
 } from './account-access.js';
-import { historySource, pickHistorySite } from './account-history.js';
+import {
+  askedHistorySite,
+  historySource,
+  pickHistorySite,
+} from './account-history.js';
 import {
   alertsOpenForPlan,
   consentChecked,
@@ -1014,6 +1018,29 @@ function bindHistory(root: HTMLElement): () => void {
     const source = historySource(owned);
     const asked =
       new URLSearchParams(location.search).get('site')?.trim() ?? '';
+    const askedSite =
+      asked === ''
+        ? null
+        : await askedHistorySite(
+            asked,
+            source.kind === 'live' ? source.sites : [],
+            async (id) => {
+              const { data } = await supabase
+                .from('sites')
+                .select('id, host, hosting')
+                .eq('id', id)
+                .eq('owner_id', session.user.id)
+                .is('deleted_at', null)
+                .limit(1);
+              return data;
+            },
+          );
+    if (dead) return;
+    if (asked !== '' && !askedSite) {
+      // Retest C2 : site inconnu, d’un autre compte ou mal formé.
+      location.replace('/sites');
+      return;
+    }
     if (source.kind === 'empty' && asked === '') {
       paintHistoryEmpty(root, null);
       return;
@@ -1081,10 +1108,10 @@ function bindHistory(root: HTMLElement): () => void {
       }
     }
     const listed =
-      source.kind === 'live'
-        ? (source.sites.find((site) => site.id === (asked || siteId)) ??
-          source.sites[0])
-        : null;
+      askedSite ??
+      (source.kind === 'live'
+        ? (source.sites.find((site) => site.id === siteId) ?? source.sites[0])
+        : null);
     const hosting = listed?.hosting ?? 'other';
     const view = await loadSiteHistory(asked || siteId, hosting);
     if (dead || !view) return;

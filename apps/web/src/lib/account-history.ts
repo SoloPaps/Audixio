@@ -47,3 +47,28 @@ export function pickHistorySite(
   }
   return sites[0] ?? null;
 }
+
+const SITE_ID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
+
+/** Ligne `sites` lue pour l’identifiant demandé (ou rien). */
+export type AskedSiteReader = (siteId: string) => Promise<unknown>;
+
+/**
+ * Site demandé par `?site=` s’il appartient au compte, sinon `null`.
+ * Un identifiant mal formé ne part pas en requête.
+ */
+export async function askedHistorySite(
+  asked: string,
+  listed: readonly HistorySite[],
+  read: AskedSiteReader,
+): Promise<HistorySite | null> {
+  const id = asked.trim();
+  if (!SITE_ID.test(id)) return null;
+  const known = listed.find((site) => site.id === id);
+  if (known) return known;
+  const rows = await read(id);
+  const row = Array.isArray(rows) ? rows[0] : null;
+  const site = asSite(row);
+  return site?.id === id ? site : null;
+}
