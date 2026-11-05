@@ -1,5 +1,11 @@
 import { isLockedDomain } from '@audigy/db';
-import { t } from '../i18n/index.js';
+import { briefServerEn } from '../i18n/brief-en.js';
+import {
+  type BriefLocale,
+  briefLocale,
+  withBriefLocale,
+} from '../i18n/brief-fr.js';
+import { t as common } from '../i18n/index.js';
 import { renderBrief, type TerminalMode } from './brief.js';
 import { briefFileBody } from './brief-file.js';
 
@@ -15,6 +21,14 @@ export interface BriefMarkdownInput {
   url: string;
   at: string | null;
   items: readonly BriefMarkdownItem[];
+  /** Absente : la langue du navigateur, sinon le français. */
+  locale?: BriefLocale;
+}
+
+type ServerKey = keyof typeof briefServerEn;
+
+function label(locale: BriefLocale, key: ServerKey): string {
+  return locale === 'en' ? briefServerEn[key] : common(key);
 }
 
 function domainOf(checkId: string): string {
@@ -24,6 +38,11 @@ function domainOf(checkId: string): string {
 
 /** Markdown du brief. Les domaines verrouillés restent dehors en mode partiel. */
 export function renderBriefMarkdown(input: BriefMarkdownInput): string {
+  const locale = input.locale ?? briefLocale();
+  return withBriefLocale(locale, () => renderIn(locale, input));
+}
+
+function renderIn(locale: BriefLocale, input: BriefMarkdownInput): string {
   const findings = input.items.flatMap((item) => {
     if (input.level !== 'complet' && isLockedDomain(domainOf(item.checkId))) {
       return [];
@@ -35,7 +54,9 @@ export function renderBriefMarkdown(input: BriefMarkdownInput): string {
         checkId: item.checkId,
         title: item.title,
         statusLabel:
-          item.mode === 'fix' ? t('brief.act.fix') : t('brief.act.check'),
+          item.mode === 'fix'
+            ? label(locale, 'brief.act.fix')
+            : label(locale, 'brief.act.check'),
         proof: item.proof,
         impact: null,
         terminal,
@@ -55,7 +76,7 @@ export function renderBriefMarkdown(input: BriefMarkdownInput): string {
   });
   const prefix =
     input.level === 'complet'
-      ? t('brief.export.full')
-      : t('brief.export.partial');
+      ? label(locale, 'brief.export.full')
+      : label(locale, 'brief.export.partial');
   return briefFileBody(`${prefix}\n\n${body}`);
 }

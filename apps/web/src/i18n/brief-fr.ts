@@ -1,3 +1,5 @@
+import { briefEn } from './brief-en.js';
+
 /**
  * Fragments du brief. Hors du dictionnaire commun : l’accueil ne les charge pas.
  */
@@ -89,9 +91,36 @@ type ArgsFor<K extends BriefKey> = K extends unknown
     : [params: ParamsOf<K>]
   : never;
 
+export type BriefLocale = 'fr' | 'en';
+
+let forced: BriefLocale | null = null;
+
+/** Langue du brief : forcée côté serveur, sinon celle choisie dans le navigateur. */
+export function briefLocale(): BriefLocale {
+  if (forced) return forced;
+  try {
+    return globalThis.localStorage?.getItem('audigy-locale') === 'en'
+      ? 'en'
+      : 'fr';
+  } catch {
+    return 'fr';
+  }
+}
+
+/** Rend `run` dans une langue donnée. Synchrone : rien d’autre ne s’intercale. */
+export function withBriefLocale<T>(locale: BriefLocale, run: () => T): T {
+  const before = forced;
+  forced = locale;
+  try {
+    return run();
+  } finally {
+    forced = before;
+  }
+}
+
 /** Même contrat que `t`, limité aux fragments du brief. */
 export function t<K extends BriefKey>(key: K, ...args: ArgsFor<K>): string {
-  const template: string = briefFr[key];
+  const template: string = briefLocale() === 'en' ? briefEn[key] : briefFr[key];
   const params = args[0] as
     | Readonly<Record<string, string | number>>
     | undefined;

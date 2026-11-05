@@ -7,7 +7,7 @@ import {
   secretsFromEnv,
   serve,
 } from '@audigy/orchestrator';
-import { briefDeps } from './brief-deps.js';
+import { briefDeps, briefLocaleOf } from './brief-deps.js';
 
 function headerValue(value: string | string[] | undefined): string {
   if (typeof value === 'string') return value;
@@ -78,7 +78,11 @@ export async function handleBriefNode(
   const logger = createLogger({ secrets: secretsFromEnv(process.env) });
   try {
     const response = await serve(logger, () =>
-      handleBriefExport(request, briefDeps(request.url, logger), auditId),
+      handleBriefExport(
+        request,
+        briefDeps(request.url, logger, briefLocaleOf(request)),
+        auditId,
+      ),
     );
     await write(res, response);
   } catch {
