@@ -1119,3 +1119,17 @@
     margin-inline: 0;
   }
 }
+
+/* B3 : pastilles d'état en sombre — fond et texte, sans toucher la géométrie. */
+html[data-theme="dark"][data-vue="brief"] .dot-fix {
+  background: #3a2810;
+  color: #f6c56b;
+}
+html[data-theme="dark"][data-vue="brief"] .dot-check {
+  background: #3a3210;
+  color: #ffe08a;
+}
+html[data-theme="dark"][data-vue="brief"] .dot-skip {
+  background: #243056;
+  color: #c5d0ea;
+}

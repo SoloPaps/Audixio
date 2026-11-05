@@ -1775,3 +1775,10 @@ html[data-theme="dark"][data-vue="historique"]
   color: #ffffff;
 }
 
+/* B3 : écart et jauges lisibles en sombre. */
+html[data-theme="dark"][data-vue="historique"] .delta {
+  color: #8ee4b0;
+}
+html[data-theme="dark"][data-vue="historique"] .gbar {
+  background: #243056;
+}

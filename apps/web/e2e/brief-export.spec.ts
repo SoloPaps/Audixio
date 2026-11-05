@@ -370,3 +370,31 @@ test('le titre anglais du brief ne répète pas « AI » (bug #25/#86/#144)', as
   await expect(h1).toHaveText(/Setup of your AI prompt/);
   await expect(h1).not.toHaveText(/\bAI\s+AI\b/);
 });
+
+test('B3 sombre : les pastilles « à corriger / à vérifier » gardent leur fond', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await install(page);
+  await page.goto(`/brief?id=${AUDIT_ID}&theme=dark`);
+  const dots = page.locator('.dot-fix, .dot-check');
+  await expect(dots.first()).toBeVisible({ timeout: 15_000 });
+  const colors = await dots.evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const view = globalThis as unknown as {
+        document: { body: unknown };
+        getComputedStyle: (n: unknown) => { backgroundColor: string };
+      };
+      const card = node.closest('.dom') ?? view.document.body;
+      return {
+        bg: view.getComputedStyle(node).backgroundColor,
+        card: view.getComputedStyle(card).backgroundColor,
+      };
+    }),
+  );
+  expect(colors.length).toBeGreaterThan(0);
+  for (const { bg, card } of colors) {
+    expect(bg).not.toBe('rgba(0, 0, 0, 0)');
+    expect(bg).not.toBe(card);
+  }
+});
