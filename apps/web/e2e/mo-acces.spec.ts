@@ -128,3 +128,26 @@ test('H1 : un visiteur ne peut pas créer de lien de partage public', async ({
     dialog.getByRole('link', { name: 'Créer un compte' }),
   ).toBeVisible();
 });
+
+test('H2 : /plan sans compte affiche le mur de connexion, pas le plan', async ({
+  page,
+}) => {
+  await asGuest(page);
+  await page.goto(`/plan?id=${AUDIT_ID}`);
+  const card = page.locator('.session-wall');
+  await expect(card).toBeVisible();
+  await expect(card.getByRole('heading', { level: 1 })).toHaveText(
+    'Connectez-vous ou inscrivez-vous',
+  );
+  const next = encodeURIComponent(`/plan?id=${AUDIT_ID}`);
+  await expect(card.getByRole('link', { name: 'Connexion' })).toHaveAttribute(
+    'href',
+    `/connexion?next=${next}`,
+  );
+  await expect(page.getByText('Gains rapides')).toHaveCount(0);
+  await expect(page.getByText('Titre de page')).toHaveCount(0);
+  await page.goto('/plan');
+  await expect(page.locator('.session-wall h1')).toHaveText(
+    'Connectez-vous ou inscrivez-vous',
+  );
+});
