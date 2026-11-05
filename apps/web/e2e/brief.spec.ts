@@ -1,5 +1,28 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
+
+/**
+ * Ouvre la démo puis attend l’hydratation des îlots (plus d’attribut `ssr`).
+ * Avant, les boutons du brief sont du HTML inerte : un clic tombe dans le vide
+ * et le panneau n’apparaît jamais, d’autant plus sous 4 workers en `astro dev`.
+ */
+async function openDemo(page: Page): Promise<void> {
+  await page.goto('/dev/composants');
+  await page.waitForFunction(() => {
+    const root = globalThis as unknown as {
+      document: {
+        querySelectorAll: (
+          selector: string,
+        ) => Iterable<{ hasAttribute: (name: string) => boolean }>;
+      };
+    };
+    const islands = [...root.document.querySelectorAll('astro-island')];
+    return (
+      islands.length > 0 &&
+      islands.every((island) => !island.hasAttribute('ssr'))
+    );
+  });
+}
 
 test('le brief se génère au clavier, sans requête', async ({ page }) => {
   const urls: string[] = [];
@@ -7,7 +30,7 @@ test('le brief se génère au clavier, sans requête', async ({ page }) => {
     urls.push(request.url());
   });
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.goto('/dev/composants');
+  await openDemo(page);
   await expect(page.getByText('Non testé — pas de brief')).toBeVisible();
   const fail = page.getByRole('checkbox', {
     name: 'Inclure Le site accepte encore une adresse non chiffrée',
@@ -53,7 +76,7 @@ test('le brief se génère au clavier, sans requête', async ({ page }) => {
 test('tous les échecs coche les problèmes et ignore le terminal', async ({
   page,
 }) => {
-  await page.goto('/dev/composants');
+  await openDemo(page);
   const warn = page.getByRole('checkbox', {
     name: 'Inclure La page peut être affichée dans un cadre trompeur',
   });
@@ -78,7 +101,7 @@ test('tous les échecs coche les problèmes et ignore le terminal', async ({
 });
 
 test('tous en vérif et tous en fix règlent le prompt', async ({ page }) => {
-  await page.goto('/dev/composants');
+  await openDemo(page);
   const fail = page.getByRole('checkbox', {
     name: 'Inclure Le site accepte encore une adresse non chiffrée',
   });
@@ -104,7 +127,7 @@ test('tous en vérif et tous en fix règlent le prompt', async ({ page }) => {
 });
 
 test('réduire garde le texte et une case ne régénère pas', async ({ page }) => {
-  await page.goto('/dev/composants');
+  await openDemo(page);
   await page
     .getByRole('checkbox', {
       name: 'Inclure Le site accepte encore une adresse non chiffrée',
@@ -127,7 +150,7 @@ test('réduire garde le texte et une case ne régénère pas', async ({ page }) 
 
 test('à 320 px le panneau ne déborde pas', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 });
-  await page.goto('/dev/composants');
+  await openDemo(page);
   await page
     .getByRole('checkbox', {
       name: 'Inclure Le site accepte encore une adresse non chiffrée',
