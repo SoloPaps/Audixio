@@ -123,3 +123,42 @@ test('M16 : /progression EN, messages d’activité et délai en anglais', async
   );
   expect(french).toEqual([]);
 });
+
+test('M17 : le choix EN survit à une navigation pendant le téléchargement', async ({
+  page,
+}) => {
+  await page.goto('/?theme=light');
+  const link = page
+    .locator('.axn-tools')
+    .getByRole('link', { name: 'EN — English' });
+  await link.waitFor();
+  await page.waitForLoadState('networkidle');
+  // Dictionnaire lent (tunnel de Mo) : on quitte l’accueil avant sa fin.
+  let first = true;
+  await page.route(
+    (url) => url.pathname === '/dictionnaire-en.json',
+    async (route) => {
+      if (first) {
+        first = false;
+        await new Promise((done) => setTimeout(done, 5000));
+      }
+      await route.continue().catch(() => undefined);
+    },
+  );
+  await link.click();
+  await page.goto('/inscription?envoye=1&theme=light');
+  const card = page.locator('main');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en', {
+    timeout: 15_000,
+  });
+  await expect(card).toContainText('Confirm your address');
+  await expect(card).toContainText('I confirmed, sign me in');
+  await expect(card).toContainText('Create an account');
+  for (const french of [
+    'Confirmez votre adresse',
+    'J’ai confirmé',
+    'Créer un compte',
+  ]) {
+    await expect(card).not.toContainText(french);
+  }
+});

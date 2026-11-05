@@ -1,6 +1,11 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import { storeEnglishDictionary } from '../i18n/en-pack.js';
+import {
+  rememberLocaleChoice,
+  resumeEnglishChoice,
+  settleLocaleChoice,
+  storeEnglishDictionary,
+} from '../i18n/en-pack.js';
 import { t } from '../i18n/index.js';
 import { applyLocale } from '../i18n/live.js';
 
@@ -22,10 +27,15 @@ function toggleTheme(): void {
 async function setLocale(next: 'fr' | 'en'): Promise<void> {
   if (next === locale) return;
   try {
+    rememberLocaleChoice(next);
     if (next === 'en') {
       const stored = await storeEnglishDictionary();
-      if (!stored) return;
+      if (!stored) {
+        settleLocaleChoice();
+        return;
+      }
     }
+    settleLocaleChoice();
     localStorage.setItem('audigy-locale', next);
     locale = next;
     applyLocale(next);
@@ -41,6 +51,9 @@ onMount(() => {
     initial === 'dark';
   if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
   applyLocale(locale);
+  void resumeEnglishChoice().then((resumed) => {
+    if (resumed) location.reload();
+  });
 });
 </script>
 
