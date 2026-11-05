@@ -23,3 +23,8 @@ export function installPack(next: Bag | null): void {
   }
   host[SLOT] = next;
 }
+
+/** Vrai quand le dictionnaire anglais est posé. */
+export function packActive(): boolean {
+  return bag() !== null;
+}

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { installPack } from '../i18n/pack.js';
 import type { AuditPayload } from './audit-api.js';
 import { buildPdfReport } from './pdf-report.js';
 
@@ -216,5 +217,17 @@ describe('buildPdfReport', () => {
       'Supprimer les traceurs déposés avant consentement',
     );
     expect(view.critical).toBe(0);
+  });
+});
+
+describe('buildPdfReport en anglais', () => {
+  it('date le rapport à l’anglaise quand le dictionnaire EN est posé', () => {
+    installPack({ 'pdf.heading': 'Report' });
+    try {
+      expect(buildPdfReport(payload(true)).dateLabel).toBe('28 Oct 2026');
+    } finally {
+      installPack(null);
+    }
+    expect(buildPdfReport(payload(true)).dateLabel).toBe('28 oct. 2026');
   });
 });

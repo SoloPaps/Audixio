@@ -1,4 +1,4 @@
-import { formatDate } from '../i18n/format.js';
+import { formatPageDate } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
 import type { ApiDomain, ApiFinding, AuditPayload } from './audit-api.js';
 import { type Grade, gradeForScore } from './grade.js';
@@ -147,7 +147,7 @@ export function buildPdfReport(payload: AuditPayload): PdfReport {
   });
   return {
     host: hostOf(payload),
-    dateLabel: formatDate(when),
+    dateLabel: formatPageDate(when),
     dateTime: when.toISOString(),
     verified,
     critical: findings.filter(

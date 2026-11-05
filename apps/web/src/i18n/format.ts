@@ -1,5 +1,7 @@
 /** Nombres, durées et dates affichés en français (Europe/Paris). */
 
+import { packActive } from './pack.js';
+
 const numberFormat = new Intl.NumberFormat('fr-FR');
 
 const dateFormat = new Intl.DateTimeFormat('fr-FR', {
@@ -22,6 +24,18 @@ export function formatDuration(seconds: number): string {
 /** « 23 oct. 2026 », fuseau Europe/Paris. Jour civil seulement. */
 export function formatDate(date: Date): string {
   return dateFormat.format(date);
+}
+
+const dateFormatEn = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'Europe/Paris',
+});
+
+/** Comme formatDate, mais « 23 Oct 2026 » quand le dictionnaire anglais est posé. */
+export function formatPageDate(date: Date): string {
+  return packActive() ? dateFormatEn.format(date) : dateFormat.format(date);
 }
 
 const clockFormat = new Intl.DateTimeFormat('fr-FR', {
