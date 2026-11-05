@@ -751,7 +751,14 @@ function paintHistoryLive(
   plan: string | null,
 ): void {
   const title = root.querySelector('#t');
-  if (title) title.textContent = host;
+  if (title) {
+    // Coupure permise seulement après un point : pas de « …te / st ».
+    title.replaceChildren();
+    host.split('.').forEach((part, index, parts) => {
+      title.append(index < parts.length - 1 ? `${part}.` : part);
+      if (index < parts.length - 1) title.append(document.createElement('wbr'));
+    });
+  }
   const crumb = root.querySelector('.crumbs li:nth-child(2) a');
   if (crumb) crumb.textContent = host;
   if (plan !== 'pro') root.querySelector('.pb')?.remove();
@@ -878,6 +885,30 @@ function bindHistory(root: HTMLElement): () => void {
         built.marks.length === 1
           ? t('mq.ui.legend.one')
           : t('mq.ui.legend.many', { n: String(built.marks.length) });
+    }
+    const badge = root.querySelector<HTMLElement>('.ch-h .badge');
+    if (badge) {
+      const first = built.marks[0];
+      const last = built.marks.at(-1);
+      if (!first || !last || built.marks.length < 2) badge.hidden = true;
+      else {
+        const delta = Math.round(last.value) - Math.round(first.value);
+        const sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
+        badge.hidden = false;
+        if (badge.lastChild)
+          badge.lastChild.textContent = t('mq.ui.trend.delta', {
+            n: `${sign}${Math.abs(delta)}`,
+          });
+      }
+    }
+    const avgLabel = root.querySelector('.legend .avg')?.firstChild;
+    if (avgLabel && span !== 'unset') {
+      avgLabel.textContent =
+        span === '6m'
+          ? t('mq.ui.avg.6m')
+          : span === '1y'
+            ? t('mq.ui.avg.1y')
+            : t('mq.ui.avg.all');
     }
     const average = root.querySelector('.avg [data-count]');
     if (average) {
