@@ -57,3 +57,15 @@ test('/mentions-legales EN : le toast de copie est en anglais', async ({
   ).toBeAttached();
   await expect(page.getByText('Adresse copiée')).toHaveCount(0);
 });
+
+test('/progression EN : les compteurs sont en anglais', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto('/progression?theme=light');
+  await toEnglish(page);
+  const counts = page.locator('#counts');
+  await expect(counts).toContainText('in progress');
+  await expect(counts).toContainText('domains');
+  await expect(counts).not.toContainText(
+    /en cours|terminé|en attente|domaines/,
+  );
+});
