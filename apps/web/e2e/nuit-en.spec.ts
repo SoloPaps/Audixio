@@ -1,5 +1,17 @@
 import { expect, test } from '@playwright/test';
-import { stubSession, toEnglish } from './en-session';
+import { stubSession, toEnglish } from './en-session.js';
+
+type ProbeNode = {
+  id: string;
+  textContent: string | null;
+  firstChild: ProbeNode | null;
+};
+type ProbeDoc = {
+  createElement: (tag: string) => ProbeNode;
+  querySelector: (
+    selector: string,
+  ) => (ProbeNode & { append: (node: ProbeNode) => void }) | null;
+};
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -120,15 +132,17 @@ test('EN : un texte mis à jour par le code est retraduit, pas figé', async ({
   await page.goto('/robot?theme=light');
   await toEnglish(page);
   await page.evaluate(() => {
-    const p = document.createElement('p');
+    const doc = (globalThis as unknown as { document: ProbeDoc }).document;
+    const p = doc.createElement('p');
     p.id = 'probe';
     p.textContent = 'Note globale pondérée (1 audit)';
-    document.querySelector('main')?.append(p);
+    doc.querySelector('main')?.append(p);
   });
   const probe = page.locator('#probe');
   await expect(probe).toHaveText('Weighted overall grade (1 audit)');
   await page.evaluate(() => {
-    const node = document.querySelector('#probe')?.firstChild;
+    const doc = (globalThis as unknown as { document: ProbeDoc }).document;
+    const node = doc.querySelector('#probe')?.firstChild;
     if (node) node.textContent = 'Réglages des ';
   });
   await expect(probe).toHaveText('Settings for');
