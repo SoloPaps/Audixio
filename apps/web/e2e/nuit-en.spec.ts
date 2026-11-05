@@ -69,3 +69,9 @@ test('/progression EN : les compteurs sont en anglais', async ({ page }) => {
     /en cours|terminé|en attente|domaines/,
   );
 });
+
+test('/ EN : l’étiquette d’exemple suit l’ordre anglais', async ({ page }) => {
+  await page.goto('/?theme=light');
+  await toEnglish(page);
+  await expect(page.locator('#rep-tag')).toHaveText('Illustrative example');
+});
