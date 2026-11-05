@@ -7,7 +7,7 @@ import '../styles/maquettes/theme-dark-qa.css';
 
 <Canon vue="passer" title={t('mq.passer.meta.title')} description={t('mq.passer.meta.desc')} robots="noindex, nofollow">
 <script is:inline>
-try{if(!localStorage.getItem('audigy-auth'))location.replace('/pro'+location.search+location.hash)}catch(e){location.replace('/pro')}
+try{var c=(document.cookie||'').split('; ').indexOf('audixio_connecte=1')>=0,l=false;try{l=!!localStorage.getItem('audigy-auth')}catch(e){}if(!c&&!l)location.replace('/pro'+location.search+location.hash)}catch(e){location.replace('/pro')}
 </script>
 <p hidden id="mq.pp.sites.html">{t('mq.pp.sites.html')}</p><p hidden id="mq.pp.sites.l">{t('mq.pp.sites.l')}</p><p hidden id="mq.pp.sites.v">{t('mq.pp.sites.v')}</p><p hidden id="mq.pp.liens.html">{t('mq.pp.liens.html')}</p><p hidden id="mq.pp.liens.l">{t('mq.pp.liens.l')}</p><p hidden id="mq.pp.liens.v">{t('mq.pp.liens.v')}</p><p hidden id="mq.pp.saved">{t('mq.pp.saved')}</p><p hidden id="mq.pp.err.bad">{t('mq.pp.err.bad')}</p><p hidden id="mq.pp.err.empty">{t('mq.pp.err.empty')}</p>
 

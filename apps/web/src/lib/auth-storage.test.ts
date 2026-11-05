@@ -51,4 +51,18 @@ describe('storedSessionPresent', () => {
     store.set(AUTH_STORAGE_KEY, '{');
     expect(storedSessionPresent()).toBe(false);
   });
+
+  it('reconnaît la session par cookie sans jeton localStorage (C1)', () => {
+    installer();
+    etat.configured = true;
+    vi.stubGlobal('document', {
+      cookie: 'sb-127-auth-token=base64-eyJ4IjoxfQ; audixio_connecte=1',
+    });
+    expect(storedSessionPresent()).toBe(true);
+    vi.stubGlobal('document', {
+      cookie: 'sb-127-auth-token=base64-eyJ4IjoxfQ',
+    });
+    expect(storedSessionPresent()).toBe(false);
+    vi.unstubAllGlobals();
+  });
 });
