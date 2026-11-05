@@ -57,7 +57,7 @@ describe('terminal', () => {
     expect(text).toContain('Proposez un fichier, une configuration');
     expect(text).toContain('S’il faut deviner la technique, demandez.');
     expect(text).toContain('Si l’outil n’est pas là, passez.');
-    expect(text).toContain('Ces commandes ne partent pas d’Audigy.');
+    expect(text).toContain('Ces commandes ne partent pas d’Audixio.');
     expect(text).toContain('Ne lancez pas de test actif.');
     expect(briefViolations(text)).toEqual([]);
   });

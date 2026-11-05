@@ -73,7 +73,7 @@ export const mailCopy = {
   'mail.digest.footer': 'Vous recevez ce résumé chaque lundi.',
   'mail.digest.unsub':
     'Pour ne plus le recevoir, utilisez le lien de désabonnement.',
-  'mail.link.open': 'Ouvrir Audigy',
+  'mail.link.open': 'Ouvrir Audixio',
   'mail.link.unsubscribe': 'Me désabonner',
   'mail.unsub.title': 'Désabonnement',
   'mail.unsub.prompt': 'Confirmez pour ne plus recevoir les messages.',

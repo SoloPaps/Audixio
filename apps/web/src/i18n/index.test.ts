@@ -18,7 +18,7 @@ describe('t', () => {
   });
 
   it('retourne le texte français', () => {
-    expect(t('home.title')).toBe('Audigy');
+    expect(t('home.title')).toBe('Audixio');
     expect(t('home.headline')).toBe(
       'Vérifiez la santé de votre site, gratuitement.',
     );

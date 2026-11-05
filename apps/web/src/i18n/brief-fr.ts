@@ -11,7 +11,7 @@ export const briefFr = {
   'brief.h.expected': 'Attendu',
   'brief.h.guards': 'Garde-fous',
   'brief.h.terminal': 'Terminal',
-  'brief.role.fix': 'Vous corrigez le site {url} d’après un audit Audigy.',
+  'brief.role.fix': 'Vous corrigez le site {url} d’après un audit Audixio.',
   'brief.role.dev': 'Vous êtes le développeur web de ce site.',
   'brief.context.url': 'Adresse : {url}.',
   'brief.context.stack': 'Technique reconnue : {stack}.',
@@ -33,7 +33,7 @@ export const briefFr = {
   'brief.guard.attack':
     'Pas de procédure d’attaque, de charge utile, ni de contournement.',
   'brief.terminal.absent': 'Si l’outil n’est pas là, passez.',
-  'brief.terminal.origin': 'Ces commandes ne partent pas d’Audigy.',
+  'brief.terminal.origin': 'Ces commandes ne partent pas d’Audixio.',
   'brief.terminal.ban': 'N’utilisez pas rm, ni un push forcé.',
   'brief.terminal.active': 'Ne lancez pas de test actif.',
   'brief.terminal.headers': 'Lisez les en-têtes de la réponse. N’écrivez rien.',
