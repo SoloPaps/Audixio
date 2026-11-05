@@ -231,3 +231,36 @@ describe('buildPdfReport en anglais', () => {
     expect(buildPdfReport(payload(true)).dateLabel).toBe('28 oct. 2026');
   });
 });
+
+describe('buildPdfReport, site nommé (QA Mo M12)', () => {
+  it('nomme le site par son hôte, pas par le libellé « Exemple vérifié »', () => {
+    const base = payload(true);
+    const named: AuditPayload = {
+      ...base,
+      audit: {
+        ...base.audit,
+        globalScore: 78,
+        site: {
+          ...base.audit.site,
+          url: 'https://bon.audigy.test/',
+          label: 'Exemple vérifié',
+        },
+      },
+    };
+    const view = buildPdfReport(named);
+    expect(view.host).toBe('bon.audigy.test');
+    expect(JSON.stringify(view)).not.toContain('Exemple vérifié');
+  });
+
+  it('retombe sur le libellé si l’URL est illisible', () => {
+    const base = payload(true);
+    const odd: AuditPayload = {
+      ...base,
+      audit: {
+        ...base.audit,
+        site: { ...base.audit.site, url: 'pas une url', label: 'Mon site' },
+      },
+    };
+    expect(buildPdfReport(odd).host).toBe('Mon site');
+  });
+});
