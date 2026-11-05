@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { openProModal, stubFreeSites } from './sites-gratuit.js';
 
 async function open(
   page: Page,
@@ -111,8 +112,11 @@ test.describe('animations Pro et accès', () => {
     await expect(page.locator('.js .rv').first()).toHaveCSS('opacity', '1');
   });
 
-  test('passer : modale, focus, shake, succès, échap', async ({ page }) => {
-    await open(page, '/passer-pro?theme=light', 'no-preference');
+  test('passer : modale, focus, erreur, succès, échap', async ({ page }) => {
+    /* Question 1 : /passer-pro renvoie vers /pro ; la fenêtre Pro vit sur /sites. */
+    await stubFreeSites(page);
+    await open(page, '/sites?theme=light', 'no-preference');
+    await openProModal(page, 'sites');
     const modal = page.locator('#pro-modal');
     await expect(modal).toHaveClass(/on/);
     await expect(page.locator('#pm-mv')).toHaveText('2 / 2');
@@ -157,7 +161,8 @@ test.describe('animations Pro et accès', () => {
         new Event('submit', { cancelable: true, bubbles: true }),
       );
     });
-    await expect(page.locator('#pm-row')).toHaveClass(/shake/);
+    /* La fenêtre Pro de /sites signale l’erreur par aria-invalid (pas de secousse). */
+    await expect(email).toHaveAttribute('aria-invalid', 'true');
     await expect(page.locator('#pm-err')).toContainText('ne semble pas valide');
     await email.fill('ada@exemple.fr');
     await page.locator('#pm-form').evaluate((form) => {
@@ -168,12 +173,14 @@ test.describe('animations Pro et accès', () => {
     await expect(page.locator('#pm-ok')).toBeVisible({ timeout: 5_000 });
     await expect(page.locator('#pm-okmail')).toHaveText('ada@exemple.fr');
     await page.keyboard.press('Escape');
-    await page.waitForURL('**/sites**');
+    await expect(modal).not.toHaveClass(/on/);
+    await expect(page).toHaveURL(/\/sites/);
   });
 
   test('passer : le hash liens change le plafond', async ({ page }) => {
-    await open(page, '/passer-pro?theme=light#pro-liens', 'reduce');
-    await page.waitForSelector('#pro-modal.on');
+    await stubFreeSites(page);
+    await open(page, '/sites?theme=light', 'reduce');
+    await openProModal(page, 'liens');
     await expect(page.locator('#pm-mv')).toHaveText('1 / 1');
     await expect(page.locator('#pm-ml')).toHaveText('Liens de partage actifs');
   });

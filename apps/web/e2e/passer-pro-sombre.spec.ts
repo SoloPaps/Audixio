@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { openProModal, stubFreeSites } from './sites-gratuit.js';
 
 /** Bug #105 : le quota « 2 / 2 » reste lisible dans la fenêtre Pro sombre. */
 
@@ -7,12 +8,12 @@ test('quota lisible dans la fenêtre Pro en thème sombre (#105)', async ({
 }) => {
   await page.setViewportSize({ width: 330, height: 900 });
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
-  await page.goto('/passer-pro?theme=dark');
+  /* Question 1 : /passer-pro renvoie vers /pro ; la fenêtre Pro vit sur /sites. */
+  await stubFreeSites(page);
+  await page.goto('/sites?theme=dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   const value = page.locator('#pm-mv');
-  if (!(await page.locator('#pro-modal .pm-dlg').isVisible())) {
-    await page.locator('[data-pro]').first().click({ force: true });
-  }
+  await openProModal(page, 'sites');
   await expect(value).not.toBeEmpty();
   const ratio = await page.evaluate(() => {
     (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (

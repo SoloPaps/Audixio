@@ -1583,10 +1583,15 @@ const GATES = [
   {
     id: 'passer',
     mock: `${ROOT}/interface_passer_pro/interface_passer_pro.html`,
-    live: '/passer-pro?theme=light',
+    /* Question 1 : /passer-pro renvoie vers /pro ; la même fenêtre Pro vit sur /sites. */
+    live: '/sites?theme=light',
+    kind: 'sites-liste',
     ready: 'limite du plan gratuit',
     sections: ['Ce que Pro débloquera'],
     prep: async (page: Page) => {
+      if (!(await page.locator('#pro-modal.on').count())) {
+        await page.locator('[data-pro]').first().click();
+      }
       await page.waitForSelector('#pro-modal.on');
     },
   },
@@ -1631,7 +1636,7 @@ test.describe('portes Pro et accès, garde visuelle à 30 %', () => {
           )
             leaks.push(url);
         });
-        await install(page, 'hub');
+        await install(page, 'kind' in item ? item.kind : 'hub');
         const prep = 'prep' in item ? item.prep : undefined;
         const mock = parse(
           await shoot(page, `file://${item.mock}`, width, prep),
