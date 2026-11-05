@@ -58,6 +58,6 @@ onMount(() => {
 <li><a class="lk" href="/compte"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.al.047')}</span><span class="lk-d">{t('mq.al.048')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
 </ul></section>
 </main>
-<div class="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" aria-hidden="true"></div><p class="sr-only" id="live" role="status" aria-live="polite"></p>
 {/if}
 </div>

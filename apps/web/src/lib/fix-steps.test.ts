@@ -16,3 +16,21 @@ describe('stepsFromVariant', () => {
     expect(parsed.steps.some((step) => step.includes('```'))).toBe(false);
   });
 });
+
+describe('stepsFromVariant, blocs par étape (QA Mo M1)', () => {
+  it('rattache chaque bloc de code à l’étape qui l’annonce', () => {
+    const text = readFileSync(
+      path.resolve('packages/engine/fixes/fr/securite.frames.md'),
+      'utf8',
+    );
+    const generic = text.split('## generic')[1] ?? '';
+    const parsed = stepsFromVariant(generic);
+    expect(parsed.steps).toHaveLength(4);
+    expect(parsed.snippets).toEqual([
+      "Content-Security-Policy: frame-ancestors 'none'",
+      'X-Frame-Options: DENY',
+      null,
+      null,
+    ]);
+  });
+});

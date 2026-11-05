@@ -317,6 +317,19 @@ $effect(() => {
   });
 });
 
+// Les cartes recréées par un filtre ou un tri arrivent après l’observateur
+// d’apparition : sans « in », elles restaient invisibles (opacité 0).
+let touched = false;
+$effect(() => {
+  shown;
+  if (!touched) return;
+  void tick().then(() => {
+    root?.querySelectorAll('#list > .rv:not(.in)').forEach((node) => {
+      node.classList.add('in');
+    });
+  });
+});
+
 onMount(() => {
   signedIn = storedSessionPresent();
   void loadChoices();
@@ -385,12 +398,12 @@ onMount(() => {
         <legend class="sr-only">{t('domaine.filter')}</legend>
         <div class="seg" id="flt"><span class="ind" aria-hidden="true"></span>
           {#each ['all', 'crit', 'fix', 'ok'] as key (key)}
-            <label><input type="radio" name="f" value={key} checked={filter === key} onchange={() => { filter = key as Filter; }}>{key === 'all' ? t('domaine.filter.all') : key === 'crit' ? t('domaine.filter.crit') : key === 'fix' ? t('domaine.filter.mod') : t('domaine.filter.ok')} <span class="n" data-to={counted[key as Filter]}>{counted[key as Filter]}</span></label>
+            <label><input type="radio" name="f" value={key} checked={filter === key} onchange={() => { touched = true; filter = key as Filter; }}>{key === 'all' ? t('domaine.filter.all') : key === 'crit' ? t('domaine.filter.crit') : key === 'fix' ? t('domaine.filter.mod') : t('domaine.filter.ok')} <span class="n" data-to={counted[key as Filter]}>{counted[key as Filter]}</span></label>
           {/each}
         </div>
       </fieldset>
       <label class="sortw" for="sort">{t('domaine.sort')}
-        <select id="sort" onchange={(event) => { sortDesc = event.currentTarget.value === 'd'; }}>
+        <select id="sort" onchange={(event) => { touched = true; sortDesc = event.currentTarget.value === 'd'; }}>
           <option value="d">{t('domaine.sort.desc')}</option>
           <option value="a">{t('domaine.sort.asc')}</option>
         </select>
@@ -435,7 +448,7 @@ onMount(() => {
                   {:else if sev !== 'ok'}<span class="soon">{t('domaine.soon')}</span>{/if}
                 </div>
               </div>
-              <div class="acc" class:open={open[item.id]} id={`d-${item.id}`}><div><div class="acc-in"><p class="al">{sev === 'ok' ? t('domaine.observe') : t('domaine.actions')}</p><ul>{#each item.steps as step, stepIndex (step + String(stepIndex))}<li><InlineCode text={step} /></li>{/each}</ul></div></div></div>
+              <div class="acc" class:open={open[item.id]} id={`d-${item.id}`}><div><div class="acc-in"><p class="al">{sev === 'ok' ? t('domaine.observe') : t('domaine.actions')}</p><ul>{#each item.steps as step, stepIndex (step + String(stepIndex))}<li><InlineCode text={step} />{#if item.snippets?.[stepIndex]}<pre class="step-code"><code>{item.snippets[stepIndex]}</code></pre>{/if}</li>{/each}</ul></div></div></div>
             </li>
           {/each}
         </ol>

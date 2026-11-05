@@ -5,9 +5,10 @@ import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
 import { briefScreen } from '../lib/brief-screen.js';
 import { briefCount } from '../lib/brief-stats.js';
-import { currentSession } from '../lib/browser-session.js';
+import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
 import { REPORT_DOMAINS } from '../lib/domains.js';
+import { briefSelectionRow } from '../lib/finding-choice.js';
 import { gradeForScore } from '../lib/grade.js';
 import { calm, say } from '../lib/motion.js';
 import { detailAllowed } from '../lib/plan-board.js';
@@ -215,6 +216,7 @@ function applyPreset(preset: 'rec' | 'crit' | 'all' | 'none'): void {
     }
   }
   overrides = next;
+  void persistModes(next);
   const label =
     preset === 'rec'
       ? t('brief.rec')
@@ -228,6 +230,59 @@ function applyPreset(preset: 'rec' | 'crit' | 'all' | 'none'): void {
 
 function setMode(checkId: string, mode: Mode): void {
   overrides = { ...overrides, [checkId]: mode };
+  void persistModes({ [checkId]: mode });
+}
+
+// Même table que /domaine (brief_selections) : la sélection survit au
+// rechargement et reste synchronisée domaine ↔ brief.
+const TO_CHOICE: Record<Mode, 'none' | 'chk' | 'fix'> = {
+  skip: 'none',
+  check: 'chk',
+  fix: 'fix',
+};
+const FROM_CHOICE: Record<string, Mode> = {
+  none: 'skip',
+  chk: 'check',
+  fix: 'fix',
+};
+
+async function loadModes(): Promise<void> {
+  const session = await currentSession();
+  const supabase = browserClient();
+  if (!session || !supabase) return;
+  const { data, error } = await supabase
+    .from('brief_selections')
+    .select('finding_id, choice')
+    .eq('audit_id', auditId);
+  if (error || !Array.isArray(data)) return;
+  const saved: Record<string, Mode> = {};
+  for (const row of data as { finding_id?: unknown; choice?: unknown }[]) {
+    const mode = FROM_CHOICE[String(row.choice)];
+    if (typeof row.finding_id === 'string' && mode)
+      saved[row.finding_id] = mode;
+  }
+  overrides = { ...saved, ...overrides };
+}
+
+async function persistModes(changes: Record<string, Mode>): Promise<void> {
+  const session = await currentSession();
+  const supabase = browserClient();
+  if (!session || !supabase) return;
+  const at = new Date().toISOString();
+  const rows = Object.entries(changes).map(([findingId, mode]) =>
+    briefSelectionRow({
+      userId: session.user.id,
+      auditId,
+      findingId,
+      choice: TO_CHOICE[mode],
+      at,
+    }),
+  );
+  if (rows.length === 0) return;
+  const { error } = await supabase
+    .from('brief_selections')
+    .upsert(rows, { onConflict: 'user_id,audit_id,finding_id' });
+  if (error) say(t('api.error.internal'));
 }
 
 function drawOrbit(): void {
@@ -340,6 +395,7 @@ function hitDomain(event: PointerEvent): string | null {
 }
 
 onMount(() => {
+  void loadModes();
   void tick().then(drawOrbit);
   const observers: IntersectionObserver[] = [];
   let heroOut = false;
