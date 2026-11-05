@@ -46,13 +46,50 @@ export function localizedSheet(
   };
 }
 
+type VariantName = 'netlify' | 'github_pages' | 'generic';
+
+function variantName(hosting: Hosting): VariantName {
+  return hosting === 'other' ? 'generic' : hosting;
+}
+
+/**
+ * Étapes d’une variante dans la langue active.
+ * Les clés EN sont `fix.<checkId>.<variante>.<n>` (n à partir de 1) et
+ * `fix.<checkId>.<variante>.code` pour le bloc copiable.
+ * Il faut toutes les étapes : sinon la liste française reste entière,
+ * pour ne jamais mélanger deux langues dans une même fiche.
+ */
+export function localizedSteps(
+  id: string,
+  variant: VariantName,
+  parsed: { steps: string[]; code?: string },
+): { steps: string[]; code?: string } {
+  const prefix = `fix.${id}.${variant}`;
+  const english = parsed.steps.map((_, index) =>
+    packLine(`${prefix}.${index + 1}`),
+  );
+  const complete = english.every((line): line is string => line !== null);
+  const steps = complete && english.length > 0 ? english : parsed.steps;
+  const code = parsed.code
+    ? complete
+      ? (packLine(`${prefix}.code`) ?? parsed.code)
+      : parsed.code
+    : undefined;
+  if (code) return { steps, code };
+  return { steps };
+}
+
 export function fixesFor(hosting: Hosting): Map<string, FixView> {
   const cacheKey = `${hosting}:${packActive() ? 'en' : 'fr'}`;
   const cached = viewCache.get(cacheKey);
   if (cached) return cached;
   const views = new Map<string, FixView>();
   for (const [id, sheet] of allSheets()) {
-    const parsed = stepsFromVariant(variantFor(sheet, hosting));
+    const parsed = localizedSteps(
+      id,
+      variantName(hosting),
+      stepsFromVariant(variantFor(sheet, hosting)),
+    );
     const source = sheet.sources[0];
     const copy = localizedSheet(id, sheet);
     const view: FixView = {
