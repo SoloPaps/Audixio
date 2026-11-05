@@ -20,3 +20,15 @@ test('/compte/alertes EN : titre entièrement anglais', async ({ page }) => {
   await toEnglish(page);
   await expect(page.locator('h1')).toHaveText('Settings for alerts');
 });
+
+test('/accessibilite EN : plus de « Le Défenseur des droits » en français', async ({
+  page,
+}) => {
+  await page.goto('/accessibilite?theme=light');
+  await toEnglish(page);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('main')).toContainText('The Défenseur des droits');
+  await expect(page.locator('main')).not.toContainText(
+    'Le Défenseur des droits',
+  );
+});
