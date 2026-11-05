@@ -66,6 +66,7 @@ const lede = $derived(
     level,
     findings.filter((item) => item.status !== 'pass').length,
     sentence,
+    findings.length,
   ),
 );
 const cardTitle = $derived(
@@ -437,7 +438,7 @@ onMount(() => {
             </li>
           {/each}
         </ol>
-        <p class="empty card" hidden={shown.length > 0}>{t('domaine.empty')}</p>
+        <p class="empty card" hidden={shown.length > 0}>{findings.length === 0 ? t('domaine.nothing') : t('domaine.empty')}</p>
       </div>
       <aside class="card pp" id="prompt" aria-labelledby="pt">
         <div class="ph"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/></svg></span><h2 id="pt">{t('domaine.prompt.title')}</h2></div>

@@ -2220,6 +2220,7 @@ const frCore = {
   'domaine.sort.desc': 'Du plus au moins critique',
   'domaine.sort.asc': 'Du moins au plus critique',
   'domaine.empty': 'Aucun constat dans cette catégorie.',
+  'domaine.nothing': 'Rien à signaler dans ce domaine.',
   'domaine.details': 'Détails',
   'domaine.fix.link': 'Corriger',
   'domaine.soon': 'Fiche détaillée à venir',

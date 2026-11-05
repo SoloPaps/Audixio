@@ -1627,6 +1627,7 @@
   "domaine.sort.desc": "From most to least critical",
   "domaine.sort.asc": "From least to most critical",
   "domaine.empty": "No finding in this category.",
+  "domaine.nothing": "Nothing to report in this area.",
   "domaine.details": "Details",
   "domaine.fix.link": "Fix",
   "domaine.soon": "Detailed sheet coming later",

@@ -153,6 +153,30 @@ export function seedFindings(score: number): readonly SeedFinding[] {
   return [...ISSUES.slice(0, count), ...PASSES];
 }
 
+/**
+ * Note de chaque domaine pour un audit du seed (retest C15). Un domaine avec
+ * des constats ouverts passe sous la note globale, un domaine sans constat
+ * est « bon ». Les notes diffèrent d’un domaine à l’autre.
+ */
+export function seedDomainScores(
+  score: number,
+): Record<(typeof DOMAINS)[number], number> {
+  const open = new Map<string, number>();
+  for (const item of seedFindings(score)) {
+    if (item.status === 'pass') continue;
+    open.set(item.domain, (open.get(item.domain) ?? 0) + 1);
+  }
+  const out = {} as Record<(typeof DOMAINS)[number], number>;
+  DOMAINS.forEach((domain, index) => {
+    const count = open.get(domain) ?? 0;
+    out[domain] =
+      count > 0
+        ? Math.max(0, score - 5 * count - index)
+        : Math.min(100, 88 + index);
+  });
+  return out;
+}
+
 /** Ajoute ou retire le réglage. Hors local, la ligne est retirée. */
 export function guestLiftLine(envText: string, local: boolean): string {
   const rows = envText
@@ -324,15 +348,16 @@ async function seedDoneSite(
     }
   }
   for (const row of rows) {
+    const scores = seedDomainScores(row.score);
     for (const domain of DOMAINS) {
       await sql`
         insert into public.domain_scores (audit_id, domain, score, coverage, level)
         values (
           ${row.id}::uuid,
           ${domain},
-          ${row.score},
+          ${scores[domain]},
           1,
-          ${level(row.score)}
+          ${level(scores[domain])}
         )
       `;
     }
