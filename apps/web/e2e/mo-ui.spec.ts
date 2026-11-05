@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { stubSession } from './en-session.js';
 
 // QA Mo 05/11 : affichage à 330 px et thème sombre.
 
@@ -32,4 +33,16 @@ test('M8 : bandeau cookies « Customise » à 330 px, rien de rogné', async ({
   expect(geo.inside).toBe(true);
   expect(geo.onScreen).toBe(true);
   await expect(back).toBeInViewport();
+});
+
+test('M10 : /compte#acces-partages (lien « Gérer les accès ») défile jusqu’à la section', async ({
+  page,
+}) => {
+  await stubSession(page, 'pro');
+  await page.setViewportSize({ width: 330, height: 800 });
+  await page.goto('/compte?theme=light#acces-partages');
+  const section = page.locator('#acces-partages');
+  await expect(section).toBeAttached({ timeout: 15_000 });
+  await expect(section).toBeInViewport();
+  expect(await page.evaluate<number>('window.scrollY')).toBeGreaterThan(200);
 });

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount } from 'svelte';
+import { onMount, tick } from 'svelte';
 import { t } from '../i18n/index.js';
 import { bootEspace } from '../lib/espace-boot.js';
 import SessionWall from './SessionWall.svelte';
@@ -18,6 +18,19 @@ onMount(() => {
     () => root,
   );
   return () => stop();
+});
+
+// Le saut natif vers #ancre (ex. /compte#acces-partages depuis /sites) a lieu avant
+// l’affichage du compte : on le refait une fois la section rendue.
+let anchored = false;
+$effect(() => {
+  if (anchored || mode === 'pending' || mode === 'out') return;
+  anchored = true;
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (!id) return;
+  void tick().then(() => {
+    document.getElementById(id)?.scrollIntoView({ block: 'start' });
+  });
 });
 </script>
 
