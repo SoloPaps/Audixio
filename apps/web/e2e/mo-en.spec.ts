@@ -295,3 +295,11 @@ test('B-3 : /domaine avec un seul constat, accords au singulier (FR puis EN)', a
   await expect(main).not.toContainText('the 1 findings');
   await expect(main).not.toContainText('1 items');
 });
+
+test('B-8 : /methode EN parle de GDPR, pas de RGPD', async ({ page }) => {
+  await page.goto('/methode?theme=light');
+  await toEnglish(page);
+  const main = page.locator('main');
+  await expect(main).toContainText('GDPR gaps');
+  await expect(main).not.toContainText('RGPD');
+});
