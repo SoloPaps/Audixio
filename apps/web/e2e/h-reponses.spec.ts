@@ -55,7 +55,7 @@ test('/bienvenue avec prénom : le nom suit la virgule', async ({ page }) => {
 test('/historique « Tout » : depuis le mois du premier audit, pas une date figée', async ({
   page,
 }) => {
-  await openHistory(page, [72, 88]);
+  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
   await expect(page.locator('text.val').nth(0)).toHaveText('72', {
     timeout: 15_000,
   });
@@ -68,7 +68,7 @@ test('/historique « Tout » : depuis le mois du premier audit, pas une date fig
 test('/historique « All » en anglais : « since January 2026 »', async ({
   page,
 }) => {
-  await openHistory(page, [72, 88]);
+  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
   await toEnglish(page);
   await expect(page.locator('text.val').nth(0)).toHaveText('72', {
     timeout: 15_000,
@@ -83,7 +83,7 @@ test('/historique à 330 px : le graphique tient dans l’écran, sans défileme
   page,
 }) => {
   await page.setViewportSize({ width: 330, height: 800 });
-  await openHistory(page, [72, 88]);
+  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
   await expect(page.locator('text.val').nth(0)).toHaveText('72', {
     timeout: 15_000,
   });

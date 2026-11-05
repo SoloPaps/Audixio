@@ -18,6 +18,7 @@ export async function openHistory(
   scores: readonly [number | null, number | null] | readonly [number],
   theme: 'light' | 'dark' = 'light',
   host = 'bon.audigy.test',
+  plan: 'free' | 'pro' = 'free',
 ): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
@@ -97,7 +98,7 @@ export async function openHistory(
       await route.fulfill({
         status: 200,
         headers,
-        body: JSON.stringify({ plan: 'free' }),
+        body: JSON.stringify({ plan }),
       });
       return;
     }

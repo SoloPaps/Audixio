@@ -21,6 +21,7 @@ import {
 } from './account-prefs.js';
 import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
+import { DELETE_TOKEN, deleteConfirmed } from './delete-confirm.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
 import { gradeForScore } from './grade.js';
 import {
@@ -40,6 +41,14 @@ import {
   shownLabels,
 } from './history-chart.js';
 import { historyCsv, historyCsvName } from './history-csv.js';
+import {
+  type HistoryFormat,
+  historyFileName,
+  historyFormats,
+  historyJson,
+  historyPdf,
+  historyXlsx,
+} from './history-export.js';
 import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import { historySince } from './history-since.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
@@ -747,9 +756,14 @@ function applyEvolutionChart(
   }
 }
 
-function paintHistoryEmpty(root: HTMLElement, host: string | null): void {
+function paintHistoryEmpty(
+  root: HTMLElement,
+  host: string | null,
+  plan: string | null,
+): void {
   const main = root.querySelector('main');
   if (!main) return;
+  const upgrade = root.querySelector<HTMLElement>('#history-upgrade');
   main.replaceChildren();
   const section = document.createElement('section');
   section.className = 'khero';
@@ -763,6 +777,10 @@ function paintHistoryEmpty(root: HTMLElement, host: string | null): void {
   lead.textContent = host ? t('score.public.empty') : t('sites.empty');
   section.append(eyebrow, heading, lead);
   main.append(section);
+  if (upgrade && plan !== 'pro') {
+    upgrade.hidden = false;
+    main.append(upgrade);
+  }
 }
 
 function historyRow(point: HistoryPoint, latest: boolean): HTMLTableRowElement {
@@ -811,7 +829,23 @@ function paintHistoryLive(
   }
   const crumb = root.querySelector('.crumbs li:nth-child(2) a');
   if (crumb) crumb.textContent = host;
-  if (plan !== 'pro') root.querySelector('.pb')?.remove();
+  if (plan !== 'pro') root.querySelector('.eyebrow .pb')?.remove();
+  const limited = plan !== 'pro';
+  const upgrade = root.querySelector<HTMLElement>('#history-upgrade');
+  if (upgrade) upgrade.hidden = !limited;
+  const chartSection = root.querySelector<HTMLElement>('#chartc');
+  if (chartSection) chartSection.hidden = limited;
+  const trendLine = root.querySelector<HTMLElement>('.trend');
+  if (trendLine) trendLine.hidden = limited;
+
+  // Matrice : CSV + PDF pour tout compte, Excel en extra Pro (sinon CTA /pro).
+  const formats = historyFormats(plan);
+  for (const item of root.querySelectorAll<HTMLElement>('#hexpm .pro-only')) {
+    const fmt = item.querySelector<HTMLElement>('[data-hfmt]')?.dataset.hfmt;
+    if (fmt && formats.includes(fmt as HistoryFormat)) item.hidden = false;
+    else item.remove();
+  }
+  if (plan === 'pro') root.querySelector('#hexpm .pro-cta')?.remove();
   const points = [...view.points].reverse();
   const latest = points[0];
   const score = latest?.scores[GLOBAL_SERIES];
@@ -883,6 +917,7 @@ function bindHistory(root: HTMLElement): () => void {
   let span: ReturnType<typeof historySpanOf> | 'unset' = 'unset';
   let latestView: HistoryView | null = null;
   let latestHost = '';
+  let latestPlan: string | null = null;
   let axis: { min: string; max: string } | null = null;
   let full = false;
   const note = root.querySelector<HTMLElement>('#rng-note');
@@ -1017,6 +1052,13 @@ function bindHistory(root: HTMLElement): () => void {
     const session = await currentSession();
     const supabase = browserClient();
     if (!session || !supabase || dead) return;
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('plan')
+      .eq('id', session.user.id)
+      .maybeSingle();
+    if (dead) return;
+    latestPlan = typeof profile?.plan === 'string' ? profile.plan : null;
     const { data: owned } = await supabase
       .from('sites')
       .select('id, host, hosting')
@@ -1052,15 +1094,10 @@ function bindHistory(root: HTMLElement): () => void {
       return;
     }
     if (source.kind === 'empty' && asked === '') {
-      paintHistoryEmpty(root, null);
+      paintHistoryEmpty(root, null, latestPlan);
       return;
     }
     if (source.kind === 'live' && asked === '') {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', session.user.id)
-        .maybeSingle();
       const ids = source.sites.map((site) => site.id);
       const { data: latest } = await supabase
         .from('audits')
@@ -1076,13 +1113,13 @@ function bindHistory(root: HTMLElement): () => void {
         typeof audited === 'string' ? audited : null,
       );
       if (!site) {
-        paintHistoryEmpty(root, null);
+        paintHistoryEmpty(root, null, latestPlan);
         return;
       }
-      const view = await loadSiteHistory(site.id, site.hosting);
+      const view = await loadSiteHistory(site.id, site.hosting, latestPlan);
       if (dead) return;
       if (!view || view.points.length === 0) {
-        paintHistoryEmpty(root, site.host);
+        paintHistoryEmpty(root, site.host, latestPlan);
         return;
       }
       paintHistoryLive(
@@ -1093,6 +1130,7 @@ function bindHistory(root: HTMLElement): () => void {
       );
       latestView = view;
       latestHost = site.host;
+      latestPlan = typeof profile?.plan === 'string' ? profile.plan : null;
       drawChart();
       return;
     }
@@ -1124,20 +1162,15 @@ function bindHistory(root: HTMLElement): () => void {
         ? (source.sites.find((site) => site.id === siteId) ?? source.sites[0])
         : null);
     const hosting = listed?.hosting ?? 'other';
-    const view = await loadSiteHistory(asked || siteId, hosting);
-    if (dead || !view) return;
+    const view = await loadSiteHistory(asked || siteId, hosting, latestPlan);
+    if (dead) return;
+    if (!view || view.points.length === 0) {
+      paintHistoryEmpty(root, listed?.host ?? null, latestPlan);
+      return;
+    }
     if (listed?.host) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('plan')
-        .eq('id', session.user.id)
-        .maybeSingle();
-      paintHistoryLive(
-        root,
-        listed.host,
-        view,
-        typeof profile?.plan === 'string' ? profile.plan : null,
-      );
+      latestPlan = typeof profile?.plan === 'string' ? profile.plan : null;
+      paintHistoryLive(root, listed.host, view, latestPlan);
     }
     latestView = view;
     latestHost = listed?.host ?? '';
@@ -1176,31 +1209,110 @@ function bindHistory(root: HTMLElement): () => void {
     off.push(() => button.removeEventListener('click', click));
     if (button.getAttribute('aria-pressed') === 'true') move(button);
   });
+  const download = (data: BlobPart, type: string, name: string): void => {
+    const url = URL.createObjectURL(new Blob([data], { type }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+  const exportHistory = (button: HTMLElement, fmt: HistoryFormat): void => {
+    say(t('mq.ui.export.prep'), true);
+    busy(button, 900, () => {
+      // Sans audit terminé, une erreur claire plutôt qu’un toast muet.
+      if (!latestView || latestView.points.length === 0) {
+        say(t('mq.ui.history.export.none'), true);
+        return;
+      }
+      if (fmt === 'pdf') {
+        download(
+          historyPdf(latestView, latestHost),
+          'application/pdf',
+          historyFileName(latestHost, 'pdf'),
+        );
+        say(t('mq.ui.history.export.pdf'), true);
+        return;
+      }
+      if (fmt === 'xlsx') {
+        download(
+          historyXlsx(latestView),
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          historyFileName(latestHost, 'xlsx'),
+        );
+        say(t('mq.ui.history.export.xlsx'), true);
+        return;
+      }
+      if (fmt === 'json') {
+        download(
+          historyJson(latestView, latestHost),
+          'application/json;charset=utf-8',
+          historyFileName(latestHost, 'json'),
+        );
+        say(t('mq.ui.history.export.json'), true);
+        return;
+      }
+      download(
+        historyCsv(latestView),
+        'text/csv;charset=utf-8',
+        historyCsvName(latestHost),
+      );
+      say(t('mq.ui.history.export.done'), true);
+    });
+  };
   root.querySelectorAll<HTMLButtonElement>('.exp').forEach((button) => {
-    const click = (): void => {
-      say(t('mq.ui.export.prep'), true);
-      busy(button, 900, () => {
-        // Sans audit terminé, une erreur claire plutôt qu’un toast muet.
-        if (!latestView || latestView.points.length === 0) {
-          say(t('mq.ui.history.export.none'), true);
-          return;
-        }
-        const blob = new Blob([historyCsv(latestView)], {
-          type: 'text/csv;charset=utf-8',
-        });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = historyCsvName(latestHost);
-        document.body.append(link);
-        link.click();
-        link.remove();
-        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-        say(t('mq.ui.history.export.done'), true);
-      });
-    };
+    const click = (): void => exportHistory(button, 'csv');
     button.addEventListener('click', click);
     off.push(() => button.removeEventListener('click', click));
+  });
+  const hMenuButton = root.querySelector<HTMLButtonElement>('#hexpb');
+  const hMenu = root.querySelector<HTMLElement>('#hexpm');
+  const closeHMenu = (): void => {
+    if (!hMenu || !hMenuButton) return;
+    hMenu.hidden = true;
+    hMenuButton.setAttribute('aria-expanded', 'false');
+  };
+  const onHMenu = (): void => {
+    if (!hMenu || !hMenuButton) return;
+    const open = hMenu.hidden;
+    hMenu.hidden = !open;
+    hMenuButton.setAttribute('aria-expanded', String(open));
+    if (open) hMenu.querySelector<HTMLElement>('button, a')?.focus();
+  };
+  hMenuButton?.addEventListener('click', onHMenu);
+  if (hMenuButton)
+    off.push(() => hMenuButton.removeEventListener('click', onHMenu));
+  const onHPick = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest<HTMLButtonElement>('button[data-hfmt]');
+    if (!button || !hMenu?.contains(button)) return;
+    const fmt = button.dataset.hfmt as HistoryFormat;
+    // Garde-fou : un format absent de la matrice du compte n’est jamais servi.
+    if (!historyFormats(latestPlan).includes(fmt)) return;
+    closeHMenu();
+    hMenuButton?.focus();
+    if (hMenuButton) exportHistory(hMenuButton, fmt);
+  };
+  hMenu?.addEventListener('click', onHPick);
+  if (hMenu) off.push(() => hMenu.removeEventListener('click', onHPick));
+  const onHDoc = (event: Event): void => {
+    const target = event.target;
+    if (!(target instanceof Element) || !target.closest('.hexm')) closeHMenu();
+  };
+  const onHKey = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape' && hMenu && !hMenu.hidden) {
+      closeHMenu();
+      hMenuButton?.focus();
+    }
+  };
+  document.addEventListener('click', onHDoc);
+  document.addEventListener('keydown', onHKey);
+  off.push(() => {
+    document.removeEventListener('click', onHDoc);
+    document.removeEventListener('keydown', onHKey);
   });
   root.querySelectorAll<HTMLButtonElement>('.pag button').forEach((button) => {
     const click = (): void => {
@@ -1444,13 +1556,14 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   if (del) off.push(() => del.removeEventListener('click', onDel));
   const onConfirm = (): void => {
     if (!ok || !confirm) return;
-    ok.disabled = confirm.value.trim().toLocaleLowerCase('fr') !== 'supprimer';
+    ok.disabled = !deleteConfirmed(confirm.value, t('mq.co.180'));
   };
   confirm?.addEventListener('input', onConfirm);
   if (confirm) off.push(() => confirm.removeEventListener('input', onConfirm));
   const onCancel = (): void => dialog?.close();
   root.querySelector('#dc')?.addEventListener('click', onCancel);
   const onDelete = (): void => {
+    if (!confirm || !deleteConfirmed(confirm.value, t('mq.co.180'))) return;
     dialog?.close();
     void fetch('/api/compte/suppression', {
       method: 'post'.toUpperCase(),
@@ -1458,7 +1571,7 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
         authorization: `Bearer ${next.token}`,
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ confirm: 'supprimer' }),
+      body: JSON.stringify({ confirm: DELETE_TOKEN }),
     }).then(async (res) => {
       if (!res.ok) return;
       await signOut();

@@ -1,3 +1,4 @@
+// U5 : les assertions multi-audits/courbes ci-dessous utilisent désormais Pro.
 import { expect, type Page, test } from '@playwright/test';
 
 const SITE = '00000000-0000-4000-8000-0000000000bb';
@@ -98,7 +99,7 @@ async function openHistory(
       await route.fulfill({
         status: 200,
         headers,
-        body: JSON.stringify({ plan: 'free' }),
+        body: JSON.stringify({ plan: 'pro' }),
       });
       return;
     }

@@ -1,3 +1,4 @@
+// U5 : les assertions multi-audits/courbes ci-dessous utilisent désormais Pro.
 import { expect, type Page, test } from '@playwright/test';
 
 // Retest C5 et C11 : graphique d’historique d’un site avec N audits.
@@ -70,7 +71,7 @@ async function openHistory(page: Page, scores: readonly number[]) {
     if (url.includes('/rest/v1/audits')) return json(audits);
     if (url.includes('/rest/v1/sites'))
       return json([{ id: SITE, host: 'mobile.audigy.test', hosting: 'other' }]);
-    if (url.includes('/rest/v1/profiles')) return json({ plan: 'free' });
+    if (url.includes('/rest/v1/profiles')) return json({ plan: 'pro' });
     if (url.includes('read_rapport_apercu')) {
       const raw = request.postData() ?? '';
       const index = audits.findIndex((audit) => raw.includes(audit.id));

@@ -7,14 +7,15 @@ import { openHistory } from './h-history.js';
 test('M7 : « Exporter » de /historique télécharge l’historique en CSV', async ({
   page,
 }) => {
-  await openHistory(page, [72, 88]);
+  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('88', {
     timeout: 15_000,
   });
-  const button = page.locator('.sum .exp, .exp').first();
+  // U1 : « Exporter » ouvre désormais le choix du format ; CSV inchangé.
+  await page.locator('#hexpb').click();
   const [download] = await Promise.all([
     page.waitForEvent('download', { timeout: 10_000 }),
-    button.click(),
+    page.locator('#hexpm [data-hfmt="csv"]').click(),
   ]);
   expect(download.suggestedFilename()).toBe(
     'audixio-historique-bon.audigy.test.csv',
