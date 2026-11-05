@@ -352,7 +352,7 @@ onMount(() => {
       {#if row.steps.length > 0}
         <ol class="steps">
           {#each row.steps as step, i (step)}
-            <li class="step"><span class="sn" aria-hidden="true">{i + 1}</span><p><InlineCode text={step} /></p></li>
+            <li class="step"><span class="sn" aria-hidden="true">{i + 1}</span><p><InlineCode text={step} /></p>{#if row.snippets?.[i]}<pre class="step-code"><code>{row.snippets[i]}</code></pre>{/if}</li>
           {/each}
         </ol>
       {/if}

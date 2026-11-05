@@ -20,6 +20,8 @@ export interface FixView {
   effortMinutes: number;
   steps: string[];
   code?: string;
+  /** Bloc de code de chaque étape (`null` sans bloc). */
+  snippets?: (string | null)[];
   sourceLabel?: string;
   sourceHref?: string;
 }
@@ -92,6 +94,7 @@ export function toFinding(row: ApiFinding, fix: FixView | undefined): Finding {
     steps: fix?.steps?.length ? fix.steps : [t('finding.done')],
   };
   if (fix?.code) finding.code = fix.code;
+  if (fix?.snippets && fix.steps.length > 0) finding.snippets = fix.snippets;
   if (fix?.sourceHref && fix.sourceLabel) {
     finding.sourceHref = fix.sourceHref;
     finding.sourceLabel = fix.sourceLabel;

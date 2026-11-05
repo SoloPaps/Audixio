@@ -15,6 +15,8 @@ export interface Finding {
   effort: string;
   steps: string[];
   code?: string;
+  /** Bloc de code qui suit chaque étape (`null` sans bloc). */
+  snippets?: (string | null)[];
   sourceLabel?: string;
   sourceHref?: string;
   actionLabel?: string;

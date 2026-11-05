@@ -62,8 +62,8 @@ function variantName(hosting: Hosting): VariantName {
 export function localizedSteps(
   id: string,
   variant: VariantName,
-  parsed: { steps: string[]; code?: string },
-): { steps: string[]; code?: string } {
+  parsed: { steps: string[]; code?: string; snippets?: (string | null)[] },
+): { steps: string[]; code?: string; snippets?: (string | null)[] } {
   const prefix = `fix.${id}.${variant}`;
   const english = parsed.steps.map((_, index) =>
     packLine(`${prefix}.${index + 1}`),
@@ -75,8 +75,14 @@ export function localizedSteps(
       ? (packLine(`${prefix}.code`) ?? parsed.code)
       : parsed.code
     : undefined;
-  if (code) return { steps, code };
-  return { steps };
+  // Les blocs de code (en-têtes, lignes de config) ne se traduisent pas.
+  const out: { steps: string[]; code?: string; snippets?: (string | null)[] } =
+    { steps };
+  if (code) out.code = code;
+  if (parsed.snippets && parsed.snippets.length === steps.length) {
+    out.snippets = parsed.snippets;
+  }
+  return out;
 }
 
 export function fixesFor(hosting: Hosting): Map<string, FixView> {
@@ -99,6 +105,7 @@ export function fixesFor(hosting: Hosting): Map<string, FixView> {
       steps: parsed.steps,
     };
     if (parsed.code) view.code = parsed.code;
+    if (parsed.snippets) view.snippets = parsed.snippets;
     if (source) {
       view.sourceLabel = source.label;
       view.sourceHref = source.url;

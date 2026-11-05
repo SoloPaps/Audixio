@@ -435,7 +435,7 @@ onMount(() => {
                   {:else if sev !== 'ok'}<span class="soon">{t('domaine.soon')}</span>{/if}
                 </div>
               </div>
-              <div class="acc" class:open={open[item.id]} id={`d-${item.id}`}><div><div class="acc-in"><p class="al">{sev === 'ok' ? t('domaine.observe') : t('domaine.actions')}</p><ul>{#each item.steps as step, stepIndex (step + String(stepIndex))}<li><InlineCode text={step} /></li>{/each}</ul></div></div></div>
+              <div class="acc" class:open={open[item.id]} id={`d-${item.id}`}><div><div class="acc-in"><p class="al">{sev === 'ok' ? t('domaine.observe') : t('domaine.actions')}</p><ul>{#each item.steps as step, stepIndex (step + String(stepIndex))}<li><InlineCode text={step} />{#if item.snippets?.[stepIndex]}<pre class="step-code"><code>{item.snippets[stepIndex]}</code></pre>{/if}</li>{/each}</ul></div></div></div>
             </li>
           {/each}
         </ol>

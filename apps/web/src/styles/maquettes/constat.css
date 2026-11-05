@@ -2511,3 +2511,27 @@ html[data-theme="dark"][data-vue] .no-js .seg label:has(input:checked) {
     background-color: #9fb4ff;
   }
 }
+/* QA Mo M1 : bloc de code d’une étape (en-tête à ajouter, ligne de config). */
+:where(html[data-vue="constat"]) pre.step-code {
+  margin: 8px 0 4px;
+  padding: 10px 12px;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: rgba(61, 82, 160, 0.08);
+  border: 1px solid rgba(61, 82, 160, 0.18);
+  color: var(--text);
+  font:
+    500 13px / 1.55 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  white-space: pre;
+}
+:where(html[data-vue="constat"]) pre.step-code code {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+}
