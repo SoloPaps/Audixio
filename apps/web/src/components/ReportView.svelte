@@ -303,20 +303,36 @@ onMount(() => {
     />
   </div>
 {:else if phase === 'brief-gate'}
-  <SessionWall
-    title={t('guest.gate.title')}
-    lead={t('guest.gate.lead')}
-    next={`${location.pathname}${location.search}`}
-  />
-{:else if phase === 'message'}
-  <h1>{mode === 'domain' ? t('domain.heading') : t('report.heading')}</h1>
-  <p role="status">{message}</p>
-  {#if payload}
-    <p>
-      <a class="link-action" href={`/progression?id=${encodeURIComponent(payload.audit.id)}`}>{t('report.progress')}</a>
-    </p>
+  {#snippet gateWall()}
+    <SessionWall
+      title={t('guest.gate.title')}
+      lead={t('guest.gate.lead')}
+      next={`${location.pathname}${location.search}`}
+    />
+  {/snippet}
+  {#if mode === 'badge'}
+    <main id="contenu" tabindex="-1">{@render gateWall()}</main>
   {:else}
-    <p><a class="link-action" href="/sites">{t('nav.sites')}</a></p>
+    {@render gateWall()}
+  {/if}
+{:else if phase === 'message'}
+  {#snippet messageCard()}
+    <section class="session-wall report-message" aria-labelledby="report-message-h">
+      <h1 id="report-message-h">{mode === 'domain' ? t('domain.heading') : t('report.heading')}</h1>
+      <p role="status">{message}</p>
+      {#if payload}
+        <p class="session-acts">
+          <a class="btn btn-primary" href={`/progression?id=${encodeURIComponent(payload.audit.id)}`}>{t('report.progress')}</a>
+        </p>
+      {:else}
+        <p class="session-acts"><a class="btn btn-primary" href="/sites">{t('nav.sites')}</a></p>
+      {/if}
+    </section>
+  {/snippet}
+  {#if mode === 'badge'}
+    <main id="contenu" tabindex="-1">{@render messageCard()}</main>
+  {:else}
+    {@render messageCard()}
   {/if}
 {:else if payload && payload.audit.status === 'failed'}
   <section class="fail-card" aria-labelledby="fail-title">
