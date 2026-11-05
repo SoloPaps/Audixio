@@ -11,12 +11,12 @@ import { pdfFr } from './pdf-fr.js';
 
 const frCore = {
   'skip.content': 'Aller au contenu',
-  'brand.name': 'Audigy',
-  'meta.home.title': 'Audigy',
+  'brand.name': 'Audixio',
+  'meta.home.title': 'Audixio',
   'meta.home.description':
-    'Audigy audite un site et explique quoi corriger, en français simple.',
-  'meta.demo.title': 'Rapport d’exemple — Audigy',
-  'meta.demo.description': 'Exemple de rapport Audigy, absent du site publié.',
+    'Audixio audite un site et explique quoi corriger, en français simple.',
+  'meta.demo.title': 'Rapport d’exemple — Audixio',
+  'meta.demo.description': 'Exemple de rapport Audixio, absent du site publié.',
   'theme.label': 'Thème',
   'theme.system': 'Système',
   'theme.light': 'Clair',
@@ -24,11 +24,11 @@ const frCore = {
   'locale.label': 'Langue',
   'locale.fr': 'Français',
   'locale.en': 'English',
-  'home.title': 'Audigy',
+  'home.title': 'Audixio',
   'home.headline': 'Vérifiez la santé de votre site, gratuitement.',
   'home.submit': "Lancer l'audit",
   'home.lead':
-    'Audigy audite un site et explique quoi corriger, en français simple.',
+    'Audixio audite un site et explique quoi corriger, en français simple.',
   'home.scope':
     'Nous regardons la vitesse, la visibilité, la protection, l’écologie, l’accès, la solidité, la vie privée et le courrier.',
   'home.url': 'Adresse du site',
@@ -81,31 +81,31 @@ const frCore = {
   'meta.confirmed.description': 'Votre adresse e-mail est confirmée.',
   'meta.welcome.title': 'Bienvenue — Audixio',
   'meta.welcome.description': 'Trois étapes pour suivre un site.',
-  'meta.sites.title': 'Vos sites — Audigy',
-  'meta.sites.description': 'Les sites que vous suivez avec Audigy.',
+  'meta.sites.title': 'Vos sites — Audixio',
+  'meta.sites.description': 'Les sites que vous suivez avec Audixio.',
   'meta.score.title': 'Score public — Audixio',
   'meta.score.description': 'Notes publiées par le propriétaire du site.',
   'meta.share.title': 'Score partagé — Audixio',
   'meta.share.description': 'Notes partagées par un lien privé.',
-  'meta.gsc.title': 'Search Console — Audigy',
+  'meta.gsc.title': 'Search Console — Audixio',
   'meta.gsc.description':
     'Reliez Search Console pour voir l’indexation de votre site.',
-  'meta.launch.title': 'Lancement de l’audit — Audigy',
-  'meta.launch.description': 'Audigy prépare l’audit de l’adresse indiquée.',
-  'meta.progress.title': 'Audit en cours — Audigy',
+  'meta.launch.title': 'Lancement de l’audit — Audixio',
+  'meta.launch.description': 'Audixio prépare l’audit de l’adresse indiquée.',
+  'meta.progress.title': 'Audit en cours — Audixio',
   'meta.progress.description': 'Suivez l’avancement de l’audit.',
-  'meta.report.title': 'Rapport — Audigy',
+  'meta.report.title': 'Rapport — Audixio',
   'meta.report.description': 'Le résultat de l’audit et les corrections.',
   'meta.print.title': 'Rapport PDF — Audixio',
   'meta.print.description':
     'Version imprimable du rapport d’audit : couverture avec la note, priorités et résumé par domaine.',
-  'meta.domain.title': 'Domaine du rapport — Audigy',
+  'meta.domain.title': 'Domaine du rapport — Audixio',
   'meta.domain.description': 'Le détail d’un domaine de l’audit.',
   'meta.verifier.title': 'Vérifier un rapport — Audixio',
   'meta.verifier.description':
     'Comparez un PDF ou un JSON au dossier, sans envoi.',
-  'meta.callback.title': 'Retour de connexion — Audigy',
-  'meta.callback.description': 'Ouverture de votre session Audigy.',
+  'meta.callback.title': 'Retour de connexion — Audixio',
+  'meta.callback.description': 'Ouverture de votre session Audixio.',
   'login.title': 'Connexion',
   'login.lead': 'Accédez à vos sites suivis et à vos rapports.',
   'login.card.title': 'Connexion',
@@ -323,7 +323,7 @@ const frCore = {
   'gsc.page.loading': 'Chargement de la connexion.',
   'gsc.page.need_login': 'Connectez-vous pour relier Search Console.',
   'sites.verify': 'Prouver que le site est à vous',
-  'meta.verify.title': 'Vérifier un site — Audigy',
+  'meta.verify.title': 'Vérifier un site — Audixio',
   'meta.verify.description':
     'Prouvez que le site est à vous avant les tests approfondis.',
   'verify.title': 'Prouver que le site est à vous',
@@ -467,6 +467,7 @@ const frCore = {
   'report.pending': 'L’audit n’est pas encore terminé.',
   'report.progress': 'Voir la progression',
   'report.missing': 'Ce rapport est introuvable.',
+  'report.unavailable': 'Rapport introuvable ou réservé à son propriétaire.',
   'report.need_login': 'Connectez-vous pour lire ce rapport.',
   'report.back': 'Retour au rapport',
   'print.heading': 'Rapport à imprimer',
@@ -593,7 +594,7 @@ const frCore = {
   'domain.sentence.problem': 'Ce domaine pose un problème important.',
   'domain.sentence.untested': 'Nous n’avons pas pu noter ce domaine.',
   'footer.note': 'Outil gratuit. Aucun traceur. Polices hébergées ici.',
-  'link.external': 'hors d’Audigy',
+  'link.external': 'hors d’Audixio',
   'footer.legal': 'Informations légales',
   'footer.mentions': 'Mentions légales',
   'footer.privacy': 'Confidentialité',
@@ -1769,21 +1770,21 @@ const frCore = {
   'legal.site': 'https://audigyweb.fr',
   'legal.review':
     'Le propriétaire doit encore relire ce texte avant l’ouverture.',
-  'meta.terms.title': 'Conditions d’utilisation — Audigy',
+  'meta.terms.title': 'Conditions d’utilisation — Audixio',
   'meta.terms.description':
-    'Conditions d’utilisation d’Audigy, dont le mandat pour les tests actifs.',
-  'meta.privacy.title': 'Confidentialité — Audigy',
+    'Conditions d’utilisation d’Audixio, dont le mandat pour les tests actifs.',
+  'meta.privacy.title': 'Confidentialité — Audixio',
   'meta.privacy.description':
-    'Quelles données Audigy garde, pourquoi, et comment les effacer.',
-  'meta.mentions.title': 'Mentions légales — Audigy',
-  'meta.mentions.description': 'Éditeur, contact et hébergeur du site Audigy.',
-  'meta.a11y.title': 'Accessibilité — Audigy',
+    'Quelles données Audixio garde, pourquoi, et comment les effacer.',
+  'meta.mentions.title': 'Mentions légales — Audixio',
+  'meta.mentions.description': 'Éditeur, contact et hébergeur du site Audixio.',
+  'meta.a11y.title': 'Accessibilité — Audixio',
   'meta.a11y.description':
-    'Objectif d’accessibilité d’Audigy et état de l’audit.',
-  'meta.method.title': 'Méthode — Audigy',
+    'Objectif d’accessibilité d’Audixio et état de l’audit.',
+  'meta.method.title': 'Méthode — Audixio',
   'meta.method.description':
-    'Comment Audigy calcule ses notes, version par version.',
-  'meta.account.title': 'Compte — Audigy',
+    'Comment Audixio calcule ses notes, version par version.',
+  'meta.account.title': 'Compte — Audixio',
   'meta.account.description':
     'Accepter les conditions, exporter ou supprimer le compte.',
   'terms.title': 'Conditions d’utilisation',
@@ -1791,7 +1792,7 @@ const frCore = {
   'terms.date': 'Texte du 24 oct. 2026.',
   'terms.free.title': 'Service gratuit',
   'terms.free.body':
-    'Audigy est gratuit. Il aide à comprendre l’état d’un site.',
+    'Audixio est gratuit. Il aide à comprendre l’état d’un site.',
   'terms.free.limit': 'Le service peut changer, ou s’arrêter, sans préavis.',
   'terms.owner.title': 'Propriété et mandat',
   'terms.owner.declare':
@@ -1825,7 +1826,7 @@ const frCore = {
   'terms.law.body': 'Les conditions sont soumises au droit français.',
   'privacy.title': 'Politique de confidentialité',
   'privacy.who.title': 'Qui est responsable',
-  'privacy.who.body': 'Audigy est édité par un particulier non professionnel.',
+  'privacy.who.body': 'Audixio est édité par un particulier non professionnel.',
   'privacy.who.contact': 'Pour une question sur vos données, écrivez à',
   'privacy.what.title': 'Quelles données',
   'privacy.what.account':
@@ -1872,7 +1873,7 @@ const frCore = {
   'mentions.title': 'Mentions légales',
   'mentions.editor.title': 'Éditeur',
   'mentions.editor.body':
-    'Le site est édité par Audigy, un particulier non professionnel.',
+    'Le site est édité par Audixio, un particulier non professionnel.',
   'mentions.editor.anon':
     'Son identité est communiquée à l’hébergeur, et non publiée ici.',
   'mentions.editor.law':
@@ -1900,7 +1901,7 @@ const frCore = {
   'a11y.tech': 'Les pages sont en HTML, en français, sans script tiers.',
   'a11y.limits':
     'La jauge annonce sa note. Le passage au lecteur d’écran se fait à la main.',
-  'method.lead': 'Cette page explique comment Audigy calcule ses notes.',
+  'method.lead': 'Cette page explique comment Audixio calcule ses notes.',
   'method.version': 'Méthode 2026.1',
   'method.change':
     'Toute modification de pondération crée une nouvelle version.',
@@ -1968,7 +1969,7 @@ const frCore = {
     'Aucune revente de vos rapports, e-mails ou données d’audit.',
   'method.self.title': 'Transparence et auto-audit',
   'method.self.lead':
-    'Audigy s’applique à lui-même l’ensemble des standards mesurés :',
+    'Audixio s’applique à lui-même l’ensemble des standards mesurés :',
   'method.self.csp':
     'En-têtes de sécurité stricts (politique de contenu, HSTS).',
   'method.self.privacy':
@@ -2219,6 +2220,7 @@ const frCore = {
   'domaine.sort.desc': 'Du plus au moins critique',
   'domaine.sort.asc': 'Du moins au plus critique',
   'domaine.empty': 'Aucun constat dans cette catégorie.',
+  'domaine.nothing': 'Rien à signaler dans ce domaine.',
   'domaine.details': 'Détails',
   'domaine.fix.link': 'Corriger',
   'domaine.soon': 'Fiche détaillée à venir',
@@ -2683,9 +2685,11 @@ const frCore = {
     'Personnalisez la consigne transmise à vos assistants (Cursor, ChatGPT, Claude). Pour chaque point détecté, décidez si l’assistant doit l’ignorer, l’analyser ou le corriger.',
   'brief.stats': 'Répartition des constats',
   'brief.total': 'constats détectés',
+  'brief.total.one': 'constat détecté',
   'brief.tofix': 'à corriger',
   'brief.tocheck': 'à vérifier',
   'brief.toskip': 'ignorés',
+  'brief.toskip.one': 'ignoré',
   'brief.presets': 'Réglages rapides',
   'brief.rec': 'Recommandé',
   'brief.crit': 'Critique uniquement',

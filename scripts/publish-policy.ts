@@ -72,12 +72,44 @@ export function inlineHashes(html: string): {
   return { scripts: unique(scripts), styles: unique(styles) };
 }
 
+const CONNECT_SOURCES = [
+  "'self'",
+  'https://*.supabase.co',
+  'http://127.0.0.1:54321',
+  'http://localhost:54321',
+] as const;
+
+const LOOPBACK = new Set(['127.0.0.1', 'localhost', '[::1]']);
+
+/**
+ * Retest C-Q1 : origine d’un Supabase local (boucle locale seulement), pour
+ * une pile isolée sur un autre port. Une URL distante (prod) donne `null` :
+ * la CSP de prod ne change pas.
+ */
+export function localSupabaseOrigin(value: string | undefined): string | null {
+  if (!value) return null;
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return null;
+  }
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+  if (!LOOPBACK.has(url.hostname)) return null;
+  return url.origin;
+}
+
 export function contentSecurityPolicy(
   scripts: readonly string[],
   styles: readonly string[],
+  connect: readonly string[] = [],
 ): string {
   const script = ["'self'", ...scripts].join(' ');
   const style = ["'self'", ...styles].join(' ');
+  const sources: string[] = [...CONNECT_SOURCES];
+  for (const origin of connect) {
+    if (!sources.includes(origin)) sources.push(origin);
+  }
   return [
     "default-src 'self'",
     `script-src ${script}`,
@@ -86,7 +118,7 @@ export function contentSecurityPolicy(
     "style-src-attr 'unsafe-inline'",
     "img-src 'self' data:",
     "font-src 'self'",
-    "connect-src 'self' https://*.supabase.co http://127.0.0.1:54321 http://localhost:54321",
+    `connect-src ${sources.join(' ')}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
@@ -265,7 +297,14 @@ export function hoistIslandStyle(html: string): string {
   return `${without.slice(0, at)}${ISLAND_STYLE}${without.slice(at)}`;
 }
 
-export async function publish(dist: string): Promise<void> {
+export async function publish(
+  dist: string,
+  env: Readonly<Record<string, string | undefined>> = process.env,
+): Promise<void> {
+  const local = localSupabaseOrigin(
+    env.SUPABASE_URL ?? env.PUBLIC_SUPABASE_URL,
+  );
+  const connect = local ? [local] : [];
   const html = (await walkFiles(dist)).filter(
     (file) =>
       file.endsWith('.html') && !file.includes(`${path.sep}dev${path.sep}`),
@@ -278,7 +317,11 @@ export async function publish(dist: string): Promise<void> {
     const source = hoistIslandStyle(raw);
     if (source !== raw) await writeFile(file, source, 'utf8');
     const hashes = inlineHashes(source);
-    const policy = contentSecurityPolicy(hashes.scripts, hashes.styles);
+    const policy = contentSecurityPolicy(
+      hashes.scripts,
+      hashes.styles,
+      connect,
+    );
     for (const urlPath of headerPaths(rel)) {
       rules.push({
         path: urlPath,

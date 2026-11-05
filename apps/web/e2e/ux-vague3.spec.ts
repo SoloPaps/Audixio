@@ -144,7 +144,7 @@ async function mockSites(
   });
 }
 
-test('historique, filtres et lien hors Audigy', async ({ page }) => {
+test('historique, filtres et lien hors Audixio', async ({ page }) => {
   await page.goto('/dev/composants?theme=light');
   await waitForIslands(page);
   const others = page.locator('details', { hasText: 'Autres mesures' });
@@ -170,7 +170,7 @@ test('historique, filtres et lien hors Audigy', async ({ page }) => {
   await expect(source).toHaveClass(/link-inline/);
   await expect(source).toHaveAttribute('href', /developer\.mozilla\.org/);
   await expect(source).not.toHaveAttribute('target', '_blank');
-  await expect(source).toContainText('hors d’Audigy');
+  await expect(source).toContainText('hors d’Audixio');
   await expectNoViolations(page);
 });
 

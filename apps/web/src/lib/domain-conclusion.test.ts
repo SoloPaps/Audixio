@@ -60,6 +60,16 @@ describe('domainLede (bug #70, #98)', () => {
   it('reste vide pour un domaine non testé', () => {
     expect(domainLede('performance', 'untested', 3, 'x')).toBeNull();
   });
+  it('retest C15 : aucun constat relevé, « Rien à signaler »', () => {
+    expect(domainLede('performance', 'improve', 0, 'Phrase réelle.', 0)).toBe(
+      t('domaine.nothing'),
+    );
+    expect(t('domaine.nothing')).toBe('Rien à signaler dans ce domaine.');
+    expect(domainLede('performance', 'improve', 0, 'Phrase réelle.', 2)).toBe(
+      'Phrase réelle.',
+    );
+    expect(domainLede('performance', 'untested', 0, 'x', 0)).toBeNull();
+  });
 });
 
 describe('hubSummary (bug #104)', () => {

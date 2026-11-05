@@ -25,7 +25,10 @@ export function domainLede(
   level: string,
   fixCount: number,
   sentence: string,
+  checked?: number,
 ): string | null {
+  // Retest C15 : aucun contrôle relevé dans ce domaine, pas de texte de problème.
+  if (checked === 0) return shownConclusion(level, t('domaine.nothing'));
   return shownConclusion(
     level,
     domainId === 'performance' && fixCount > 0

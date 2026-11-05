@@ -7,7 +7,7 @@ import { mailGrade, renderRecapMail } from './mail-templates.js';
 /** API transactionnelle Brevo. Jamais le site audité. */
 export const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
 
-const SENDER_NAME = 'Audigy';
+const SENDER_NAME = 'Audixio';
 
 export const ALERT_KINDS = [
   'site_down',
