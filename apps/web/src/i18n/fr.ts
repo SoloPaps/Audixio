@@ -2218,10 +2218,13 @@ const frCore = {
   'domaine.performance.title':
     'Votre site est ralenti ? Voici exactement pourquoi.',
   'domaine.see': 'Voir les {n} constats',
+  'domaine.see.one': 'Voir le constat',
   'domaine.prepare': 'Préparer un prompt IA',
   'domaine.constats': 'Constats et actions recommandées',
   'domaine.constats.eyebrow':
     'Diagnostics détaillés · {n} éléments passés au crible',
+  'domaine.constats.eyebrow.one':
+    'Diagnostics détaillés · 1 élément passé au crible',
   'domaine.filter': 'Filtrer les constats',
   'domaine.filter.all': 'Tous',
   'domaine.filter.crit': 'Critiques',

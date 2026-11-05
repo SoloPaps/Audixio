@@ -165,7 +165,11 @@ test('M17 : le choix EN survit à une navigation pendant le téléchargement', a
 
 const AUDIT_ID = '00000000-0000-4000-8000-0000000000aa';
 
-async function lockedReport(page: Page, partial: string): Promise<void> {
+async function lockedReport(
+  page: Page,
+  partial: string,
+  findings: unknown[] = [],
+): Promise<void> {
   const body = {
     audit: {
       id: AUDIT_ID,
@@ -203,7 +207,7 @@ async function lockedReport(page: Page, partial: string): Promise<void> {
         }),
       ),
     ],
-    findings: [],
+    findings,
   };
   await stubSession(page);
   await page.route('**/api/audits/**', async (route) => {
@@ -237,11 +241,57 @@ test('B-1 : un seul domaine ouvert, pastille au singulier', async ({
   await expect(pill).toHaveText('partial · 1 domain · site not verified');
 });
 
-test('B-2 : /compte EN, carte Webflow sans « Gestion of »', async ({ page }) => {
+test('B-2 : /compte EN, carte Webflow sans « Gestion of »', async ({
+  page,
+}) => {
   await stubSession(page);
   await page.goto('/compte?theme=light');
   await toEnglish(page);
   const main = page.locator('main');
   await expect(main).toContainText('Asset & embed code management');
   await expect(main).not.toContainText('Gestion');
+});
+
+const ONE_FINDING = [
+  {
+    domain: 'performance',
+    checkId: 'performance.poids',
+    status: 'fail',
+    severity: 4,
+    impact: 3,
+    score: 0,
+    measured: {},
+    messageKey: 'performance.poids.fail',
+    params: {},
+    fixKey: null,
+    effortMinutes: 20,
+    reason: null,
+  },
+];
+
+test('B-3 : /domaine avec un seul constat, accords au singulier (FR puis EN)', async ({
+  page,
+}) => {
+  await lockedReport(
+    page,
+    'partielle · 2 domaines · site non vérifié',
+    ONE_FINDING,
+  );
+  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=light`);
+  const main = page.locator('main');
+  await expect(main.locator('a[href="#constats"]')).toHaveText(
+    'Voir le constat',
+  );
+  await expect(main.locator('.sh2 .eyebrow')).toHaveText(
+    'Diagnostics détaillés · 1 élément passé au crible',
+  );
+  await toEnglish(page);
+  await expect(main.locator('a[href="#constats"]')).toHaveText(
+    'See the finding',
+  );
+  await expect(main.locator('.sh2 .eyebrow')).toHaveText(
+    'Detailed diagnostics · 1 item reviewed',
+  );
+  await expect(main).not.toContainText('the 1 findings');
+  await expect(main).not.toContainText('1 items');
 });

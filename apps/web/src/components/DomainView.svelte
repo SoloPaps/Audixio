@@ -338,6 +338,11 @@ onMount(() => {
     window.removeEventListener('resize', onResize);
   };
 });
+
+/** « Voir les 2 constats », mais « Voir le constat » pour un seul. */
+function seeLabel(n: number): string {
+  return n === 1 ? t('domaine.see.one') : t('domaine.see', { n });
+}
 </script>
 
 {#snippet chev()}
@@ -358,7 +363,7 @@ onMount(() => {
         <h1>{title}<span class="q">{t('domaine.q')}</span></h1>
         {#if lede}<p class="lede">{lede}</p>{/if}
         <div class="hacts">
-          <a class="btn btn-primary" href="#constats">{t('domaine.see', { n: findings.length })}</a>
+          <a class="btn btn-primary" href="#constats">{seeLabel(findings.length)}</a>
           <a class="btn btn-ghost" href="#prompt">{t('domaine.prepare')}</a>
         </div>
       </div>
@@ -379,7 +384,7 @@ onMount(() => {
   </div>
 
   <section class="block" id="constats" aria-labelledby="ct">
-    <div class="sh2"><div><p class="eyebrow">{t('domaine.constats.eyebrow', { n: findings.length })}</p><h2 id="ct">{t('domaine.constats')}</h2></div></div>
+    <div class="sh2"><div><p class="eyebrow">{findings.length === 1 ? t('domaine.constats.eyebrow.one') : t('domaine.constats.eyebrow', { n: findings.length })}</p><h2 id="ct">{t('domaine.constats')}</h2></div></div>
     <div class="tools">
       <fieldset>
         <legend class="sr-only">{t('domaine.filter')}</legend>
@@ -398,7 +403,7 @@ onMount(() => {
     </div>
     <div class="dgrid">
       <div>
-        <p class="sr-only" id="fcount">{t('domaine.see', { n: shown.length })}</p>
+        <p class="sr-only" id="fcount">{seeLabel(shown.length)}</p>
         <ol class="list" id="list">
           {#each shown as item, index (item.id)}
             {@const sev = sevOf(item)}
