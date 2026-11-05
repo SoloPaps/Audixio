@@ -30,12 +30,43 @@ test('/demande-acces 330 px : changer de thème depuis le menu garde la position
 }) => {
   await page.setViewportSize({ width: 330, height: 700 });
   await page.goto('/demande-acces?theme=light');
-  await page.evaluate(() => window.scrollTo(0, 1200));
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(1000);
+  await page.evaluate(() =>
+    (
+      globalThis as unknown as {
+        scrollTo: (x: number, y: number) => void;
+        scrollY: number;
+      }
+    ).scrollTo(0, 1200),
+  );
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (
+            globalThis as unknown as {
+              scrollTo: (x: number, y: number) => void;
+              scrollY: number;
+            }
+          ).scrollY,
+      ),
+    )
+    .toBeGreaterThan(1000);
   await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
   await page.locator('.axn-sheet .axn-theme').click();
   await page.keyboard.press('Escape');
-  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(1000);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (
+            globalThis as unknown as {
+              scrollTo: (x: number, y: number) => void;
+              scrollY: number;
+            }
+          ).scrollY,
+      ),
+    )
+    .toBeGreaterThan(1000);
 });
 
 function contrast(a: number[], b: number[]): number {
@@ -57,7 +88,14 @@ test('/pro sombre : les pastilles JSON et PDF client restent lisibles', async ({
   for (const name of ['JSON', 'PDF client']) {
     const pill = page.locator('.fm', { hasText: name }).first();
     const [fg, bg] = await pill.evaluate((el) => {
-      const s = getComputedStyle(el);
+      const s = (
+        globalThis as unknown as {
+          getComputedStyle: (node: unknown) => {
+            color: string;
+            backgroundColor: string;
+          };
+        }
+      ).getComputedStyle(el);
       const rgb = (v: string) =>
         (v.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
       return [rgb(s.color), rgb(s.backgroundColor)];
@@ -73,7 +111,9 @@ test('/exemple-rapport : pas de handler inline (CSP script-src-attr) et le formu
   const form = page.locator('#pform');
   await expect(form).not.toHaveAttribute('onsubmit');
   const url = page.url();
-  await form.evaluate((node) => (node as HTMLFormElement).requestSubmit());
+  await form.evaluate((node) =>
+    (node as unknown as { requestSubmit: () => void }).requestSubmit(),
+  );
   await page.waitForTimeout(300);
   expect(page.url()).toBe(url);
 });
