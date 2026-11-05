@@ -37,3 +37,31 @@ test('/demande-acces 330 px : changer de thème depuis le menu garde la position
   await page.keyboard.press('Escape');
   await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(1000);
 });
+
+function contrast(a: number[], b: number[]): number {
+  const lum = (c: number[]) => {
+    const [r, g, bl] = c.map((v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * (r ?? 0) + 0.7152 * (g ?? 0) + 0.0722 * (bl ?? 0);
+  };
+  const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+  return ((x ?? 0) + 0.05) / ((y ?? 0) + 0.05);
+}
+
+test('/pro sombre : les pastilles JSON et PDF client restent lisibles', async ({
+  page,
+}) => {
+  await page.goto('/pro?theme=dark');
+  for (const name of ['JSON', 'PDF client']) {
+    const pill = page.locator('.fm', { hasText: name }).first();
+    const [fg, bg] = await pill.evaluate((el) => {
+      const s = getComputedStyle(el);
+      const rgb = (v: string) =>
+        (v.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+      return [rgb(s.color), rgb(s.backgroundColor)];
+    });
+    expect(contrast(fg ?? [], bg ?? []), name).toBeGreaterThan(4.5);
+  }
+});
