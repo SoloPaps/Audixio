@@ -1,9 +1,11 @@
 const ORIG = '__axOrig';
-const SKIP = 'script,style,textarea,noscript,[data-chrome],[data-i18n-skip]';
+const DONE = '__axDone';
+const SKIP =
+  'script,style,textarea,noscript,[data-chrome],[data-i18n-skip],[data-i18n-key]';
 // Les attributs (placeholder…) d'un textarea restent traduisibles.
 const ATTR_SKIP = SKIP.replace(',textarea', '');
 
-type Marked = Text & { [ORIG]?: string };
+type Marked = Text & { [ORIG]?: string; [DONE]?: string };
 
 let dictionary: Map<string, string> | null = null;
 let painting = false;
@@ -81,10 +83,13 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
       node = walker.nextNode();
       continue;
     }
-    if (text[ORIG] === undefined) text[ORIG] = text.nodeValue ?? '';
+    // Un texte changé par le code depuis le dernier passage devient le nouvel original.
+    if (text[ORIG] === undefined || text.nodeValue !== text[DONE])
+      text[ORIG] = text.nodeValue ?? '';
     const original = text[ORIG] ?? '';
     const next = locale === 'en' && dict ? translate(original, dict) : original;
     if (text.nodeValue !== next) text.nodeValue = next;
+    text[DONE] = next;
     node = walker.nextNode();
   }
   const attrs = ['aria-label', 'title', 'placeholder', 'alt'];
@@ -95,13 +100,31 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
     for (const attr of attrs) {
       if (!el.hasAttribute(attr)) continue;
       const store = `data-ax-${attr}`;
-      if (!el.hasAttribute(store))
-        el.setAttribute(store, el.getAttribute(attr) ?? '');
+      const done = `data-ax-done-${attr}`;
+      const current = el.getAttribute(attr) ?? '';
+      if (
+        !el.hasAttribute(store) ||
+        (el.hasAttribute(done) && current !== el.getAttribute(done))
+      ) {
+        if (el.getAttribute(store) !== current) el.setAttribute(store, current);
+      }
       const original = el.getAttribute(store) ?? '';
       const next =
         locale === 'en' && dict ? translate(original, dict) : original;
       if (el.getAttribute(attr) !== next) el.setAttribute(attr, next);
+      if (el.getAttribute(done) !== next) el.setAttribute(done, next);
     }
+  }
+  // Bloc traduit d’un seul tenant par sa clé (ordre des mots différent en anglais).
+  const pack = locale === 'en' ? englishPack() : null;
+  for (const el of root.querySelectorAll<HTMLElement & { [ORIG]?: string }>(
+    '[data-i18n-key]',
+  )) {
+    el[ORIG] ??= el.innerHTML;
+    const english = pack?.[el.dataset.i18nKey ?? ''];
+    if (english) {
+      if (el.textContent !== english) el.textContent = english;
+    } else if (el.innerHTML !== el[ORIG]) el.innerHTML = el[ORIG];
   }
   document.documentElement.lang = locale;
   painting = false;

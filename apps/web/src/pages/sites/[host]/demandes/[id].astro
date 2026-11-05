@@ -395,6 +395,25 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     });
   }
 
+  /* Rôle et durée survivent au rechargement du changement de langue. */
+  (function(){
+    var key='audixio-acces:'+location.pathname, dur=$('#dur');
+    try{
+      var saved=JSON.parse(sessionStorage.getItem(key)||'null');
+      if(saved){
+        var pick=saved.role&&d.querySelector('input[name=role][value="'+saved.role+'"]');
+        if(pick) pick.checked=true;
+        if(dur&&saved.dur&&dur.querySelector('option[value="'+saved.dur+'"]')) dur.value=saved.dur;
+      }
+    }catch(e){}
+    function keep(){
+      var r=d.querySelector('input[name=role]:checked');
+      try{sessionStorage.setItem(key,JSON.stringify({role:r?r.value:'',dur:dur?dur.value:''}))}catch(e){}
+    }
+    $$('input[name=role]').forEach(function(i){i.addEventListener('change',keep)});
+    if(dur) dur.addEventListener('change',keep);
+  })();
+
   /* Burst de particules sur sélection de rôle */
   var roles=$$('.role input');
   roles.forEach(function(inp){

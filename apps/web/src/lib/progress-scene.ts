@@ -80,6 +80,7 @@ export function bindProgressScene(): void {
     if (!node) return;
     node.innerHTML = progressCountHtml(
       caps.map((el) => el.dataset.state ?? ''),
+      localStorage.getItem('audigy-locale') === 'en' ? 'en' : 'fr',
     );
   };
 
