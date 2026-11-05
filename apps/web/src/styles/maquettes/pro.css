@@ -2293,6 +2293,8 @@ h1 {
   flex: 1;
 }
 .bm .pbadge {
+  /* Le badge garde sa largeur : sinon il est écrasé et seul « P » reste (QA Mo B-7). */
+  flex: none;
   padding: 3px 9px;
   font-size: 10.5px;
   animation: bpop 5s var(--spring) infinite;
@@ -2317,6 +2319,18 @@ h1 {
   width: 40px;
   border-radius: 9px;
   background: #dde4f8;
+}
+/* Petit écran : la maquette du badge tient entière, badge PRO compris (QA Mo B-7). */
+@media (max-width: 480px) {
+  .bm {
+    left: 8px;
+    right: 8px;
+    gap: 6px;
+    padding: 12px 10px;
+  }
+  .bm .ln2 {
+    display: none;
+  }
 }
 .pf .st2 {
   display: inline-block;

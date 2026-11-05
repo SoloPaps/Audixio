@@ -271,3 +271,30 @@ test('B-6 : fenêtre Partager en sombre (thème choisi dans le menu), sous-titre
   await expect(sheet).toContainText('Public link created.');
   expect(await page.evaluate<string[]>(SHEET_CONTRAST)).toEqual([]);
 });
+
+test('B-7 : /pro à 330 px en EN, l’illustration du badge montre « PRO » en entier', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.goto('/pro?theme=light&lang=en');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.waitForLoadState('networkidle');
+  const badge = page.locator('.ill .bm .pbadge');
+  await expect(badge).toHaveText('PRO');
+  await badge.scrollIntoViewIfNeeded();
+  const geo = await page.evaluate<{
+    squeezed: number;
+    inside: boolean;
+  }>(`(() => {
+    const badge = document.querySelector('.ill .bm .pbadge');
+    const b = badge.getBoundingClientRect();
+    const ill = badge.closest('.ill').getBoundingClientRect();
+    const bm = badge.closest('.bm').getBoundingClientRect();
+    return {
+      squeezed: badge.scrollWidth - badge.clientWidth,
+      inside: b.left >= bm.left - 0.5 && b.right <= bm.right + 0.5 && bm.right <= ill.right + 0.5 && bm.left >= ill.left - 0.5,
+    };
+  })()`);
+  expect(geo.squeezed).toBeLessThanOrEqual(1);
+  expect(geo.inside).toBe(true);
+});
