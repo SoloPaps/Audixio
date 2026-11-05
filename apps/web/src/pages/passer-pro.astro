@@ -6,6 +6,9 @@ import '../styles/maquettes/theme-dark-qa.css';
 ---
 
 <Canon vue="passer" title={t('mq.passer.meta.title')} description={t('mq.passer.meta.desc')} robots="noindex, nofollow">
+<script is:inline>
+try{if(!localStorage.getItem('audigy-auth'))location.replace('/pro'+location.search+location.hash)}catch(e){location.replace('/pro')}
+</script>
 <p hidden id="mq.pp.sites.html">{t('mq.pp.sites.html')}</p><p hidden id="mq.pp.sites.l">{t('mq.pp.sites.l')}</p><p hidden id="mq.pp.sites.v">{t('mq.pp.sites.v')}</p><p hidden id="mq.pp.liens.html">{t('mq.pp.liens.html')}</p><p hidden id="mq.pp.liens.l">{t('mq.pp.liens.l')}</p><p hidden id="mq.pp.liens.v">{t('mq.pp.liens.v')}</p><p hidden id="mq.pp.saved">{t('mq.pp.saved')}</p><p hidden id="mq.pp.err.bad">{t('mq.pp.err.bad')}</p><p hidden id="mq.pp.err.empty">{t('mq.pp.err.empty')}</p>
 
 <main id="contenu" tabindex="-1" class="bgh" aria-hidden="true" inert>
@@ -57,8 +60,11 @@ import '../styles/maquettes/theme-dark-qa.css';
 
 
 <script>
-import { redirectProToAccount } from '../lib/pro-redirect.js';
-void redirectProToAccount((href) => location.replace(href));
+import { routeUpgrade } from '../lib/pro-redirect.js';
+void routeUpgrade(
+  (href) => location.replace(href),
+  location.search + location.hash,
+);
 </script>
 <script is:inline>
 function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typeof line==='string'&&line)return line;var node=document.getElementById(key);return node?node.textContent:'';}

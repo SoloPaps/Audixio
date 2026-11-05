@@ -52,10 +52,17 @@ test('pages légales, 404, 500, cookies et Pro', async ({ page, browser }) => {
   await page.locator('#wbtn').click();
   await expect(page.locator('#wl')).toHaveClass(/done/);
 
+  /* Question 1 : un visiteur qui ouvre /passer-pro arrive sur /pro et s’y inscrit. */
   await page.goto('/passer-pro');
-  await page.locator('#pm-email').fill('liste@exemple.test');
-  await page.locator('#pm-email').press('Enter');
-  await expect(page.locator('#pm-ok')).toBeVisible();
+  await expect(page).toHaveURL(/:\d+\/pro$/);
+  await expect(
+    page.getByRole('heading', { name: /Audixio Pro/ }),
+  ).toBeVisible();
+  await page.locator('#email-input').fill('liste@exemple.test');
+  await page.locator('#email-input').press('Enter');
+  await expect(page.locator('#wl')).toHaveClass(/done/);
+  await page.goto('/passer-pro?src=reel#pro-liens');
+  await expect(page).toHaveURL(/:\d+\/pro\?src=reel#pro-liens$/);
 
   const narrow = await mobile(browser, false);
   await narrow.goto('/mentions-legales');

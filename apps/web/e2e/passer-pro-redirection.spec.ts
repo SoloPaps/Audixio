@@ -1,6 +1,9 @@
 import { expect, type Page, test } from '@playwright/test';
 
-/** Décision #38 : un compte Pro qui ouvre /passer-pro arrive sur /compte. */
+/**
+ * Décision #38 : un compte Pro qui ouvre /passer-pro arrive sur /compte.
+ * Question 1 : visiteur et compte gratuit arrivent sur /pro.
+ */
 
 const USER_ID = '11111111-1111-4111-8111-111111111111';
 const session = {
@@ -62,19 +65,28 @@ test('un compte Pro est redirigé de /passer-pro vers /compte (#38)', async ({
   await expect(page).toHaveURL(/\/compte(?:[?#].*)?$/);
 });
 
-test('un compte gratuit reste sur /passer-pro (#38)', async ({ page }) => {
+test('un compte gratuit est redirigé de /passer-pro vers /pro (question 1)', async ({
+  page,
+}) => {
   await signIn(page, 'free');
   await page.goto('/passer-pro');
-  await expect(page.locator('#pro-modal')).toBeAttached();
+  await expect(page).toHaveURL(/:4321\/pro$/);
   await page.waitForTimeout(1500);
-  await expect(page).toHaveURL(/\/passer-pro$/);
+  await expect(page).toHaveURL(/:4321\/pro$/);
 });
 
-test('un visiteur non connecté reste sur /passer-pro (#38)', async ({
+test('un visiteur est redirigé de /passer-pro vers /pro (question 1)', async ({
   page,
 }) => {
   await page.goto('/passer-pro');
-  await expect(page.locator('#pro-modal')).toBeAttached();
-  await page.waitForTimeout(1500);
-  await expect(page).toHaveURL(/\/passer-pro$/);
+  await expect(page).toHaveURL(/:4321\/pro$/);
+  await expect(page.locator('h1')).toBeVisible();
+});
+
+test('la redirection vers /pro garde la requête et l’ancre (question 1)', async ({
+  page,
+}) => {
+  await page.goto('/passer-pro?theme=dark#pro-liens');
+  await expect(page).toHaveURL(/:4321\/pro\?theme=dark#pro-liens$/);
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });

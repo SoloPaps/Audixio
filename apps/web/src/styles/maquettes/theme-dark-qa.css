@@ -73,6 +73,11 @@ html[data-theme="dark"][data-vue="bienvenue"] .mark:focus-visible {
   color: #f0f2f5;
 }
 /* #105 : valeur du quota lisible dans la fenêtre Pro. */
-html[data-theme="dark"] .pm .meter .lab span:last-child {
+html[data-theme="dark"] .pm .meter .lab span:last-child,
+html[data-theme="dark"][data-board="liste"] .pm .meter .lab span:last-child {
   color: #d6e2ff;
+}
+/* Question 1 : la fenêtre Pro de /sites garde un fond de quota sombre (#105). */
+html[data-theme="dark"][data-board="liste"] .pm .meter {
+  background: #243056;
 }
