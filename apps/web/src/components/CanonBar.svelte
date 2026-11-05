@@ -131,6 +131,25 @@ async function setLocale(event: MouseEvent, next: 'fr' | 'en'): Promise<void> {
   }
 }
 
+// Lien « ?lang=en » suivi avant l’hydratation : on applique le choix puis on nettoie l’URL.
+async function followLangQuery(): Promise<void> {
+  const url = new URL(location.href);
+  const asked = url.searchParams.get('lang');
+  if (asked !== 'en' && asked !== 'fr') return;
+  url.searchParams.delete('lang');
+  if (asked === locale) {
+    history.replaceState(history.state, '', url);
+    return;
+  }
+  try {
+    if (asked === 'en' && !(await storeEnglishDictionary())) return;
+    localStorage.setItem('audigy-locale', asked);
+  } catch {
+    return;
+  }
+  location.replace(url);
+}
+
 function toggleTheme(): void {
   const next = dark ? 'light' : 'dark';
   dark = next === 'dark';
@@ -154,6 +173,7 @@ onMount(() => {
   loggedIn = storedSessionPresent();
   if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
   applyLocale(locale);
+  void followLangQuery();
   onScroll();
   const wide = window.matchMedia('(min-width: 901px)');
   const onWide = (event: MediaQueryListEvent): void => {

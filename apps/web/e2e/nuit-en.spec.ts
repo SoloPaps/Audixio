@@ -86,3 +86,16 @@ test('/ EN : l’animation de lecture passive est en anglais', async ({
   await expect(sub).toContainText('Passive read:', { timeout: 15_000 });
   await expect(sub).not.toContainText('Lecture passive');
 });
+
+// Clic sur « EN » avant l’hydratation : le navigateur suit le lien ?lang=en.
+for (const path of ['/', '/robot', '/maintenance', '/methode']) {
+  test(`${path}?lang=en : la page passe réellement en anglais`, async ({
+    page,
+  }) => {
+    await page.goto(`${path}?lang=en&theme=light`);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('h1').first()).not.toHaveText(
+      /Vérifiez|Robot Audixio|peaufine|Comment/,
+    );
+  });
+}
