@@ -27,6 +27,11 @@ const WALLS = [
     title: 'Connectez-vous ou inscrivez-vous',
   },
   {
+    path: '/bienvenue',
+    next: '%2Fbienvenue',
+    title: 'Bienvenue',
+  },
+  {
     path: '/sites',
     next: '%2Fsites',
     title: 'Vos sites',

@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { stubSession } from './session-stub.js';
 
 test('les écrans de connexion suivent le parcours e-mail', async ({ page }) => {
   await page.goto('/connexion');
@@ -37,6 +38,7 @@ test('les écrans de connexion suivent le parcours e-mail', async ({ page }) => 
     page.getByRole('link', { name: 'Lancer mon premier audit' }),
   ).toHaveAttribute('href', '/#audit-form');
 
+  await stubSession(page);
   await page.goto('/bienvenue');
   await expect(page.getByRole('link', { name: 'Plus tard' })).toHaveAttribute(
     'href',
