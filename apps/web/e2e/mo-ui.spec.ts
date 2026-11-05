@@ -298,3 +298,22 @@ test('B-7 : /pro à 330 px en EN, l’illustration du badge montre « PRO » en 
   expect(geo.squeezed).toBeLessThanOrEqual(1);
   expect(geo.inside).toBe(true);
 });
+
+test('B-9 : /robot en sombre, l’exemple robots.txt n’est plus lavande clair', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/robot?theme=dark');
+  const box = page.locator('#robots pre');
+  await expect(box).toContainText('User-agent');
+  const colors = await page.evaluate<{ bg: string; fg: string }>(`(() => {
+    const pre = document.querySelector('#robots pre');
+    const code = pre.querySelector('code') || pre;
+    return { bg: getComputedStyle(pre).backgroundColor, fg: getComputedStyle(code).color };
+  })()`);
+  expect(colors.bg).toBe('rgb(28, 35, 64)');
+  expect(colors.fg).toBe('rgb(240, 242, 245)');
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/robot?theme=light');
+  await expect(box).toHaveCSS('background-color', 'rgb(237, 232, 245)');
+});
