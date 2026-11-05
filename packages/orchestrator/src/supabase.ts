@@ -35,6 +35,7 @@ import {
   LOCAL_RUNNER_ENV_NAME,
 } from './dispatch.js';
 import { gscForAudit } from './gsc-port.js';
+import { runPassiveGuest } from './guest.js';
 import type { ApiDeps, AuditView, FindingView, RunDeps } from './http.js';
 import { labFromEnv } from './lab.js';
 import { errorCode, type Logger } from './log.js';
@@ -459,6 +460,14 @@ export function apiDepsFromEnv(options: FromEnvOptions): ApiDeps {
     },
     readAudit: (token, auditId) => readAuditView(userClient(token), auditId),
     allowLab: lab !== null,
+    async guestAudit(site) {
+      return runPassiveGuest({
+        site,
+        env,
+        lab,
+        fixes: await fixesFromDisk(logger),
+      });
+    },
     async guardGuest(req) {
       const key = await guestAuditKey(clientIp(req));
       const limit = guestAuditLimit({
