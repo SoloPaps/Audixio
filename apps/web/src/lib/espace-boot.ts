@@ -219,7 +219,7 @@ async function prepare(
   session: Session | null,
 ): Promise<EspaceNext> {
   if (page === 'bienvenue') {
-    if (!session) return emptyNext('ready');
+    if (!session) return emptyNext('out');
     return {
       ...emptyNext('ready'),
       token: session.access_token,

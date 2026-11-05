@@ -2,6 +2,7 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { bootEspace } from '../lib/espace-boot.js';
+import SessionWall from './SessionWall.svelte';
 
 let mode = $state<
   'pending' | 'out' | 'empty' | 'list' | 'ready' | 'live' | 'error'
@@ -21,6 +22,7 @@ onMount(() => {
 </script>
 
 <div bind:this={root} data-mode={mode}>
+{#if mode === 'pending'}<main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{:else if mode === 'out'}<main id="contenu"><SessionWall title={t('mq.bi.003')} status={t('account.out')} next="/bienvenue" /></main>{:else}
 <main id="contenu" tabindex="-1">
 <div class="progress" aria-hidden="true"></div>
 <nav class="crumbs" aria-label={t('mq.bi.001')}><ol><li><a href="/">{t('mq.bi.002')}</a></li><li><span aria-current="page">{t('mq.bi.003')}</span></li></ol></nav>
@@ -44,5 +46,6 @@ onMount(() => {
 <li><a class="lk" href="/pro"><span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.8 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.bi.046')}</span><span class="lk-d">{t('mq.bi.047')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
 </ul></section>
 </main>
+{/if}
 <div class="toast" id="toast" aria-hidden="true"></div><p class="sr-only" id="live" role="status" aria-live="polite"></p>
 </div>

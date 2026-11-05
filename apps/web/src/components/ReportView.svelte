@@ -221,6 +221,13 @@ onMount(() => {
     const id = params.get('id');
     domainId = params.get('domaine') ?? '';
     checkId = params.get('check') ?? '';
+    if (!id && (mode === 'brief' || mode === 'badge')) {
+      const visitor = await currentSession();
+      if (!visitor) {
+        phase = 'brief-gate';
+        return;
+      }
+    }
     if (!id || (mode === 'domain' && !isKnownDomain(domainId))) {
       phase = 'message';
       message =

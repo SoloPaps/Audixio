@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { stubSession } from './session-stub.js';
 
 // Le typecheck e2e n'embarque pas lib.dom : vue minimale des globals du navigateur.
 type Style = {
@@ -33,6 +34,7 @@ function ratio(a: string, b: string): number {
 test('#59 bouton de checklist lisible en sombre', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1280, height: 900 });
+  await stubSession(page);
   await page.goto('/bienvenue?theme=dark');
   const mark = page.locator('#e1 button.mark');
   await expect(mark).toBeVisible();
