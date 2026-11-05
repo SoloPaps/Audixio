@@ -432,6 +432,7 @@ const frCore = {
   'progress.done': 'L’audit est terminé.',
   'progress.failed': 'L’audit n’a pas abouti. Vous pouvez le relancer.',
   'failure.audit.of': 'L’audit de ',
+  'failure.audit.generic': 'L’audit ',
   'failure.unmeasured': 'Aucune mesure',
   'progress.live': 'Analyse en cours.',
   'progress.ready': 'Rapport prêt.',

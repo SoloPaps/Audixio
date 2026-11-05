@@ -62,7 +62,10 @@ const items = $derived([
   { href: '/pro', label: tr('nav.pricing') },
 ]);
 
+let menuScroll = 0;
+
 function setMenu(next: boolean, back: boolean): void {
+  if (next && !open) menuScroll = window.scrollY;
   open = next;
   const root = document.documentElement;
   if (next) {
@@ -74,7 +77,10 @@ function setMenu(next: boolean, back: boolean): void {
   } else {
     root.style.overflow = '';
     document.body.style.overflow = '';
-    if (back) burger?.focus();
+    // Certaines pages repartent en haut pendant le verrou : on rend la position.
+    if (window.scrollY !== menuScroll)
+      window.scrollTo({ top: menuScroll, behavior: 'instant' });
+    if (back) burger?.focus({ preventScroll: true });
   }
 }
 

@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 
 // Le typecheck e2e n'embarque pas lib.dom : vue minimale des globals du navigateur.
@@ -218,4 +219,21 @@ test('#147 filtres sans contour rectangulaire en sombre', async ({ page }) => {
   expect(box.border).toBe('none');
   expect(box.shadow).toBe('none');
   expect(box.outline).toBe('none');
+});
+
+// Nuit QA : en sombre, les libellés des filtres #flt gardent un contraste suffisant (axe).
+test('filtres #flt lisibles en sombre (axe color-contrast)', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await install(page, true);
+  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=dark`);
+  await expect(page.locator('#flt')).toBeVisible();
+  const result = await new AxeBuilder({ page })
+    .include('#flt')
+    .withRules(['color-contrast'])
+    .analyze();
+  expect(result.violations.flatMap((v) => v.nodes.map((n) => n.html))).toEqual(
+    [],
+  );
 });
