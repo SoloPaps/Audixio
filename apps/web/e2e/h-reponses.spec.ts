@@ -78,3 +78,28 @@ test('/historique « All » en anglais : « since January 2026 »', async ({
     'History available since January 2026: the curve already shows the whole period.',
   );
 });
+
+test('/historique à 330 px : le graphique tient dans l’écran, sans défilement horizontal', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 330, height: 800 });
+  await openHistory(page, [72, 88]);
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  const sizes = (await page.evaluate(`(() => {
+    const svg = document.querySelector('text.val')?.closest('svg');
+    const box = svg?.getBoundingClientRect();
+    const label = svg?.querySelector('text');
+    const font = label ? Number.parseFloat(getComputedStyle(label).fontSize) : 0;
+    const scale = box && svg ? box.width / (svg.viewBox.baseVal.width || box.width) : 0;
+    return {
+      scroll: document.documentElement.scrollWidth,
+      right: box ? box.right : 9999,
+      shown: font * scale,
+    };
+  })()`)) as { scroll: number; right: number; shown: number };
+  expect(sizes.scroll).toBeLessThanOrEqual(330);
+  expect(sizes.right).toBeLessThanOrEqual(330);
+  expect(sizes.shown).toBeGreaterThanOrEqual(10);
+});

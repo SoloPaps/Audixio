@@ -1069,6 +1069,21 @@ html[data-vue="historique"] .chart svg {
     min-width: 660px;
   }
 }
+/* Petit écran : la courbe tient dans la largeur, textes agrandis
+   dans l’unité du viewBox pour rester lisibles une fois réduits. */
+@media (max-width: 480px) {
+  html[data-vue="historique"] .chart {
+    overflow-x: visible;
+  }
+  html[data-vue="historique"] .chart svg {
+    min-width: 0;
+    box-sizing: border-box;
+    padding-inline: 14px 18px;
+  }
+  html[data-vue="historique"] .chart svg text {
+    font-size: 46px;
+  }
+}
 html[data-vue="historique"] .chart:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 4px;
