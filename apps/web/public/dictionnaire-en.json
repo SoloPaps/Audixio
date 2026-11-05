@@ -3358,6 +3358,8 @@
   "mq.ui.report": "Preparing export of report {ref}",
   "mq.ui.legend.one": "Weighted overall grade (1 audit)",
   "mq.ui.legend.many": "Weighted overall grade ({n} audits)",
+  "mq.ui.chart.one": "Weighted overall grade, {from}: {values}.",
+  "mq.ui.chart.many": "Weighted overall grade from {from} to {to}: {values}.",
   "mq.ui.trend.delta": "{n} pts",
   "mq.ui.avg.6m": "6-month average: ",
   "mq.ui.avg.1y": "1-year average: ",

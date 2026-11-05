@@ -875,6 +875,23 @@ function bindHistory(root: HTMLElement): () => void {
     applyEvolutionChart(svg, built);
     axis = { min: String(built.min), max: String(built.max) };
     if (note && !full) note.textContent = t('mq.ui.range.axis', axis);
+    const desc = svg.querySelector('#ch-d');
+    const firstMark = built.marks[0];
+    const lastMark = built.marks.at(-1);
+    if (desc && firstMark && lastMark) {
+      const marks = built.marks.map((mark) => String(Math.round(mark.value)));
+      desc.textContent =
+        built.marks.length === 1
+          ? t('mq.ui.chart.one', {
+              from: firstMark.label,
+              values: marks.join(', '),
+            })
+          : t('mq.ui.chart.many', {
+              from: firstMark.label,
+              to: lastMark.label,
+              values: marks.join(', '),
+            });
+    }
     labels = built.marks.map((mark) => mark.label);
     values = built.marks.map((mark) => Math.round(mark.value));
     xs = built.marks.map((mark) => mark.x);

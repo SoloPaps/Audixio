@@ -475,3 +475,13 @@ test('B2 sombre : le bouton de période actif reste visible', async ({
   expect(styles.bg).not.toBe(styles.inactiveBg);
   expect(styles.contrast).toBeGreaterThanOrEqual(4.5);
 });
+
+test('B6 : le titre accessible du graphique reprend les vraies notes', async ({
+  page,
+}) => {
+  await openHistory(page, [72, 88]);
+  const desc = page.locator('#ch-d');
+  await expect(desc).toContainText('72, 88', { timeout: 15_000 });
+  await expect(desc).not.toContainText('décembre 2025');
+  await expect(desc).not.toContainText('78, 79');
+});
