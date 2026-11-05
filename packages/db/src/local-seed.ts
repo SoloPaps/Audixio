@@ -58,6 +58,80 @@ function level(score: number): 'good' | 'improve' | 'problem' {
   return 'problem';
 }
 
+export interface SeedFinding {
+  domain: (typeof DOMAINS)[number];
+  checkId: string;
+  status: 'pass' | 'warn' | 'fail';
+  severity: 1 | 2 | 3 | 4;
+  impact: 1 | 2 | 3;
+  messageKey: string;
+  effortMinutes: number | null;
+}
+
+const ISSUES: readonly SeedFinding[] = [
+  {
+    domain: 'securite',
+    checkId: 'securite.hsts',
+    status: 'warn',
+    severity: 2,
+    impact: 2,
+    messageKey: 'securite.hsts.warn_short',
+    effortMinutes: 15,
+  },
+  {
+    domain: 'securite',
+    checkId: 'securite.frames',
+    status: 'fail',
+    severity: 3,
+    impact: 2,
+    messageKey: 'securite.frames.fail',
+    effortMinutes: 15,
+  },
+  {
+    domain: 'seo',
+    checkId: 'seo.description',
+    status: 'warn',
+    severity: 2,
+    impact: 2,
+    messageKey: 'seo.description.warn_missing',
+    effortMinutes: 20,
+  },
+  {
+    domain: 'securite',
+    checkId: 'securite.xcto',
+    status: 'warn',
+    severity: 1,
+    impact: 1,
+    messageKey: 'securite.xcto.warn_missing',
+    effortMinutes: 10,
+  },
+];
+
+const PASSES: readonly SeedFinding[] = [
+  {
+    domain: 'securite',
+    checkId: 'securite.https',
+    status: 'pass',
+    severity: 1,
+    impact: 1,
+    messageKey: 'securite.https.pass_redirect',
+    effortMinutes: null,
+  },
+];
+
+/**
+ * Constats d’un audit seed : une note sous 100 a toujours des points à
+ * corriger, et moins la note est haute, plus il y en a.
+ */
+export function seedFindings(score: number): readonly SeedFinding[] {
+  if (score >= 100) return PASSES;
+  const count = Math.min(
+    ISSUES.length,
+    Math.max(1, Math.ceil((100 - score) / 9)),
+  );
+  return [...ISSUES.slice(0, count), ...PASSES];
+}
+
 /** Ajoute ou retire le réglage. Hors local, la ligne est retirée. */
 export function guestLiftLine(envText: string, local: boolean): string {
   const rows = envText
@@ -207,6 +281,27 @@ async function seedDoneSite(
   }
   const ids = rows.map((row) => row.id);
   await sql`delete from public.domain_scores where audit_id in ${sql(ids)}`;
+  await sql`delete from public.findings where audit_id in ${sql(ids)}`;
+  for (const row of rows) {
+    for (const item of seedFindings(row.score)) {
+      await sql`
+        insert into public.findings (
+          audit_id, domain, check_id, status, severity, impact,
+          message_key, fix_key, effort_minutes
+        ) values (
+          ${row.id}::uuid,
+          ${item.domain},
+          ${item.checkId},
+          ${item.status},
+          ${item.severity},
+          ${item.impact},
+          ${item.messageKey},
+          ${item.status === 'pass' ? null : item.checkId},
+          ${item.effortMinutes}
+        )
+      `;
+    }
+  }
   for (const row of rows) {
     for (const domain of DOMAINS) {
       await sql`

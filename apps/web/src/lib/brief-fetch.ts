@@ -7,6 +7,14 @@ export interface BriefChoice {
   mode: 'fix' | 'verif';
 }
 
+function englishChosen(): boolean {
+  try {
+    return globalThis.localStorage?.getItem('audigy-locale') === 'en';
+  } catch {
+    return false;
+  }
+}
+
 const FILE_NAME = /^filename="([A-Za-z0-9._-]{1,80})"$/u;
 const MAX_CHARS = 1_000_000;
 
@@ -45,6 +53,7 @@ export async function requestBriefExport(
       headers: {
         authorization: `Bearer ${token}`,
         'content-type': 'application/json',
+        'x-audigy-locale': englishChosen() ? 'en' : 'fr',
       },
       body: JSON.stringify({
         selection: selection.map((item) => ({

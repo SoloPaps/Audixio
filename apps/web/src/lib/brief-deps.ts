@@ -6,26 +6,69 @@ import {
   type FindingView,
   type Logger,
 } from '@audigy/orchestrator';
+import enDictionary from '../../public/dictionnaire-en.json' with {
+  type: 'json',
+};
+import type { BriefLocale } from '../i18n/brief-fr.js';
 import { renderBriefMarkdown } from './brief-markdown.js';
 import { asParams, translate } from './translate.js';
 
 const GENERIC = 'Constat relevé sur ce site.';
+const GENERIC_EN = 'Finding noted on this site.';
+const EN: Readonly<Record<string, string>> = enDictionary;
+
+function englishLine(
+  key: string,
+  params: Record<string, string | number> | null,
+): string | null {
+  const template = EN[key];
+  if (typeof template !== 'string' || template === '') return null;
+  let missing = false;
+  const line = template.replace(
+    /\{([A-Za-z0-9_]+)\}/g,
+    (_raw, name: string) => {
+      const value = params?.[name];
+      if (typeof value !== 'string' && typeof value !== 'number') {
+        missing = true;
+        return '';
+      }
+      return String(value);
+    },
+  );
+  return missing ? null : line;
+}
+
+/** Langue demandée par le navigateur pour le fichier du brief. */
+export function briefLocaleOf(request: Request): BriefLocale {
+  return request.headers.get('x-audigy-locale') === 'en' ? 'en' : 'fr';
+}
 
 /** Libellé serveur. Un domaine verrouillé ne sort pas son texte. */
-export function labelBriefFinding(finding: FindingView): {
+export function labelBriefFinding(
+  finding: FindingView,
+  locale: BriefLocale = 'fr',
+): {
   title: string;
   proof: string;
 } {
+  const generic = locale === 'en' ? GENERIC_EN : GENERIC;
   if (isLockedDomain(finding.domain)) {
-    return { title: GENERIC, proof: GENERIC };
+    return { title: generic, proof: generic };
   }
-  const text = translate(finding.messageKey, asParams(finding.params));
-  const line = (text ?? GENERIC).replace(/\s+/g, ' ').trim().slice(0, 400);
-  const safe = line === '' ? GENERIC : line;
+  const params = asParams(finding.params);
+  const text =
+    (locale === 'en' ? englishLine(finding.messageKey, params) : null) ??
+    translate(finding.messageKey, params);
+  const line = (text ?? generic).replace(/\s+/g, ' ').trim().slice(0, 400);
+  const safe = line === '' ? generic : line;
   return { title: safe, proof: safe };
 }
 
-export function briefDeps(requestUrl: string, logger: Logger): BriefExportDeps {
+export function briefDeps(
+  requestUrl: string,
+  logger: Logger,
+  locale: BriefLocale = 'fr',
+): BriefExportDeps {
   const api = apiDepsFromEnv({ env: process.env, requestUrl, logger });
   return {
     logger,
@@ -38,7 +81,7 @@ export function briefDeps(requestUrl: string, logger: Logger): BriefExportDeps {
         siteVerified: view.audit.siteVerified === true,
       };
     },
-    label: labelBriefFinding,
-    render: renderBriefMarkdown,
+    label: (finding) => labelBriefFinding(finding, locale),
+    render: (input) => renderBriefMarkdown({ ...input, locale }),
   };
 }

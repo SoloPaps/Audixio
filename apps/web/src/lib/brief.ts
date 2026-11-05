@@ -1,4 +1,4 @@
-import { t } from '../i18n/brief-fr.js';
+import { briefLocale, t } from '../i18n/brief-fr.js';
 import { formatDateTime } from '../i18n/format.js';
 import { renderTerminal } from './brief-terminal.js';
 import type { MethodeEntry } from './methode-catalog.js';
@@ -62,6 +62,19 @@ export function referenceOf(
   if (parts.length > 0) return parts.join(' ; ');
   if (citation === null || citation.trim() === '') return null;
   return citation.trim();
+}
+
+const enClock = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/Paris',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+});
+
+function briefDate(at: Date): string {
+  return briefLocale() === 'en' ? enClock.format(at) : formatDateTime(at);
 }
 
 function bullet(line: string, indent = ''): string {
@@ -138,9 +151,7 @@ export function renderBriefBody(input: BriefDocument): string {
     lines.push(bullet(t('brief.context.stack', { stack: input.stack })));
   }
   if (input.at) {
-    lines.push(
-      bullet(t('brief.context.date', { date: formatDateTime(input.at) })),
-    );
+    lines.push(bullet(t('brief.context.date', { date: briefDate(input.at) })));
   }
   lines.push('', t('brief.h.findings'));
   for (const item of input.findings) lines.push(...findingBlock(item));

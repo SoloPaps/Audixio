@@ -28,6 +28,7 @@ import {
 } from './history.js';
 import { type EvolutionChart, evolutionChart } from './history-chart.js';
 import { filterHistoryPoints, historySpanOf } from './history-range.js';
+import { historySince } from './history-since.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
 import { parsePlacesState } from './places-api.js';
 import { loadSiteHistory } from './site-history.js';
@@ -98,9 +99,8 @@ function displayName(session: Session): string {
   if (typeof meta?.full_name === 'string' && meta.full_name.trim()) {
     return meta.full_name.trim();
   }
-  const email = session.user.email ?? '';
-  const local = email.split('@')[0] ?? '';
-  return local || email;
+  // Sans prénom, on salue sans nom : jamais le début de l’adresse.
+  return '';
 }
 
 function asPlan(value: string | null | undefined): Plan {
@@ -807,6 +807,18 @@ function paintHistoryLive(
   }
 }
 
+// « depuis » = mois du premier audit du site, plus une date figée.
+function rangeFullNote(view: HistoryView | null): string {
+  let locale: 'fr' | 'en' = 'fr';
+  try {
+    if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
+  } catch {
+    locale = 'fr';
+  }
+  const since = view ? historySince(view.points, locale) : null;
+  return since ? t('mq.ui.range.full', { since }) : t('mq.ui.range.all');
+}
+
 function bindHistory(root: HTMLElement): () => void {
   const off: (() => void)[] = [];
   let dead = false;
@@ -1069,7 +1081,7 @@ function bindHistory(root: HTMLElement): () => void {
       drawChart();
       if (note)
         note.textContent = index
-          ? t('mq.ui.range.full')
+          ? rangeFullNote(latestView)
           : axis
             ? t('mq.ui.range.axis', axis)
             : t('mq.ui.range.tight');
@@ -1615,9 +1627,11 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
 }
 
 function bindWelcome(root: HTMLElement, next: EspaceNext): () => void {
-  const name = root.querySelector('.bv-name');
-  if (name && next.name && next.name !== 'Camille')
-    name.textContent = next.name;
+  const name = root.querySelector<HTMLElement>('.bv-name');
+  if (name && next.name) {
+    name.textContent = `, ${next.name}`;
+    name.hidden = false;
+  }
   const steps = [...root.querySelectorAll<HTMLElement>('.step')];
   let saved: string[] = [];
   try {
