@@ -32,3 +32,14 @@ test('/accessibilite EN : plus de « Le Défenseur des droits » en français', 
     'Le Défenseur des droits',
   );
 });
+
+test('/mentions-legales EN : « browser » n’est pas répété autour de localStorage', async ({
+  page,
+}) => {
+  await page.goto('/mentions-legales?theme=light');
+  await toEnglish(page);
+  await expect(page.locator('main')).toContainText(
+    'stored only in the localStorage of your browser.',
+  );
+  await expect(page.locator('main')).not.toContainText('browser’s');
+});
