@@ -83,3 +83,43 @@ test('M15 : /courriel (404) EN se traduit sans attendre un dictionnaire lent', a
     /subject=Broken%20link.*reporting%20a%20broken%20link/,
   );
 });
+
+test('M16 : /progression EN, messages d’activité et délai en anglais', async ({
+  page,
+}) => {
+  test.setTimeout(90_000);
+  // Note chaque texte d’activité et de délai affiché (script en chaîne : pas de DOM côté Node).
+  await page.addInitScript(`
+    window.seen = [];
+    document.addEventListener('DOMContentLoaded', () => {
+      const note = () => {
+        for (const id of ['task', 'timeLeft']) {
+          const text = document.getElementById(id)?.textContent?.trim();
+          if (text && !window.seen.includes(text)) window.seen.push(text);
+        }
+      };
+      new MutationObserver(note).observe(document.body, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+      });
+    });
+  `);
+  await page.goto('/progression?theme=light');
+  await toEnglish(page);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('body')).toHaveClass(/\bdone\b/, {
+    timeout: 60_000,
+  });
+  const seen = await page.evaluate<string[]>('window.seen');
+  expect(seen).toContain(
+    'Checking smoothness and reading comfort on smartphones',
+  );
+  expect(seen).toContain('Checking contrast and keyboard navigation');
+  expect(seen).toContain('Reading the source code and looking for errors');
+  expect(seen.some((text) => /^~\d+ seconds?$/.test(text))).toBe(true);
+  const french = seen.filter((text) =>
+    /Vérification|Contrôle|Lecture|Génération|Analyse|seconde/.test(text),
+  );
+  expect(french).toEqual([]);
+});

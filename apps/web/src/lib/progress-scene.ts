@@ -190,7 +190,7 @@ export function bindProgressScene(): void {
   const tick = (): void => {
     simState = tickSim(simState);
     setPercent(simState.percent);
-    if (simState.phrase) setPhrase(simState.phrase);
+    if (simState.phrase) setPhrase(t(simState.phrase));
     for (const update of simState.domains) {
       setDomain(update.key, update.state);
     }
