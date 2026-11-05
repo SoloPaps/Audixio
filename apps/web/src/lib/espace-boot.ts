@@ -39,6 +39,7 @@ import {
   NARROW_LABEL_GAP,
   shownLabels,
 } from './history-chart.js';
+import { historyCsv, historyCsvName } from './history-csv.js';
 import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import { historySince } from './history-since.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
@@ -873,6 +874,7 @@ function bindHistory(root: HTMLElement): () => void {
   let ys = [168, 156.5, 145, 133.5, 122, 99];
   let span: ReturnType<typeof historySpanOf> | 'unset' = 'unset';
   let latestView: HistoryView | null = null;
+  let latestHost = '';
   let axis: { min: string; max: string } | null = null;
   let full = false;
   const note = root.querySelector<HTMLElement>('#rng-note');
@@ -1082,6 +1084,7 @@ function bindHistory(root: HTMLElement): () => void {
         typeof profile?.plan === 'string' ? profile.plan : null,
       );
       latestView = view;
+      latestHost = site.host;
       drawChart();
       return;
     }
@@ -1129,6 +1132,7 @@ function bindHistory(root: HTMLElement): () => void {
       );
     }
     latestView = view;
+    latestHost = listed?.host ?? '';
     drawChart();
   })();
   const leave = (): void => {
@@ -1166,8 +1170,25 @@ function bindHistory(root: HTMLElement): () => void {
   });
   root.querySelectorAll<HTMLButtonElement>('.exp').forEach((button) => {
     const click = (): void => {
+      say(t('mq.ui.export.prep'), true);
       busy(button, 900, () => {
-        say(t('mq.ui.report', { ref: button.dataset.ref ?? '' }), true);
+        // Sans audit terminé, une erreur claire plutôt qu’un toast muet.
+        if (!latestView || latestView.points.length === 0) {
+          say(t('mq.ui.history.export.none'), true);
+          return;
+        }
+        const blob = new Blob([historyCsv(latestView)], {
+          type: 'text/csv;charset=utf-8',
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = historyCsvName(latestHost);
+        document.body.append(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        say(t('mq.ui.history.export.done'), true);
       });
     };
     button.addEventListener('click', click);
