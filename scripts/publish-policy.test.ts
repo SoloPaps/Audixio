@@ -17,6 +17,7 @@ import {
   headersFor,
   hoistIslandStyle,
   inlineHashes,
+  localSupabaseOrigin,
   pageWeight,
   parseHeaderFile,
   publish,
@@ -106,6 +107,58 @@ describe('CSP du build', () => {
       ).toBe(true);
       const map = await readFile(path.join(dir, 'sitemap.xml'), 'utf8');
       expect(map).toContain('<loc>/</loc>');
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('retest C-Q1 : la CSP suit un Supabase local sur un autre port', async () => {
+    expect(localSupabaseOrigin('http://127.0.0.1:55431')).toBe(
+      'http://127.0.0.1:55431',
+    );
+    expect(localSupabaseOrigin('http://localhost:55431/rest/v1')).toBe(
+      'http://localhost:55431',
+    );
+    expect(localSupabaseOrigin('https://abcd.supabase.co')).toBeNull();
+    expect(localSupabaseOrigin('https://exemple.fr')).toBeNull();
+    expect(localSupabaseOrigin('javascript:alert(1)')).toBeNull();
+    expect(localSupabaseOrigin('pas une url')).toBeNull();
+    expect(localSupabaseOrigin(undefined)).toBeNull();
+    const base = contentSecurityPolicy([], []);
+    expect(base).toContain(
+      "connect-src 'self' https://*.supabase.co http://127.0.0.1:54321 http://localhost:54321;",
+    );
+    expect(contentSecurityPolicy([], [], ['http://127.0.0.1:54321'])).toBe(
+      base,
+    );
+    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-policy-local-'));
+    try {
+      await writeFile(
+        path.join(dir, 'index.html'),
+        '<!doctype html><script>boot()</script>',
+        'utf8',
+      );
+      const policyFor = async (
+        env: Record<string, string | undefined>,
+      ): Promise<string> => {
+        await publish(dir, env);
+        const rules = parseHeaderFile(
+          await readFile(path.join(dir, '_headers'), 'utf8'),
+        );
+        return headersFor(rules, '/')['Content-Security-Policy'] ?? '';
+      };
+      const local = await policyFor({ SUPABASE_URL: 'http://127.0.0.1:55431' });
+      expect(local).toContain(
+        "connect-src 'self' https://*.supabase.co http://127.0.0.1:54321 http://localhost:54321 http://127.0.0.1:55431;",
+      );
+      expect(scriptPolicyIsStrict(local)).toBe(true);
+      const prod = await policyFor({
+        SUPABASE_URL: 'https://abcd.supabase.co',
+      });
+      expect(prod).not.toContain('55431');
+      expect(prod).toContain(
+        "connect-src 'self' https://*.supabase.co http://127.0.0.1:54321 http://localhost:54321;",
+      );
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
