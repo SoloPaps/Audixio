@@ -29,7 +29,8 @@ body.auth-gate {
   align-items: center;
   padding: 24px 12px;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: clip;
+  overflow-y: auto;
   color: var(--text);
   background: linear-gradient(180deg, #f7f5fc, #ede8f5 40%, #d5dcf0);
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
@@ -73,6 +74,11 @@ body.auth-gate .orb {
 }
 
 body.auth-gate .backdrop {
+  /* B1 : les orbes décoratives débordent du viewport (right/bottom négatifs).
+     On les clippe dans le backdrop plutôt que de modifier leur géométrie. */
+  overflow: hidden;
+  /* Pas de transform : sinon les orbes fixed échapperaient au clip. */
+  transform: none;
   background:
     radial-gradient(
       420px 180px at 18% 12%,
@@ -81,7 +87,6 @@ body.auth-gate .backdrop {
     ),
     linear-gradient(180deg, #f7f5fc, #ede8f5 40%, #d5dcf0);
   filter: blur(14px) saturate(0.9);
-  transform: scale(1.06);
   opacity: 0.75;
 }
 
