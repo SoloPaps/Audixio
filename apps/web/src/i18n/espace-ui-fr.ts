@@ -72,6 +72,8 @@ export const espaceUiFr = {
   'mq.ui.cadence.weekly': 'Hebdomadaire',
   'mq.ui.cadence.monthly': 'Mensuelle',
   'mq.ui.saved': 'Réglages enregistrés',
+  'mq.ui.alerts.error':
+    'Les réglages n’ont pas pu être enregistrés. Réessayez.',
   'mq.ui.meta.history.title': 'Historique du site — Audixio',
   'mq.ui.meta.history.description':
     'Notes et journal des audits d’un site suivi.',

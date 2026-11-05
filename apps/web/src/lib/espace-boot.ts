@@ -1606,12 +1606,38 @@ function bindAlerts(root: HTMLElement, next: EspaceNext): () => void {
     root.querySelector('#gate')?.classList.remove('locked');
     root.querySelector('#fPro')?.removeAttribute('inert');
   }
-  const params = new URLSearchParams(location.search);
-  const siteId = params.get('site');
-  if (siteId && next.token) void paintAlerts(root, siteId);
+  if (next.token) {
+    void alertSites().then((sites) => {
+      const first = sites[0];
+      if (first) void paintAlerts(root, first);
+    });
+  }
   return () => {
     for (const fn of off) fn();
   };
+}
+
+/**
+ * Sites concernés par les réglages : `?site=` (lien d’une carte), sinon
+ * tous les sites suivis du compte (« Contrôle automatique de vos sites
+ * suivis »). Sans site, l’enregistrement ne peut pas aboutir.
+ */
+async function alertSites(): Promise<string[]> {
+  const asked = new URLSearchParams(location.search).get('site')?.trim() ?? '';
+  if (asked !== '') return [asked];
+  const supabase = browserClient();
+  const session = await currentSession();
+  if (!supabase || !session) return [];
+  const { data, error } = await supabase
+    .from('sites')
+    .select('id')
+    .eq('owner_id', session.user.id)
+    .is('deleted_at', null)
+    .order('host', { ascending: true });
+  if (error || !Array.isArray(data)) return [];
+  return data
+    .map((row: { id?: unknown }) => row.id)
+    .filter((id): id is string => typeof id === 'string' && id !== '');
 }
 
 async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
@@ -1670,9 +1696,13 @@ function radioCadence(value: string | undefined): string {
 }
 
 async function saveAlerts(next: EspaceNext): Promise<void> {
-  const siteId = new URLSearchParams(location.search).get('site');
   const supabase = browserClient();
-  if (!siteId || !supabase) return;
+  const sites = await alertSites();
+  // Jamais de clic muet : sans site ni client, on le dit.
+  if (sites.length === 0 || !supabase) {
+    say(t('mq.ui.alerts.error'), true);
+    return;
+  }
   const drop = Number(
     document.querySelector<HTMLInputElement>('#drop')?.value ?? 5,
   );
@@ -1681,21 +1711,27 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
     selected: select?.value ?? '',
     text: select?.textContent ?? '',
   });
-  await supabase.rpc('ensure_alert_settings', { p_site_id: siteId });
-  const { error } = await supabase
-    .from('alert_settings')
-    .update({
-      reaudit_cadence: radioCadence(
-        document.querySelector<HTMLInputElement>('input[name="fq"]:checked')
-          ?.value,
-      ),
-      score_drop_points: drop,
-      ssl_warn_days: days,
-      alerts_enabled: true,
-    })
-    .eq('site_id', siteId)
-    .eq('user_id', (await currentSession())?.user.id ?? '');
-  if (error) return;
+  const cadence = radioCadence(
+    document.querySelector<HTMLInputElement>('input[name="fq"]:checked')?.value,
+  );
+  const userId = (await currentSession())?.user.id ?? '';
+  for (const siteId of sites) {
+    await supabase.rpc('ensure_alert_settings', { p_site_id: siteId });
+    const { error } = await supabase
+      .from('alert_settings')
+      .update({
+        reaudit_cadence: cadence,
+        score_drop_points: drop,
+        ssl_warn_days: days,
+        alerts_enabled: true,
+      })
+      .eq('site_id', siteId)
+      .eq('user_id', userId);
+    if (error) {
+      say(t('mq.ui.alerts.error'), true);
+      return;
+    }
+  }
   say(t('mq.ui.saved'), true);
   void next;
 }

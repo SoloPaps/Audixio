@@ -3402,6 +3402,7 @@
   "mq.ui.cadence.weekly": "Weekly",
   "mq.ui.cadence.monthly": "Monthly",
   "mq.ui.saved": "Settings saved",
+  "mq.ui.alerts.error": "The settings could not be saved. Please try again.",
   "mq.ui.meta.history.title": "Site history — Audixio",
   "mq.ui.meta.history.description": "Notes and journal of audits d’un site suivi.",
   "mq.ui.meta.alerts.title": "Alert settings — Audixio",
