@@ -65,3 +65,15 @@ test('/pro sombre : les pastilles JSON et PDF client restent lisibles', async ({
     expect(contrast(fg ?? [], bg ?? []), name).toBeGreaterThan(4.5);
   }
 });
+
+test('/exemple-rapport : pas de handler inline (CSP script-src-attr) et le formulaire ne part pas', async ({
+  page,
+}) => {
+  await page.goto('/exemple-rapport?theme=light');
+  const form = page.locator('#pform');
+  await expect(form).not.toHaveAttribute('onsubmit');
+  const url = page.url();
+  await form.evaluate((node) => (node as HTMLFormElement).requestSubmit());
+  await page.waitForTimeout(300);
+  expect(page.url()).toBe(url);
+});
