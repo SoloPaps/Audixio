@@ -99,3 +99,15 @@ for (const path of ['/', '/robot', '/maintenance', '/methode']) {
     );
   });
 }
+
+test('/sites/…/demandes EN : changer de langue garde le rôle et la durée', async ({
+  page,
+}) => {
+  await page.goto('/sites/exemple.fr/demandes/req_948f2a1b7e?theme=light');
+  await page.locator('#acces-role-rapport').check({ force: true });
+  await page.locator('#dur').selectOption('90');
+  await toEnglish(page);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('#acces-role-rapport')).toBeChecked();
+  await expect(page.locator('#dur')).toHaveValue('90');
+});
