@@ -31,3 +31,11 @@ describe('dictionnaire EN, retest B8', () => {
     expect(pack[key]).toBe(line);
   });
 });
+
+describe('dictionnaire EN, retest B9', () => {
+  it('le titre de /mot-de-passe-oublie se lit comme reset.title', () => {
+    expect(`${pack['reset.before']} ${pack['reset.em']}`).toBe(
+      pack['reset.title'],
+    );
+  });
+});
