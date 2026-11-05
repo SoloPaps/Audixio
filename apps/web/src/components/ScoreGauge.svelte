@@ -7,11 +7,13 @@ interface Props {
   domain: string;
   score: number | null;
   size?: 'hero' | 'compact' | 'mini';
+  /** Libellé figé d’un exemple, traduisible tel quel par le dictionnaire EN. */
+  label?: string;
 }
 
-let { domain, score, size = 'compact' }: Props = $props();
+let { domain, score, size = 'compact', label: fixed }: Props = $props();
 const level = $derived(levelForScore(score));
-const label = $derived(gaugeLabel(domain, score));
+const label = $derived(fixed ?? gaugeLabel(domain, score));
 const arc = gaugeArc(GAUGE.cx, GAUGE.cy, GAUGE.r);
 const scoreAttr = $derived(score === null ? 'none' : String(score));
 const frame = $derived(

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
+import { formatFixed } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
 import type { BriefChoice } from '../lib/brief-fetch.js';
@@ -192,10 +193,7 @@ function secondsOf(item: Finding): number {
 }
 
 function frSec(value: number): string {
-  return value.toLocaleString('fr-FR', {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
+  return formatFixed(value, 1);
 }
 
 const gain = $derived(

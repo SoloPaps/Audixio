@@ -1,3 +1,4 @@
+import { formatFixed } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
 
 export function reduced(): boolean {
@@ -35,7 +36,7 @@ function countOne(el: HTMLElement): void {
   const frame = (now: number): void => {
     const p = dur ? Math.min(1, (now - t0) / dur) : 1;
     const eased = 1 - (1 - p) ** 4;
-    el.textContent = (to * eased).toFixed(dec).replace('.', ',');
+    el.textContent = formatFixed(to * eased, dec);
     if (p < 1) requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);

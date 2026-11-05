@@ -1,4 +1,5 @@
 import { type FixSheet, parseFix, variantFor } from '@audigy/engine/fixes';
+import { packActive, packLine } from '../i18n/pack.js';
 import { stepsFromVariant } from './fix-steps.js';
 import type { FixView } from './report-model.js';
 
@@ -11,7 +12,7 @@ const files = import.meta.glob('../../../../packages/engine/fixes/fr/*.md', {
 });
 
 let sheets: Map<string, FixSheet> | null = null;
-const viewCache = new Map<Hosting, Map<string, FixView>>();
+const viewCache = new Map<string, Map<string, FixView>>();
 
 function allSheets(): Map<string, FixSheet> {
   if (sheets) return sheets;
@@ -30,16 +31,33 @@ export function hostingOf(value: string): Hosting {
   return 'other';
 }
 
+/**
+ * Titre et raison d’une fiche dans la langue active.
+ * Le catalogue anglais vit dans le dictionnaire EN (clés `fix.<checkId>.*`).
+ * Une ligne absente garde le texte français de la fiche.
+ */
+export function localizedSheet(
+  id: string,
+  sheet: Pick<FixSheet, 'title' | 'why'>,
+): { title: string; why: string } {
+  return {
+    title: packLine(`fix.${id}.title`) ?? sheet.title,
+    why: packLine(`fix.${id}.why`) ?? sheet.why,
+  };
+}
+
 export function fixesFor(hosting: Hosting): Map<string, FixView> {
-  const cached = viewCache.get(hosting);
+  const cacheKey = `${hosting}:${packActive() ? 'en' : 'fr'}`;
+  const cached = viewCache.get(cacheKey);
   if (cached) return cached;
   const views = new Map<string, FixView>();
   for (const [id, sheet] of allSheets()) {
     const parsed = stepsFromVariant(variantFor(sheet, hosting));
     const source = sheet.sources[0];
+    const copy = localizedSheet(id, sheet);
     const view: FixView = {
-      title: sheet.title,
-      why: sheet.why,
+      title: copy.title,
+      why: copy.why,
       effortMinutes: sheet.effortMinutes,
       steps: parsed.steps,
     };
@@ -50,6 +68,6 @@ export function fixesFor(hosting: Hosting): Map<string, FixView> {
     }
     views.set(id, view);
   }
-  viewCache.set(hosting, views);
+  viewCache.set(cacheKey, views);
   return views;
 }

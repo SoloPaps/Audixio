@@ -1,5 +1,7 @@
 /** Chiffres et radar du constat « images », repris du comportement de la maquette. */
 
+import { formatFixed } from '../i18n/format.js';
+
 export interface StageImage {
   name: string;
   ext: 'JPG' | 'PNG';
@@ -104,7 +106,7 @@ export function stageSeconds(kb: number, mbps: number): number {
 
 export function stageLabel(seconds: number): string {
   const digits = seconds < 1 ? 2 : seconds < 10 ? 1 : 0;
-  return `${seconds.toFixed(digits).replace('.', ',')} s`;
+  return `${formatFixed(seconds, digits)} s`;
 }
 
 export function stageAt(mbps: number): {

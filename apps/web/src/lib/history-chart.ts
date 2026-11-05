@@ -1,3 +1,5 @@
+import { formatFixed } from '../i18n/format.js';
+
 /** Géométrie du graphique d’évolution (viewBox 960×300 des maquettes). */
 
 export interface EvolutionPoint {
@@ -98,6 +100,6 @@ export function evolutionChart(
     area: `M${one(first.x)},${one(Y_BOTTOM)} L${pairs.join(' L')} L${one(last.x)},${one(Y_BOTTOM)} Z`,
     marks,
     ticks,
-    average: (sum / rows.length).toFixed(1).replace('.', ','),
+    average: formatFixed(sum / rows.length, 1),
   };
 }

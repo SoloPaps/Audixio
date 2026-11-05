@@ -1,5 +1,6 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
+import { formatFixed } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
 import { constatShowsImageInventory } from '../lib/constat-kind.js';
 import {
@@ -130,10 +131,10 @@ function paint(final = false): void {
     const p = Math.min(1, (now - t0) / duration);
     today =
       stageAt(mbps).today && stageSeconds(4800, mbps)
-        ? `${(tb * p).toFixed(p < 1 && tb * p < 1 ? 2 : 1).replace('.', ',')} s`
+        ? `${formatFixed(tb * p, p < 1 && tb * p < 1 ? 2 : 1)} s`
         : snap.today;
     const shownAfter = ta * Math.min(1, (p * tb) / ta);
-    after = `${shownAfter.toFixed(shownAfter < 1 ? 2 : 1).replace('.', ',')} s`;
+    after = `${formatFixed(shownAfter, shownAfter < 1 ? 2 : 1)} s`;
     const rootEl = document.getElementById('fB');
     const afterEl = document.getElementById('fA');
     if (rootEl) rootEl.style.transform = `scaleX(${p})`;

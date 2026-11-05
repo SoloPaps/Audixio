@@ -1,5 +1,7 @@
 /** Mouvements communs des vues portées des maquettes finales. */
 
+import { formatFixed } from '../i18n/format.js';
+
 export function calm(): boolean {
   return (
     typeof window !== 'undefined' &&
@@ -160,7 +162,7 @@ export function bindMaquetteMotion(): void {
     const to = Number(el.dataset.count);
     const dec = Number(el.dataset.dec || 0);
     if (reduce) {
-      el.textContent = to.toFixed(dec).replace('.', ',');
+      el.textContent = formatFixed(to, dec);
       return;
     }
     const dur = 1600;
@@ -168,7 +170,7 @@ export function bindMaquetteMotion(): void {
     const frame = (now: number): void => {
       const p = dur ? Math.min(1, (now - t0) / dur) : 1;
       const eased = 1 - (1 - p) ** 4;
-      el.textContent = (to * eased).toFixed(dec).replace('.', ',');
+      el.textContent = formatFixed(to * eased, dec);
       if (p < 1) requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);

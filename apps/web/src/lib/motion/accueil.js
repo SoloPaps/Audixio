@@ -374,7 +374,6 @@
     const rows = $$('#rows .row'),
       finds = $$('#finds .find');
     const sub = $('#win-sub');
-    const names = rows.map((r) => $('.r-name', r).textContent);
     const SUB_DEFAULT = sub ? sub.textContent : '';
 
     function resetReport() {
@@ -402,7 +401,7 @@
             (document.documentElement.lang === 'en'
               ? 'Passive read: '
               : 'Lecture passive : ') +
-            names[i] +
+            $('.r-name', rows[i]).textContent +
             '…';
         await wait(reduce ? 0 : step);
         rows[i].classList.add('done');

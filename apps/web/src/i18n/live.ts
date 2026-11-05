@@ -8,6 +8,8 @@ const ATTR_SKIP = SKIP.replace(',textarea', '');
 type Marked = Text & { [ORIG]?: string; [DONE]?: string };
 
 let dictionary: Map<string, string> | null = null;
+let titleOriginal: string | null = null;
+let titleDone: string | null = null;
 let painting = false;
 let watching = false;
 
@@ -126,6 +128,13 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
       if (el.textContent !== english) el.textContent = english;
     } else if (el.innerHTML !== el[ORIG]) el.innerHTML = el[ORIG];
   }
+  // Titre d’onglet : traduit comme un texte, l’original FR reste gardé.
+  if (titleOriginal === null || document.title !== titleDone)
+    titleOriginal = document.title;
+  const title =
+    locale === 'en' && dict ? translate(titleOriginal, dict) : titleOriginal;
+  if (document.title !== title) document.title = title;
+  titleDone = title;
   document.documentElement.lang = locale;
   painting = false;
   // Le saut natif vers #ancre se fait avant la traduction : on le refait une fois.
