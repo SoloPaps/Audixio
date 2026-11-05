@@ -164,6 +164,20 @@ test('deux audits : la tendance affiche l’écart réel', async ({ page }) => {
   await expect(page.locator('.ch-h .badge')).toHaveText('+16 pts');
 });
 
+test('filtre « 1 an » : la moyenne ne dit plus « sur 6 mois »', async ({
+  page,
+}) => {
+  await openHistory(page, [72, 88]);
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  const avg = page.locator('.legend .avg');
+  await page.getByRole('button', { name: '1 an' }).click();
+  await expect(avg).toContainText('Moyenne sur 1 an');
+  await page.getByRole('button', { name: 'Tout' }).click();
+  await expect(avg).toContainText('Moyenne sur toute la période');
+});
+
 test('« Historique et tendances » ouvre l’historique du site de la carte', async ({
   page,
 }) => {

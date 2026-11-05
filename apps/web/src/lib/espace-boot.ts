@@ -894,6 +894,15 @@ function bindHistory(root: HTMLElement): () => void {
           });
       }
     }
+    const avgLabel = root.querySelector('.legend .avg')?.firstChild;
+    if (avgLabel && span !== 'unset') {
+      avgLabel.textContent =
+        span === '6m'
+          ? t('mq.ui.avg.6m')
+          : span === '1y'
+            ? t('mq.ui.avg.1y')
+            : t('mq.ui.avg.all');
+    }
     const average = root.querySelector('.avg [data-count]');
     if (average) {
       // Le compteur animé de la maquette (80,6) écrirait encore dans l’ancien
