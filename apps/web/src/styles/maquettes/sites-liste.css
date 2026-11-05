@@ -1424,7 +1424,7 @@ html[data-board="liste"] .menu li svg {
 
 html[data-board="liste"] .share {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: var(--s3);
   align-items: center;
   margin-top: var(--s4);
@@ -1439,7 +1439,7 @@ html[data-board="liste"] .share {
 }
 @media (max-width: 820px) {
   html[data-board="liste"] .share {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto minmax(0, 1fr);
   }
   html[data-board="liste"] .share .sb {
     grid-column: 1 / -1;
@@ -1500,6 +1500,8 @@ html[data-board="liste"] .share p {
   font-size: 14px;
   color: var(--muted);
   margin-top: 4px;
+  /* L’URL publique est un seul mot très long : elle se coupe (C9). */
+  overflow-wrap: anywhere;
 }
 html[data-board="liste"] .share .tags {
   display: flex;
@@ -2426,11 +2428,16 @@ html[data-board="liste"] .limitn .dotl {
 }
 @media (max-width: 480px) {
   html[data-board="liste"] .share {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
   html[data-board="liste"] .share .cd {
     justify-self: start;
+  }
+  /* Copier et Dépublier l’un sous l’autre, sur toute la largeur (C9). */
+  html[data-board="liste"] .share .sb {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 @media (max-width: 360px) {

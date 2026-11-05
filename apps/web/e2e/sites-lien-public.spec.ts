@@ -13,7 +13,11 @@ const patches: unknown[] = [];
 
 async function openSites(
   page: Page,
-  options: { theme?: 'light' | 'dark'; published?: boolean } = {},
+  options: {
+    theme?: 'light' | 'dark';
+    published?: boolean;
+    slug?: string;
+  } = {},
 ): Promise<void> {
   patches.length = 0;
   let row = {
@@ -22,9 +26,9 @@ async function openSites(
     label: 'gratuit.audigy.test',
     host: 'gratuit.audigy.test',
     is_public: options.published === true,
-    public_slug: (options.published ? 'gratuit-audigy-01' : null) as
-      | string
-      | null,
+    public_slug: (options.published
+      ? (options.slug ?? 'gratuit-audigy-01')
+      : null) as string | null,
     expose_security: false,
   };
   await page.addInitScript((value) => {
@@ -167,3 +171,37 @@ test('Dépublier reste lisible en sombre (bug #111)', async ({ page }) => {
   })()`);
   expect(ratio).toBeGreaterThanOrEqual(4.5);
 });
+
+for (const width of [330, 390]) {
+  test(`${width} px : la carte du lien public tient dans la largeur (retest C9)`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await openSites(page, {
+      published: true,
+      slug: '22cf89a8c51e4b0f9d3a7e6b2c1f0e9d8a7b6c5d4e3f2a1b',
+    });
+    const unpublish = page.getByRole('button', { name: 'Dépublier' });
+    await expect(unpublish).toBeVisible({ timeout: 15_000 });
+    const copy = page.getByRole('button', { name: 'Copier le lien' });
+    const card = page.locator('.share').filter({ has: unpublish });
+    const box = await card.boundingBox();
+    const url = await card.locator('p').first().boundingBox();
+    const copyBox = await copy.boundingBox();
+    const unpublishBox = await unpublish.boundingBox();
+    if (!box || !url || !copyBox || !unpublishBox) throw new Error('boîtes');
+    const right = box.x + box.width + 0.5;
+    expect(url.x + url.width).toBeLessThanOrEqual(right);
+    expect(copyBox.x + copyBox.width).toBeLessThanOrEqual(right);
+    expect(unpublishBox.x + unpublishBox.width).toBeLessThanOrEqual(right);
+    expect(box.x + box.width).toBeLessThanOrEqual(width);
+    // Boutons empilés.
+    expect(unpublishBox.y).toBeGreaterThanOrEqual(
+      copyBox.y + copyBox.height - 0.5,
+    );
+    const overflow = await card.evaluate(
+      (node) => node.scrollWidth - node.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+}

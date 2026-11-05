@@ -1083,6 +1083,17 @@ html[data-vue="historique"] .chart svg {
   html[data-vue="historique"] .chart svg text {
     font-size: 46px;
   }
+  /* Variante mobile (viewBox 360×300, environ 190 px de haut) : moins de
+     libellés, polices d’environ 12 px une fois réduites. */
+  html[data-vue="historique"] .chart svg.narrow {
+    padding-inline: 0;
+  }
+  html[data-vue="historique"] .chart svg.narrow text {
+    font-size: 19px;
+  }
+  html[data-vue="historique"] .chart svg.narrow .pt .val {
+    font-size: 21px;
+  }
 }
 html[data-vue="historique"] .chart:focus-visible {
   outline: 3px solid var(--accent);
