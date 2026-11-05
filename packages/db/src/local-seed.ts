@@ -105,7 +105,28 @@ const ISSUES: readonly SeedFinding[] = [
     messageKey: 'securite.xcto.warn_missing',
     effortMinutes: 10,
   },
+  {
+    domain: 'performance',
+    checkId: 'performance.cache',
+    status: 'warn',
+    severity: 2,
+    impact: 2,
+    messageKey: 'performance.cache.warn',
+    effortMinutes: 20,
+  },
+  {
+    domain: 'dns_email',
+    checkId: 'dns_email.dmarc',
+    status: 'warn',
+    severity: 2,
+    impact: 2,
+    messageKey: 'dns_email.dmarc.warn_none',
+    effortMinutes: 15,
+  },
 ];
+
+/** Le dernier audit Pro (86/100) et l’audit gratuit (72/100) en ont 4. */
+const SEED_OPEN_MIN = 4;
 
 const PASSES: readonly SeedFinding[] = [
   {
@@ -127,7 +148,7 @@ export function seedFindings(score: number): readonly SeedFinding[] {
   if (score >= 100) return PASSES;
   const count = Math.min(
     ISSUES.length,
-    Math.max(1, Math.ceil((100 - score) / 9)),
+    SEED_OPEN_MIN + Math.max(0, Math.ceil((72 - score) / 8)),
   );
   return [...ISSUES.slice(0, count), ...PASSES];
 }

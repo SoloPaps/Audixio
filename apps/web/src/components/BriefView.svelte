@@ -4,6 +4,7 @@ import { type MessageKey, t } from '../i18n/index.js';
 import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
 import { briefScreen } from '../lib/brief-screen.js';
+import { briefCount } from '../lib/brief-stats.js';
 import { currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
 import { REPORT_DOMAINS } from '../lib/domains.js';
@@ -110,22 +111,16 @@ function sev(row: ReportRow): 'crit' | 'imp' | 'mod' {
   return 'mod';
 }
 
-const stats = $derived.by(() => {
-  const out = { fix: 0, check: 0, skip: 0, total: 0 };
-  for (const domain of domains) {
-    for (const issue of domain.issues) {
-      out.total += 1;
-      out[modeOf(issue)] += 1;
-    }
-  }
-  return out;
-});
+const stats = $derived(
+  briefCount(
+    domains.flatMap((domain) => domain.issues),
+    modeOf,
+  ),
+);
 
 function domainDots(id: string): { fix: number; check: number; skip: number } {
   const domain = domains.find((item) => item.id === id);
-  const out = { fix: 0, check: 0, skip: 0 };
-  for (const issue of domain?.issues ?? []) out[modeOf(issue)] += 1;
-  return out;
+  return briefCount(domain?.issues ?? [], modeOf);
 }
 
 function esc(value: string): string {
@@ -417,10 +412,10 @@ $effect(() => {
     <h1 id="t-h1"><span class="w"><span>{t('brief.h1.1')}</span></span> <span class="w"><span>{t('brief.h1.2')}</span></span> <span class="w"><span>{t('brief.h1.3')}</span></span> <span class="w"><span class="grad">{t('brief.h1.4')}</span></span></h1>
     <p class="lead intro">{t('brief.lead')}</p>
     <ul class="stats intro" aria-label={t('brief.stats')}>
-      <li class="stat"><b>{stats.total}</b><span>{t('brief.total')}</span></li>
+      <li class="stat"><b>{stats.total}</b><span>{stats.total <= 1 ? t('brief.total.one') : t('brief.total')}</span></li>
       <li class="stat stat-fix"><b>{stats.fix}</b><span>{t('brief.tofix')}</span></li>
       <li class="stat stat-check"><b>{stats.check}</b><span>{t('brief.tocheck')}</span></li>
-      <li class="stat"><b>{stats.skip}</b><span>{t('brief.toskip')}</span></li>
+      <li class="stat"><b>{stats.skip}</b><span>{stats.skip <= 1 ? t('brief.toskip.one') : t('brief.toskip')}</span></li>
     </ul>
     <div class="intro">
       <p class="presets-l">{t('brief.presets')}</p>
