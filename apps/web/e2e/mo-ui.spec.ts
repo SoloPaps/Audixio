@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import { stubSession } from './en-session.js';
 
 // QA Mo 05/11 : affichage à 330 px et thème sombre.
@@ -90,4 +90,73 @@ test('M11 : /pro à 330 px, seul le tableau de comparaison défile', async ({
   const ctaBox = await cta.boundingBox();
   expect((ctaBox?.x ?? -1) >= 0).toBe(true);
   expect((ctaBox?.x ?? 999) + (ctaBox?.width ?? 999)).toBeLessThanOrEqual(330);
+});
+
+const AUDIT_ID = '00000000-0000-4000-8000-0000000000b5';
+
+async function verifiedReport(page: Page, score = 86): Promise<void> {
+  const body = {
+    audit: {
+      id: AUDIT_ID,
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '2026.1',
+      engineVersion: '0.1.0',
+      globalScore: score,
+      siteVerified: true,
+      partialLabel: null,
+      coverage: 1,
+      createdAt: '2026-10-28T10:00:00.000Z',
+      startedAt: '2026-10-28T10:00:01.000Z',
+      finishedAt: '2026-10-28T10:05:00.000Z',
+      error: null,
+      site: {
+        id: '00000000-0000-4000-8000-0000000000bb',
+        url: 'https://bon.audigy.test',
+        label: 'bon.audigy.test',
+        scope: 'origin',
+        hosting: 'other',
+      },
+    },
+    domains: [
+      'performance',
+      'accessibilite',
+      'seo',
+      'ecoconception',
+      'rgpd',
+      'qualite',
+      'mobile',
+      'securite',
+    ].map((domain) => ({ domain, score, coverage: 1, level: 'improve' })),
+    findings: [],
+  };
+  await stubSession(page, 'pro');
+  await page.route('**/api/audits/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(body),
+    });
+  });
+}
+
+test('M13 : badge Complet et Compact affichent le libellé et la note', async ({
+  page,
+}) => {
+  await verifiedReport(page);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(`/badge?id=${AUDIT_ID}&theme=light`);
+  const stage = page.locator('.stage');
+  await expect(stage.locator('b')).toBeVisible({ timeout: 15_000 });
+  await expect(stage.locator('img')).toBeVisible();
+  // Complet : logo, libellé et note.
+  await expect(stage).toContainText('Audité par Audixio');
+  await expect(stage.locator('b')).toHaveText('B');
+  await expect(stage.locator('b')).toBeVisible();
+  await page.getByRole('radio', { name: /^Compact/ }).check();
+  // Compact : logo et « Audixio : B ».
+  await expect(stage.locator('img')).toBeVisible();
+  await expect(stage).toHaveText(/Audixio\s*:\s*B/);
+  await expect(page.locator('#code')).toHaveValue(/Audixio : B/);
 });
