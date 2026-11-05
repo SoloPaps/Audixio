@@ -17,7 +17,7 @@ const session = {
 
 async function openHistory(
   page: Page,
-  scores: readonly [number | null, number | null],
+  scores: readonly [number | null, number | null] | readonly [number],
   theme: 'light' | 'dark' = 'light',
 ): Promise<void> {
   await page.addInitScript((value) => {
@@ -66,20 +66,22 @@ async function openHistory(
       await route.fulfill({
         status: 200,
         headers,
-        body: JSON.stringify([
-          {
-            id: FIRST,
-            status: 'done',
-            created_at: '2026-01-15T10:00:00.000Z',
-            finished_at: '2026-01-15T10:05:00.000Z',
-          },
-          {
-            id: SECOND,
-            status: 'done',
-            created_at: '2026-05-15T10:00:00.000Z',
-            finished_at: '2026-05-15T10:05:00.000Z',
-          },
-        ]),
+        body: JSON.stringify(
+          [
+            {
+              id: FIRST,
+              status: 'done',
+              created_at: '2026-01-15T10:00:00.000Z',
+              finished_at: '2026-01-15T10:05:00.000Z',
+            },
+            {
+              id: SECOND,
+              status: 'done',
+              created_at: '2026-05-15T10:00:00.000Z',
+              finished_at: '2026-05-15T10:05:00.000Z',
+            },
+          ].slice(0, scores.length),
+        ),
       });
       return;
     }
@@ -103,7 +105,7 @@ async function openHistory(
     }
     if (url.includes('read_rapport_apercu')) {
       const raw = request.postData() ?? '';
-      const score = raw.includes(SECOND) ? scores[1] : scores[0];
+      const score = raw.includes(SECOND) ? (scores[1] ?? null) : scores[0];
       await route.fulfill({
         status: 200,
         headers,
@@ -139,6 +141,27 @@ test('un site réel redessine la courbe d’historique', async ({ page }) => {
   await expect(page.locator('.legend > span').first()).toHaveText(
     'Note globale pondérée (2 audits)',
   );
+});
+
+test('un seul audit : ni tendance « +6 pts » ni « 6 audits »', async ({
+  page,
+}) => {
+  await openHistory(page, [72]);
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  await expect(page.locator('.legend > span').first()).toHaveText(
+    'Note globale pondérée (1 audit)',
+  );
+  await expect(page.locator('.ch-h .badge')).toBeHidden();
+});
+
+test('deux audits : la tendance affiche l’écart réel', async ({ page }) => {
+  await openHistory(page, [72, 88]);
+  await expect(page.locator('text.val').nth(1)).toHaveText('88', {
+    timeout: 15_000,
+  });
+  await expect(page.locator('.ch-h .badge')).toHaveText('+16 pts');
 });
 
 test('« Historique et tendances » ouvre l’historique du site de la carte', async ({

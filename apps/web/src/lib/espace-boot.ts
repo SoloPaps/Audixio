@@ -879,6 +879,21 @@ function bindHistory(root: HTMLElement): () => void {
           ? t('mq.ui.legend.one')
           : t('mq.ui.legend.many', { n: String(built.marks.length) });
     }
+    const badge = root.querySelector<HTMLElement>('.ch-h .badge');
+    if (badge) {
+      const first = built.marks[0];
+      const last = built.marks.at(-1);
+      if (!first || !last || built.marks.length < 2) badge.hidden = true;
+      else {
+        const delta = Math.round(last.value) - Math.round(first.value);
+        const sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
+        badge.hidden = false;
+        if (badge.lastChild)
+          badge.lastChild.textContent = t('mq.ui.trend.delta', {
+            n: `${sign}${Math.abs(delta)}`,
+          });
+      }
+    }
     const average = root.querySelector('.avg [data-count]');
     if (average) {
       // Le compteur animé de la maquette (80,6) écrirait encore dans l’ancien

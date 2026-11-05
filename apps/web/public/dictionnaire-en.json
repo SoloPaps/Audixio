@@ -3351,6 +3351,7 @@
   "mq.ui.report": "Preparing export of report {ref}",
   "mq.ui.legend.one": "Weighted overall grade (1 audit)",
   "mq.ui.legend.many": "Weighted overall grade ({n} audits)",
+  "mq.ui.trend.delta": "{n} pts",
   "mq.ui.gsc": "Redirection vers Search Console",
   "mq.ui.terms.on": "Acceptance updated",
   "mq.ui.terms.off": "Statistical consent withdrawn",
