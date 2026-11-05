@@ -22,6 +22,11 @@ const WALLS = [
     title: 'Connectez-vous ou inscrivez-vous',
   },
   {
+    path: '/brief',
+    next: '%2Fbrief',
+    title: 'Connectez-vous ou inscrivez-vous',
+  },
+  {
     path: '/sites',
     next: '%2Fsites',
     title: 'Vos sites',
@@ -90,4 +95,18 @@ test.describe('mur hors session', () => {
       expect(Math.abs(330 - narrow.width - narrow.x * 2)).toBeLessThan(4);
     });
   }
+});
+
+test('/badge sans id exige la connexion', async ({ page }) => {
+  await page.goto('/badge');
+  const card = page.locator('.session-wall');
+  await expect(card).toBeVisible();
+  await expect(card.getByRole('heading', { level: 1 })).toHaveText(
+    'Connectez-vous ou inscrivez-vous',
+  );
+  await expect(card.getByRole('link', { name: 'Connexion' })).toHaveAttribute(
+    'href',
+    '/connexion?next=%2Fbadge',
+  );
+  await expect(page.getByText('Ce rapport est introuvable')).toHaveCount(0);
 });
