@@ -236,3 +236,12 @@ test('B-1 : un seul domaine ouvert, pastille au singulier', async ({
   await toEnglish(page);
   await expect(pill).toHaveText('partial · 1 domain · site not verified');
 });
+
+test('B-2 : /compte EN, carte Webflow sans « Gestion of »', async ({ page }) => {
+  await stubSession(page);
+  await page.goto('/compte?theme=light');
+  await toEnglish(page);
+  const main = page.locator('main');
+  await expect(main).toContainText('Asset & embed code management');
+  await expect(main).not.toContainText('Gestion');
+});
