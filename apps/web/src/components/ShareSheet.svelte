@@ -1,9 +1,8 @@
 <script lang="ts">
 import { t } from '../i18n/index.js';
 import { currentSession } from '../lib/browser-session.js';
-import { readGuestAudit } from '../lib/guest-store.js';
 import { badgeHref } from '../lib/hub-view.js';
-import { newShareToken, saveLocalShare } from '../lib/local-share.js';
+import { loginHref, signupHref } from '../lib/nav.js';
 
 interface Props {
   auditId: string;
@@ -18,6 +17,8 @@ let linkId = $state('');
 let notice = $state('');
 let error = $state('');
 let pending = $state(false);
+// Visiteur sans compte : aucun lien de partage (matrice, plafond 0).
+let signedIn = $state<boolean | null>(null);
 let copied = $state(false);
 let canNative = $state(false);
 let first = $state<HTMLElement | null>(null);
@@ -48,7 +49,12 @@ async function bearer(): Promise<string | null> {
 
 async function load(): Promise<void> {
   const token = await bearer();
-  if (!token) return;
+  signedIn = Boolean(token);
+  if (!token) {
+    link = '';
+    linkId = '';
+    return;
+  }
   const response = await fetch(
     `/api/liens?auditId=${encodeURIComponent(auditId)}`,
     {
@@ -67,15 +73,7 @@ async function load(): Promise<void> {
 async function create(): Promise<void> {
   const token = await bearer();
   if (!token) {
-    const stored = readGuestAudit(auditId);
-    if (!stored || pending) {
-      error = t('share.error');
-      return;
-    }
-    const share = newShareToken();
-    saveLocalShare(share, stored);
-    link = `${location.origin}/partage/${share}`;
-    linkId = share;
+    signedIn = false;
     return;
   }
   if (pending) {
@@ -211,6 +209,9 @@ function onKey(event: KeyboardEvent): void {
         {#if canNative}
           <div class="sh-row"><button class="sh-btn sh-main" type="button" onclick={native}><svg class="sh-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span>{t('share.native')}</span></button></div>
         {/if}
+      {:else if signedIn === false}
+        <p class="sh-note">{t('share.guest')}</p>
+        <div class="sh-row"><a class="sh-btn sh-main" href={signupHref(`${location.pathname}${location.search}`)} bind:this={first}>{t('share.guest.signup')}</a><a class="sh-btn sh-sub" href={loginHref(`${location.pathname}${location.search}`)}>{t('guest.gate.login')}</a></div>
       {:else}
         <p class="sh-note">{t('share.notyet')}</p>
         <div class="sh-row"><button class="sh-btn sh-main" type="button" disabled={pending} bind:this={first} onclick={create}><svg class="sh-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/></svg><span>{t('share.create')}</span></button></div>
@@ -248,6 +249,8 @@ function onKey(event: KeyboardEvent): void {
   .sh-btn svg{width:18px;height:18px}
   .sh-btn:active{transform:scale(.97)}
   .sh-main{background:#3D52A0;color:#fff}
+  a.sh-btn{text-decoration:none}
+  .sh-sub{background:#fff;color:#3D52A0}
   .sh-main:hover{background:#1E2A55;border-color:#1E2A55;box-shadow:0 8px 20px -8px rgba(61,82,160,.6)}
   .sh-main.done{background:#067647;border-color:#067647}
   .sh-main[disabled]{opacity:.6;cursor:progress}

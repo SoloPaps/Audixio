@@ -1550,6 +1550,8 @@
   "share.badge.hint": "Show your grade on your site.",
   "share.create": "Create the link",
   "share.notyet": "The public link is not created yet.",
+  "share.guest": "Create a free account to share this report by link.",
+  "share.guest.signup": "Create an account",
   "share.error": "The link could not be created.",
   "badge.title": "Show your grade on your site",
   "badge.lead": "A badge that links to the public report. It updates on its own after each new audit.",
