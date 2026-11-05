@@ -6,16 +6,52 @@ import { type HistoryView, historyTable } from './history.js';
 // (extra Pro, matrice MATRICE-STATUT-DROITS-CANON.md). Générés dans le
 // navigateur à partir de l’historique déjà lisible par le compte.
 
-export type HistoryFormat = 'csv' | 'pdf' | 'xlsx';
+export type HistoryFormat = 'csv' | 'pdf' | 'xlsx' | 'json';
 
-/** Formats proposés : CSV et PDF pour tout compte, Excel en plus pour Pro. */
+/** Formats proposés : CSV et PDF pour tout compte, Excel et JSON en plus pour Pro. */
 export function historyFormats(plan: string | null): HistoryFormat[] {
-  return plan === 'pro' ? ['csv', 'pdf', 'xlsx'] : ['csv', 'pdf'];
+  return plan === 'pro' ? ['csv', 'pdf', 'xlsx', 'json'] : ['csv', 'pdf'];
 }
 
 export function historyFileName(host: string, format: HistoryFormat): string {
   const safe = host.toLowerCase().replace(/[^a-z0-9.-]+/gu, '-');
   return `audixio-historique-${safe || 'site'}.${format}`;
+}
+
+// ---------- JSON (extra Pro : données brutes, notes numériques) ----------
+
+export interface HistoryJson {
+  format: 'audixio-historique';
+  version: 1;
+  site: string;
+  generatedAt: string;
+  series: { id: string; label: string }[];
+  audits: { id: string; at: string; scores: Record<string, number | null> }[];
+}
+
+export function historyJson(
+  view: HistoryView,
+  host: string,
+  now = new Date(),
+): string {
+  const audits = [...view.points]
+    .sort((a, b) => Date.parse(a.at) - Date.parse(b.at))
+    .map((point) => ({
+      id: point.id,
+      at: point.at,
+      scores: Object.fromEntries(
+        view.series.map((item) => [item.id, point.scores[item.id] ?? null]),
+      ),
+    }));
+  const body: HistoryJson = {
+    format: 'audixio-historique',
+    version: 1,
+    site: host,
+    generatedAt: now.toISOString(),
+    series: view.series.map((item) => ({ id: item.id, label: item.label })),
+    audits,
+  };
+  return `${JSON.stringify(body, null, 2)}\n`;
 }
 
 // ---------- PDF (texte, Helvetica, WinAnsi) ----------

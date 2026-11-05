@@ -19,10 +19,12 @@ test('U1 : un compte gratuit exporte en CSV ou PDF, Excel reste un appel Pro', a
   await expect(menu.locator('[data-hfmt="csv"]')).toBeVisible();
   await expect(menu.locator('[data-hfmt="pdf"]')).toBeVisible();
   await expect(menu.locator('[data-hfmt="xlsx"]')).toHaveCount(0);
+  await expect(menu.locator('[data-hfmt="json"]')).toHaveCount(0);
   const cta = menu.locator('.pro-cta a');
   await expect(cta).toBeVisible();
   await expect(cta).toHaveAttribute('href', '/pro');
   await expect(cta).toContainText('Excel');
+  await expect(cta).toContainText('JSON');
   await expect(cta).toContainText('Pro');
   await page.keyboard.press('Escape');
   await expect(menu).toBeHidden();
@@ -91,4 +93,32 @@ test('U1 : en anglais, le menu d’export ne garde aucun français', async ({
     'CSV (spreadsheet)',
   );
   await expect(menu.locator('[data-hfmt="pdf"]')).toHaveText('PDF (printable)');
+});
+
+test('U1b : un compte Pro exporte aussi en JSON', async ({ page }) => {
+  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
+  await expect(page.locator('text.val').nth(1)).toHaveText('88', {
+    timeout: 15_000,
+  });
+  await page.locator('#hexpb').click();
+  const json = page.locator('#hexpm [data-hfmt="json"]');
+  await expect(json).toBeVisible();
+  const [download] = await Promise.all([
+    page.waitForEvent('download', { timeout: 10_000 }),
+    json.click(),
+  ]);
+  expect(download.suggestedFilename()).toBe(
+    'audixio-historique-bon.audigy.test.json',
+  );
+  const body = JSON.parse(await readFile(await download.path(), 'utf8')) as {
+    format: string;
+    site: string;
+    audits: { scores: Record<string, number | null> }[];
+  };
+  expect(body.format).toBe('audixio-historique');
+  expect(body.site).toBe('bon.audigy.test');
+  expect(body.audits.map((audit) => audit.scores.global)).toEqual([72, 88]);
+  await expect(page.locator('#toast')).toContainText(
+    'Historique téléchargé (fichier JSON).',
+  );
 });

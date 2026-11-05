@@ -5,6 +5,7 @@ import {
   crc32,
   historyFileName,
   historyFormats,
+  historyJson,
   historyPdf,
   historyXlsx,
 } from './history-export.js';
@@ -60,10 +61,10 @@ function unzip(bytes: Uint8Array): Map<string, string> {
 }
 
 describe('historyFormats (matrice des droits)', () => {
-  it('donne CSV et PDF à tout compte, Excel en plus au Pro', () => {
+  it('donne CSV et PDF à tout compte, Excel et JSON en plus au Pro', () => {
     expect(historyFormats(null)).toEqual(['csv', 'pdf']);
     expect(historyFormats('free')).toEqual(['csv', 'pdf']);
-    expect(historyFormats('pro')).toEqual(['csv', 'pdf', 'xlsx']);
+    expect(historyFormats('pro')).toEqual(['csv', 'pdf', 'xlsx', 'json']);
   });
 
   it('nomme les fichiers d’après le site', () => {
@@ -128,5 +129,48 @@ describe('historyXlsx', () => {
   it('calcule le CRC32 standard', () => {
     const sample = new TextEncoder().encode('123456789');
     expect(crc32(sample)).toBe(0xcbf43926);
+  });
+});
+
+describe('historyJson', () => {
+  it('donne les audits datés, triés, notes numériques ou null', () => {
+    const shuffled: HistoryView = {
+      ...view,
+      points: [...view.points].reverse(),
+    };
+    const text = historyJson(
+      shuffled,
+      'bon.audigy.test',
+      new Date('2026-11-05T12:00:00Z'),
+    );
+    expect(text.endsWith('\n')).toBe(true);
+    expect(JSON.parse(text)).toEqual({
+      format: 'audixio-historique',
+      version: 1,
+      site: 'bon.audigy.test',
+      generatedAt: '2026-11-05T12:00:00.000Z',
+      series: [
+        { id: 'global', label: 'Note globale' },
+        { id: 'perf', label: 'Performance' },
+      ],
+      audits: [
+        {
+          id: 'a',
+          at: '2026-01-12T10:00:00Z',
+          scores: { global: 72, perf: null },
+        },
+        {
+          id: 'b',
+          at: '2026-05-03T10:00:00Z',
+          scores: { global: 88, perf: 91 },
+        },
+      ],
+    });
+  });
+
+  it('nomme le fichier en .json', () => {
+    expect(historyFileName('bon.audigy.test', 'json')).toBe(
+      'audixio-historique-bon.audigy.test.json',
+    );
   });
 });

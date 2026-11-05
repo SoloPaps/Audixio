@@ -44,6 +44,7 @@ import {
   type HistoryFormat,
   historyFileName,
   historyFormats,
+  historyJson,
   historyPdf,
   historyXlsx,
 } from './history-export.js';
@@ -1223,6 +1224,15 @@ function bindHistory(root: HTMLElement): () => void {
           historyFileName(latestHost, 'xlsx'),
         );
         say(t('mq.ui.history.export.xlsx'), true);
+        return;
+      }
+      if (fmt === 'json') {
+        download(
+          historyJson(latestView, latestHost),
+          'application/json;charset=utf-8',
+          historyFileName(latestHost, 'json'),
+        );
+        say(t('mq.ui.history.export.json'), true);
         return;
       }
       download(

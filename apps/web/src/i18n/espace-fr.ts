@@ -200,6 +200,8 @@ export const espaceFr = {
   'mq.hi.exp.csv': 'CSV (tableur)',
   'mq.hi.exp.pdf': 'PDF (à imprimer)',
   'mq.hi.exp.xlsx': 'Excel (.xlsx)',
+  'mq.hi.exp.json': 'JSON (données brutes)',
+  'mq.hi.exp.cta': 'Excel (.xlsx) et JSON',
   'mq.hi.exp.pro': 'Pro',
   'mq.hi.exp.label': 'Choisir le format d’export',
   'mq.hi.020': 'Tendance',

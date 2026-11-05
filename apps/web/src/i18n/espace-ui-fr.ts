@@ -53,6 +53,7 @@ export const espaceUiFr = {
     'Rien à exporter : aucun audit terminé pour ce site.',
   'mq.ui.history.export.pdf': 'Historique téléchargé (fichier PDF).',
   'mq.ui.history.export.xlsx': 'Historique téléchargé (fichier Excel).',
+  'mq.ui.history.export.json': 'Historique téléchargé (fichier JSON).',
   'mq.ui.msg.short': 'Votre message doit contenir au moins 10 caractères.',
   'mq.ui.msg.min': '10 caractères minimum.',
   'mq.ui.sent': 'Message envoyé. Réponse sous 48 h ouvrées.',
