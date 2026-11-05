@@ -13,3 +13,10 @@ test('/compte EN : « Coming soon » sans pluriel fautif', async ({ page }) => {
   await expect(page.locator('main')).toContainText('Coming soon');
   await expect(page.locator('main')).not.toContainText('Coming soons');
 });
+
+test('/compte/alertes EN : titre entièrement anglais', async ({ page }) => {
+  await stubSession(page);
+  await page.goto('/compte/alertes?theme=light');
+  await toEnglish(page);
+  await expect(page.locator('h1')).toHaveText('Settings for alerts');
+});
