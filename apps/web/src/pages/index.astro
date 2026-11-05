@@ -7,7 +7,7 @@ import Canon from '../layouts/Canon.astro';
 import { HOME_EXAMPLE_SCORE } from '../lib/home-example.js';
 ---
 
-<Canon vue="accueil" title={t('home.headline')} description={t('meta.home.description')} robots="index, follow">
+<Canon vue="accueil" title={t('mq.ui.meta.home.title')} description={t('meta.home.description')} robots="index, follow">
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
 <div class="progress" id="prog" aria-hidden="true"></div>
@@ -61,7 +61,7 @@ import { HOME_EXAMPLE_SCORE } from '../lib/home-example.js';
               <small class="stamp">{t('mq.a.017')}</small>
             </div>
 
-            <div class="score-slot"><ScoreGauge domain={t('domain.global')} score={HOME_EXAMPLE_SCORE} size="compact" /></div>
+            <div class="score-slot"><ScoreGauge domain={t('domain.global')} score={HOME_EXAMPLE_SCORE} size="compact" label={t('mq.ui.home.gauge')} /></div>
             <div class="gauge-wrap">
               <div class="gauge" role="img" aria-label={t('mq.a.018')}>
                 <svg viewBox="0 0 120 120" aria-hidden="true">

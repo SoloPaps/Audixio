@@ -1,6 +1,6 @@
 /** Textes portés des maquettes finales (pages légales et techniques). */
 export const mqLegalFr = {
-  'mq.meta.mentions.title': 'Mentions légales · Audixio',
+  'mq.meta.mentions.title': 'Mentions légales — Audixio',
   'mq.meta.mentions.desc':
     'Éditeur, responsable légal, hébergement européen (Netlify Edge, Supabase Francfort), propriété intellectuelle, portée des audits et canal de signalement d’Audixio.',
   'mq.lg.001': 'Fil d’Ariane',
@@ -134,7 +134,7 @@ export const mqLegalFr = {
   'mq.lg.109': 'Conditions d’utilisation (CGU)',
   'mq.lg.110': 'Politique de confidentialité',
   'mq.lg.111': 'Adresse copiée : ',
-  'mq.meta.cgu.title': 'Conditions d’utilisation (CGU) · Audixio',
+  'mq.meta.cgu.title': 'Conditions d’utilisation (CGU) — Audixio',
   'mq.meta.cgu.desc':
     'Conditions d’utilisation d’Audixio : service gratuit, propriété et mandat avant tout test actif, portée des rapports horodatés, acceptation, compte et droit français.',
   'mq.lg.112': 'Conditions d’utilisation',
@@ -211,7 +211,7 @@ export const mqLegalFr = {
   'mq.lg.170': 'RGAA 4.1',
   'mq.lg.171': 'Core Web Vitals',
   'mq.lg.172': 'Scan passif par défaut',
-  'mq.meta.confidentialite.title': 'Politique de confidentialité · Audixio',
+  'mq.meta.confidentialite.title': 'Politique de confidentialité — Audixio',
   'mq.meta.confidentialite.desc':
     'Données traitées par Audixio, finalités, sous-traitants européens, durées de conservation et vos droits RGPD (export JSON, oubli, CNIL). Zéro traceur tiers.',
   'mq.lg.173': 'Confidentialité',
@@ -378,7 +378,7 @@ export const mqLegalFr = {
     'Vos réglages de sécurité et vos exports sont centralisés dans votre compte.',
   'mq.lg.304': 'Votre compte',
   'mq.lg.305': 'Documents connexes : ',
-  'mq.meta.accessibilite.title': 'Déclaration d’accessibilité · Audixio',
+  'mq.meta.accessibilite.title': 'Déclaration d’accessibilité — Audixio',
   'mq.meta.accessibilite.desc':
     'État de conformité RGAA 4.1 / WCAG 2.2 d’Audixio, référentiels suivis, choix techniques, signalement d’un défaut et voies de recours.',
   'mq.lg.306': 'Accessibilité',
@@ -473,7 +473,7 @@ export const mqLegalFr = {
   'mq.lg.379': 'Consulter également : ',
   'mq.lg.380': 'Copié dans le presse-papiers',
   'mq.lg.381': 'Copié',
-  'mq.meta.ecologie.title': 'Questionnaire éco-conception (RGESN) · Audixio',
+  'mq.meta.ecologie.title': 'Questionnaire éco-conception (RGESN) — Audixio',
   'mq.meta.ecologie.desc':
     'Évaluez la maturité environnementale de votre site selon le RGESN 2024 : hébergement, poids, requêtes, sobriété, compatibilité, mesure.',
   'mq.lg.382': 'Rapport d’audit',
@@ -523,7 +523,7 @@ export const mqLegalFr = {
   'mq.lg.417': 'Réponses enregistrées dans ce navigateur',
   'mq.lg.418': 'Vous pourrez reprendre le questionnaire plus tard',
   'mq.meta.robot.title':
-    'Robot Audixio · User-Agent, budget et exclusion · Audixio',
+    'Robot Audixio : User-Agent, budget et exclusion — Audixio',
   'mq.meta.robot.desc':
     'Ce que fait le robot Audixio, son User-Agent AudixioBot, son budget passif (50 requêtes, 1 req/s par hôte), le respect de robots.txt et comment exclure votre site.',
   'mq.lg.419': 'Transparence du robot d’analyse',
@@ -612,7 +612,7 @@ export const mqLegalFr = {
   'mq.lg.robot.ok':
     'Demande reçue. Elle sera examinée après une preuve de propriété.',
   'mq.lg.robot.stop': 'Trop de demandes. Réessayez plus tard.',
-  'mq.meta.e404.title': 'Page introuvable (erreur 404) | Audixio',
+  'mq.meta.e404.title': 'Page introuvable (erreur 404) — Audixio',
   'mq.meta.e404.desc':
     "La page demandée n'existe pas ou a été déplacée. Retrouvez l'accueil, la méthode des 8 domaines, vos sites suivis ou contactez le support Audixio.",
   'mq.lg.497': "Fil d'Ariane",
@@ -666,7 +666,7 @@ export const mqLegalFr = {
   'mq.lg.537': '\n\nMerci.',
   'mq.lg.538': 'Lien brisé (404)',
   'mq.lg.539': ' Ko',
-  'mq.meta.e500.title': 'Erreur serveur (erreur 500) | Audixio',
+  'mq.meta.e500.title': 'Erreur serveur (erreur 500) — Audixio',
   'mq.meta.e500.desc':
     'Une erreur interne est survenue sur le serveur Audixio. Réessayez dans quelques instants ou revenez à l’accueil.',
   'mq.lg.540': 'Erreur serveur',
@@ -692,7 +692,7 @@ export const mqLegalFr = {
   'mq.lg.557':
     'Bonjour,\n\nJe signale une erreur serveur (erreur 500).\n\nAdresse demandée : ',
   'mq.lg.558': 'Erreur serveur (500)',
-  'mq.meta.maintenance.title': 'Maintenance en cours | Audixio',
+  'mq.meta.maintenance.title': 'Maintenance en cours — Audixio',
   'mq.meta.maintenance.desc':
     'Audixio fait l’objet d’une maintenance planifiée. Le site revient très bientôt.',
   'mq.lg.559': 'Maintenance',
@@ -718,7 +718,7 @@ export const mqLegalFr = {
   'mq.lg.575': 'Page en maintenance',
   'mq.lg.576': 'réglage…',
   'mq.lg.577': 'vérification…',
-  'mq.meta.cookies.title': 'Vos choix cookies · Audixio',
+  'mq.meta.cookies.title': 'Vos choix cookies — Audixio',
   'mq.lg.578': 'Vos choix sur les cookies',
   'mq.lg.579':
     'Audixio n’utilise aucun traceur publicitaire. Le cookie de session est indispensable ; le thème et la langue (',
@@ -739,7 +739,7 @@ export const mqLegalFr = {
   'mq.lg.592':
     'Refus enregistré : seuls les cookies nécessaires sont utilisés.',
   'mq.lg.593': 'Vos choix ont été enregistrés.',
-  'mq.meta.audit.title': 'Audit échoué | Audixio',
+  'mq.meta.audit.title': 'Audit échoué — Audixio',
   'mq.meta.audit.desc':
     'L’audit n’a pas pu aboutir : erreur, accès refusé (403) ou site injoignable. Relancez ou autorisez le robot Audixio.',
   'mq.lg.594': 'Audit',

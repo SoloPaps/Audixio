@@ -4,7 +4,7 @@ export const mqGatesFr = {
   'mq.pr.err.empty': 'Indiquez votre adresse e-mail.',
   'mq.ax.copied': 'Copié',
   'mq.ax.copied.long': 'Copié dans le presse-papiers',
-  'mq.pro.meta.title': 'Audixio Pro · Liste d’attente',
+  'mq.pro.meta.title': 'Liste d’attente Pro — Audixio',
   'mq.pro.meta.desc':
     'Audixio Pro arrive : historique long, tendances multi-domaines, alertes e-mail, exports enrichis et plafonds étendus. Inscrivez-vous pour être prévenu du lancement.',
   'mq.pro.001': 'Fil d’Ariane',
@@ -122,7 +122,7 @@ export const mqGatesFr = {
   'mq.pp.saved': 'Inscription enregistrée sur la liste d’attente Pro.',
   'mq.pp.err.bad': 'Cette adresse e-mail ne semble pas valide.',
   'mq.pp.err.empty': 'Indiquez votre adresse e-mail.',
-  'mq.passer.meta.title': 'Audixio · Passer à Pro (limite du plan gratuit)',
+  'mq.passer.meta.title': 'Passer à Pro (limite du plan gratuit) — Audixio',
   'mq.passer.meta.desc':
     'Maquette : modale « Passer à Pro » affichée quand une limite du plan gratuit Audixio est atteinte.',
   'mq.passer.001':
@@ -177,7 +177,7 @@ export const mqGatesFr = {
   'mq.dm.sent': 'Demande envoyée au propriétaire de exemple.fr',
   'mq.dm.limited': 'Trop de demandes. Réessayez plus tard.',
   'mq.dm.error': 'La demande n’a pas abouti. Réessayez.',
-  'mq.demande.meta.title': "Demander l'accès au propriétaire · Audixio",
+  'mq.demande.meta.title': "Demander l'accès au propriétaire — Audixio",
   'mq.demande.meta.desc':
     "Le rapport d'audit est verrouillé. Demandez l'accès au propriétaire pour consulter le détail et le brief. Lecture seule, sans partage ni export.",
   'mq.demande.001': "Fil d'Ariane",
@@ -258,7 +258,7 @@ export const mqGatesFr = {
   'mq.ac.pending': 'En attente',
   'mq.ac.pending.eyebrow': 'Demande en attente de votre réponse',
   'mq.ac.undone': 'Accès retiré. La demande est de nouveau en attente.',
-  'mq.acces.meta.title': 'Demande d’accès à exemple.fr · Audixio',
+  'mq.acces.meta.title': 'Demande d’accès à exemple.fr — Audixio',
   'mq.acces.meta.desc':
     'Examinez la demande d’accès de dev@agence.fr au rapport d’audit de exemple.fr : choisissez le niveau d’accès, sa durée, puis acceptez ou refusez.',
   'mq.acces.001': 'Fil d’Ariane',
