@@ -98,9 +98,8 @@ function displayName(session: Session): string {
   if (typeof meta?.full_name === 'string' && meta.full_name.trim()) {
     return meta.full_name.trim();
   }
-  const email = session.user.email ?? '';
-  const local = email.split('@')[0] ?? '';
-  return local || email;
+  // Sans prénom, on salue sans nom : jamais le début de l’adresse.
+  return '';
 }
 
 function asPlan(value: string | null | undefined): Plan {
@@ -1615,9 +1614,11 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
 }
 
 function bindWelcome(root: HTMLElement, next: EspaceNext): () => void {
-  const name = root.querySelector('.bv-name');
-  if (name && next.name && next.name !== 'Camille')
-    name.textContent = next.name;
+  const name = root.querySelector<HTMLElement>('.bv-name');
+  if (name && next.name) {
+    name.textContent = `, ${next.name}`;
+    name.hidden = false;
+  }
   const steps = [...root.querySelectorAll<HTMLElement>('.step')];
   let saved: string[] = [];
   try {
