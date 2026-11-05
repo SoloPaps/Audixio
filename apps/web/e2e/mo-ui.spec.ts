@@ -46,3 +46,48 @@ test('M10 : /compte#acces-partages (lien « Gérer les accès ») défile jusqu�
   await expect(section).toBeInViewport();
   expect(await page.evaluate<number>('window.scrollY')).toBeGreaterThan(200);
 });
+
+test('M11 : /pro à 330 px, seul le tableau de comparaison défile', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 330, height: 800 });
+  await page.goto('/pro?theme=light&lang=en');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.waitForLoadState('networkidle');
+  const cmp = page.locator('section.cmp');
+  await cmp.locator('h2').scrollIntoViewIfNeeded();
+  // Scripts en chaîne : pas de types DOM côté Node.
+  const before = await page.evaluate<{
+    page: number;
+    section: number;
+    title: number;
+  }>(`(() => {
+    const section = document.querySelector('section.cmp');
+    return {
+      page: document.documentElement.scrollWidth,
+      section: section.scrollWidth - section.clientWidth,
+      title: section.querySelector('h2').getBoundingClientRect().left,
+    };
+  })()`);
+  expect(before.page).toBeLessThanOrEqual(330);
+  expect(before.section).toBeLessThanOrEqual(0);
+  await page.evaluate(`document.querySelector('.cmp-scroll').scrollLeft = 400`);
+  const after = await page.evaluate<{
+    section: number;
+    title: number;
+  }>(`(() => {
+    const section = document.querySelector('section.cmp');
+    return {
+      section: section.scrollLeft,
+      title: section.querySelector('h2').getBoundingClientRect().left,
+    };
+  })()`);
+  expect(after.section).toBe(0);
+  expect(after.title).toBe(before.title);
+  await expect(cmp.locator('h2')).toBeInViewport();
+  const cta = cmp.locator('.cta');
+  await cta.scrollIntoViewIfNeeded();
+  const ctaBox = await cta.boundingBox();
+  expect((ctaBox?.x ?? -1) >= 0).toBe(true);
+  expect((ctaBox?.x ?? 999) + (ctaBox?.width ?? 999)).toBeLessThanOrEqual(330);
+});

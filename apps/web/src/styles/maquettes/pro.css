@@ -2710,10 +2710,17 @@ main {
   overflow-wrap: break-word;
   word-break: normal;
 }
+/* Sur petit écran, seul le tableau défile : le titre et le lien restent en place. */
+.cmp-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 20px;
+}
+.cmp-scroll:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
 @media (max-width: 480px) {
-  .cmp {
-    overflow-x: auto;
-  }
   .cmp table {
     table-layout: auto;
     min-width: 36rem;
