@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import { stubSession, toEnglish } from './en-session.js';
+import { openHistory } from './h-history.js';
 
 async function withFullName(page: Page, fullName: string): Promise<void> {
   // Session par cookie seulement : c’est elle qui porte le nom complet.
@@ -49,4 +50,31 @@ test('/bienvenue avec prénom : le nom suit la virgule', async ({ page }) => {
   await withFullName(page, 'Léa');
   await page.goto('/bienvenue?theme=light');
   await expect(page.locator('h1')).toHaveText('Bienvenue sur Audixio, Léa');
+});
+
+test('/historique « Tout » : depuis le mois du premier audit, pas une date figée', async ({
+  page,
+}) => {
+  await openHistory(page, [72, 88]);
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  await page.locator('.seg button').last().click();
+  await expect(page.locator('#rng-note')).toHaveText(
+    'Historique disponible depuis janvier 2026 : la courbe affiche déjà toute la période.',
+  );
+});
+
+test('/historique « All » en anglais : « since January 2026 »', async ({
+  page,
+}) => {
+  await openHistory(page, [72, 88]);
+  await toEnglish(page);
+  await expect(page.locator('text.val').nth(0)).toHaveText('72', {
+    timeout: 15_000,
+  });
+  await page.locator('.seg button').last().click();
+  await expect(page.locator('#rng-note')).toHaveText(
+    'History available since January 2026: the curve already shows the whole period.',
+  );
 });
