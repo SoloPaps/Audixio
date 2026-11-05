@@ -3391,6 +3391,8 @@
   "mq.ui.terms.off": "Statistical consent withdrawn",
   "mq.ui.export.prep": "Preparing the export…",
   "mq.ui.export.done": "Export ready",
+  "mq.ui.history.export.done": "History downloaded (CSV file).",
+  "mq.ui.history.export.none": "Nothing to export: no finished audit for this site.",
   "mq.ui.msg.short": "Your message must be at least 10 characters long.",
   "mq.ui.msg.min": "10 characters minimum.",
   "mq.ui.sent": "Message sent. Reply within 2 business days.",

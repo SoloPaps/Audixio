@@ -56,14 +56,17 @@ export interface PdfReport {
   domains: PdfDomainRow[];
 }
 
+// Le PDF nomme le site audité par son hôte, comme le rapport ; le libellé
+// libre du site (« Exemple vérifié »…) ne sert qu’en secours.
 function hostOf(payload: AuditPayload): string {
-  const label = payload.audit.site.label.trim();
-  if (label !== '') return label;
   try {
-    return new URL(payload.audit.site.url).host;
+    const host = new URL(payload.audit.site.url).host;
+    if (host !== '') return host;
   } catch {
-    return payload.audit.site.url;
+    // URL illisible : on retombe sur le libellé.
   }
+  const label = payload.audit.site.label.trim();
+  return label !== '' ? label : payload.audit.site.url;
 }
 
 function observed(payload: AuditPayload): Date {
