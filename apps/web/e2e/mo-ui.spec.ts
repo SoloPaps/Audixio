@@ -218,3 +218,56 @@ test('B-5 : /rapport sombre à 330 px, la note 86/100 se lit sur le disque blanc
   const lum = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
   expect(1.05 / (lum + 0.05)).toBeGreaterThanOrEqual(4.5);
 });
+
+// Contraste de chaque texte de la fenêtre Partager contre son fond effectif.
+const SHEET_CONTRAST = `(() => {
+  const rgb = (s) => (s.match(/[\\d.]+/g) || []).map(Number);
+  const lin = (v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  const out = [];
+  for (const el of document.querySelectorAll('.sh-dlg *')) {
+    if (el.childElementCount || !el.textContent.trim() || el.closest('.sr-only')) continue;
+    let a = el, bg = null;
+    while (a) { const c = rgb(getComputedStyle(a).backgroundColor); if (c.length >= 3 && (c[3] === undefined || c[3] > 0.5)) { bg = c; break; } a = a.parentElement; }
+    const fg = rgb(getComputedStyle(el).webkitTextFillColor || getComputedStyle(el).color);
+    const [hi, lo] = [lum(fg), lum(bg || [255, 255, 255])].sort((x, y) => y - x);
+    const ratio = (hi + 0.05) / (lo + 0.05);
+    if (ratio < 4.5) out.push(el.textContent.trim().slice(0, 40) + ' ' + ratio.toFixed(2));
+  }
+  return out;
+})()`;
+
+test('B-6 : fenêtre Partager en sombre (thème choisi dans le menu), sous-titre du badge lisible', async ({
+  page,
+}) => {
+  await verifiedReport(page);
+  await page.route('**/api/liens**', (route) => {
+    const write = route.request().method().toLowerCase() === 'post';
+    return route.fulfill({
+      status: write ? 201 : 200,
+      contentType: 'application/json',
+      body: JSON.stringify(
+        write
+          ? { id: 'lien-1', url: '/partage/k7Qm2xVaPq9Zt3Lw' }
+          : { liens: [] },
+      ),
+    });
+  });
+  await page.setViewportSize({ width: 330, height: 800 });
+  await page.goto(`/rapport?id=${AUDIT_ID}&lang=en`);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.waitForLoadState('networkidle');
+  // Comme Mo : thème sombre choisi depuis le menu du haut.
+  await page.locator('.axn-burger').click();
+  await page.locator('.axn-theme:visible').first().click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.locator('#shareBtn').click();
+  const sheet = page.locator('.sh-dlg');
+  await expect(sheet).toContainText('Show your grade on your site.');
+  await page.waitForTimeout(600);
+  expect(await page.evaluate<string[]>(SHEET_CONTRAST)).toEqual([]);
+  await sheet.locator('.sh-main').click();
+  await expect(sheet).toContainText('Public link created.');
+  expect(await page.evaluate<string[]>(SHEET_CONTRAST)).toEqual([]);
+});
