@@ -42,3 +42,30 @@ describe('evolutionChart', () => {
     expect(evolutionChart([])).toBeNull();
   });
 });
+
+describe('seuil rang B (QA Mo M4)', () => {
+  it('trace la ligne 70 à la hauteur de 70, pas sur la graduation 60', () => {
+    const chart = evolutionChart([
+      { label: '15 oct.', value: 64 },
+      { label: '26 oct.', value: 78 },
+      { label: '4 nov.', value: 86 },
+    ]);
+    expect(chart?.min).toBe(60);
+    const bottom = Number(chart?.ticks[0]?.y);
+    const mid = Number(chart?.ticks[1]?.y);
+    const y = Number(chart?.threshold.y);
+    expect(chart?.threshold.visible).toBe(true);
+    expect(y).toBeLessThan(bottom);
+    expect(y).toBeGreaterThan(mid);
+    // 64 est sous le seuil : son point est plus bas (y plus grand) que la ligne.
+    expect(chart?.marks[0]?.y).toBeGreaterThan(y);
+  });
+
+  it('masque le seuil quand 70 sort de l’échelle', () => {
+    const chart = evolutionChart([
+      { label: 'mars', value: 20 },
+      { label: 'avril', value: 30 },
+    ]);
+    expect(chart?.threshold.visible).toBe(false);
+  });
+});

@@ -686,6 +686,14 @@ function applyEvolutionChart(
     text.setAttribute('y', tick.textY);
     text.textContent = tick.label;
   });
+  const thr = svg.querySelector<SVGGElement>('.thr');
+  if (thr) {
+    thr.querySelector('line')?.setAttribute('y1', chart.threshold.y);
+    thr.querySelector('line')?.setAttribute('y2', chart.threshold.y);
+    thr.querySelector('text')?.setAttribute('y', chart.threshold.textY);
+    // Hors de l’échelle affichée, pas de ligne posée sur une autre note.
+    thr.style.display = chart.threshold.visible ? '' : 'none';
+  }
   svg.querySelectorAll('g.pt, rect.hit').forEach((node) => {
     node.remove();
   });

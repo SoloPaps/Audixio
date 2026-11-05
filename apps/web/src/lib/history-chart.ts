@@ -31,8 +31,13 @@ export interface EvolutionChart {
   area: string;
   marks: EvolutionMark[];
   ticks: EvolutionTick[];
+  /** Ligne « Seuil rang B (70) » à la même échelle que la courbe. */
+  threshold: { y: string; textY: string; visible: boolean };
   average: string;
 }
+
+/** Note du seuil de rang B tracé en pointillé. */
+export const GRADE_B_THRESHOLD = 70;
 
 /** Cadre horizontal du graphique : largeur du viewBox et abscisses extrêmes. */
 export interface ChartFrame {
@@ -110,6 +115,12 @@ export function evolutionChart(
     return { y: one(y), textY: one(y + 4), label: String(Math.round(value)) };
   });
   const sum = rows.reduce((total, point) => total + point.value, 0);
+  const thresholdY = yOf(GRADE_B_THRESHOLD);
+  const threshold = {
+    y: one(thresholdY),
+    textY: one(thresholdY - 10),
+    visible: GRADE_B_THRESHOLD >= min && GRADE_B_THRESHOLD <= max,
+  };
   return {
     min,
     max,
@@ -117,6 +128,7 @@ export function evolutionChart(
     area: `M${one(first.x)},${one(Y_BOTTOM)} L${pairs.join(' L')} L${one(last.x)},${one(Y_BOTTOM)} Z`,
     marks,
     ticks,
+    threshold,
     average: formatFixed(sum / rows.length, 1),
   };
 }
