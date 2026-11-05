@@ -74,11 +74,31 @@ async function expectGateChrome(page: Page): Promise<void> {
   expect(style.loginDecor).toBe('none');
 }
 
-async function launch(page: Page): Promise<void> {
+const REACHABLE = 'https://bon.audigy.test';
+const UNREACHABLE = 'https://absent.audigy.test';
+
+async function launch(page: Page, url = REACHABLE): Promise<void> {
   await page.goto('/');
   await waitForIslands(page);
-  await page.getByLabel('Adresse du site').fill('https://exemple.fr');
+  await page.getByLabel('Adresse du site').fill(url);
   await page.getByRole('button', { name: "Lancer l'audit" }).click();
+}
+
+async function watchGuest(
+  page: Page,
+): Promise<{ status: number; body: string }[]> {
+  const captured: { status: number; body: string }[] = [];
+  await page.route('**/api/guest-audits', async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.continue();
+      return;
+    }
+    const response = await route.fetch();
+    const body = await response.text();
+    captured.push({ status: response.status(), body });
+    await route.fulfill({ response, body });
+  });
+  return captured;
 }
 
 const MEASURED = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10';
@@ -136,15 +156,67 @@ function measuredGuest(): unknown {
 test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   page,
 }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
+  const captured = await watchGuest(page);
   for (let index = 0; index < 3; index += 1) {
+    const before = captured.length;
     await launch(page);
-    await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
-    await expect(page.getByText('Audit interrompu').first()).toBeVisible();
-    await expect(page.getByText('0/100')).toHaveCount(0);
-    await expect(page.getByText('Votre diagnostic est prêt pour')).toHaveCount(
-      0,
+    await expect
+      .poll(() => captured.length, { timeout: 60_000 })
+      .toBe(before + 1);
+    const hit = captured[before];
+    expect(hit?.status).toBe(202);
+    const body = JSON.parse(hit?.body ?? '{}') as {
+      view: {
+        audit: {
+          globalScore: number | null;
+          partialLabel: string | null;
+          siteVerified: boolean;
+        };
+        domains: { domain: string; score: number | null; locked: boolean }[];
+        findings: { domain: string; fixKey: string | null }[];
+      };
+    };
+    const raw = JSON.stringify(body).toLowerCase();
+    expect(raw).not.toContain('hsts');
+    expect(raw).not.toContain('x-frame');
+    expect(raw).not.toContain('strict-transport');
+    expect(raw).not.toContain('content-security-policy');
+    expect(body.view.audit.globalScore).toBeNull();
+    expect(body.view.audit.siteVerified).toBe(false);
+    expect(body.view.audit.partialLabel).toMatch(
+      /^partielle · [1-9]\d* domaines · site non vérifié$/,
     );
+    for (const name of ['securite', 'vie_privee', 'dns_email']) {
+      const row = body.view.domains.find((domain) => domain.domain === name);
+      expect(row?.locked).toBe(true);
+      expect(row?.score).toBeNull();
+    }
+    expect(
+      body.view.findings.every(
+        (finding) =>
+          !['securite', 'vie_privee', 'dns_email'].includes(finding.domain) &&
+          finding.fixKey === null,
+      ),
+    ).toBe(true);
+    expect(
+      body.view.domains.some(
+        (domain) => !domain.locked && typeof domain.score === 'number',
+      ),
+    ).toBe(true);
+    await expect(
+      page.getByText('Votre diagnostic est prêt pour').first(),
+    ).toBeVisible({ timeout: 20_000 });
+    await expect(page).not.toHaveURL(/audit-echoue/);
+    await expect(page.getByText('0/100')).toHaveCount(0);
+    if (index === 0) {
+      await page.locator('#reportBtn').click();
+      await expect(page).toHaveURL(/\/rapport\?id=/);
+      await expect(
+        page.getByText(/partielle · \d+ domaines · site non vérifié/),
+      ).toBeVisible();
+      await expect(page.getByText('0/100')).toHaveCount(0);
+    }
   }
 
   await page.goto('/');
@@ -220,5 +292,26 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
   await page.screenshot({
     path: '/opt/cursor/artifacts/guest-gate-desktop.png',
     fullPage: false,
+  });
+});
+
+test.describe('site vraiment injoignable', () => {
+  test.use({
+    extraHTTPHeaders: {
+      'x-nf-client-connection-ip': '203.0.113.209',
+    },
+  });
+
+  test('ouvre /audit-echoue, sans 0/100 ni 0 domaine', async ({ page }) => {
+    test.setTimeout(60_000);
+    await launch(page, UNREACHABLE);
+    await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
+    await expect(page.getByText('Audit interrompu').first()).toBeVisible();
+    await expect(page.getByText('absent.audigy.test').first()).toBeVisible();
+    await expect(page.getByText('0/100')).toHaveCount(0);
+    await expect(page.getByText('Votre diagnostic est prêt pour')).toHaveCount(
+      0,
+    );
+    await expect(page.getByText(/0 domaine/)).toHaveCount(0);
   });
 });

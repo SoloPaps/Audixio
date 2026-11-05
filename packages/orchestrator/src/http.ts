@@ -1,7 +1,8 @@
 import { type CreateDeps, createAudit } from './create.js';
 import { errorCode, type Logger } from './log.js';
+import type { AuditSummary } from './pipeline.js';
 import type { ProcessResult } from './process.js';
-import { auditIdSchema, createAuditInput } from './target.js';
+import { auditIdSchema, createAuditInput, type SiteInput } from './target.js';
 import { TRIGGER_HEADER, verifyTrigger } from './trigger.js';
 
 const MAX_BODY_BYTES = 4096;
@@ -142,6 +143,11 @@ export interface ApiDeps {
   guardGuest?(
     req: Request,
   ): Promise<{ ok: true } | { ok: false; retryAfter: number }>;
+  /**
+   * Audit passif réel du visiteur. Le handler filtre ensuite le soft-gate.
+   * Absent : 500, jamais un hub aux notes vides.
+   */
+  guestAudit?(site: SiteInput): Promise<AuditSummary>;
   /** Hôtes de labo (`*.audigy.test`) seulement quand le drapeau local est là. */
   allowLab?: boolean;
 }
