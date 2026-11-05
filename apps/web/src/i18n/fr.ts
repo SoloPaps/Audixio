@@ -2578,6 +2578,8 @@ const frCore = {
     'Agis en expert performance web. Analyse et optimise les images listées :',
   'constat.ai.l2':
     'convertis en formats modernes, génère les variantes responsive, puis fournis le script de conversion.',
+  'constat.ai.any':
+    'Agis en expert web ({domain}). Corrige ce constat sur {host} :',
   'constat.pager': 'Constats du domaine {name}',
   'constat.prev': 'Problème précédent',
   'constat.next': 'Problème suivant',

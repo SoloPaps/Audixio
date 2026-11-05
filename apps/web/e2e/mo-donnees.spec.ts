@@ -154,3 +154,26 @@ for (const lang of ['fr', 'en'] as const) {
     await expect(code.first()).toContainText('Strict-Transport-Security');
   });
 }
+
+for (const lang of ['fr', 'en'] as const) {
+  test(`M3 : l’aperçu du brief IA d’un constat Sécurité parle du constat (${lang})`, async ({
+    page,
+  }) => {
+    await install(page, lang);
+    await page.goto(
+      `/constat?id=${AUDIT_ID}&check=securite.frames&lang=${lang}`,
+    );
+    const preview = page.locator('.brief .bp .bb');
+    await expect(preview).toBeVisible();
+    const text = (await preview.textContent()) ?? '';
+    expect(text).not.toMatch(/images|performance/iu);
+    expect(text).toContain('atelier-martin.fr');
+    if (lang === 'en') {
+      expect(text).toContain('Act as a web expert');
+      expect(text).toMatch(/frame/iu);
+    } else {
+      expect(text).toContain('Agis en expert web');
+      expect(text).toMatch(/cadre/iu);
+    }
+  });
+}

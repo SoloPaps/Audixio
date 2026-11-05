@@ -1931,6 +1931,7 @@
   "constat.ai.chip": "AI brief · ready to paste",
   "constat.ai.l1": "Act as a web performance specialist. Review and optimise the listed images:",
   "constat.ai.l2": "convert them to modern formats, generate responsive variants, then provide the conversion script.",
+  "constat.ai.any": "Act as a web expert ({domain}). Fix this finding on {host}:",
   "constat.pager": "Findings in {name}",
   "constat.prev": "Previous issue",
   "constat.next": "Next issue",

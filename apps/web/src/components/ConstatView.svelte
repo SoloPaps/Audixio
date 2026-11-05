@@ -369,7 +369,7 @@ onMount(() => {
         </div>
         <div class="bp">
           <div class="bh">{t('constat.ai.chip')}</div>
-          <div class="bb"><p>{t('constat.ai.l1')}</p><p>{t('constat.ai.l2')}</p></div>
+          <div class="bb">{#if constatShowsImageInventory(row.messageKey)}<p>{t('constat.ai.l1')}</p><p>{t('constat.ai.l2')}</p>{:else}<p>{t('constat.ai.any', { domain: name, host })}</p><p>{row.title}</p>{/if}</div>
         </div>
       </div>
     </section>
