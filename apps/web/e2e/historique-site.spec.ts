@@ -320,7 +320,11 @@ test('en thème sombre, les libellés du graphique sont lisibles (bug #14)', asy
   page,
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
+  await page.addInitScript(() => {
+    localStorage.setItem('audigy-theme', 'dark');
+  });
   await openHistory(page, [72, 88], 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('text.val').nth(0)).toHaveText('72', {
     timeout: 15_000,
   });
@@ -371,7 +375,11 @@ test('en thème sombre, le journal ne dessine pas un rectangle par cellule (bug 
 }) => {
   await page.setViewportSize({ width: 330, height: 900 });
   await page.emulateMedia({ colorScheme: 'dark' });
+  await page.addInitScript(() => {
+    localStorage.setItem('audigy-theme', 'dark');
+  });
   await openHistory(page, [72, 88], 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect(page.locator('text.val').nth(0)).toHaveText('72', {
     timeout: 15_000,
   });
@@ -397,4 +405,83 @@ test('en thème sombre, le journal ne dessine pas un rectangle par cellule (bug 
     return out;
   });
   expect(boxed).toEqual([]);
+});
+
+test('B2 sombre : le bouton de période actif reste visible', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.addInitScript(() => {
+    localStorage.setItem('audigy-theme', 'dark');
+  });
+  await openHistory(page, [72, 88], 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.waitForTimeout(600);
+  await page.locator('.seg button[aria-pressed="false"]').first().click();
+  await page.waitForTimeout(600);
+  const active = page.locator('.seg button[aria-pressed="true"]');
+  const inactive = page.locator('.seg button[aria-pressed="false"]').first();
+  await expect(active).toBeVisible();
+  await page.waitForTimeout(600);
+  const styles = await page.evaluate(() => {
+    type Box = { left: number; right: number };
+    type Node = { getBoundingClientRect: () => Box };
+    const view = globalThis as unknown as {
+      document: { querySelector: (s: string) => Node | null };
+      getComputedStyle: (n: Node) => { backgroundColor: string; color: string };
+    };
+    const getComputedStyle = view.getComputedStyle;
+    const active = view.document.querySelector(
+      '.seg button[aria-pressed="true"]',
+    );
+    const inactive = view.document.querySelector(
+      '.seg button[aria-pressed="false"]',
+    );
+    const ind = view.document.querySelector('.seg .ind');
+    const rect = active?.getBoundingClientRect();
+    const ir = ind?.getBoundingClientRect();
+    const rgb = (v: string) => {
+      const m = v.match(/[\d.]+/g)?.map(Number) ?? [];
+      return { r: m[0] ?? 0, g: m[1] ?? 0, b: m[2] ?? 0 };
+    };
+    const lum = (c: { r: number; g: number; b: number }): number => {
+      const f = (x: number): number => {
+        const s = x / 255;
+        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+      };
+      return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
+    };
+    const bg = ind ? getComputedStyle(ind).backgroundColor : '';
+    const fg = active ? getComputedStyle(active).color : '';
+    const l1 = lum(rgb(bg));
+    const l2 = lum(rgb(fg));
+    return {
+      bg,
+      fg,
+      contrast: (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05),
+      covered:
+        !!rect &&
+        !!ir &&
+        ir.left <= rect.left + 2 &&
+        ir.right >= rect.right - 2,
+      inactiveBg: inactive ? getComputedStyle(inactive).backgroundColor : '',
+      activeOwnBg: active ? getComputedStyle(active).backgroundColor : '',
+    };
+  });
+  // B2 : le fond actif doit couvrir le libellé et offrir un contraste lisible.
+  expect(styles.covered).toBe(true);
+  // Le bouton lui-même ne doit pas peindre un fond opaque par-dessus l’indicateur.
+  expect(styles.activeOwnBg).toBe('rgba(0, 0, 0, 0)');
+  expect(styles.bg).not.toBe(styles.inactiveBg);
+  expect(styles.contrast).toBeGreaterThanOrEqual(4.5);
+});
+
+test('B6 : le titre accessible du graphique reprend les vraies notes', async ({
+  page,
+}) => {
+  await openHistory(page, [72, 88]);
+  const desc = page.locator('#ch-d');
+  await expect(desc).toContainText('72, 88', { timeout: 15_000 });
+  await expect(desc).not.toContainText('décembre 2025');
+  await expect(desc).not.toContainText('78, 79');
 });

@@ -36,6 +36,8 @@ export const espaceUiFr = {
   'mq.ui.report': 'Export du rapport {ref} en préparation',
   'mq.ui.legend.one': 'Note globale pondérée (1 audit)',
   'mq.ui.legend.many': 'Note globale pondérée ({n} audits)',
+  'mq.ui.chart.one': 'Note globale pondérée, {from} : {values}.',
+  'mq.ui.chart.many': 'Note globale pondérée de {from} à {to} : {values}.',
   'mq.ui.trend.delta': '{n} pts',
   'mq.ui.avg.6m': 'Moyenne sur 6 mois : ',
   'mq.ui.avg.1y': 'Moyenne sur 1 an : ',

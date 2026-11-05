@@ -90,14 +90,17 @@ function onPrint(): void {
   {#if phase === 'loading'}
     <p role="status" aria-live="polite">{message}</p>
   {:else if phase === 'message'}
-    <p role="status">{message}</p>
-    {#if needLogin}
-      <p>
-        <a class="btn btn-primary" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a>
-      </p>
-    {:else}
-      <p><a class="btn btn-ghost" href="/sites">{t('nav.sites.long')}</a></p>
-    {/if}
+    <section class="session-wall" aria-labelledby="print-message-h">
+      <h1 id="print-message-h">{t('print.heading')}</h1>
+      <p role="status">{message}</p>
+      {#if needLogin}
+        <p class="session-acts">
+          <a class="btn btn-primary" href={loginHref(`${location.pathname}${location.search}`)}>{t('nav.login')}</a>
+        </p>
+      {:else}
+        <p class="session-acts"><a class="btn btn-ghost" href="/sites">{t('nav.sites.long')}</a></p>
+      {/if}
+    </section>
   {:else if view && payload}
     <div class="progress" aria-hidden="true"></div>
     <nav class="crumbs" aria-label={t('nav.pages')}>

@@ -35,10 +35,11 @@ const initial = theme === 'light' || theme === 'dark' ? theme : 'system';
     <header class="auth-tools">
       <ThemeToggle initial={initial} client:load />
     </header>
-    <div class="backdrop" aria-hidden="true"></div>
+    <div class="backdrop" aria-hidden="true">
+      <div class="orb o1"></div>
+      <div class="orb o2"></div>
+    </div>
     <div class="veil" aria-hidden="true"></div>
-    <div class="orb o1" aria-hidden="true"></div>
-    <div class="orb o2" aria-hidden="true"></div>
     <slot />
   </body>
 </html>

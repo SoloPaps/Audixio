@@ -1108,3 +1108,8 @@
     transform: none;
   }
 }
+
+/* B3 : jauges lisibles en sombre. */
+html[data-theme="dark"][data-vue="plan"] .gbar {
+  background: #243056;
+}

@@ -1762,3 +1762,23 @@ html[data-theme="dark"][data-vue="historique"] .pt .val {
 html[data-theme="dark"][data-vue="historique"] :is(th, td) {
   background-color: transparent;
 }
+
+/* B2 : les puces de période sont transparentes, l'état actif vient de .seg .ind. */
+html[data-theme="dark"][data-vue="historique"] .seg button {
+  background-color: transparent;
+  background-image: none;
+  color: #c5d0ea;
+}
+html[data-theme="dark"][data-vue="historique"]
+  .seg
+  button[aria-pressed="true"] {
+  color: #ffffff;
+}
+
+/* B3 : écart et jauges lisibles en sombre. */
+html[data-theme="dark"][data-vue="historique"] .delta {
+  color: #8ee4b0;
+}
+html[data-theme="dark"][data-vue="historique"] .gbar {
+  background: #243056;
+}
