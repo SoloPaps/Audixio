@@ -75,3 +75,14 @@ test('/ EN : l’étiquette d’exemple suit l’ordre anglais', async ({ page }
   await toEnglish(page);
   await expect(page.locator('#rep-tag')).toHaveText('Illustrative example');
 });
+
+test('/ EN : l’animation de lecture passive est en anglais', async ({
+  page,
+}) => {
+  await page.goto('/?theme=light');
+  await toEnglish(page);
+  const sub = page.locator('#win-sub');
+  await sub.scrollIntoViewIfNeeded();
+  await expect(sub).toContainText('Passive read:', { timeout: 15_000 });
+  await expect(sub).not.toContainText('Lecture passive');
+});
