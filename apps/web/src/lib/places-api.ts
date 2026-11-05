@@ -1,3 +1,5 @@
+import { packActive } from '../i18n/pack.js';
+
 export interface PlaceSummary {
   siteId: string;
   name: string;
@@ -22,10 +24,14 @@ const ratingFormat = new Intl.NumberFormat('fr-FR', {
   minimumFractionDigits: 1,
   maximumFractionDigits: 1,
 });
+const ratingFormatEn = new Intl.NumberFormat('en-GB', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
 
-/** « 4,6 ». */
+/** « 4,6 » (« 4.6 » en anglais). */
 export function formatRating(value: number): string {
-  return ratingFormat.format(value);
+  return (packActive() ? ratingFormatEn : ratingFormat).format(value);
 }
 
 export function parsePlacesState(body: unknown): PlacesState | null {

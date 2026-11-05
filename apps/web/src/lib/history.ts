@@ -1,4 +1,5 @@
 import { formatDate, formatNumber, t } from '../i18n/index.js';
+import { packActive } from '../i18n/pack.js';
 import { domainPlain, REPORT_DOMAINS } from './domains.js';
 import type { FindingStatus } from './findings.js';
 import { type Level, levelForScore } from './score.js';
@@ -101,10 +102,20 @@ const dayFormat = new Intl.DateTimeFormat('fr-FR', {
   month: 'long',
   timeZone: 'Europe/Paris',
 });
+const dayFormatEn = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'Europe/Paris',
+});
 
 const PARIS = 'Europe/Paris';
 
 const axisFormat = new Intl.DateTimeFormat('fr-FR', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: PARIS,
+});
+const axisFormatEn = new Intl.DateTimeFormat('en-GB', {
   day: 'numeric',
   month: 'short',
   timeZone: PARIS,
@@ -125,11 +136,13 @@ const parisDayParts = new Intl.DateTimeFormat('fr-FR', {
 });
 
 export function historyDay(iso: string): string {
-  return dayFormat.format(new Date(iso));
+  return (packActive() ? dayFormatEn : dayFormat).format(new Date(iso));
 }
 
 export function axisDay(unixSeconds: number): string {
-  return axisFormat.format(new Date(unixSeconds * 1000));
+  return (packActive() ? axisFormatEn : axisFormat).format(
+    new Date(unixSeconds * 1000),
+  );
 }
 
 export function axisHour(unixSeconds: number): string {
@@ -138,6 +151,9 @@ export function axisHour(unixSeconds: number): string {
   const minute = Number(
     parts.find((part) => part.type === 'minute')?.value ?? '0',
   );
+  if (packActive()) {
+    return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+  }
   if (minute === 0) return `${hour} h`;
   return `${hour} h ${String(minute).padStart(2, '0')}`;
 }
