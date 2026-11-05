@@ -44,6 +44,7 @@ const HEAD: Record<Level, MessageKey> = {
 };
 
 let phase = $state<'loading' | 'missing' | 'ready'>('loading');
+let hasKey = $state(true);
 let failure = $state('');
 let view = $state<PublicScoreView | null>(null);
 
@@ -125,6 +126,7 @@ onMount(() => {
 
   async function load(): Promise<void> {
     const key = segment();
+    hasKey = key !== '';
     try {
       const row =
         mode === 'share'
@@ -142,27 +144,35 @@ onMount(() => {
 </script>
 
 <div class="reading">
-{#if mode === 'share'}
+{#if mode === 'share' && (phase !== 'missing' || hasKey)}
   <p class="share-banner">{t('share.banner')}</p>
 {/if}
 {#if phase === 'loading'}
   <section class="glass glass-module">
     <div class="glass-plate">
-      <h1>{t('meta.score.title')}</h1>
+      <h1>{mode === 'share' ? t('share.heading') : t('score.public.heading')}</h1>
       <p role="status">{t('score.public.loading')}</p>
     </div>
   </section>
 {:else if failure}
   <section class="glass glass-module">
     <div class="glass-plate">
-      <h1>{mode === 'share' ? t('meta.share.title') : t('meta.score.title')}</h1>
+      <h1>{mode === 'share' ? t('share.heading') : t('score.public.heading')}</h1>
       <p role="status">{failure}</p>
     </div>
   </section>
 {:else if phase === 'missing' || !view}
   <EmptyState
-    title={mode === 'share' ? t('meta.share.title') : t('meta.score.title')}
-    message={mode === 'share' ? t('share.missing') : t('score.public.missing')}
+    title={mode === 'share'
+      ? hasKey
+        ? t('share.missing.title')
+        : t('share.none.title')
+      : t('score.public.missing.title')}
+    message={mode === 'share'
+      ? hasKey
+        ? t('share.missing')
+        : t('share.none')
+      : t('score.public.missing')}
   />
 {:else}
   <section class="glass glass-module">
