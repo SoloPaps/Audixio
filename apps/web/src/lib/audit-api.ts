@@ -152,6 +152,18 @@ function isPayload(value: unknown): value is AuditPayload {
   return typeof record.audit?.id === 'string' && Array.isArray(record.findings);
 }
 
+const AUDIT_ID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu;
+
+/**
+ * Identifiant bien formé, mais audit absent ou d’un autre compte.
+ * Selon la route, le serveur répond 400, 403 ou 404 : le message reste
+ * le même, sans dire si l’audit existe.
+ */
+function unavailable(auditId: string, status: number): boolean {
+  return AUDIT_ID.test(auditId) && (status === 400 || status === 403);
+}
+
 export async function readAudit(
   token: string,
   auditId: string,
@@ -172,8 +184,8 @@ export async function readAudit(
   if (response.status === 401) {
     return { ok: false, status: 401, message: t('api.error.unauthorized') };
   }
-  if (response.status === 404) {
-    return { ok: false, status: 404, message: t('api.error.audit_not_found') };
+  if (response.status === 404 || unavailable(auditId, response.status)) {
+    return { ok: false, status: 404, message: t('report.unavailable') };
   }
   return {
     ok: false,

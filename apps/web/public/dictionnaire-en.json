@@ -393,6 +393,7 @@
   "report.pending": "The audit is not finished yet.",
   "report.progress": "See the progress",
   "report.missing": "This report cannot be found.",
+  "report.unavailable": "Report not found, or reserved for its owner.",
   "report.need_login": "Sign in to read this report.",
   "report.back": "Back to the report",
   "print.heading": "Report to print",

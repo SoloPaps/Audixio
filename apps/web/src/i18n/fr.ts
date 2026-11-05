@@ -467,6 +467,7 @@ const frCore = {
   'report.pending': 'L’audit n’est pas encore terminé.',
   'report.progress': 'Voir la progression',
   'report.missing': 'Ce rapport est introuvable.',
+  'report.unavailable': 'Rapport introuvable ou réservé à son propriétaire.',
   'report.need_login': 'Connectez-vous pour lire ce rapport.',
   'report.back': 'Retour au rapport',
   'print.heading': 'Rapport à imprimer',

@@ -65,7 +65,7 @@ async function load(): Promise<void> {
   const result = await readAudit(session.access_token, auditId);
   if (!result.ok) {
     phase = 'message';
-    message = result.status === 404 ? t('report.missing') : result.message;
+    message = result.message;
     return;
   }
   const status = result.payload.audit.status;
