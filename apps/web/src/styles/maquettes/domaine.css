@@ -2442,6 +2442,10 @@ html[data-theme="dark"][data-vue] .seg .ind {
 html[data-theme="dark"][data-vue] .seg label:has(input:checked) {
   color: #10183a;
 }
+/* Nuit QA : sur /domaine l’indicateur glissant n’est pas peint, la pastille porte donc son fond clair. */
+html[data-theme="dark"][data-vue="domaine"] #flt label:has(input:checked) {
+  background-color: #9fb4ff;
+}
 html[data-theme="dark"][data-vue].no-js .seg label:has(input:checked),
 html[data-theme="dark"][data-vue] .no-js .seg label:has(input:checked) {
   background-color: #9fb4ff;
