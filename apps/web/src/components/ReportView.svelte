@@ -213,6 +213,22 @@ function downloadMarkdown(event: MouseEvent): void {
   );
 }
 
+// Sans `id`, /badge et /constat gardent un titre propre à la page et
+// invitent à choisir un site ou un rapport (retest C13).
+function missingMessage(hasId: boolean): string {
+  if (mode === 'domain') return t('report.domain.missing');
+  if (!hasId && mode === 'badge') return t('badge.pick');
+  if (!hasId && mode === 'detail') return t('constat.pick');
+  return t('report.missing');
+}
+
+function messageHeading(): string {
+  if (mode === 'domain') return t('domain.heading');
+  if (mode === 'badge') return t('badge.heading');
+  if (mode === 'detail') return t('constat.heading');
+  return t('report.heading');
+}
+
 onMount(() => {
   void load();
 
@@ -230,8 +246,7 @@ onMount(() => {
     }
     if (!id || (mode === 'domain' && !isKnownDomain(domainId))) {
       phase = 'message';
-      message =
-        mode === 'domain' ? t('report.domain.missing') : t('report.missing');
+      message = missingMessage(Boolean(id));
       return;
     }
     const session = await currentSession();
@@ -318,7 +333,7 @@ onMount(() => {
 {:else if phase === 'message'}
   {#snippet messageCard()}
     <section class="session-wall report-message" aria-labelledby="report-message-h">
-      <h1 id="report-message-h">{mode === 'domain' ? t('domain.heading') : t('report.heading')}</h1>
+      <h1 id="report-message-h">{messageHeading()}</h1>
       <p role="status">{message}</p>
       {#if payload}
         <p class="session-acts">

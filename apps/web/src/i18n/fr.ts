@@ -2142,6 +2142,9 @@ const frCore = {
   'badge.copy': 'Copier le code',
   'badge.copied': 'Code copié.',
   'badge.back': 'Retour au rapport',
+  'badge.heading': 'Badge de note',
+  'badge.pick':
+    'Choisissez un site ou un rapport pour afficher son badge de note.',
   'domain.nav': 'Domaines du rapport',
   'domain.back': 'Retour au rapport',
   'pro.later':
@@ -2496,6 +2499,9 @@ const frCore = {
   'share.created': 'Lien public créé.',
   'share.close.long': 'Fermer et revenir au rapport',
   'constat.back': 'Retour à {name}',
+  'constat.heading': 'Détail du constat',
+  'constat.pick':
+    'Choisissez un site ou un rapport, puis un constat, pour en voir le détail.',
   'constat.owned': 'Propriété vérifiée',
   'constat.tag': '{domain} · Constat n° {n}',
   'constat.crit': 'Priorité critique',
