@@ -18,6 +18,7 @@ import {
 } from '../lib/hub-view.js';
 import { calm, revealAll, say } from '../lib/motion.js';
 import type { ReportRow } from '../lib/report-model.js';
+import InlineCode from './InlineCode.svelte';
 
 interface Props {
   auditId: string;
@@ -351,7 +352,7 @@ onMount(() => {
       {#if row.steps.length > 0}
         <ol class="steps">
           {#each row.steps as step, i (step)}
-            <li class="step"><span class="sn" aria-hidden="true">{i + 1}</span><p>{step}</p></li>
+            <li class="step"><span class="sn" aria-hidden="true">{i + 1}</span><p><InlineCode text={step} /></p></li>
           {/each}
         </ol>
       {/if}

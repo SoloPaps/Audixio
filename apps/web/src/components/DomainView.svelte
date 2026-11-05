@@ -20,6 +20,7 @@ import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
 import { loginHref } from '../lib/nav.js';
 import { levelForScore } from '../lib/score.js';
+import InlineCode from './InlineCode.svelte';
 
 interface Props {
   auditId: string;
@@ -434,7 +435,7 @@ onMount(() => {
                   {:else if sev !== 'ok'}<span class="soon">{t('domaine.soon')}</span>{/if}
                 </div>
               </div>
-              <div class="acc" class:open={open[item.id]} id={`d-${item.id}`}><div><div class="acc-in"><p class="al">{sev === 'ok' ? t('domaine.observe') : t('domaine.actions')}</p><ul>{#each item.steps as step, stepIndex (step + String(stepIndex))}<li>{step}</li>{/each}</ul></div></div></div>
+              <div class="acc" class:open={open[item.id]} id={`d-${item.id}`}><div><div class="acc-in"><p class="al">{sev === 'ok' ? t('domaine.observe') : t('domaine.actions')}</p><ul>{#each item.steps as step, stepIndex (step + String(stepIndex))}<li><InlineCode text={step} /></li>{/each}</ul></div></div></div>
             </li>
           {/each}
         </ol>
