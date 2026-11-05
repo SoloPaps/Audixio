@@ -3345,7 +3345,7 @@
   "mq.ui.legend.one": "Note globale pondérée (1 audit)",
   "mq.ui.legend.many": "Note globale pondérée ({n} audits)",
   "mq.ui.chart.one": "Note globale pondérée, {from} : {values}.",
-  "mq.ui.chart.many": "Note globale pondérée de {from} à {to} : {values}.",
+  "mq.ui.chart.many": "Note globale pondérée du {from} au {to} : {values}.",
   "mq.ui.gsc": "Redirection vers Search Console",
   "mq.ui.terms.on": "Acceptation mise à jour",
   "mq.ui.terms.off": "Consentement statistique retiré",

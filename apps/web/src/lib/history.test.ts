@@ -190,8 +190,9 @@ describe('libellés d’axe', () => {
     ).toEqual(['9 h', '14 h', '18 h']);
   });
 
-  it('affiche l’heure d’un point isolé, pas la date', () => {
-    expect(axisLabels([at('2026-10-23T12:00:00.000Z')])).toEqual(['14 h']);
+  it('affiche la date d’un point isolé, pas l’heure (retest C5)', () => {
+    expect(axisLabels([at('2026-10-23T12:00:00.000Z')])).toEqual(['23 oct.']);
+    expect(axisLabels([at('2026-11-03T10:13:00.000Z')])).toEqual(['3 nov.']);
   });
 
   it('reste en dates courtes dès que deux jours de Paris sont visibles', () => {

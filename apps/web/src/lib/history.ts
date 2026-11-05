@@ -149,10 +149,15 @@ function parisDayKey(unixSeconds: number): string {
   return `${pick('year')}-${pick('month')}-${pick('day')}`;
 }
 
-/** Heure si un seul jour de Paris est visible, date courte sinon. */
+/**
+ * Heure si plusieurs audits tombent le même jour de Paris, date courte sinon.
+ * Un audit seul garde sa date : l’heure n’apprend rien (C5).
+ */
 export function axisLabels(unixSeconds: readonly number[]): string[] {
   const keys = unixSeconds.map(parisDayKey);
-  if (new Set(keys).size <= 1) return unixSeconds.map(axisHour);
+  if (unixSeconds.length > 1 && new Set(keys).size === 1) {
+    return unixSeconds.map(axisHour);
+  }
   return unixSeconds.map(axisDay);
 }
 
