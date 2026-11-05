@@ -55,7 +55,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  /* clip et non hidden : hidden fait du body un conteneur de défilement et casse la barre collante. */
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
 a {

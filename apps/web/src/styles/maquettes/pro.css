@@ -3489,3 +3489,7 @@ h1 .u,
     gap: 4px 12px;
   }
 }
+/* Sombre : les pastilles gardent leur fond pastel, donc un texte foncé. */
+html[data-theme="dark"] .pf .ill .ex .fm {
+  color: #0f1530;
+}

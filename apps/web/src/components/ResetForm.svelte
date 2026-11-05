@@ -51,7 +51,11 @@ onMount(() => {
   renew = params.get('etape') === 'nouveau';
   const code = params.get('erreur');
   if (code && messages[code]) error = messages[code];
-  if (params.get('envoye') === '1') sent = true;
+  if (params.get('envoye') === '1') {
+    sent = true;
+    // La page est rechargée après l’envoi : l’adresse saisie est gardée pour la phrase.
+    email ||= sessionStorage.getItem('audigy-reset-email') ?? '';
+  }
 });
 
 async function post(
@@ -90,6 +94,7 @@ async function onAsk(event: SubmitEvent): Promise<void> {
   }
   if (pending) return;
   pending = true;
+  sessionStorage.setItem('audigy-reset-email', email);
   await post('/api/auth/reinitialisation', { email });
   if (!error) sent = true;
   pending = false;
@@ -182,7 +187,7 @@ async function onSave(event: SubmitEvent): Promise<void> {
         <button class="btn btn-primary wide" type="submit" disabled={pending}>{pending ? t('reset.sending') : t('reset.submit')} {@render arrow('btn')}</button>
       </form>
       {#if sent}
-        <div class="note" role="status"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span><b>{t('reset.sent.for', { email })}</b> {t('reset.sent')}</span></div>
+        <div class="note" role="status"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 6 9 17l-5-5"/></svg><span>{#if email}<b>{t('reset.sent.for', { email })}</b> {/if}{t('reset.sent')}</span></div>
       {/if}
     </div>
   {/if}
