@@ -94,7 +94,11 @@ test('M11 : /pro à 330 px, seul le tableau de comparaison défile', async ({
 
 const AUDIT_ID = '00000000-0000-4000-8000-0000000000b5';
 
-async function verifiedReport(page: Page, score = 86): Promise<void> {
+async function verifiedReport(
+  page: Page,
+  score = 86,
+  scores: Record<string, number> = {},
+): Promise<void> {
   const body = {
     audit: {
       id: AUDIT_ID,
@@ -128,7 +132,12 @@ async function verifiedReport(page: Page, score = 86): Promise<void> {
       'qualite',
       'mobile',
       'securite',
-    ].map((domain) => ({ domain, score, coverage: 1, level: 'improve' })),
+    ].map((domain) => ({
+      domain,
+      score: scores[domain] ?? score,
+      coverage: 1,
+      level: 'improve',
+    })),
     findings: [],
   };
   await stubSession(page, 'pro');
@@ -159,4 +168,31 @@ test('M13 : badge Complet et Compact affichent le libellé et la note', async ({
   await expect(stage.locator('img')).toBeVisible();
   await expect(stage).toHaveText(/Audixio\s*:\s*B/);
   await expect(page.locator('#code')).toHaveValue(/Audixio : B/);
+});
+
+test('B-4 : /domaine Sécurité à 330 px en EN, le texte reste dans la carte de note', async ({
+  page,
+}) => {
+  await verifiedReport(page, 86, { securite: 55 });
+  await page.setViewportSize({ width: 330, height: 900 });
+  await page.goto(
+    `/domaine?id=${AUDIT_ID}&domaine=securite&theme=light&lang=en`,
+  );
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('.gcard')).toContainText(
+    'Some protections can be strengthened.',
+  );
+  const out = await page.evaluate<string[]>(`(() => {
+    const card = document.querySelector('.gcard').getBoundingClientRect();
+    const res = [];
+    for (const el of document.querySelectorAll('.gcard .gtop h2, .gcard .gtop p')) {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      for (const r of range.getClientRects())
+        if (r.width && (r.right > card.right + 0.5 || r.left < card.left - 0.5))
+          res.push(el.textContent.trim() + ' ' + Math.round(r.right) + ' > ' + Math.round(card.right));
+    }
+    return res;
+  })()`);
+  expect(out).toEqual([]);
 });

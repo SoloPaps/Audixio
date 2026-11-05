@@ -1345,6 +1345,14 @@ html:where([data-vue="domaine"]),
     opacity: 0;
   }
 }
+/* Le texte de la carte de note se replie au lieu de déborder (« strengthened » à 330 px). */
+:where(html[data-vue="domaine"]) .gtop > div {
+  min-width: 0;
+}
+:where(html[data-vue="domaine"]) .gtop h2,
+:where(html[data-vue="domaine"]) .gtop p {
+  overflow-wrap: break-word;
+}
 :where(html[data-vue="domaine"]) .gtop h2 {
   font-size: 24px;
   letter-spacing: -0.02em;
