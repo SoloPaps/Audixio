@@ -90,3 +90,81 @@ test('la redirection vers /pro garde la requête et l’ancre (question 1)', asy
   await expect(page).toHaveURL(/:4321\/pro\?theme=dark#pro-liens$/);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });
+
+/**
+ * C1 : la connexion réelle passe par le cookie (`sb-127-auth-token`
+ * httpOnly + drapeau `audixio_connecte=1`) et /api/auth/session. Aucun
+ * jeton `audigy-auth` en localStorage.
+ */
+async function signInByCookie(page: Page, plan: 'free' | 'pro'): Promise<void> {
+  await page.context().addCookies([
+    {
+      name: 'sb-127-auth-token',
+      value:
+        'base64-eyJhY2Nlc3NfdG9rZW4iOiJoZWFkZXIucGF5bG9hZC5zaWduYXR1cmUifQ',
+      url: 'http://127.0.0.1:4321',
+      httpOnly: true,
+      sameSite: 'Lax',
+    },
+    { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4321' },
+  ]);
+  await page.route('**/api/auth/session', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        access_token: session.access_token,
+        expires_at: session.expires_at,
+        expires_in: session.expires_in,
+        token_type: 'bearer',
+        refresh_token: '',
+        displayName: '',
+        user: session.user,
+      }),
+    });
+  });
+  await page.route('http://127.0.0.1:54321/**', async (route) => {
+    const request = route.request();
+    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const headers = {
+      'access-control-allow-origin': origin,
+      'access-control-allow-headers': '*',
+      'access-control-allow-methods': 'GET,POST,PATCH,OPTIONS',
+      'content-type': 'application/json',
+    };
+    if (request.method() === 'OPTIONS') {
+      await route.fulfill({ status: 204, headers });
+      return;
+    }
+    const url = request.url();
+    let body: unknown = [];
+    if (url.includes('/auth/v1/user')) body = session.user;
+    else if (url.includes('/rest/v1/profiles')) {
+      const row = { id: USER_ID, plan };
+      body = (request.headers().accept ?? '').includes('pgrst.object')
+        ? row
+        : [row];
+    }
+    await route.fulfill({ status: 200, headers, body: JSON.stringify(body) });
+  });
+}
+
+test('C1 : un Pro connecté par cookie (sans localStorage) va sur /compte', async ({
+  page,
+}) => {
+  await signInByCookie(page, 'pro');
+  await page.goto('/passer-pro?from=sites#offre');
+  await expect(page).toHaveURL(/\/compte(?:[?#].*)?$/);
+  expect(
+    await page.evaluate(() => localStorage.getItem('audigy-auth')),
+  ).toBeNull();
+});
+
+test('C1 : un gratuit connecté par cookie va sur /pro avec la requête', async ({
+  page,
+}) => {
+  await signInByCookie(page, 'free');
+  await page.goto('/passer-pro?from=sites#offre');
+  await expect(page).toHaveURL(/:4321\/pro\?from=sites#offre$/);
+});
