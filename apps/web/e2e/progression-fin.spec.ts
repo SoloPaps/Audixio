@@ -71,3 +71,69 @@ for (const lang of ['fr', 'en'] as const) {
     );
   });
 }
+
+async function signedInAudit(page: Page, siteVerified: boolean): Promise<void> {
+  await stubSession(page, 'free');
+  await page.route('**/api/audits/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(payload('done', siteVerified)),
+    });
+  });
+}
+
+for (const lang of ['fr', 'en'] as const) {
+  test(`compte connecté, site vérifié : « Diagnostic complet · session active » (${lang})`, async ({
+    page,
+  }) => {
+    await signedInAudit(page, true);
+    if (lang === 'en') {
+      await page.goto('/bienvenue?theme=light');
+      await toEnglish(page);
+    }
+    await page.goto(`/progression?id=${AUDIT_ID}&theme=light`);
+    await expect(page.locator('body')).toHaveClass(/\bdone\b/, {
+      timeout: 15_000,
+    });
+    await expect(page.locator('.eyebrow.intro')).toHaveText(
+      lang === 'en'
+        ? 'Full diagnosis · active session'
+        : 'Diagnostic complet · session active',
+    );
+    await expect(page.locator('#leadT')).toHaveText(
+      lang === 'en'
+        ? 'The analysis is finished. Your full report, with the priorities and the action plan, is waiting.'
+        : 'L’analyse est terminée. Votre rapport complet, avec les priorités et le plan d’action, vous attend.',
+    );
+  });
+
+  test(`compte connecté, site non vérifié : pas de « diagnostic complet » (${lang})`, async ({
+    page,
+  }) => {
+    await signedInAudit(page, false);
+    if (lang === 'en') {
+      await page.goto('/bienvenue?theme=light');
+      await toEnglish(page);
+    }
+    await page.goto(`/progression?id=${AUDIT_ID}&theme=light`);
+    await expect(page.locator('body')).toHaveClass(/\bdone\b/, {
+      timeout: 15_000,
+    });
+    await expect(page.locator('.eyebrow.intro')).toHaveText(
+      lang === 'en'
+        ? 'Partial diagnosis · site not verified'
+        : 'Diagnostic partiel · site non vérifié',
+    );
+    await expect(page.locator('#leadT')).toHaveText(
+      lang === 'en'
+        ? 'The analysis is finished. Your report and its action plan are waiting; verify the site to open Security, Privacy and DNS / email.'
+        : 'L’analyse est terminée. Votre rapport et son plan d’action vous attendent ; vérifiez le site pour ouvrir Sécurité, Vie privée et DNS / e-mail.',
+    );
+    await expect(
+      page.getByText(
+        /full diagnosis|diagnostic complet|rapport complet|full report/i,
+      ),
+    ).toHaveCount(0);
+  });
+}
