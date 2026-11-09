@@ -4,6 +4,24 @@ import { t } from '../i18n/index.js';
 import Canon from '../layouts/Canon.astro';
 import { gradeForScore } from '../lib/grade.js';
 
+// Textes des scripts inline (rosace, copie) : catalogue FR, EN lu à l’exécution.
+const messages = {
+  'mq.e.046': t('mq.e.046'),
+  'mq.e.063': t('mq.e.063'),
+  'mq.e.067': t('mq.e.067'),
+  'mq.p.039': t('mq.p.039'),
+  'mq.ax.copied': t('mq.ax.copied'),
+  'mq.ax.copied.long': t('mq.ax.copied.long'),
+  'mq.e.rose.tested': t('mq.e.rose.tested', { n: '{n}' }),
+  'mq.e.rose.title': t('mq.e.rose.title', {
+    grade: '{grade}',
+    n: '{n}',
+    total: '{total}',
+  }),
+  'mq.e.rose.desc': t('mq.e.rose.desc', { summary: '{summary}' }),
+  'mq.e.rose.untested': t('mq.e.rose.untested', { list: '{list}' }),
+};
+
 // Barème officiel (gradeForScore, source unique) : note minimale de chaque
 // lettre, lue par la rosace de l’exemple. Plus de barème propre à la page.
 const gradeFloor: Record<string, number> = {};
@@ -16,6 +34,7 @@ for (let score = 100; score >= 0; score -= 1) {
 <Canon vue="exemple" title={t('mq.meta.exemple.title')} description={t('mq.meta.exemple.desc')} robots="index, follow">
 
 <main id="contenu" tabindex="-1">
+<script type="application/json" id="i18n-msg" set:html={JSON.stringify(messages)}></script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="i-perf" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
 <symbol id="i-seo" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
@@ -124,7 +143,10 @@ if(!R&&matchMedia('(hover:hover) and (min-width:900px)').matches){var mx=0,my=0,
  function q(){if(!raf)raf=requestAnimationFrame(ap)}
  addEventListener('pointermove',function(e){mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;q()},{passive:true});addEventListener('scroll',function(){sy=Math.min(scrollY,700);q()},{passive:true})}
 /* copy helper */
-AX.copy=function(btn,txt,msg){function done(){btn.classList.add('ok');var l=btn.querySelector('.bl'),o=l.textContent;l.textContent='Copié';AX.say(msg||'Copié dans le presse-papiers',true);setTimeout(function(){l.textContent=o;btn.classList.remove('ok')},1800)}
+var MSG=JSON.parse(document.getElementById('i18n-msg').textContent);
+function L(k,p){var s=MSG[k];try{if(localStorage.getItem('audigy-locale')==='en'){var e=window.__audigy_en||JSON.parse(localStorage.getItem('audigy-en')||'null');if(e&&e[k])s=e[k]}}catch(x){}return p?s.replace(/\{(\w+)\}/g,function(m,n){return n in p?String(p[n]):m}):s}
+AX.L=L;
+AX.copy=function(btn,txt,msg){function done(){btn.classList.add('ok');var l=btn.querySelector('.bl'),o=l.textContent;l.textContent=L('mq.ax.copied');AX.say(msg||L('mq.ax.copied.long'),true);setTimeout(function(){l.textContent=o;btn.classList.remove('ok')},1800)}
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,done);else done()};
 d.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){AX.copy(b,b.dataset.copy,b.dataset.msg)})});
 AX.busy=function(b,ms,cb){b.setAttribute('aria-busy','true');setTimeout(function(){b.removeAttribute('aria-busy');cb&&cb()},R?150:ms)};
@@ -337,10 +359,15 @@ var clamp=function(v,a,b){return Math.max(a,Math.min(b,v));};
 var easeOut=function(x){return 1-Math.pow(1-x,3);};
 var easeBack=function(x){var c1=1.35,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2);};
 
-var summary=scored.map(function(c){return c.short+' '+gradeOf(c.score);}).join(', ')+(cards.length>scored.length?', '+cards.filter(function(c){return c.score===null;}).map(function(c){return c.short;}).join(', ')+' non testé':'');
+var L=window.AX.L;
 var svg=S('svg',{viewBox:'0 0 500 500',role:'img','aria-labelledby':'roseT roseD'},host);
-S('title',{id:'roseT'},svg).textContent='Note globale '+G+', moyenne des '+scored.length+' domaines testés sur '+cards.length;
-S('desc',{id:'roseD'},svg).textContent='Rose des scores par domaine : '+summary+'.';
+var roseT=S('title',{id:'roseT'},svg),roseD=S('desc',{id:'roseD'},svg);
+function roseText(){
+  var summary=scored.map(function(c){return c.short+' '+gradeOf(c.score);}).join(', ')+(cards.length>scored.length?', '+L('mq.e.rose.untested',{list:cards.filter(function(c){return c.score===null;}).map(function(c){return c.short;}).join(', ')}):'');
+  roseT.textContent=L('mq.e.rose.title',{grade:G,n:scored.length,total:cards.length});
+  roseD.textContent=L('mq.e.rose.desc',{summary:summary});
+}
+roseText();
 var defs=S('defs',{},svg);
 var lg=S('linearGradient',{id:'gLetter',x1:'0',y1:'0',x2:'1',y2:'1'},defs);
 S('stop',{offset:'0','stop-color':'#2B3B85'},lg);S('stop',{offset:'1','stop-color':'#7091E6'},lg);
@@ -393,7 +420,7 @@ S('circle',{cx:C,cy:C,r:RIN-15,fill:'none',stroke:'rgba(61,82,160,.18)','stroke-
 var cLabel=S('text',{x:C,y:C-44,'class':'c-label'},disc);
 var cGrade=S('text',{x:C,y:C+2,'class':'c-grade',fill:'url(#gLetter)'},disc);
 var cScore=S('text',{x:C,y:C+46,'class':'c-score'},disc);
-cLabel.textContent='Note globale';
+cLabel.textContent=L('mq.e.046');
 
 /* état + rendu */
 var prog=cards.map(function(){return 0;}),hov=cards.map(function(){return 0;});
@@ -417,12 +444,12 @@ function drawAll(){
 function pop(el){el.classList.remove('pop');el.getBoundingClientRect();el.classList.add('pop');}
 function setCenter(i){
   var c=i<0?null:cards[i];
-  cLabel.textContent=c?c.short.toUpperCase():'Note globale';
+  cLabel.textContent=c?c.short.toUpperCase():L('mq.e.046');
   if(!c||c.score!==null){
     var gr=c?gradeOf(c.score):G;
     cGrade.textContent=gr;cGrade.setAttribute('fill',c?INK[gr]:'url(#gLetter)');
-    cScore.textContent=c?(c.el.classList.contains('act')?'Ouvert ci-dessous':'Dans votre rapport'):scored.length+' domaines testés';
-  }else{cGrade.textContent='—';cGrade.setAttribute('fill','#8697C4');cScore.textContent='Non testé';}
+    cScore.textContent=c?(c.el.classList.contains('act')?L('mq.e.063'):L('mq.e.067')):L('mq.e.rose.tested',{n:scored.length});
+  }else{cGrade.textContent='—';cGrade.setAttribute('fill','#8697C4');cScore.textContent=L('mq.p.039');}
   pop(cGrade);pop(cScore);
 }
 
@@ -433,10 +460,10 @@ function applyIntro(t){
   cards.forEach(function(c,i){prog[i]=easeBack(clamp((t-SWEEP*i/N+80)/GROW,0,1));});
   sweepA=-90+360*clamp(t/SWEEP,0,1);
   sweepO=t<SWEEP?clamp(t/150,0,1):1-clamp((t-SWEEP)/380,0,1);
-  cScore.textContent=scored.length+' domaines testés';cScore.setAttribute('opacity',easeOut(clamp((t-400)/(TOTAL-700),0,1)));
+  cScore.textContent=L('mq.e.rose.tested',{n:scored.length});cScore.setAttribute('opacity',easeOut(clamp((t-400)/(TOTAL-700),0,1)));
   var showG=t>TOTAL-650;
   cGrade.textContent=showG?G:'';
-  cLabel.textContent='Note globale';
+  cLabel.textContent=L('mq.e.046');
   drawAll();
 }
 function frame(now){
@@ -449,10 +476,18 @@ function finalize(){
   cancelAnimationFrame(raf);
   ringP=1;prog=prog.map(function(){return 1;});sweepO=0;done=true;
   cGrade.setAttribute('fill','url(#gLetter)');
-  cGrade.textContent=G;cScore.textContent=scored.length+' domaines testés';cScore.setAttribute('opacity',1);cLabel.textContent='Note globale';
+  cGrade.textContent=G;cScore.textContent=L('mq.e.rose.tested',{n:scored.length});cScore.setAttribute('opacity',1);cLabel.textContent=L('mq.e.046');
   drawAll();
   if(!started){started=true;}else{pop(cGrade);}
 }
+/* changement de langue sans rechargement : titres et centre suivent */
+var roseLang=document.documentElement.lang;
+new MutationObserver(function(){
+  var lang=document.documentElement.lang;
+  if(lang===roseLang)return;
+  roseLang=lang;roseText();
+  if(done)setCenter(active);else cLabel.textContent=L('mq.e.046');
+}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 function start(){
   if(started)return;started=true;
   if(reduce){finalize();return;}
