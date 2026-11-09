@@ -1236,6 +1236,6 @@ html[data-progress-empty] #progress-empty {
 html[data-progress-empty] .eyebrow,
 html[data-progress-empty] .stage,
 html[data-progress-empty] .prog,
-html[data-progress-empty] section[aria-labelledby='t-dom'] {
+html[data-progress-empty] section[aria-labelledby="t-dom"] {
   display: none;
 }
