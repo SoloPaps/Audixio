@@ -72,7 +72,7 @@ test('/mentions-legales EN : le toast de copie est en anglais', async ({
 
 test('/progression EN : les compteurs sont en anglais', async ({ page }) => {
   test.setTimeout(60_000);
-  await page.goto('/progression?theme=light');
+  await page.goto('/progression?maquette=1&theme=light');
   await toEnglish(page);
   const counts = page.locator('#counts');
   await expect(counts).toContainText('in progress');
