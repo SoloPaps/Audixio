@@ -1,18 +1,12 @@
+import { type Grade, gradeForScore as gradeFromDb } from '@audigy/db';
 import { t } from '../i18n/index.js';
 import { levelForScore, levelLabel } from './score.js';
 
-export type Grade = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+export type { Grade } from '@audigy/db';
 
-/** Seuils alignés sur les niveaux : 80 = bien, 50 = à améliorer. */
-export function gradeForScore(score: number | null): Grade | null {
-  if (score === null || !Number.isFinite(score)) return null;
-  if (score >= 90) return 'A';
-  if (score >= 80) return 'B';
-  if (score >= 65) return 'C';
-  if (score >= 50) return 'D';
-  if (score >= 35) return 'E';
-  return 'F';
-}
+/** Barème unique de `@audigy/db` (`GRADE_THRESHOLDS`). */
+export const gradeForScore: (score: number | null) => Grade | null =
+  gradeFromDb;
 
 export interface GradeCopy {
   grade: Grade;
