@@ -3047,3 +3047,66 @@ h1 .u,
 .wm {
   text-transform: uppercase;
 }
+
+/* Accueil sombre : couleurs seulement (palette complète hors graphe d’accueil). */
+html[data-theme="dark"][data-vue="accueil"] {
+  --dk-raised: #171d38;
+  --dk-card: #1c2340;
+  --dk-card-2: #232c50;
+  --dk-line: #3d4d7a;
+  --dk-line-soft: #2c3860;
+  --dk-line-hi: #6577b0;
+  --dk-violet: #c7b8ff;
+  --dk-mint: #8ee4b0;
+  --dk-mint-bg: #123226;
+  --dk-amber: #f6c56b;
+  --dk-amber-bg: #3a2a10;
+  --dk-link: #a9c1ff;
+  --dk-link-hi: #d6e2ff;
+}
+html[data-theme="dark"][data-vue="accueil"]
+  :is(.kicker, .fin2-k, .s-head .eyebrow) {
+  color: var(--dk-violet);
+}
+html[data-theme="dark"][data-vue="accueil"] .section.dark {
+  background-color: var(--dk-raised);
+  box-shadow: inset 0 0 0 1px var(--dk-line-soft);
+}
+html[data-theme="dark"][data-vue="accueil"] .steps .step {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+html[data-theme="dark"][data-vue="accueil"] .steps .step-n {
+  background-color: var(--dk-card);
+  border-color: var(--dk-line-hi);
+  color: var(--dk-link-hi);
+}
+html[data-theme="dark"][data-vue="accueil"] .lcards a {
+  background-color: var(--dk-card);
+  background-image: none;
+  border-color: var(--dk-line);
+  color: var(--ink);
+}
+html[data-theme="dark"][data-vue="accueil"]
+  .lcards
+  a:is(:hover, :focus-visible) {
+  border-color: var(--dk-line-hi);
+  background-color: var(--dk-card-2);
+}
+html[data-theme="dark"][data-vue="accueil"] .lcards .ic {
+  background-color: var(--dk-card-2);
+}
+html[data-theme="dark"][data-vue="accueil"] .lcards svg {
+  stroke: var(--dk-link);
+}
+html[data-theme="dark"][data-vue="accueil"] .find.ok {
+  background-color: var(--dk-mint-bg);
+  color: var(--dk-mint);
+}
+html[data-theme="dark"][data-vue="accueil"] .find.warn {
+  background-color: var(--dk-amber-bg);
+  color: var(--dk-amber);
+}
+html[data-theme="dark"][data-vue="accueil"] .find strong {
+  color: inherit;
+}

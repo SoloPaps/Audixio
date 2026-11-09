@@ -1,0 +1,119 @@
+/*
+ * Thème sombre, palette enrichie (owner, 6 nov.) : couleurs seulement.
+ * Modèle validé : fond navy, carte un cran plus claire, bordure fine claire,
+ * coins arrondis (« En pratique », charte « Ce que nous ne faisons jamais »,
+ * modale Connexion). Les sélecteurs :root[…] passent devant theme-dark.css
+ * et les maquettes de page sans !important, quel que soit l’ordre des CSS.
+ */
+
+/* 1. Nuances : quatre plans de fond, trois bordures, accents non bleus. */
+:root[data-theme="dark"]:is([data-vue], [data-board]) {
+  --dk-bg: #12162a;
+  --dk-raised: #171d38;
+  --dk-card: #1c2340;
+  --dk-card-2: #232c50;
+  --dk-elev: #2b3660;
+  --dk-line: #3d4d7a;
+  --dk-line-soft: #2c3860;
+  --dk-line-hi: #6577b0;
+  --dk-violet: #c7b8ff;
+  --dk-mint: #8ee4b0;
+  --dk-mint-bg: #123226;
+  --dk-amber: #f6c56b;
+  --dk-amber-bg: #3a2a10;
+  --dk-peach: #f5b8a0;
+  --dk-link: #a9c1ff;
+  --dk-link-hi: #d6e2ff;
+  --line: rgba(173, 187, 218, 0.24);
+  --line-strong: rgba(173, 187, 218, 0.4);
+}
+
+/* Libellés de section : une teinte lilas plutôt que le bleu de partout. */
+:root[data-theme="dark"]:is([data-vue], [data-board])
+  :is(.kicker, .fin2-k, .s-head .eyebrow) {
+  color: var(--dk-violet);
+}
+
+/* 2. Panneaux de section : un plan au-dessus du fond, bordure discrète.
+   Ombre interne plutôt que border : aucune hauteur ajoutée (même géométrie
+   qu’en clair, theme-geometry.spec). */
+:root[data-theme="dark"][data-vue="accueil"] .section.dark {
+  background-color: var(--dk-raised);
+  box-shadow: inset 0 0 0 1px var(--dk-line-soft);
+}
+
+/* « En pratique » : les étapes restent ouvertes, comme en clair (le fond
+   ajouté par theme-dark.css collait le texte aux bords, sans marge). */
+:root[data-theme="dark"][data-vue="accueil"] .steps .step {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+:root[data-theme="dark"][data-vue="accueil"] .steps .step-n {
+  background-color: var(--dk-card);
+  border-color: var(--dk-line-hi);
+  color: var(--dk-link-hi);
+}
+
+/* 3. Cartes : fond un cran plus clair, bordure fine claire. */
+:root[data-theme="dark"]:is([data-vue], [data-board])
+  :is(.lcards a, a.lk, .fin2-viz, .request-card) {
+  background-color: var(--dk-card);
+  background-image: none;
+  border-color: var(--dk-line);
+  color: var(--ink);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board])
+  :is(.lcards a, a.lk):is(:hover, :focus-visible) {
+  border-color: var(--dk-line-hi);
+  background-color: var(--dk-card-2);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board]) .lcards .ic {
+  background-color: var(--dk-card-2);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board]) .lcards svg {
+  stroke: var(--dk-link);
+}
+
+/* Bordures claires héritées du thème clair (#adbbda, blanc 90 %). */
+:root[data-theme="dark"]:is([data-vue], [data-board])
+  :is(.fin2, .brief, .fict, .report-preview) {
+  border-color: var(--dk-line);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board]) .fin2 {
+  background-image: none;
+  background-color: var(--dk-raised);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board]) .fin2-viz li {
+  border-color: var(--dk-line-soft);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board]) .fin2-grade .L {
+  background-color: var(--dk-card-2);
+  color: var(--dk-link-hi);
+}
+
+/* 4. Aperçu de l’accueil : constats colorés. */
+:root[data-theme="dark"][data-vue="accueil"] .find.ok {
+  background-color: var(--dk-mint-bg);
+  color: var(--dk-mint);
+}
+:root[data-theme="dark"][data-vue="accueil"] .find.warn {
+  background-color: var(--dk-amber-bg);
+  color: var(--dk-amber);
+}
+:root[data-theme="dark"][data-vue="accueil"] .find strong {
+  color: inherit;
+}
+
+/* 5. Sélecteur Rien / À vérifier / À corriger : le rail garde son fond. */
+:root[data-theme="dark"]:is([data-vue], [data-board]) .seg {
+  background-color: var(--dk-card-2);
+  box-shadow: inset 0 0 0 1px var(--dk-line-soft);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board]) .seg label {
+  color: var(--ink-2);
+}
+:root[data-theme="dark"]:is([data-vue], [data-board])
+  .seg
+  label:has(input:checked) {
+  color: #10183a;
+}

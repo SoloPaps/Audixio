@@ -613,28 +613,6 @@ html[data-theme="dark"][data-board] .cap .st {
   border-color: #3d4d7a;
 }
 
-html[data-theme="dark"][data-vue="score"],
-html[data-theme="dark"][data-vue="partage"],
-html[data-theme="dark"][data-vue="verifier"] {
-  --ink: #f0f2f5;
-  --ink-2: #c5d0ea;
-  --line: #3d4d7a;
-  --paper: #1c2340;
-  --surface: #243056;
-  --score-good: #9ec0ff;
-  --score-improve: #d6e2ff;
-  --score-problem: #ffb4ab;
-  --score-untested: #c5d0ea;
-}
-
-html[data-theme="dark"][data-vue="score"] body,
-html[data-theme="dark"][data-vue="partage"] body,
-html[data-theme="dark"][data-vue="verifier"] body {
-  background-color: #12162a;
-  background-image: none;
-  color: #f0f2f5;
-}
-
 html[data-theme="dark"][data-vue] .score-page .reading .share-banner {
   background-color: #243056;
   background-image: none;
@@ -687,24 +665,6 @@ html[data-theme="dark"][data-vue] .verifier-page .vcard button {
   border-color: #3d52a0;
 }
 
-html[data-theme="dark"][data-vue="verifier"] .drop,
-html[data-theme="dark"][data-vue="verifier"] .qr-card,
-html[data-theme="dark"][data-vue="verifier"] .stamp .kicker {
-  background-color: #1c2340;
-  background-image: none;
-  border-color: #3d4d7a;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue="verifier"] .drop.is-over {
-  border-color: #7091e6;
-}
-
-html[data-theme="dark"][data-vue="verifier"] .qr {
-  background-color: #1c2340;
-  color: #f0f2f5;
-}
-
 html[data-theme="dark"][data-vue] .session-wall {
   background-color: #1c2340;
   background-image: none;
@@ -737,15 +697,6 @@ html[data-theme="dark"][data-board] .btn-ghost {
   background-image: none;
   color: #d6e2ff;
   border-color: #8ea0c8;
-}
-
-html[data-theme="dark"][data-board="vide"] .empty-art {
-  color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-board="vide"] .empty-art span:nth-child(3) {
-  background-color: #243056;
-  background-image: none;
 }
 
 /* Les maquettes forcent un dégradé clair sur le hero, après ce fichier. */
@@ -847,65 +798,6 @@ html[data-theme="dark"][data-board] .eco-line a {
 html[data-theme="dark"] .axn-burger i b {
   background-color: currentColor;
 }
-
-/* Aperçu du prompt IA (brief) : couleurs seulement. */
-html[data-theme="dark"][data-vue="brief"] .mdbody {
-  --pv-title: #f0f2f5;
-  --pv-sec: #d6e2ff;
-  --pv-bar: #a9bbf3;
-  --pv-mark: #8fa2d8;
-  --pv-text: #e4e8f2;
-  --pv-key: #c5d4ff;
-  --pv-note: #c5d0ea;
-  --pv-fix: #f6c56b;
-  --pv-fix-bg: #3a2a10;
-  --pv-check: #d6e2ff;
-  --pv-check-bg: #26325c;
-}
-/* Les lignes sont des div : la règle sombre générique leur imposerait --text. */
-html[data-theme="dark"][data-vue="brief"] .mdbody .l-h1 {
-  color: var(--pv-title);
-}
-html[data-theme="dark"][data-vue="brief"] .mdbody .l-h2 {
-  color: var(--pv-sec);
-  border-left-color: var(--pv-bar);
-}
 html[data-theme="dark"][data-vue="brief"] .mdbody :is(.l-b, .l-d) {
   color: var(--pv-text);
-}
-html[data-theme="dark"][data-vue="brief"] .mdbody .l-n {
-  color: var(--pv-note);
-}
-html[data-theme="dark"][data-vue="brief"] .mdbody .l-m {
-  color: var(--pv-mark);
-}
-html[data-theme="dark"][data-vue="brief"] .mdbody .l-k {
-  color: var(--pv-key);
-}
-html[data-theme="dark"][data-vue="brief"] .mdbody .l-tag.fix {
-  color: var(--pv-fix);
-  background-color: var(--pv-fix-bg);
-}
-html[data-theme="dark"][data-vue="brief"] .mdbody .l-tag.check {
-  color: var(--pv-check);
-  background-color: var(--pv-check-bg);
-}
-
-/*
- * QA Mo B4 : l’aperçu du badge montre le code tel qu’il s’affichera sur le
- * site (couleurs en ligne, pensées pour une page claire). Le fond d’aperçu
- * reste clair et le libellé reprend la couleur en ligne du lien, au lieu du
- * texte clair du thème sombre (presque blanc sur le badge blanc).
- */
-html[data-theme="dark"][data-vue="badge"] .stage {
-  background-color: #fff;
-  background-image: repeating-linear-gradient(
-    45deg,
-    #f7f5fc 0 12px,
-    #fff 12px 24px
-  );
-  border-color: #8ea0c8;
-}
-html[data-theme="dark"][data-vue="badge"] .stage a > span {
-  color: inherit;
 }
