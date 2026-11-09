@@ -83,7 +83,12 @@ describe('fragments du brief', () => {
       ).toBe(false);
       expect(text.toLocaleLowerCase('fr-FR'), key).not.toContain('clé');
     }
-    expect(fr['brief.terminal.fix']).toBe('Fix');
+    // Plus d’anglais dans le brief français : « Corriger », pas « Fix ».
+    expect(fr['brief.terminal.fix']).toBe('Corriger');
+    expect(fr['brief.allFix']).toBe('Tous à corriger');
+    for (const key of KEYS) {
+      expect(fr[key], key).not.toMatch(/\bfix\b/i);
+    }
     expect(fr['brief.copied']).toBe('Brief copié');
     expect(fr['brief.copyFail']).toBe(
       'La copie a échoué. Sélectionnez le texte.',
