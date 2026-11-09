@@ -1916,6 +1916,28 @@ h1 {
 .ok p {
   font-weight: 600;
 }
+.deja {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.deja[hidden],
+.wl.pro form {
+  display: none;
+}
+.deja p {
+  font-weight: 600;
+}
+.deja small {
+  display: block;
+  color: var(--muted);
+  font-weight: 500;
+  margin: 4px 0 14px;
+}
+.deja .pbtn {
+  min-height: 48px;
+  text-decoration: none;
+}
 .ok small {
   display: block;
   color: var(--muted);
@@ -3513,4 +3535,12 @@ h1 .u,
 /* Sombre : les pastilles gardent leur fond pastel, donc un texte foncé. */
 html[data-theme="dark"] .pf .ill .ex .fm {
   color: #0f1530;
+}
+.deja .okc path {
+  stroke-dashoffset: 0;
+}
+/* Sombre : la pastille verte de confirmation garde son fond (couleurs seules). */
+html[data-theme="dark"] .wl .okc {
+  background: var(--ok-bg);
+  color: var(--ok);
 }
