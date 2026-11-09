@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { evolutionChart } from './history-chart.js';
+import { evolutionChart, GRADE_B_THRESHOLD } from './history-chart.js';
 
 describe('evolutionChart', () => {
   it('reproduit la courbe de démonstration entre 70 et 90', () => {
@@ -43,25 +43,30 @@ describe('evolutionChart', () => {
   });
 });
 
-describe('seuil rang B (QA Mo M4)', () => {
-  it('trace la ligne 70 à la hauteur de 70, pas sur la graduation 60', () => {
+describe('seuil rang B (QA Mo M4, M1 bug_22d8d4f1 : B = 80)', () => {
+  it('trace la ligne 80 à la hauteur de 80, entre les graduations 75 et 90', () => {
     const chart = evolutionChart([
       { label: '15 oct.', value: 64 },
       { label: '26 oct.', value: 78 },
       { label: '4 nov.', value: 86 },
     ]);
+    expect(GRADE_B_THRESHOLD).toBe(80);
     expect(chart?.min).toBe(60);
-    const bottom = Number(chart?.ticks[0]?.y);
+    expect(chart?.max).toBe(90);
     const mid = Number(chart?.ticks[1]?.y);
+    const top = Number(chart?.ticks[2]?.y);
     const y = Number(chart?.threshold.y);
     expect(chart?.threshold.visible).toBe(true);
-    expect(y).toBeLessThan(bottom);
-    expect(y).toBeGreaterThan(mid);
-    // 64 est sous le seuil : son point est plus bas (y plus grand) que la ligne.
+    expect(y).toBeLessThan(mid);
+    expect(y).toBeGreaterThan(top);
+    // 64 et 78 sont sous le seuil B (rang C) : leurs points sont plus bas
+    // (y plus grand) que la ligne ; 86 (rang B) est au-dessus.
     expect(chart?.marks[0]?.y).toBeGreaterThan(y);
+    expect(chart?.marks[1]?.y).toBeGreaterThan(y);
+    expect(chart?.marks[2]?.y).toBeLessThan(y);
   });
 
-  it('masque le seuil quand 70 sort de l’échelle', () => {
+  it('masque le seuil quand 80 sort de l’échelle', () => {
     const chart = evolutionChart([
       { label: 'mars', value: 20 },
       { label: 'avril', value: 30 },

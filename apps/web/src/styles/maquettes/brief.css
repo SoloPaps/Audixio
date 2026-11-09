@@ -841,6 +841,68 @@
   color: var(--muted);
   margin-top: 0.6rem;
 }
+:where(html[data-vue="brief"]) .mdbody {
+  /* Aperçu du prompt IA structuré (décision du 6 nov.) */
+  --pv-title: #1e2a55;
+  --pv-sec: #3d52a0;
+  --pv-bar: #7091e6;
+  --pv-mark: #6b7bb5;
+  --pv-text: #1e2a55;
+  --pv-key: #3d52a0;
+  --pv-note: #4a5585;
+  --pv-fix: #9a3d06;
+  --pv-fix-bg: #fdf0e1;
+  --pv-check: #2f4290;
+  --pv-check-bg: #e6ecfb;
+}
+:where(html[data-vue="brief"]) .mdbody .l-gap {
+  height: 0.6rem;
+  padding: 0;
+}
+:where(html[data-vue="brief"]) .mdbody .l-h1 {
+  color: var(--pv-title);
+}
+:where(html[data-vue="brief"]) .mdbody .l-h2 {
+  margin-top: 0.4rem;
+  color: var(--pv-sec);
+  border-left-color: var(--pv-bar);
+}
+:where(html[data-vue="brief"]) .mdbody .l-b {
+  color: var(--pv-text);
+  font-weight: 600;
+  padding-left: 0.9rem;
+}
+:where(html[data-vue="brief"]) .mdbody .l-d {
+  color: var(--pv-text);
+  padding-left: 2.2rem;
+}
+:where(html[data-vue="brief"]) .mdbody .l-m {
+  color: var(--pv-mark);
+  white-space: pre;
+}
+:where(html[data-vue="brief"]) .mdbody .l-k {
+  color: var(--pv-key);
+  font-weight: 700;
+}
+:where(html[data-vue="brief"]) .mdbody .l-tag {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+:where(html[data-vue="brief"]) .mdbody .l-tag.fix {
+  color: var(--pv-fix);
+  background: var(--pv-fix-bg);
+}
+:where(html[data-vue="brief"]) .mdbody .l-tag.check {
+  color: var(--pv-check);
+  background: var(--pv-check-bg);
+}
+:where(html[data-vue="brief"]) .mdbody .l-n {
+  color: var(--pv-note);
+}
 :where(html[data-vue="brief"]) .l-empty {
   padding: 2rem;
   text-align: center;

@@ -122,7 +122,7 @@ import Canon from '../layouts/Canon.astro';
     </ul>
   </section>
 </div><p id="home-back" hidden><a href="/">{t('progress.home')}</a></p><p id="fail-back" hidden><a id="fail-link" href="/audit-echoue">{t('progress.retry')}</a></p></main>
-<dialog id="notify" aria-labelledby="dlgT">
+<dialog id="notify" aria-labelledby="dlgT" data-sent={t('progress.notify.sent')} data-done={t('progress.notify.done')}>
   <div class="dlg" id="dlg">
     <div class="dlg-top">
       <span class="dlg-ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg></span>
@@ -132,7 +132,7 @@ import Canon from '../layouts/Canon.astro';
     <p>{t('progress.notify.body')}</p>
     <form id="notifyForm" novalidate>
       <label for="email">{t('progress.notify.email')}</label>
-      <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="vous@exemple.fr" required aria-describedby="emailErr">
+      <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder={t('progress.notify.placeholder')} required aria-describedby="emailErr">
       <p id="emailErr" role="alert">{t('progress.notify.invalid')}</p>
       <button class="btn btn-primary" type="submit">{t('progress.notify.submit')}</button>
     </form>
@@ -152,7 +152,6 @@ var $=function(s,c){return (c||document).querySelector(s);};
 var $$=function(s,c){return [].slice.call((c||document).querySelectorAll(s));};
 var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var hasG=!!window.gsap;
-var STATUS={done:'Analysé',active:'En cours',next:'Prochain',wait:'En attente',off:'Non testé'};
 
 /* ===== API d'intégration : branchez votre back-end ici =====
    window.audixioProgress.set(72)                      // pourcentage 0-100
@@ -174,8 +173,8 @@ form.addEventListener('submit',function(e){
   err.style.display=ok?'none':'block';mail.setAttribute('aria-invalid',!ok);
   if(!ok){mail.focus();return;}
   /* TODO : envoyer mail.value à votre back-end (ex. fetch('/api/notify',{method:'POST',...})) */
-  $('#dlg').classList.add('sent');$('#dlgT').textContent='C’est noté !';
-  $('#notifyBtn').textContent='Notification activée';
+  $('#dlg').classList.add('sent');$('#dlgT').textContent=dlg.dataset.sent;
+  $('#notifyBtn').textContent=dlg.dataset.done;
   setTimeout(function(){if(dlg.open)dlg.close();},1600);
 });
 

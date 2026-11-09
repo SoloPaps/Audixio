@@ -1799,6 +1799,8 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   if (select && selected) select.value = selected;
   if (ssl && selected)
     ssl.textContent = t('mq.ui.ssl', { n: Number(selected) });
+  // L’éditeur (#drop) reprend la valeur enregistrée, comme le résumé.
+  paintDropEditor(root, Number(row.score_drop_points));
   if (drop && row.score_drop_points === 0)
     drop.textContent = t('mq.ui.drop.letter');
   else if (drop && row.score_drop_points !== 10) {
@@ -1817,6 +1819,18 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
     gate?.classList.remove('locked');
     root.querySelector('#fPro')?.removeAttribute('inert');
   }
+}
+
+/** Curseur du seuil de baisse : valeur enregistrée si elle tient dans ses bornes. */
+function paintDropEditor(root: HTMLElement, points: number): void {
+  const range = root.querySelector<HTMLInputElement>('#drop');
+  if (!range || !Number.isInteger(points)) return;
+  const min = Number(range.min || 1);
+  const max = Number(range.max || 30);
+  if (points < min || points > max) return;
+  range.value = String(points);
+  const output = root.querySelector('#dropv');
+  if (output) output.textContent = range.value;
 }
 
 const CADENCE_RADIO: Record<string, string> = {
