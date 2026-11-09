@@ -7,9 +7,10 @@ type View = {
 };
 
 /**
- * Le score sur 100 accompagne la lettre là où seule la lettre s’affichait :
- * domaines du rapport, carte de note d’un domaine, voisins d’un domaine
- * verrouillé, PDF (couverture + tableau) et mesure Sécurité de /sites.
+ * Le score chiffré accompagne la lettre là où seule la lettre s’affichait :
+ * domaines du rapport (chiffre seul, la barre donne l’échelle), carte de note
+ * d’un domaine, voisins d’un domaine verrouillé, PDF (couverture + tableau) et
+ * mesure Sécurité de /sites (format « 58/100 »).
  */
 
 const AUDIT_ID = '00000000-0000-4000-8000-0000000000aa';
@@ -122,10 +123,10 @@ for (const theme of ['light', 'dark'] as const) {
     await install(page);
     await page.goto(`/rapport?id=${AUDIT_ID}&theme=${theme}`);
     const perf = page.locator('#domaine-performance');
-    await expect(perf.locator('[data-score-num]')).toHaveText('58/100');
+    await expect(perf.locator('[data-score-num]')).toHaveText('58');
     await expect(perf.locator('.grade')).toHaveText('D');
     await expect(page.locator('#domaine-securite [data-score-num]')).toHaveText(
-      '62/100',
+      '62',
     );
     // Un domaine sans mesure ne montre ni chiffre ni lettre.
     await expect(page.locator('#domaine-qualite [data-score-num]')).toHaveCount(
@@ -242,4 +243,85 @@ test('/sites : la mesure Sécurité montre le score à côté de la lettre', asy
   await page.goto('/sites?theme=light');
   const site = page.locator('article.beam').first();
   await expect(site.locator('.met [data-score-num]')).toHaveText('62/100');
+});
+
+/**
+ * CI #177 : le parcours visiteur (guest-audit.spec) refuse tout « 0/100 » sur
+ * le rapport. Avec « 80/100 » sur une carte de domaine, getByText('0/100')
+ * (recherche par sous-chaîne) trouvait un vrai score se terminant par 0.
+ * Les cartes du rapport montrent le chiffre seul : aucun « …0/100 ».
+ */
+test('rapport visiteur partiel : scores ronds sans « 0/100 »', async ({
+  page,
+}) => {
+  const id = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a11';
+  const row = (name: string, score: number | null, locked = false) => ({
+    domain: name,
+    score,
+    coverage: score === null ? 0 : 1,
+    level: score === null ? 'untested' : 'good',
+    locked,
+  });
+  const payload = {
+    audit: {
+      id,
+      status: 'partial',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '1',
+      engineVersion: '1',
+      globalScore: null,
+      siteVerified: false,
+      partialLabel: 'partielle · 5 domaines · site non vérifié',
+      coverage: 0.6,
+      createdAt: '2026-11-03T00:00:00.000Z',
+      startedAt: '2026-11-03T00:00:00.000Z',
+      finishedAt: '2026-11-03T00:00:01.000Z',
+      error: null,
+      site: {
+        id: '7a2b3c4d-5e6f-4789-a012-bcdef0123457',
+        url: 'https://bon.audigy.test',
+        label: 'bon.audigy.test',
+        scope: 'origin',
+        hosting: 'unknown',
+      },
+    },
+    domains: [
+      row('performance', 80),
+      row('seo', 70),
+      row('securite', null, true),
+      row('ecologie', 60),
+      row('accessibilite', 50),
+      row('qualite', 100),
+      row('vie_privee', null, true),
+      row('dns_email', null, true),
+    ],
+    findings: [],
+  };
+  await page.goto('/');
+  await page.evaluate((value) => {
+    const storage = (
+      globalThis as unknown as {
+        sessionStorage: { setItem: (key: string, value: string) => void };
+      }
+    ).sessionStorage;
+    storage.setItem(
+      'audixio-guest-audit',
+      JSON.stringify({ [value.audit.id]: value }),
+    );
+  }, payload);
+  await page.goto(`/rapport?id=${id}`);
+  await expect(
+    page.getByText(/partielle · \d+ domaines · site non vérifié/),
+  ).toBeVisible({ timeout: 15_000 });
+  await expect(
+    page.locator('#domaine-performance [data-score-num]'),
+  ).toHaveText('80');
+  await expect(page.locator('#domaine-qualite [data-score-num]')).toHaveText(
+    '100',
+  );
+  await expect(page.locator('#domaine-securite [data-score-num]')).toHaveCount(
+    0,
+  );
+  await expect(page.getByText('0/100')).toHaveCount(0);
 });
