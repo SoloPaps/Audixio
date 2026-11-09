@@ -186,3 +186,55 @@ test('M5 : « Tout ignorer » est encore là après rechargement', async ({
   await expect(check).toHaveText('0');
   await expect(skip).toHaveText('2');
 });
+
+test('M2 (bug_3f731721) : le domaine reprend le choix « Corriger » du brief', async ({
+  page,
+}) => {
+  const store: Row[] = [];
+  await install(page, store);
+  await page.goto(`/brief?id=${AUDIT_ID}`);
+  await hydrated(page);
+  await page.locator('#btn-ecologie').click();
+  await page.locator('#panel-ecologie label', { hasText: 'Corriger' }).click();
+  await expect
+    .poll(
+      () =>
+        store.find((row) => row.finding_id === 'ecologie.hebergeur')?.choice,
+    )
+    .toBe('fix');
+  await page.reload();
+  await hydrated(page);
+  await expect(
+    page.locator('input[name="ecologie.hebergeur"][value="fix"]'),
+  ).toBeChecked();
+
+  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=ecologie`);
+  await hydrated(page);
+  const sum = page.locator('#prompt .sum');
+  await expect(sum).toHaveText(
+    '1 constats configurés · 1 à corriger · 0 à vérifier',
+  );
+  await expect(
+    page.locator('fieldset.choice input[value="fix"]'),
+  ).toBeChecked();
+
+  // Sens inverse : le domaine écrit la même clé que le brief (pas `checkId-N`).
+  await page.locator('fieldset.choice label.o-chk').click();
+  await expect(sum).toHaveText(
+    '1 constats configurés · 0 à corriger · 1 à vérifier',
+  );
+  await expect
+    .poll(
+      () =>
+        store.find((row) => row.finding_id === 'ecologie.hebergeur')?.choice,
+    )
+    .toBe('chk');
+  expect(store.map((row) => row.finding_id).sort()).toEqual([
+    'ecologie.hebergeur',
+  ]);
+  await page.goto(`/brief?id=${AUDIT_ID}`);
+  await hydrated(page);
+  await expect(
+    page.locator('input[name="ecologie.hebergeur"][value="check"]'),
+  ).toBeChecked();
+});
