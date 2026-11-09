@@ -44,3 +44,25 @@ test('B9 (bug_db548bd2) : /sites en anglais, titre « Why monitor your domains? 
   ).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText('Pourquoi surveiller')).toHaveCount(0);
 });
+
+test('B10 (bug_b3d701fc) : contact en anglais, motif entièrement anglais et lisible à 330 px', async ({
+  page,
+}) => {
+  await stubSession(page, 'free');
+  await page.setViewportSize({ width: 330, height: 800 });
+  await page.goto('/compte?theme=light&lang=en');
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  const reason = page.locator('select#mot');
+  await expect(reason.locator('option').first()).toHaveText(
+    'Question about a security audit',
+    { timeout: 15_000 },
+  );
+  const options = await reason.locator('option').allTextContents();
+  for (const text of options) {
+    expect(text).not.toMatch(/\b(un|de|sur|sécurité|diagnostic)\b/);
+  }
+  await reason.scrollIntoViewIfNeeded();
+  const box = await reason.boundingBox();
+  expect(box).not.toBeNull();
+  expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(330);
+});
