@@ -2,8 +2,8 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { badgeEmbed, badgePublicHref } from '../lib/badge-embed.js';
-import { badgeTargetHref } from '../lib/badge-target.js';
-import { browserClient } from '../lib/browser-session.js';
+import { badgeTargetHref, shareTokenOf } from '../lib/badge-target.js';
+import { browserClient, currentSession } from '../lib/browser-session.js';
 import { gradeForScore } from '../lib/grade.js';
 import { say } from '../lib/motion.js';
 import { loginHref, signupHref } from '../lib/nav.js';
@@ -24,19 +24,23 @@ let link = $state('');
 let shareToken = $state<string | null>(null);
 let dialog = $state<HTMLElement | null>(null);
 let copied = $state<'code' | 'link' | ''>('');
+let loaded = $state(false);
+let pending = $state(false);
+let error = $state('');
 
 const grade = $derived(verified ? gradeForScore(score) : null);
 const rapport = $derived(`/rapport?id=${encodeURIComponent(auditId)}`);
+const target = $derived(
+  badgeTargetHref({ origin: location.origin, shareToken, guest }),
+);
+// Compte sans lien public : pas de code, d’abord le lien (jamais /rapport).
+const needsLink = $derived(!guest && loaded && target === null);
 const snippet = $derived.by(() => {
+  if (target === null) return '';
   const alt = grade ? `${t('brand.ui')} : ${grade}` : t('brand.ui');
   return badgeEmbed({
     style,
-    href: badgeTargetHref({
-      origin: location.origin,
-      shareToken,
-      auditId,
-      guest,
-    }),
+    href: target,
     origin: location.origin,
     alt,
     label: t('badge.by'),
@@ -54,7 +58,7 @@ async function loadLink(): Promise<void> {
   if (guest) return;
   const supabase = browserClient();
   if (!supabase) {
-    link = `${location.origin}/partage/`;
+    loaded = true;
     return;
   }
   const { data } = await supabase
@@ -69,6 +73,43 @@ async function loadLink(): Promise<void> {
       ? row.share_token
       : null;
   link = badgePublicHref(location.origin, shareToken);
+  loaded = true;
+}
+
+async function createLink(): Promise<void> {
+  if (pending) return;
+  const session = await currentSession();
+  const token = session?.access_token;
+  if (!token) {
+    error = t('share.error');
+    return;
+  }
+  pending = true;
+  error = '';
+  const response = await fetch('/api/liens', {
+    method: 'post'.toUpperCase(),
+    headers: {
+      authorization: `Bearer ${token}`,
+      'content-type': 'application/json',
+      accept: 'application/json',
+    },
+    body: JSON.stringify({ auditId, kind: 'public' }),
+  }).catch(() => null);
+  const body = (await response?.json().catch(() => null)) as {
+    url?: string;
+  } | null;
+  pending = false;
+  const created =
+    response?.ok && typeof body?.url === 'string'
+      ? shareTokenOf(body.url)
+      : null;
+  if (!created) {
+    error = t('share.error');
+    return;
+  }
+  shareToken = created;
+  link = badgePublicHref(location.origin, created);
+  say(t('share.created'));
 }
 
 async function copy(kind: 'code' | 'link'): Promise<void> {
@@ -139,17 +180,25 @@ onMount(() => {
         </div>
       {/each}
     </fieldset>
-    <div class="stage" role="region" aria-label={t('badge.preview')}>{@html snippet}</div>
-    <div class="fld">
-      <label for="code">{t('badge.code')}</label>
-      <div class="cp"><textarea id="code" readonly spellcheck="false" value={snippet}></textarea><button class="btn btn-primary" class:ok={copied === 'code'} type="button" onclick={() => copy('code')}>{copied === 'code' ? t('badge.copied.short') : t('badge.copy')}</button></div>
-    </div>
+    {#if needsLink}
+      <div class="fld need-link">
+        <p class="muted" id="need-link">{t('badge.needLink')}</p>
+        <div class="acts"><button class="btn btn-primary" type="button" aria-describedby="need-link" disabled={pending} onclick={createLink}>{pending ? t('sites.share.creating') : t('badge.needLink.create')}</button></div>
+        {#if error}<p class="muted" role="alert">{error}</p>{/if}
+      </div>
+    {:else if snippet}
+      <div class="stage" role="region" aria-label={t('badge.preview')}>{@html snippet}</div>
+      <div class="fld">
+        <label for="code">{t('badge.code')}</label>
+        <div class="cp"><textarea id="code" readonly spellcheck="false" value={snippet}></textarea><button class="btn btn-primary" class:ok={copied === 'code'} type="button" onclick={() => copy('code')}>{copied === 'code' ? t('badge.copied.short') : t('badge.copy')}</button></div>
+      </div>
+    {/if}
     {#if guest}
       <div class="fld">
         <p class="muted">{t('share.guest')}</p>
         <div class="acts"><a class="lk-pill" href={signupHref(`${location.pathname}${location.search}`)}>{t('share.guest.signup')}</a><a class="lk-pill" href={loginHref(`${location.pathname}${location.search}`)}>{t('guest.gate.login')}</a></div>
       </div>
-    {:else}
+    {:else if link}
       <div class="fld">
         <label for="lnk">{t('badge.link')}</label>
         <div class="cp"><input id="lnk" type="text" readonly value={link}><button class="btn btn-ghost" class:ok={copied === 'link'} type="button" disabled={!link} onclick={() => copy('link')}>{copied === 'link' ? t('badge.copied.short') : t('badge.copy.link')}</button></div>

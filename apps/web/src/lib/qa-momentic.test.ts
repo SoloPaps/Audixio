@@ -162,24 +162,26 @@ describe('bug 6 — filtre 1 an', () => {
 });
 
 describe('bug 7 — badge', () => {
-  it('vise le rapport du site et le même lien que l’aperçu', () => {
+  // Décision du propriétaire (6 nov.) : sans lien public, le badge ne vise plus
+  // le rapport privé (/rapport?id=…) ; il demande de créer le lien d’abord.
+  it('vise le lien public, jamais le rapport privé', () => {
     expect(
       badgeTargetHref({
         origin: 'https://audixio.fr',
         shareToken: null,
-        auditId: AUDIT,
       }),
-    ).toBe(`https://audixio.fr/rapport?id=${AUDIT}`);
+    ).toBeNull();
     expect(
       badgeTargetHref({
         origin: 'https://audixio.fr',
         shareToken: 'abc',
-        auditId: AUDIT,
       }),
     ).toBe('https://audixio.fr/partage/abc');
     const view = source('../components/BadgeView.svelte');
     expect(view).not.toContain('exemple-rapport');
     expect(view).toContain('badgeTargetHref');
+    expect(view).toContain("t('badge.needLink')");
+    expect(source('./badge-target.ts')).not.toContain('/rapport?id=');
   });
 });
 
