@@ -138,3 +138,66 @@ test('B2 : un lien équipe garde « Lien équipe »', async ({ page }) => {
     { timeout: 15_000 },
   );
 });
+
+test('B4 (bug_cb501466, bug_f85727e1) : badge Complet lisible en sombre', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await asGuest(page);
+  await page.goto(`/badge?id=${GUEST_ID}&theme=dark`);
+  const label = page.locator('.stage a span');
+  await expect(label).toHaveText('Audité par Audixio', { timeout: 15_000 });
+  // Contraste du libellé contre le fond blanc du badge (style en ligne).
+  const ratio = await label.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (n: unknown) => {
+        color: string;
+        webkitTextFillColor: string;
+        backgroundColor: string;
+      };
+    };
+    const rgb = (s: string): number[] =>
+      (s.match(/[\d.]+/g) ?? []).slice(0, 3).map(Number);
+    const lin = (v: number): number => {
+      const c = v / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    };
+    const lum = ([r = 0, g = 0, b = 0]: number[]): number =>
+      0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+    const own = view.getComputedStyle(node);
+    const fill = own.webkitTextFillColor || own.color;
+    const card = view.getComputedStyle(
+      (node as { parentElement: unknown }).parentElement,
+    ).backgroundColor;
+    const [hi, lo] = [lum(rgb(fill)), lum(rgb(card))].sort((a, b) => b - a);
+    return ((hi ?? 0) + 0.05) / ((lo ?? 0) + 0.05);
+  });
+  expect(ratio).toBeGreaterThanOrEqual(4.5);
+});
+
+test('B4 : badge Compact lisible en sombre sur le fond d’aperçu', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await asGuest(page);
+  await page.goto(`/badge?id=${GUEST_ID}&theme=dark`);
+  await page.getByRole('radio', { name: /^Compact/ }).check();
+  const label = page.locator('.stage a span');
+  await expect(label).toHaveText('Audixio', { timeout: 15_000 });
+  const colors = await label.evaluate((node) => {
+    const view = globalThis as unknown as {
+      getComputedStyle: (n: unknown) => {
+        color: string;
+        backgroundColor: string;
+      };
+      document: { querySelector: (s: string) => unknown };
+    };
+    return {
+      text: view.getComputedStyle(node).color,
+      stage: view.getComputedStyle(view.document.querySelector('.stage'))
+        .backgroundColor,
+    };
+  });
+  expect(colors.text).toBe('rgb(30, 42, 85)');
+  expect(colors.stage).toBe('rgb(255, 255, 255)');
+});
