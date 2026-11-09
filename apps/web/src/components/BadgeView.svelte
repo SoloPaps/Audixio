@@ -2,7 +2,11 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { badgeEmbed, badgePublicHref } from '../lib/badge-embed.js';
-import { badgeTargetHref, shareTokenOf } from '../lib/badge-target.js';
+import {
+  badgeTargetHref,
+  linkErrorKey,
+  shareTokenOf,
+} from '../lib/badge-target.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import { gradeForScore } from '../lib/grade.js';
 import { say } from '../lib/motion.js';
@@ -97,6 +101,7 @@ async function createLink(): Promise<void> {
   }).catch(() => null);
   const body = (await response?.json().catch(() => null)) as {
     url?: string;
+    error?: string;
   } | null;
   pending = false;
   const created =
@@ -104,7 +109,7 @@ async function createLink(): Promise<void> {
       ? shareTokenOf(body.url)
       : null;
   if (!created) {
-    error = t('share.error');
+    error = t(linkErrorKey(response?.status ?? null, body));
     return;
   }
   shareToken = created;
