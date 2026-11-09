@@ -22,3 +22,19 @@ export function shareTokenOf(url: string): string | null {
   const match = /^\/partage\/([^/?#]+)\/?$/.exec(url);
   return match?.[1] ? decodeURIComponent(match[1]) : null;
 }
+
+/**
+ * Message d’échec de la création du lien public. Le plafond du plan gratuit
+ * (un lien actif) répond 429 `user_limit` : la clé générique de cette erreur
+ * parle des audits du jour, le badge nomme donc le plafond des liens.
+ */
+export function linkErrorKey(
+  status: number | null,
+  body: unknown,
+): 'badge.linkLimit' | 'share.error' {
+  const code =
+    body && typeof body === 'object' ? (body as { error?: unknown }).error : '';
+  return status === 429 && code === 'user_limit'
+    ? 'badge.linkLimit'
+    : 'share.error';
+}
