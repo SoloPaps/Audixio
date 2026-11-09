@@ -11,13 +11,20 @@ test('exemple-rapport : lettres, rosace et anneaux suivent le barème officiel',
   await page.goto('/exemple-rapport?theme=light');
   await expect(page.locator('#roseD')).toBeAttached({ timeout: 15_000 });
 
-  const cards = await page.locator('.dom[data-score]').evaluateAll((nodes) =>
-    nodes.map((node) => ({
-      short: node.getAttribute('data-short') ?? '',
-      score: Number(node.getAttribute('data-score')),
-      chip: node.querySelector('.gchip')?.textContent?.trim() ?? '',
-    })),
-  );
+  const cards = await page.locator('.dom[data-score]').evaluateAll((nodes) => {
+    const view = globalThis as unknown as {
+      AX?: { L?: (key: string) => string };
+    };
+    const line = view.AX?.L;
+    return nodes.map((node) => {
+      const key = node.getAttribute('data-short-key') ?? '';
+      return {
+        short: line && key ? line(key) : '',
+        score: Number(node.getAttribute('data-score')),
+        chip: node.querySelector('.gchip')?.textContent?.trim() ?? '',
+      };
+    });
+  });
   expect(cards).toHaveLength(7);
   // Les lettres affichées restent celles d’avant (C, B, C, C, B, B, A).
   expect(cards.map((card) => card.chip)).toEqual([
