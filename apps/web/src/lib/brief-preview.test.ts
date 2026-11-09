@@ -69,8 +69,13 @@ describe('aperçu du prompt IA', () => {
     const html = briefPreviewHtml(text, BRIEF_TAGS);
     expect(html).toContain('<span class="l-tag fix">Corriger</span>');
     expect(html).toContain('<span class="l-tag check">Vérifier</span>');
-    expect(html).toContain('<span class="l-tag fix">Fix</span>');
     expect(html).toContain('<span class="l-tag check">Vérif</span>');
+    // Le terminal français dit « Corriger » (plus « Fix ») : la ligne d’action
+    // et le statut du terminal sont tous deux colorés.
+    expect(
+      html.match(/<span class="l-tag fix">Corriger<\/span>/g),
+    ).toHaveLength(2);
+    expect(html).not.toContain('>Fix<');
     expect(html).toContain('<span class="l-k">Preuve</span>');
     expect(html).toContain('<div class="l l-h2">Constats</div>');
     expect(html).not.toContain('<iframe>');

@@ -180,7 +180,10 @@ export function bindProgressScene(): void {
     const live = $('#liveT');
     if (heading) heading.textContent = t('progress.ready.heading');
     if (lead) {
-      lead.textContent = t('progress.ready.lead');
+      lead.textContent =
+        document.documentElement.dataset.auditViewer === 'guest'
+          ? t('progress.ready.lead.guest')
+          : t('progress.ready.lead');
     }
     if (live && live.textContent !== t('progress.ready')) {
       live.textContent = t('progress.done.live');
