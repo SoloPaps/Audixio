@@ -65,17 +65,23 @@ onMount(() => {
   ): boolean => {
     const host = hostOf(payload.audit.site.url);
     // B6 : un visiteur reçoit un aperçu partiel ; le plan demande un compte.
+    // Compte connecté : « Diagnostic complet » seulement si le site est
+    // vérifié ; sinon Sécurité, Vie privée et DNS restent fermés.
+    const unverified = !guest && payload.audit.siteVerified === false;
+    const eyebrow = document.querySelector('.eyebrow.intro');
     if (guest) {
       document.documentElement.dataset.auditViewer = 'guest';
-      const eyebrow = document.querySelector('.eyebrow.intro');
       if (eyebrow) eyebrow.textContent = t('progress.eyebrow.guest');
+    } else if (unverified) {
+      document.documentElement.dataset.auditViewer = 'unverified';
+      if (eyebrow) eyebrow.textContent = t('progress.eyebrow.unverified');
     }
     for (const node of document.querySelectorAll('.mono')) {
       node.textContent = host;
     }
     const preview = guest && !revealed;
-    const shown = preview
-      ? guestDisplayStatus(payload.audit.status, false)
+    const shown = guest
+      ? guestDisplayStatus(payload.audit.status, revealed)
       : payload.audit.status;
     const unmeasured =
       !preview &&
@@ -119,7 +125,9 @@ onMount(() => {
       if (lead) {
         lead.textContent = guest
           ? t('progress.ready.lead.guest')
-          : t('progress.ready.lead');
+          : unverified
+            ? t('progress.ready.lead.unverified')
+            : t('progress.ready.lead');
       }
       if (task) task.textContent = t('progress.ready');
       if (eta) eta.textContent = '';

@@ -449,7 +449,10 @@ const frCore = {
     'L’analyse est terminée. Votre rapport complet, avec les priorités et le plan d’action, vous attend.',
   'progress.ready.lead.guest':
     'L’analyse est terminée. Votre aperçu gratuit est prêt ; le rapport complet et le plan d’action demandent un compte.',
+  'progress.ready.lead.unverified':
+    'L’analyse est terminée. Votre rapport et son plan d’action vous attendent ; vérifiez le site pour ouvrir Sécurité, Vie privée et DNS / e-mail.',
   'progress.eyebrow.guest': 'Aperçu gratuit · sans compte',
+  'progress.eyebrow.unverified': 'Diagnostic partiel · site non vérifié',
   'progress.done.live': 'Analyse terminée',
   'progress.done.phrase': 'Diagnostic terminé : votre rapport est disponible',
   'progress.sim.images':
