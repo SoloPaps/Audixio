@@ -4,7 +4,7 @@ import {
   secretsFromEnv,
   serve,
 } from '@audigy/orchestrator';
-import { briefDeps } from '../../apps/web/src/lib/brief-deps.js';
+import { briefDeps, briefLocaleOf } from '../../apps/web/src/lib/brief-deps.js';
 
 export default async (
   req: Request,
@@ -12,7 +12,12 @@ export default async (
 ): Promise<Response> => {
   const logger = createLogger({ secrets: secretsFromEnv(process.env) });
   return serve(logger, async () =>
-    handleBriefExport(req, briefDeps(req.url, logger), context.params?.id),
+    // Langue de l’interface (en-tête du navigateur) : même fichier que l’aperçu.
+    handleBriefExport(
+      req,
+      briefDeps(req.url, logger, briefLocaleOf(req)),
+      context.params?.id,
+    ),
   );
 };
 
