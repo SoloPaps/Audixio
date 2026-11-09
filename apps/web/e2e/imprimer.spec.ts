@@ -179,9 +179,11 @@ test('impression : mentions, PDF gris, polices, plafond', async ({ page }) => {
       ),
     )
     .toBe(1);
+  // B5 : le titre annonce le nombre réel de priorités listées (ici une).
   await expect(
-    page.getByRole('heading', { name: 'Les 5 priorités' }),
+    page.getByRole('heading', { name: 'La priorité' }),
   ).toBeVisible();
+  await expect(page.locator('ol.pri > li')).toHaveCount(1);
   await expect(
     page.getByRole('heading', { name: 'Résumé des 8 domaines' }),
   ).toBeVisible();
@@ -198,7 +200,7 @@ test('impression : mentions, PDF gris, polices, plafond', async ({ page }) => {
   const order = (await page.locator('#contenu').textContent()) ?? '';
   const index = (needle: string) => order.indexOf(needle);
   const cover = index('Synthèse et priorités');
-  const priorities = index('Les 5 priorités');
+  const priorities = index('La priorité');
   const domains = index('Résumé des 8 domaines');
   expect(cover).toBeGreaterThanOrEqual(0);
   expect(cover).toBeLessThan(priorities);
