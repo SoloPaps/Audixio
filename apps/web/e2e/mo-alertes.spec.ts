@@ -15,6 +15,7 @@ async function openAlerts(
   page: Page,
   saved: { url: string; body: unknown }[],
   sites: string[],
+  stored?: Record<string, unknown>,
 ): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
@@ -79,7 +80,7 @@ async function openAlerts(
         status: 200,
         headers,
         body: JSON.stringify([
-          {
+          stored ?? {
             site_id: SITE,
             user_id: USER,
             reaudit_cadence: 'weekly',
@@ -95,7 +96,9 @@ async function openAlerts(
       url.includes('/rest/v1/alert_settings') &&
       request.method().toLowerCase() === 'patch'
     ) {
-      saved.push({ url, body: request.postDataJSON() });
+      const body = request.postDataJSON() as Record<string, unknown>;
+      saved.push({ url, body });
+      if (stored) Object.assign(stored, body);
       await route.fulfill({ status: 204, headers });
       return;
     }
@@ -132,4 +135,34 @@ test('M2 : sans site suivi, l’enregistrement le dit au lieu de se taire', asyn
     'Les réglages n’ont pas pu être enregistrés.',
   );
   expect(saved).toEqual([]);
+});
+
+test('M4 (bug_6113d91a) : seuil de baisse 17 enregistré, l’éditeur garde 17 après rechargement', async ({
+  page,
+}) => {
+  const saved: { url: string; body: unknown }[] = [];
+  const stored: Record<string, unknown> = {
+    site_id: SITE,
+    user_id: USER,
+    reaudit_cadence: 'weekly',
+    ssl_warn_days: 30,
+    score_drop_points: 10,
+    alerts_enabled: true,
+  };
+  await openAlerts(page, saved, [SITE], stored);
+  await expect(page.locator('#ssl')).toHaveValue('30', { timeout: 15_000 });
+  await expect(page.locator('#fPro')).not.toHaveAttribute('inert', '');
+  await expect(page.locator('#drop')).toHaveValue('10');
+  await page.locator('#drop').fill('17');
+  await expect(page.locator('#dropv')).toHaveText('17');
+  await page.locator('#fPro [type="submit"]').click();
+  await expect.poll(() => saved.length).toBe(1);
+  expect(saved[0]?.body).toMatchObject({ score_drop_points: 17 });
+  await expect(page.locator('#toast')).toContainText('Réglages enregistrés');
+
+  await page.reload();
+  await expect(page.locator('#ssl')).toHaveValue('30', { timeout: 15_000 });
+  await expect(page.locator('.rows .val').nth(1)).toHaveText('−17 points');
+  await expect(page.locator('#drop')).toHaveValue('17');
+  await expect(page.locator('#dropv')).toHaveText('17');
 });

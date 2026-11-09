@@ -129,14 +129,26 @@ const OPEN = new Set<string>(OPEN_DOMAINS);
 const LOCKED = new Set<string>(LOCKED_DOMAINS);
 const EXTRA = new Set<string>(EXTRA_DOMAINS);
 
-/** Seuils alignés sur `apps/web/src/lib/grade.ts`. */
+/**
+ * Barème des notes : note minimale de chaque lettre (F en dessous de E).
+ * Source unique : l’app, les courriels, le graphique d’historique et le PDF
+ * lisent ces seuils.
+ */
+export const GRADE_THRESHOLDS = {
+  A: 90,
+  B: 80,
+  C: 65,
+  D: 50,
+  E: 35,
+} as const satisfies Record<Exclude<Grade, 'F'>, number>;
+
 export function gradeForScore(score: number | null): Grade | null {
   if (score === null || !Number.isFinite(score)) return null;
-  if (score >= 90) return 'A';
-  if (score >= 80) return 'B';
-  if (score >= 65) return 'C';
-  if (score >= 50) return 'D';
-  if (score >= 35) return 'E';
+  if (score >= GRADE_THRESHOLDS.A) return 'A';
+  if (score >= GRADE_THRESHOLDS.B) return 'B';
+  if (score >= GRADE_THRESHOLDS.C) return 'C';
+  if (score >= GRADE_THRESHOLDS.D) return 'D';
+  if (score >= GRADE_THRESHOLDS.E) return 'E';
   return 'F';
 }
 
