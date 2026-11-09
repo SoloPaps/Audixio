@@ -1,3 +1,4 @@
+import { GRADE_THRESHOLDS } from '@audigy/db';
 import { formatFixed } from '../i18n/format.js';
 
 /** Géométrie du graphique d’évolution (viewBox 960×300 des maquettes). */
@@ -31,13 +32,13 @@ export interface EvolutionChart {
   area: string;
   marks: EvolutionMark[];
   ticks: EvolutionTick[];
-  /** Ligne « Seuil rang B (70) » à la même échelle que la courbe. */
+  /** Ligne « Seuil rang B » à la même échelle que la courbe. */
   threshold: { y: string; textY: string; visible: boolean };
   average: string;
 }
 
-/** Note du seuil de rang B tracé en pointillé. */
-export const GRADE_B_THRESHOLD = 70;
+/** Note du seuil de rang B tracé en pointillé : barème unique. */
+export const GRADE_B_THRESHOLD: number = GRADE_THRESHOLDS.B;
 
 /** Cadre horizontal du graphique : largeur du viewBox et abscisses extrêmes. */
 export interface ChartFrame {

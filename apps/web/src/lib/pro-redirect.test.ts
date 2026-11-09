@@ -48,3 +48,19 @@ describe('routeUpgrade (C1)', () => {
     expect(go).toHaveBeenCalledWith('/pro');
   });
 });
+
+describe('isProAccount (/pro « déjà Pro »)', () => {
+  it('vrai pour un compte Pro', async () => {
+    const { isProAccount } = await import('./pro-redirect.js');
+    etat.session = { user: { id: '00000000-0000-4000-8000-0000000000b1' } };
+    etat.plan = 'pro';
+    expect(await isProAccount()).toBe(true);
+  });
+
+  it('faux pour un compte gratuit ou sans session', async () => {
+    const { isProAccount } = await import('./pro-redirect.js');
+    expect(await isProAccount()).toBe(false);
+    etat.session = { user: { id: '00000000-0000-4000-8000-0000000000b1' } };
+    expect(await isProAccount()).toBe(false);
+  });
+});

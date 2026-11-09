@@ -1,8 +1,14 @@
-/** Titre de la page priorités : la liste vide ne s’appelle pas « Les 5 priorités ». */
+/**
+ * Titre de la section priorités de l’impression. Le nombre affiché est celui
+ * des priorités réellement listées (QA Mo B5) ; `filled` reçoit déjà ce
+ * nombre (`pdf.prio.title`, `{n}`), `one` sert pour une seule priorité.
+ */
 export function printPriorityTitle(
   count: number,
   filled: string,
   empty: string,
+  one: string = filled,
 ): string {
-  return count === 0 ? empty : filled;
+  if (count === 0) return empty;
+  return count === 1 ? one : filled;
 }

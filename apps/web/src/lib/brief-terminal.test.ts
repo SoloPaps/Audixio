@@ -42,7 +42,7 @@ describe('terminal', () => {
     expect(renderTerminal([row('securite.hsts', 'rien')])).toBe('');
   });
 
-  it('groupe Vérif et Fix, sans écriture en Vérif', () => {
+  it('groupe Vérif et Corriger, sans écriture en Vérif', () => {
     const text = renderTerminal([
       row('securite.hsts', 'verif', 'HSTS'),
       row('seo.title', 'rien', 'Titre'),
@@ -53,7 +53,7 @@ describe('terminal', () => {
     expect(text).toContain('Lisez les en-têtes de la réponse.');
     expect(text).toContain('N’écrivez rien.');
     expect(text).not.toContain('Titre —');
-    expect(text).toContain('SPF — Fix');
+    expect(text).toContain('SPF — Corriger');
     expect(text).toContain('Proposez un fichier, une configuration');
     expect(text).toContain('S’il faut deviner la technique, demandez.');
     expect(text).toContain('Si l’outil n’est pas là, passez.');

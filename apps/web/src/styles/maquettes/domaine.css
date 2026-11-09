@@ -1767,6 +1767,8 @@ html:where([data-vue="domaine"]),
 }
 :where(html[data-vue="domaine"]) .acc > div {
   overflow: hidden;
+  /* B3 : les exemples de code défilent dans leur cadre, la carte ne s’élargit pas. */
+  min-width: 0;
 }
 :where(html[data-vue="domaine"]).js .acc:not(.open) > div {
   visibility: hidden;
@@ -1803,6 +1805,10 @@ html:where([data-vue="domaine"]),
   color: var(--text);
   display: grid;
   gap: 6px;
+}
+:where(html[data-vue="domaine"]) .acc-in li {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 :where(html[data-vue="domaine"]) .tg {
   margin-top: 12px;

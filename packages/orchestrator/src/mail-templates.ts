@@ -1,16 +1,11 @@
+import { type Grade, gradeForScore } from '@audigy/db';
 import { t } from './copy.js';
 
-export type MailGrade = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+export type MailGrade = Grade;
 
-/** Même barème que `gradeForScore` de l’app (90 / 80 / 65 / 50 / 35). */
+/** Barème unique de `@audigy/db` (`GRADE_THRESHOLDS`). */
 export function mailGrade(score: number | null): MailGrade | null {
-  if (score === null || !Number.isFinite(score)) return null;
-  if (score >= 90) return 'A';
-  if (score >= 80) return 'B';
-  if (score >= 65) return 'C';
-  if (score >= 50) return 'D';
-  if (score >= 35) return 'E';
-  return 'F';
+  return gradeForScore(score);
 }
 
 export interface RecapCard {

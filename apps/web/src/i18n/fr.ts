@@ -447,6 +447,9 @@ const frCore = {
   'progress.ready.heading': 'Votre diagnostic est prêt pour',
   'progress.ready.lead':
     'L’analyse est terminée. Votre rapport complet, avec les priorités et le plan d’action, vous attend.',
+  'progress.ready.lead.guest':
+    'L’analyse est terminée. Votre aperçu gratuit est prêt ; le rapport complet et le plan d’action demandent un compte.',
+  'progress.eyebrow.guest': 'Aperçu gratuit · sans compte',
   'progress.done.live': 'Analyse terminée',
   'progress.done.phrase': 'Diagnostic terminé : votre rapport est disponible',
   'progress.sim.images':
@@ -470,6 +473,8 @@ const frCore = {
   'progress.notify.ok': 'Notification activée. Vous pouvez fermer cette page.',
   'progress.notify.close': 'Fermer',
   'progress.notify.done': 'Notification activée',
+  'progress.notify.sent': 'C’est noté !',
+  'progress.notify.placeholder': 'vous@exemple.fr',
   'progress.retry': 'Relancer l’audit',
   'progress.missing': 'Cet audit est introuvable.',
   'progress.empty.title': 'Aucun audit en cours',
@@ -2294,6 +2299,9 @@ const frCore = {
   'domaine.gain.goal': 'pour atteindre la note A',
   'domaine.impact.s': 'Impact ≈ {n} s',
   'domaine.impact.ok': 'Optimal',
+  'domaine.impact.level.3': 'Impact élevé',
+  'domaine.impact.level.2': 'Impact moyen',
+  'domaine.impact.level.1': 'Impact faible',
   'domaine.lock.title': 'Créez un compte pour débloquer ces outils',
   'domaine.lock.1': 'Copie intégrale du brief dev et IA',
   'domaine.lock.2': 'Envoi par e-mail en 1 clic',
