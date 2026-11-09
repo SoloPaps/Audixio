@@ -303,6 +303,8 @@ const frCore = {
   'score.public.optout.action': 'Gérer ce site',
   'share.missing': 'Ce lien ne fonctionne plus.',
   'share.banner': 'Lien équipe · Lecture seule',
+  'share.banner.public': 'Lien public · Lecture seule',
+  'share.banner.plain': 'Lien de partage · Lecture seule',
   'score.public.heading': 'Score public',
   'score.public.missing.title': 'Ce score n’est pas publié',
   'share.heading': 'Score partagé',
@@ -2854,6 +2856,8 @@ const frCore = {
   'badge.style.say': 'Style {name} sélectionné',
   'badge.foot':
     'Le lien public n’affiche que le résumé du rapport. Vous pouvez le révoquer à tout moment ; le badge affichera alors « non disponible ».',
+  'badge.foot.guest':
+    'Sans compte, le badge renvoie vers l’accueil d’Audixio : votre rapport reste privé.',
   'badge.public': 'Voir la page publique',
   'badge.close': 'Fermer et revenir au rapport',
   'badge.unavailable': 'non disponible',

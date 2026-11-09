@@ -218,11 +218,11 @@ export const espaceFr = {
   'mq.hi.027':
     'Graphique d’évolution, défilable horizontalement sur petit écran',
   'mq.hi.028':
-    'Note globale mensuelle de décembre 2025 à mai 2026 : 78, 79, 80, 81, 82 puis 84, toujours au-dessus du seuil du rang B fixé à 70.',
+    'Note globale mensuelle de décembre 2025 à mai 2026 : 78, 79, 80, 81, 82 puis 84 ; le rang B commence à {n}.',
   'mq.hi.029': '70',
   'mq.hi.030': '80',
   'mq.hi.031': '90',
-  'mq.hi.032': 'Seuil rang B (70)',
+  'mq.hi.032': 'Seuil rang B ({n})',
   'mq.hi.033': '78',
   'mq.hi.034': '79',
   'mq.hi.035': '81',
@@ -431,6 +431,8 @@ export const espaceFr = {
     'Vous seul voyez les rapports de vos sites. Quand vous acceptez une demande d’accès ou créez un lien de partage, il apparaît ici.',
   'mq.co.084':
     'Compte gratuit : 1 lien actif à la fois (public ou équipe). Le lien équipe reste en lecture seule, même sans compte pour le destinataire.',
+  'mq.co.084.pro':
+    'Compte Pro : liens actifs sans limite (public ou équipe). Le lien équipe reste en lecture seule, même sans compte pour le destinataire.',
   'mq.co.085': 'Retirer cet accès ?',
   'mq.co.086': '—',
   'mq.co.087': ' ne pourra plus consulter le rapport ni le brief de ',
