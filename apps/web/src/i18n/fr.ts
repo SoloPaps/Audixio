@@ -447,6 +447,9 @@ const frCore = {
   'progress.ready.heading': 'Votre diagnostic est prêt pour',
   'progress.ready.lead':
     'L’analyse est terminée. Votre rapport complet, avec les priorités et le plan d’action, vous attend.',
+  'progress.ready.lead.guest':
+    'L’analyse est terminée. Votre aperçu gratuit est prêt ; le rapport complet et le plan d’action demandent un compte.',
+  'progress.eyebrow.guest': 'Aperçu gratuit · sans compte',
   'progress.done.live': 'Analyse terminée',
   'progress.done.phrase': 'Diagnostic terminé : votre rapport est disponible',
   'progress.sim.images':

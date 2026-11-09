@@ -137,3 +137,74 @@ for (const lang of ['en', 'fr'] as const) {
     }
   });
 }
+
+const GUEST_ID = '1dfeaad0-f09c-4405-a5eb-eed8fe1235b6';
+
+function guestPayload(): unknown {
+  return {
+    audit: {
+      id: GUEST_ID,
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '2026.1',
+      engineVersion: '0.15.0',
+      globalScore: 61,
+      siteVerified: false,
+      coverage: 0.6,
+      createdAt: '2026-11-05T10:00:00.000Z',
+      startedAt: '2026-11-05T10:00:01.000Z',
+      finishedAt: '2026-11-05T10:03:00.000Z',
+      error: null,
+      site: {
+        id: '7a2b3c4d-5e6f-4789-a012-bcdef0123457',
+        url: 'https://mauvais.audigy.test',
+        label: 'mauvais.audigy.test',
+        scope: 'origin',
+        hosting: 'other',
+      },
+    },
+    domains: [
+      { domain: 'performance', score: 52, coverage: 1, level: 'improve' },
+      { domain: 'seo', score: 70, coverage: 1, level: 'improve' },
+    ],
+    findings: [],
+  };
+}
+
+for (const lang of ['fr', 'en'] as const) {
+  test(`B6 (bug_39f1152d) : fin d’audit visiteur, aperçu partiel sans promesse de plan (${lang})`, async ({
+    page,
+  }) => {
+    await page.addInitScript((value) => {
+      sessionStorage.setItem('audixio-guest-audit', JSON.stringify(value));
+    }, guestPayload());
+    if (lang === 'en') {
+      await page.goto('/bienvenue?theme=light');
+      await toEnglish(page);
+    }
+    await page.goto(`/progression?id=${GUEST_ID}&theme=light`);
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+    const lead = page.locator('#leadT');
+    const eyebrow = page.locator('.eyebrow.intro');
+    if (lang === 'en') {
+      await expect(lead).toHaveText(
+        'The analysis is finished. Your free preview is ready; the full report and the action plan require an account.',
+        { timeout: 15_000 },
+      );
+      await expect(eyebrow).toHaveText('Free preview · no account');
+    } else {
+      await expect(lead).toHaveText(
+        'L’analyse est terminée. Votre aperçu gratuit est prêt ; le rapport complet et le plan d’action demandent un compte.',
+        { timeout: 15_000 },
+      );
+      await expect(eyebrow).toHaveText('Aperçu gratuit · sans compte');
+    }
+    await expect(
+      page.getByText(/full diagnosis|diagnostic complet/i),
+    ).toHaveCount(0);
+    await expect(page.getByText(/active session|session active/i)).toHaveCount(
+      0,
+    );
+  });
+}
