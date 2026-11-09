@@ -2170,6 +2170,7 @@
   "badge.link": "Lien public du rapport",
   "badge.needLink": "Créez d’abord le lien public du rapport pour obtenir le code du badge. Le badge renverra vers cette page publique, jamais vers votre rapport privé.",
   "badge.needLink.create": "Créer le lien public",
+  "badge.linkLimit": "Le plan gratuit permet un seul lien actif. Révoquez le lien en cours ou passez au plan Pro.",
   "badge.copy.link": "Copier le lien",
   "badge.copied.short": "Copié",
   "badge.copied.link": "Lien copié",

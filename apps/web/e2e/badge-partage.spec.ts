@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
-import { stubSession } from './en-session.js';
+import { stubSession, toEnglish } from './en-session.js';
 
 // QA Mo 05/11, thème badge-partage : M3, B1, B2, B4.
 
@@ -298,4 +298,60 @@ test('badge connecté avec lien public : le code vise /partage', async ({
     { timeout: 15_000 },
   );
   await expect(page.getByText('Créez d’abord le lien public')).toHaveCount(0);
+});
+
+async function linkLimitReached(page: Page): Promise<void> {
+  await stubSession(page, 'free');
+  await page.route('**/api/audits/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(guestPayload()),
+    });
+  });
+  await page.route('**/api/liens', async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.fallback();
+      return;
+    }
+    await route.fulfill({
+      status: 429,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        error: 'user_limit',
+        messageKey: 'api.error.user_limit',
+      }),
+    });
+  });
+}
+
+test('badge connecté, plafond d’un lien du plan gratuit atteint : message dédié', async ({
+  page,
+}) => {
+  await linkLimitReached(page);
+  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await page
+    .getByRole('button', { name: 'Créer le lien public' })
+    .click({ timeout: 15_000 });
+  await expect(page.getByRole('alert')).toHaveText(
+    'Le plan gratuit permet un seul lien actif. Révoquez le lien en cours ou passez au plan Pro.',
+  );
+  await expect(page.getByText('Le lien n’a pas pu être créé.')).toHaveCount(0);
+  await expect(page.locator('#code')).toHaveCount(0);
+});
+
+test('badge connecté, plafond d’un lien atteint : message dédié en anglais', async ({
+  page,
+}) => {
+  await linkLimitReached(page);
+  await page.goto('/bienvenue?theme=light');
+  await toEnglish(page);
+  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page
+    .getByRole('button', { name: 'Create the public link' })
+    .click({ timeout: 15_000 });
+  await expect(page.getByRole('alert')).toHaveText(
+    'The free plan allows one active link. Revoke the current link or upgrade to Pro.',
+  );
 });

@@ -2144,6 +2144,7 @@
   "badge.link": "Public report link",
   "badge.needLink": "First create the report’s public link to get the badge code. The badge will point to that public page, never to your private report.",
   "badge.needLink.create": "Create the public link",
+  "badge.linkLimit": "The free plan allows one active link. Revoke the current link or upgrade to Pro.",
   "badge.copy.link": "Copy the link",
   "badge.copied.short": "Copied",
   "badge.copied.link": "Link copied",
