@@ -32,9 +32,12 @@ export function linkErrorKey(
   status: number | null,
   body: unknown,
 ): 'badge.linkLimit' | 'share.error' {
+  return isLinkLimit(status, body) ? 'badge.linkLimit' : 'share.error';
+}
+
+/** Vrai si POST /api/liens a refusé pour le plafond d’un lien du plan gratuit. */
+export function isLinkLimit(status: number | null, body: unknown): boolean {
   const code =
     body && typeof body === 'object' ? (body as { error?: unknown }).error : '';
-  return status === 429 && code === 'user_limit'
-    ? 'badge.linkLimit'
-    : 'share.error';
+  return status === 429 && code === 'user_limit';
 }

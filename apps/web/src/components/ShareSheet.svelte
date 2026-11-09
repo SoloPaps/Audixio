@@ -1,5 +1,6 @@
 <script lang="ts">
 import { t } from '../i18n/index.js';
+import { linkErrorKey } from '../lib/badge-target.js';
 import { currentSession } from '../lib/browser-session.js';
 import { badgeHref } from '../lib/hub-view.js';
 import { loginHref, signupHref } from '../lib/nav.js';
@@ -101,10 +102,11 @@ async function create(): Promise<void> {
   const body = (await response.json().catch(() => null)) as {
     id?: string;
     url?: string;
+    error?: string;
   } | null;
   pending = false;
   if (!response.ok || !body?.url?.startsWith('/partage/')) {
-    error = t('share.error');
+    error = t(linkErrorKey(response.status, body));
     return;
   }
   link = `${location.origin}${body.url}`;
