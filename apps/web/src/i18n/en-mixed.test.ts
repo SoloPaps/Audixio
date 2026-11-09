@@ -14,14 +14,10 @@ const en = JSON.parse(
 
 // Noms propres et adresses d’exemple, en français à dessein.
 const ALLOWED = new Set([
-  'mq.lg.013', // Audixio Observatoire Numérique (raison sociale)
-  'mq.lg.214',
-  'mq.lg.363', // Défenseur des droits (institution)
+  // Glose officielle conservée entre parenthèses, première occurrence / adresse.
   'mq.lg.364',
-  'mq.lg.366',
-  'mq.lg.369',
   'mq.lg.372',
-  'mq.lg.373', // Libre réponse 71120 (adresse postale)
+  'mq.lg.373',
   'fix.securite.security_txt.generic.1', // URL d’exemple
 ]);
 
