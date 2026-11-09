@@ -488,7 +488,7 @@ const frCore = {
   'progress.need_login': 'Connectez-vous pour suivre cet audit.',
   'report.heading': 'Rapport',
   'domain.heading': 'Détail du domaine',
-  'report.loading': 'Chargement du rapport.',
+  'report.loading': 'Chargement du rapport…',
   'report.pending': 'L’audit n’est pas encore terminé.',
   'report.progress': 'Voir la progression',
   'report.missing': 'Ce rapport est introuvable.',

@@ -6,9 +6,20 @@ interface Props {
   phase?: string | null;
   eta?: string | null;
   plain?: boolean;
+  /**
+   * Chargement neutre (avant de savoir où en est l’audit) : pas de disque ni
+   * de lien « Revenir à l’accueil », zone marquée occupée (aria-busy).
+   */
+  neutral?: boolean;
 }
 
-let { message, phase = null, eta = null, plain = false }: Props = $props();
+let {
+  message,
+  phase = null,
+  eta = null,
+  plain = false,
+  neutral = false,
+}: Props = $props();
 </script>
 
 {#snippet body()}
@@ -19,19 +30,19 @@ let { message, phase = null, eta = null, plain = false }: Props = $props();
   {#if eta}
     <p>{eta}</p>
   {/if}
-  <div class="disk"></div>
-  <div class="bar"></div>
-  <div class="bar"></div>
-  <div class="bar"></div>
-  <p><a class="link-action" href="/">{t('progress.home')}</a></p>
+  {#if !neutral}<div class="disk"></div>{/if}
+  <div class="bar" aria-hidden="true"></div>
+  <div class="bar" aria-hidden="true"></div>
+  <div class="bar" aria-hidden="true"></div>
+  {#if !neutral}<p><a class="link-action" href="/">{t('progress.home')}</a></p>{/if}
 {/snippet}
 
 {#if plain}
-  <div class="overlay">
+  <div class="overlay" aria-busy={neutral ? 'true' : undefined}>
     {@render body()}
   </div>
 {:else}
-  <div class="overlay glass">
+  <div class="overlay glass" aria-busy={neutral ? 'true' : undefined}>
     <div class="glass-plate">
       {@render body()}
     </div>
