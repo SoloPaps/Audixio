@@ -241,3 +241,113 @@ for (const lang of ['fr', 'en'] as const) {
     await expect(page.locator('#notifyBtn')).toHaveText(copy.done);
   });
 }
+
+const SEC_ID = '00000000-0000-4000-8000-0000000000b3';
+
+function securityPayload(): unknown {
+  return {
+    audit: {
+      id: SEC_ID,
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: '2026.1',
+      engineVersion: '0.15.0',
+      globalScore: 74,
+      siteVerified: true,
+      partialLabel: null,
+      coverage: 1,
+      createdAt: '2026-10-26T10:00:00.000Z',
+      startedAt: '2026-10-26T10:00:01.000Z',
+      finishedAt: '2026-10-26T10:05:00.000Z',
+      error: null,
+      site: {
+        id: '00000000-0000-4000-8000-0000000000bb',
+        url: 'https://bon.audigy.test',
+        label: 'bon.audigy.test',
+        scope: 'origin',
+        hosting: 'other',
+      },
+    },
+    domains: [{ domain: 'securite', score: 70, coverage: 1, level: 'improve' }],
+    findings: [
+      {
+        domain: 'securite',
+        checkId: 'securite.frames',
+        status: 'fail',
+        severity: 3,
+        impact: 2,
+        score: 0,
+        measured: {},
+        messageKey: 'securite.frames.fail',
+        params: {},
+        fixKey: 'securite.frames',
+        effortMinutes: 10,
+        reason: null,
+      },
+    ],
+  };
+}
+
+// Éléments qui dépassent à droite, hors contenu d’un bloc de code défilant.
+const OVERFLOW = `(() => {
+  const out = [];
+  const width = innerWidth;
+  for (const el of document.querySelectorAll(SCOPE)) {
+    if (el.closest('pre')) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width && r.right > width + 0.5) out.push(el.tagName + ' ' + (el.textContent || '').slice(0, 40));
+  }
+  for (const pre of document.querySelectorAll(SCOPE_PRE)) {
+    const r = pre.getBoundingClientRect();
+    if (r.right > width + 0.5) out.push('PRE ' + pre.textContent.slice(0, 40));
+    if (getComputedStyle(pre).overflowX !== 'auto') out.push('PRE sans défilement');
+  }
+  return out;
+})()`;
+
+for (const lang of ['fr', 'en'] as const) {
+  test(`B3 (bug_5a7c5a44, bug_b18024d6) : corrections Sécurité lisibles à 330 px en sombre (${lang})`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+    await stubSession(page, 'pro');
+    await page.route('**/api/audits/**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(securityPayload()),
+      }),
+    );
+    await page.setViewportSize({ width: 330, height: 900 });
+
+    // Rapport du domaine : « Détails » du constat frames.
+    await page.goto(
+      `/domaine?id=${SEC_ID}&domaine=securite&theme=dark&lang=${lang}`,
+    );
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+    await page.locator('.cst .det').first().click();
+    await expect(page.locator('.acc.open pre.step-code').first()).toBeVisible();
+    const domain = await page.evaluate<string[]>(
+      OVERFLOW.replace('SCOPE_PRE', "'.acc.open pre'").replace(
+        'SCOPE',
+        "'.acc.open *'",
+      ),
+    );
+    expect(domain).toEqual([]);
+
+    // Page de correction : plan d’action en étapes.
+    await page.goto(
+      `/constat?id=${SEC_ID}&check=securite.frames-0&theme=dark&lang=${lang}`,
+    );
+    await page.locator('a[href="#plan"]').first().click();
+    await expect(page.locator('#plan pre.step-code').first()).toBeVisible();
+    const plan = await page.evaluate<string[]>(
+      OVERFLOW.replace('SCOPE_PRE', "'#plan pre'").replace(
+        'SCOPE',
+        "'#plan *'",
+      ),
+    );
+    expect(plan).toEqual([]);
+  });
+}
