@@ -19,7 +19,9 @@ const messages = {
 <section class="bn" role="dialog" aria-modal="true" aria-labelledby="ct" aria-describedby="cd">
  <div class="hd"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 4 4 0 0 1-4-4 4 4 0 0 1-5-5z"/><path d="M8.5 11.5h.01M12 16h.01M15.5 13.5h.01M8 15.5h.01"/></svg></span>
  <div><h1 id="ct">{t('mq.lg.578')}</h1>
- <p id="cd">{t('mq.lg.579')}<code>{t('mq.lg.281')}</code>{t('mq.lg.580')}<a href="/confidentialite#cookies">{t('mq.lg.090')}</a>.</p></div></div>
+ <p id="cd">{t('mq.lg.579')}<code>{t('mq.lg.281')}</code>{t('mq.lg.580')}<a href="/confidentialite#cookies">{t('mq.lg.090')}</a>.</p></div>
+ <button type="button" class="ck-lang" id="ck-lang" lang="en">{t('locale.en.short')}</button>
+ </div>
  <div class="panel" id="pn"><div>
   <div class="opt"><div><h2>{t('mq.lg.581')}</h2><p>{t('mq.lg.582')}</p></div><label class="sw"><input type="checkbox" checked disabled aria-label={t('mq.lg.583')}><span></span></label></div>
   <div class="opt"><div><h2>{t('mq.lg.584')}</h2><p>{t('mq.lg.585')}</p></div><label class="sw"><input type="checkbox" id="pref" aria-label={t('mq.lg.584')}><span></span></label></div>
@@ -50,7 +52,21 @@ document.getElementById('ac').onclick=function(){pref.checked=true;save(true,MSG
 document.getElementById('rf').onclick=function(){pref.checked=false;save(false,MSG['mq.lg.592'])};
 document.getElementById('sv').onclick=function(){save(pref.checked,MSG['mq.lg.593'])};
 ps.onclick=function(){var o=pn.classList.toggle('open');ps.setAttribute('aria-expanded',o);if(o)setTimeout(function(){pref.focus()},350)};
-document.getElementById('ac').focus({preventScroll:true});})();
+document.getElementById('ac').focus({preventScroll:true});
+var langBtn=document.getElementById('ck-lang');
+function langIsEn(){try{return localStorage.getItem('audigy-locale')==='en'}catch(e){return false}}
+function paintLang(){if(!langBtn)return;if(langIsEn()){langBtn.lang='fr';langBtn.textContent='FR — Français'}else{langBtn.lang='en';langBtn.textContent='EN — English'}}
+paintLang();
+if(langBtn)langBtn.addEventListener('click',function(){
+  var next=langIsEn()?'fr':'en';
+  function go(){try{localStorage.setItem('audigy-locale',next)}catch(e){}location.reload()}
+  if(next==='fr'){go();return}
+  fetch('/dictionnaire-en.json').then(function(r){return r.ok?r.text():null}).then(function(raw){
+    if(raw){try{localStorage.setItem('audigy-en',raw);window.__audigy_en=JSON.parse(raw)}catch(e){}}
+    go();
+  }).catch(go);
+});
+})();
 
 </script>
 </Canon>

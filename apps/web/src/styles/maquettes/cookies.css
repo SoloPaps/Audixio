@@ -309,3 +309,16 @@ a {
 [data-vue="cookies"] body {
   overflow: hidden;
 }
+
+.ck-lang {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.35rem 0.6rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}

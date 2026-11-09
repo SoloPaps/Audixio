@@ -7,6 +7,7 @@ import {
 import { ENGINE_VERSION, METHOD_VERSION } from '@audigy/engine';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { mailLocaleOf } from './copy.js';
 import type { Logger } from './log.js';
 import {
   ALERT_KINDS,
@@ -277,7 +278,7 @@ async function readDigestFacts(
   };
   const { data: profiles, error } = await service
     .from('profiles')
-    .select('id, weekly_digest, email_opt_out, plan')
+    .select('id, weekly_digest, email_opt_out, plan, locale')
     .eq('weekly_digest', true)
     .eq('email_opt_out', false);
   fail(error, 'digest_roster_failed');
@@ -303,6 +304,7 @@ async function readDigestFacts(
         id: row.id,
         weeklyDigest: row.weekly_digest,
         emailOptOut: row.email_opt_out,
+        locale: row.locale,
       })),
     };
   }
@@ -353,6 +355,7 @@ async function readDigestFacts(
       id: row.id,
       weeklyDigest: row.weekly_digest,
       emailOptOut: row.email_opt_out,
+      locale: row.locale,
     })),
     sites: siteRows.map((row) => ({
       id: row.id,
@@ -515,14 +518,16 @@ export function supabaseScheduleStore(service: Client): ScheduleStore {
       const rows = data ?? [];
       const userIds = [...new Set(rows.map((row) => row.user_id))];
       const opted = new Map<string, boolean>();
+      const locales = new Map<string, 'fr' | 'en'>();
       if (userIds.length > 0) {
         const profiles = await service
           .from('profiles')
-          .select('id, email_opt_out')
+          .select('id, email_opt_out, locale')
           .in('id', userIds);
         fail(profiles.error, 'profile_lookup_failed');
         for (const profile of profiles.data ?? []) {
           opted.set(profile.id, profile.email_opt_out);
+          locales.set(profile.id, mailLocaleOf(profile.locale));
         }
       }
       const pending: PendingAlert[] = [];
@@ -537,6 +542,7 @@ export function supabaseScheduleStore(service: Client): ScheduleStore {
           kind,
           payload,
           emailOptOut: opted.get(row.user_id) ?? false,
+          locale: locales.get(row.user_id) ?? 'fr',
         });
       }
       return pending;
