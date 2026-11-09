@@ -298,7 +298,7 @@ function onTabs(event: KeyboardEvent): void {
       <div class="opts">
         <label class="chk">
           <input type="checkbox" name="terms" value="on" bind:checked={terms} required>
-          <span>{t('login.signup.accept')} <a class="lk" href="/cgu">{t('footer.cgu')}</a> {t('login.signup.and')} <a class="lk" href="/confidentialite">{t('login.signup.privacy')}</a>.</span>
+          <span>{t('login.signup.accept')} <a class="lk" href="/cgu">{t('footer.cgu')}</a> {t('login.signup.and')} <span class="keep"><a class="lk" href="/confidentialite">{t('login.signup.privacy')}</a>.</span></span>
         </label>
       </div>
       {#if error}

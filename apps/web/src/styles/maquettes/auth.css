@@ -483,6 +483,11 @@ body.auth-gate .orb.o2 {
   line-height: 1.45;
 }
 
+/* B7 : le point final reste collé au dernier lien du consentement. */
+.auth-card .chk .keep {
+  white-space: nowrap;
+}
+
 .auth-card .chk input {
   accent-color: var(--primary);
   width: 16px;
