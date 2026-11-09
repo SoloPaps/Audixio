@@ -151,7 +151,8 @@ describe('transitions', () => {
   it('grave le tracé et l’icône pour qu’ils ne s’étirent pas sans CSS', () => {
     const gauge = text('apps/web/src/components/ScoreGauge.svelte');
     expect(gauge).toContain('fill="none"');
-    expect(gauge).toContain('stroke-width="8"');
+    // Refonte du cadran (anneau complet, trait 14 dans le viewBox 200).
+    expect(gauge).toContain('stroke-width="14"');
     expect(gauge).toContain('container-type: inline-size');
     const mark = text('apps/web/src/components/StatusMark.svelte');
     expect(mark).toContain('width="20"');

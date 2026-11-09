@@ -1,0 +1,133 @@
+import { expect, type Locator, type Page, test } from '@playwright/test';
+
+/** Vue du navigateur, sans le DOM de TypeScript. */
+type View = {
+  getComputedStyle: (node: unknown) => Record<string, string>;
+};
+
+/**
+ * Refonte du cadran du score (owner, 6 nov.) : nombre ET lettre, dans les
+ * deux thèmes, sans collision avec l’anneau de la maquette d’accueil.
+ */
+
+const THEMES = ['light', 'dark'] as const;
+
+async function box(locator: Locator) {
+  const rect = await locator.boundingBox();
+  if (!rect) throw new Error('élément invisible');
+  return rect;
+}
+
+function inside(
+  inner: { x: number; y: number; width: number; height: number },
+  outer: { x: number; y: number; width: number; height: number },
+) {
+  return (
+    inner.x >= outer.x - 1 &&
+    inner.y >= outer.y - 1 &&
+    inner.x + inner.width <= outer.x + outer.width + 1 &&
+    inner.y + inner.height <= outer.y + outer.height + 1
+  );
+}
+
+async function opaque(locator: Locator) {
+  return locator.evaluate(
+    (node) =>
+      (globalThis as unknown as View).getComputedStyle(node).backgroundColor,
+  );
+}
+
+async function checkGauge(
+  page: Page,
+  gauge: Locator,
+  score: string,
+  grade: string,
+) {
+  await expect(gauge).toHaveAttribute('data-grade', grade);
+  await expect(gauge.locator('.score-num')).toHaveText(score);
+  await expect(gauge.locator('.score-denom')).toHaveText('/100');
+  await expect(gauge.locator('.gauge-grade')).toHaveText(grade);
+  // Anneau complet + bandes du barème, lettre courante surlignée.
+  await expect(gauge.locator('.gauge-band')).toHaveCount(6);
+  await expect(
+    gauge.locator(`.gauge-band.on[data-band="${grade}"]`),
+  ).toHaveCount(1);
+  // Le nombre tient dans l’anneau ; la ligne lettre + statut est sous l’anneau.
+  const ring = await box(gauge.locator('.gauge-figure > svg'));
+  const num = await box(gauge.locator('.gauge-hole'));
+  expect(inside(num, ring)).toBe(true);
+  const status = await box(gauge.locator('.gauge-status'));
+  expect(status.y).toBeGreaterThanOrEqual(ring.y + ring.height - 1);
+  // La pastille de lettre garde un fond, même en sombre.
+  expect(await opaque(gauge.locator('.gauge-grade'))).not.toBe(
+    'rgba(0, 0, 0, 0)',
+  );
+  const fill = await gauge
+    .locator('.gauge-fill')
+    .evaluate(
+      (node) => (globalThis as unknown as View).getComputedStyle(node).stroke,
+    );
+  const ink = await gauge
+    .locator('.gauge-grade')
+    .evaluate(
+      (node) => (globalThis as unknown as View).getComputedStyle(node).color,
+    );
+  expect(fill).toBe(ink);
+  void page;
+}
+
+for (const theme of THEMES) {
+  test(`cadran : nombre et lettre sur l’accueil (${theme})`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(`/?theme=${theme}`);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+    const gauge = page.locator('.score-slot .gauge');
+    await expect(gauge).toHaveAttribute('role', 'img');
+    await expect(gauge).toHaveAttribute('aria-label', /66 sur 100, note C/);
+    await checkGauge(page, gauge, '66', 'C');
+    // Plus de collision avec l’anneau .gauge-wrap de la maquette (132 px).
+    const svg = await gauge.locator('.gauge-figure > svg').evaluate((node) => ({
+      transform: (globalThis as unknown as View).getComputedStyle(node)
+        .transform,
+      height: node.getBoundingClientRect().height,
+      width: node.getBoundingClientRect().width,
+    }));
+    expect(svg.transform).toBe('none');
+    expect(Math.abs(svg.height / svg.width - 1)).toBeLessThan(0.05);
+  });
+
+  test(`cadran : héros et cas limites (${theme})`, async ({ page }) => {
+    await page.goto(`/dev/composants?theme=${theme}`);
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+    await checkGauge(
+      page,
+      page.locator('.gauge[data-score="0"]').last(),
+      '0',
+      'F',
+    );
+    await checkGauge(
+      page,
+      page.locator('.gauge[data-score="100"]').last(),
+      '100',
+      'A',
+    );
+    const none = page.locator('.gauge[data-score="none"]').last();
+    await expect(none).toHaveAttribute('data-grade', 'none');
+    await expect(none.locator('.gauge-grade')).toHaveCount(0);
+    await expect(none.locator('.gauge-tip')).toHaveCount(0);
+  });
+}
+
+test('cadran : la lettre change de teinte entre clair et sombre', async ({
+  page,
+}) => {
+  await page.goto('/?theme=light');
+  const chip = page.locator('.score-slot .gauge-grade');
+  const light = await opaque(chip);
+  await page.goto('/?theme=dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const dark = await opaque(page.locator('.score-slot .gauge-grade'));
+  expect(dark).not.toBe(light);
+});

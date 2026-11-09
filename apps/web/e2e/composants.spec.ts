@@ -435,10 +435,12 @@ test('la ligne de domaine est un seul lien dans une colonne', async ({
 test('la jauge et la liste annoncent la note', async ({ page }) => {
   await page.goto('/dev/composants?theme=light');
   await expect(
-    page.getByRole('img', { name: 'Note de zéro : 0 sur 100, problème' }),
+    page.getByRole('img', {
+      name: 'Note de zéro : 0 sur 100, note F, problème',
+    }),
   ).toBeVisible();
   await expect(
-    page.getByRole('img', { name: 'Note pleine : 100 sur 100, bon' }),
+    page.getByRole('img', { name: 'Note pleine : 100 sur 100, note A, bon' }),
   ).toBeVisible();
   await expect(
     page.getByRole('img', { name: 'Note absente : non testé' }),

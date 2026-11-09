@@ -12,7 +12,7 @@ import {
   topActions,
 } from '../apps/web/src/lib/findings.js';
 import { formatReportStamp } from '../apps/web/src/lib/format-report-stamp.js';
-import { GAUGE, gaugeArc, levelForScore } from '../apps/web/src/lib/score.js';
+import { GAUGE, gaugeRing, levelForScore } from '../apps/web/src/lib/score.js';
 import { verdictCopy } from '../apps/web/src/lib/verdict.js';
 
 describe('niveaux de score', () => {
@@ -28,11 +28,12 @@ describe('niveaux de score', () => {
 });
 
 describe('jauge', () => {
-  it('trace un arc de 270° ouvert', () => {
-    const arc = gaugeArc(GAUGE.cx, GAUGE.cy, GAUGE.r);
-    expect(arc.startsWith('M ')).toBe(true);
-    expect(arc).toContain(`A ${GAUGE.r} ${GAUGE.r} 0 1 1`);
-    expect(arc.includes('Z')).toBe(false);
+  // Refonte owner (6 nov.) : l’arc de 270° devient un anneau complet.
+  it('trace un anneau complet, sans fermeture Z', () => {
+    const ring = gaugeRing(GAUGE.cx, GAUGE.cy, GAUGE.r);
+    expect(ring.startsWith('M ')).toBe(true);
+    expect(ring.split(`A ${GAUGE.r} ${GAUGE.r} 0 1 1`)).toHaveLength(3);
+    expect(ring.includes('Z')).toBe(false);
     expect(GAUGE.r).toBeGreaterThan(60);
   });
 });

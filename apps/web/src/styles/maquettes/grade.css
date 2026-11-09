@@ -1,0 +1,42 @@
+/*
+ * Teintes des lettres du barème (A–F) pour le cadran du score.
+ * Mêmes valeurs que les pastilles du rapport (.grade g-A…g-F) ; le sombre
+ * reprend les fonds profonds et les encres claires de theme-dark.css.
+ */
+:root {
+  --grade-a: #067647;
+  --grade-a-bg: #d6f2e3;
+  --grade-b: #2b3b85;
+  --grade-b-bg: #dde4f8;
+  --grade-c: #8a4b08;
+  --grade-c-bg: #fbe8c8;
+  --grade-d: #9a3a0c;
+  --grade-d-bg: #fce3d6;
+  --grade-e: #b42318;
+  --grade-e-bg: #fee4e2;
+  --grade-f: #912018;
+  --grade-f-bg: #fdd9d5;
+  --grade-none: #667085;
+  --grade-none-bg: #eef0f4;
+  --grade-band: rgba(61, 82, 160, 0.14);
+  --grade-track: rgba(61, 82, 160, 0.1);
+}
+
+html[data-theme="dark"] {
+  --grade-a: #8ee4b0;
+  --grade-a-bg: #123226;
+  --grade-b: #b4c6ff;
+  --grade-b-bg: #1f2b57;
+  --grade-c: #f6c56b;
+  --grade-c-bg: #3a2a10;
+  --grade-d: #f8a77f;
+  --grade-d-bg: #3d2216;
+  --grade-e: #ffb4ab;
+  --grade-e-bg: #3a2220;
+  --grade-f: #ff9d92;
+  --grade-f-bg: #43201c;
+  --grade-none: #adbbda;
+  --grade-none-bg: #243056;
+  --grade-band: rgba(173, 187, 218, 0.18);
+  --grade-track: rgba(173, 187, 218, 0.16);
+}
