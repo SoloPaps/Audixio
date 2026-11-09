@@ -121,3 +121,167 @@ test('rapport connecté en anglais : « Loading report… »', async ({ page }) 
   await expect(page.getByText('Chargement du rapport')).toHaveCount(0);
   release();
 });
+
+/**
+ * Visiteur sans session : redirection immédiate vers la destination déjà
+ * choisie par ReportView, depuis <head>, avant tout rendu. Le JavaScript de
+ * l’application est bloqué pour prouver qu’on n’attend pas l’hydratation.
+ */
+async function asGuest(page: Page): Promise<void> {
+  await page.route('**/api/auth/session', (route) =>
+    route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: '{}',
+    }),
+  );
+}
+
+async function withoutApp(page: Page): Promise<void> {
+  // Tout script chargé par URL (îlots, Vite) est bloqué ; seuls les scripts
+  // en ligne du HTML s’exécutent.
+  await page.route('**/*', (route) =>
+    route.request().resourceType() === 'script'
+      ? route.abort()
+      : route.fallback(),
+  );
+}
+
+function guestPayload(measured: boolean): unknown {
+  const body = auditBody() as {
+    audit: Record<string, unknown>;
+    domains: { domain: string; score: number | null }[];
+  };
+  return {
+    ...body,
+    audit: { ...body.audit, siteVerified: false, globalScore: null },
+    domains: measured
+      ? body.domains
+      : body.domains.map((row) => ({ ...row, score: null })),
+  };
+}
+
+async function storeGuest(page: Page, payload: unknown): Promise<void> {
+  await page.goto('/');
+  await page.evaluate(
+    ([id, value]) => {
+      (
+        globalThis as unknown as {
+          sessionStorage: { setItem: (k: string, v: string) => void };
+        }
+      ).sessionStorage.setItem(
+        'audixio-guest-audit',
+        JSON.stringify({ [id as string]: value }),
+      );
+    },
+    [AUDIT_ID, payload],
+  );
+}
+
+for (const path of ['/rapport', '/constat', '/badge']) {
+  test(`visiteur sans audit : ${path} part tout de suite vers /connexion`, async ({
+    page,
+  }) => {
+    await asGuest(page);
+    await withoutApp(page);
+    await page.goto(`${path}?id=${AUDIT_ID}`);
+    await expect(page).toHaveURL(
+      `/connexion?next=${encodeURIComponent(`${path}?id=${AUDIT_ID}`)}`,
+    );
+    await expect(page.getByText('Analyse en cours')).toHaveCount(0);
+  });
+}
+
+test('visiteur sans audit : /domaine?domaine= part vers /connexion', async ({
+  page,
+}) => {
+  await asGuest(page);
+  await withoutApp(page);
+  const target = `/domaine?id=${AUDIT_ID}&domaine=seo`;
+  await page.goto(target);
+  await expect(page).toHaveURL(`/connexion?next=${encodeURIComponent(target)}`);
+});
+
+test('visiteur, audit sans aucune mesure : /audit-echoue tout de suite', async ({
+  page,
+}) => {
+  await storeGuest(page, guestPayload(false));
+  await asGuest(page);
+  await withoutApp(page);
+  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await expect(page).toHaveURL(`/audit-echoue?id=${AUDIT_ID}`);
+});
+
+test('visiteur avec son audit : le rapport s’affiche, pas de redirection', async ({
+  page,
+}) => {
+  await storeGuest(page, guestPayload(true));
+  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await expect(page).toHaveURL(`/rapport?id=${AUDIT_ID}`);
+  await expect(
+    page.getByRole('heading', { level: 1, name: /atelier-martin\.fr/ }),
+  ).toBeVisible({ timeout: 15_000 });
+});
+
+test('connecté (drapeau de cookie) : pas de redirection depuis <head>', async ({
+  page,
+  context,
+}) => {
+  await context.addCookies([
+    { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4321' },
+    { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4400' },
+  ]);
+  await withoutApp(page);
+  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await expect(page).toHaveURL(`/rapport?id=${AUDIT_ID}`);
+  await expect(
+    page.getByRole('status').filter({ hasText: 'Chargement du rapport…' }),
+  ).toBeVisible();
+});
+
+test('sans identifiant ou sans domaine : pas de redirection (message)', async ({
+  page,
+}) => {
+  await withoutApp(page);
+  await page.goto('/rapport');
+  await expect(page).toHaveURL('/rapport');
+  await page.goto(`/domaine?id=${AUDIT_ID}`);
+  await expect(page).toHaveURL(`/domaine?id=${AUDIT_ID}`);
+});
+
+test('session simulée par /api/auth/session seulement : pas de redirection', async ({
+  page,
+}) => {
+  await page.route('**/api/auth/session', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        access_token: 'header.payload.signature',
+        expires_at: 2_000_000_000,
+        expires_in: 3600,
+        user: {
+          id: '11111111-1111-4111-8111-111111111111',
+          aud: 'authenticated',
+          role: 'authenticated',
+          email: 'ada@exemple.fr',
+          app_metadata: {},
+          user_metadata: {},
+          created_at: '2026-10-23T00:00:00.000Z',
+        },
+      }),
+    }),
+  );
+  await page.route('**/api/audits/**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(auditBody()),
+    }),
+  );
+  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await expect(page).toHaveURL(`/rapport?id=${AUDIT_ID}`);
+  await expect(
+    page.getByRole('heading', { level: 1, name: /atelier-martin\.fr/ }),
+  ).toBeVisible({ timeout: 15_000 });
+});
