@@ -1,5 +1,5 @@
 import { type Grade, gradeForScore } from '@audigy/db';
-import { t } from './copy.js';
+import { currentMailLocale, mailLocaleOf, t, withMailLocale } from './copy.js';
 
 export type MailGrade = Grade;
 
@@ -49,7 +49,7 @@ function shell(input: {
   const logo = input.logoUrl
     ? `<a href="${escapeHtml(input.logoUrl.replace(/\/marque\/logo-pc\.svg$/u, '/') || '/')}" style="text-decoration:none;"><img src="${escapeHtml(input.logoUrl)}" alt="${escapeHtml(t('mail.brand'))}" width="140" height="32" style="height:32px;width:auto;border:0;display:block;"></a>`
     : `<span style="font:700 20px ${FONT};color:#3D52A0;">${escapeHtml(t('mail.brand'))}</span>`;
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="robots" content="noindex"><title>${escapeHtml(input.title)}</title><style>@media (max-width:480px){.hd,.bd,.ft{padding-left:20px!important;padding-right:20px!important}h1{font-size:21px!important}.btn{display:block!important;text-align:center!important}}</style></head><body style="margin:0;padding:0;background:#EDE8F5;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background:#EDE8F5;"><tr><td align="center" style="padding:32px 12px;"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:600px;background:#FFFFFF;border:1px solid #D9DFEE;border-radius:16px;"><tr><td class="hd" style="padding:24px 32px;border-bottom:1px solid #EDE8F5;">${logo}</td></tr><tr><td class="bd" style="padding:32px;font:15px/1.6 ${FONT};color:#3B4675;">${input.body}</td></tr><tr><td class="ft" style="padding:24px 32px;background:#F8F6FC;border-top:1px solid #EDE8F5;border-radius:0 0 16px 16px;font:12px/1.6 ${FONT};color:#59648F;">${input.footer}</td></tr></table></td></tr></table></body></html>`;
+  return `<!DOCTYPE html><html lang="${currentMailLocale()}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="robots" content="noindex"><title>${escapeHtml(input.title)}</title><style>@media (max-width:480px){.hd,.bd,.ft{padding-left:20px!important;padding-right:20px!important}h1{font-size:21px!important}.btn{display:block!important;text-align:center!important}}</style></head><body style="margin:0;padding:0;background:#EDE8F5;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;background:#EDE8F5;"><tr><td align="center" style="padding:32px 12px;"><table role="presentation" width="600" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:600px;background:#FFFFFF;border:1px solid #D9DFEE;border-radius:16px;"><tr><td class="hd" style="padding:24px 32px;border-bottom:1px solid #EDE8F5;">${logo}</td></tr><tr><td class="bd" style="padding:32px;font:15px/1.6 ${FONT};color:#3B4675;">${input.body}</td></tr><tr><td class="ft" style="padding:24px 32px;background:#F8F6FC;border-top:1px solid #EDE8F5;border-radius:0 0 16px 16px;font:12px/1.6 ${FONT};color:#59648F;">${input.footer}</td></tr></table></td></tr></table></body></html>`;
 }
 
 function button(label: string, href: string): string {
@@ -96,6 +96,21 @@ export function renderRecapMail(input: {
   legalUrl: string;
   unsubscribeUrl: string;
   logoUrl: string;
+  locale?: 'fr' | 'en';
+}): MailDocument {
+  return withMailLocale(mailLocaleOf(input.locale), () =>
+    renderRecapMailBody(input),
+  );
+}
+
+function renderRecapMailBody(input: {
+  mode: 'change' | 'steady';
+  cards: readonly RecapCard[];
+  reportUrl: string;
+  prefsUrl: string;
+  legalUrl: string;
+  unsubscribeUrl: string;
+  logoUrl: string;
 }): MailDocument {
   const steady = input.mode === 'steady';
   const subject = steady
@@ -133,6 +148,20 @@ export function renderRecapMail(input: {
 }
 
 export function renderSignupMail(input: {
+  confirmUrl: string;
+  code?: string;
+  prefsUrl: string;
+  legalUrl: string;
+  unsubscribeUrl: string;
+  logoUrl: string;
+  locale?: 'fr' | 'en';
+}): MailDocument {
+  return withMailLocale(mailLocaleOf(input.locale), () =>
+    renderSignupMailBody(input),
+  );
+}
+
+function renderSignupMailBody(input: {
   confirmUrl: string;
   code?: string;
   prefsUrl: string;

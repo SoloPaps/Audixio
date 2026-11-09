@@ -18,7 +18,11 @@ import Canon from '../layouts/Canon.astro';
 
 <section class="block" aria-labelledby="s1">
  <div class="rv"><p class="kicker">{t('mq.m.012')}</p><h2 class="sec" id="s1">{t('mq.m.013')}</h2></div>
- <ol class="process" data-stagger><li class="card pad rv tilt"><span class="num" aria-hidden="true">1</span><h3><span class="sr-only">{t('mq.m.014')} </span>{t('mq.m.015')}</h3><p>{t('mq.m.016')}</p><span class="chip">{t('mq.m.017')}</span></li><li class="card pad rv tilt"><span class="num" aria-hidden="true">2</span><h3><span class="sr-only">{t('mq.m.018')} </span>{t('mq.m.019')}</h3><p>{t('mq.m.020')}</p><span class="chip">{t('mq.m.021')}</span></li><li class="card pad rv tilt"><span class="num" aria-hidden="true">3</span><h3><span class="sr-only">{t('mq.m.022')} </span>{t('mq.m.023')}</h3><p>{t('mq.m.024')}</p><span class="chip">{t('mq.m.025')}</span></li></ol>
+ <ol class="process" data-stagger>
+ <li class="card pad rv tilt"><span class="num" aria-hidden="true">1</span><h3><span class="sr-only">{t('mq.m.014')} </span>{t('mq.m.015')}</h3><p>{t('mq.m.016')}</p><span class="chip">{t('mq.m.017')}</span></li>
+ <li class="card pad rv tilt"><span class="num" aria-hidden="true">2</span><h3><span class="sr-only">{t('mq.m.018')} </span>{t('mq.m.019')}</h3><p>{t('mq.m.020')}</p><span class="chip">{t('mq.m.021')}</span></li>
+ <li class="card pad rv tilt"><span class="num" aria-hidden="true">3</span><h3><span class="sr-only">{t('mq.m.022')} </span>{t('mq.m.023')}</h3><p>{t('mq.m.024')}</p><span class="chip">{t('mq.m.025')}</span></li>
+ </ol>
  <svg class="flow" viewBox="0 0 1000 20" preserveAspectRatio="none" aria-hidden="true"><path d="M0 10 H1000"/></svg>
 </section>
 
@@ -73,7 +77,7 @@ d.querySelectorAll('.lang-btn').forEach(function(x,_,all){x.addEventListener('cl
 /* stagger index within groups */
 d.querySelectorAll('[data-stagger]').forEach(function(g){Array.prototype.forEach.call(g.querySelectorAll(':scope > .rv'),function(el,i){el.style.setProperty('--i',i)})});
 function countUp(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.count,dur=reduce?0:1600,t0=performance.now(),dec=+(el.dataset.dec||0);
- function f(t){var p=dur?Math.min(1,(t-t0)/dur):1,e=1-Math.pow(1-p,4);el.textContent=(to*e).toFixed(dec).replace('.',',');if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+ function f(t){var p=dur?Math.min(1,(t-t0)/dur):1,e=1-Math.pow(1-p,4);var n=(to*e).toFixed(dec);el.textContent=dec&&document.documentElement.lang!=='en'?n.replace('.',','):n;if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
 window.AX.countUp=countUp;
 var io='IntersectionObserver' in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var t=e.target;t.classList.add('in');t.querySelectorAll('[data-count]').forEach(countUp);if(t.dataset.count)countUp(t);io.unobserve(t)}})},{threshold:.15,rootMargin:'0px 0px -6% 0px'}):null;
 d.querySelectorAll('.rv,.sheen,[data-count],.gbar').forEach(function(el){io?io.observe(el):el.classList.add('in')});

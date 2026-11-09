@@ -1,6 +1,6 @@
 import type { mailCopy } from './copy.js';
 
-/** English twin of the mail copy. Sending stays French until a locale is on the roster. */
+/** English twin of the mail copy. Used when the profile locale is `en`. */
 export const mailCopyEn: Record<keyof typeof mailCopy, string> = {
   'mail.alert.down.subject': 'Your site is not responding',
   'mail.alert.down.body': '{site} failed two checks in a row.',

@@ -21,6 +21,35 @@ const messages = {
   }),
   'mq.e.rose.desc': t('mq.e.rose.desc', { summary: '{summary}' }),
   'mq.e.rose.untested': t('mq.e.rose.untested', { list: '{list}' }),
+  'mq.e.short.perf': t('mq.e.short.perf'),
+  'mq.e.short.seo': t('mq.e.short.seo'),
+  'mq.e.short.sec': t('mq.e.short.sec'),
+  'mq.e.short.eco': t('mq.e.short.eco'),
+  'mq.e.short.a11y': t('mq.e.short.a11y'),
+  'mq.e.short.code': t('mq.e.short.code'),
+  'mq.e.short.priv': t('mq.e.short.priv'),
+  'mq.e.short.dns': t('mq.e.short.dns'),
+  'mq.e.prompt.role': t('mq.e.prompt.role'),
+  'mq.e.prompt.fix': t('mq.e.prompt.fix'),
+  'mq.e.prompt.check': t('mq.e.prompt.check'),
+  'mq.e.prompt.files': t('mq.e.prompt.files'),
+  'mq.e.prompt.copied': t('mq.e.prompt.copied'),
+  'mq.e.prompt.images.t': t('mq.e.prompt.images.t'),
+  'mq.e.prompt.images.a1': t('mq.e.prompt.images.a1'),
+  'mq.e.prompt.images.a2': t('mq.e.prompt.images.a2'),
+  'mq.e.prompt.images.files': t('mq.e.prompt.images.files'),
+  'mq.e.prompt.scripts.t': t('mq.e.prompt.scripts.t'),
+  'mq.e.prompt.scripts.a1': t('mq.e.prompt.scripts.a1'),
+  'mq.e.prompt.scripts.a2': t('mq.e.prompt.scripts.a2'),
+  'mq.e.prompt.scripts.files': t('mq.e.prompt.scripts.files'),
+  'mq.e.prompt.polices.t': t('mq.e.prompt.polices.t'),
+  'mq.e.prompt.polices.a1': t('mq.e.prompt.polices.a1'),
+  'mq.e.prompt.polices.a2': t('mq.e.prompt.polices.a2'),
+  'mq.e.prompt.polices.files': t('mq.e.prompt.polices.files'),
+  'mq.e.sim.saved': t('mq.e.sim.saved'),
+  'mq.e.prompt.copied.short': t('mq.e.prompt.copied.short'),
+  'mq.e.unit.kb': t('mq.e.unit.kb'),
+  'mq.e.unit.mb': t('mq.e.unit.mb'),
 };
 
 // Barème officiel (gradeForScore, source unique) : note minimale de chaque
@@ -79,7 +108,7 @@ for (let score = 100; score >= 0; score -= 1) {
 <div class="rosewrap"><div class="rose" id="rose" data-grades={JSON.stringify(gradeFloor)}></div><p class="rleg"><span>{t('mq.e.044')}</span><span>{t('mq.e.045')}</span></p>
 <div class="l1g"><span class="k">{t('mq.e.046')}</span><p>{t('mq.e.047')}</p></div></div></div>
 <div class="l1b"><div><h3 class="h">{t('mq.e.048')}</h3><ol class="prl" data-stagger><li class="rv" style="--i:0"><a class="pr act" id="prio-1" href="#n3"><span class="sr-only">{t('mq.e.049')} </span><span class="rk r1" aria-hidden="true">1</span><span class="pt"><b>{t('mq.e.035')}</b><small>{t('mq.e.022')}</small></span><span class="badge b-crit"><svg class="ico sm" aria-hidden="true"><use href="#i-st-crit"/></svg>{t('mq.e.050')}</span><span class="go" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span></a></li><li class="rv" style="--i:1"><div class="pr" id="prio-2"><span class="sr-only">{t('mq.e.051')} </span><span class="rk r2" aria-hidden="true">2</span><span class="pt"><b>{t('mq.e.037')}</b><small>{t('mq.e.052')}</small></span><span class="badge b-fix"><svg class="ico sm" aria-hidden="true"><use href="#i-st-fix"/></svg>{t('mq.e.036')}</span></div></li><li class="rv" style="--i:2"><div class="pr" id="prio-3"><span class="sr-only">{t('mq.e.053')} </span><span class="rk r3" aria-hidden="true">3</span><span class="pt"><b>{t('mq.e.039')}</b><small>{t('mq.e.054')}</small></span><span class="badge b-chk"><svg class="ico sm" aria-hidden="true"><use href="#i-st-check"/></svg>{t('mq.e.038')}</span></div></li><li class="rv" style="--i:3"><div class="pr" id="prio-4"><span class="sr-only">{t('mq.e.055')} </span><span class="rk r4" aria-hidden="true">4</span><span class="pt"><b>{t('mq.e.041')}</b><small>{t('mq.e.056')}</small></span><span class="badge b-minor"><svg class="ico sm" aria-hidden="true"><use href="#i-st-minor"/></svg>{t('mq.e.040')}</span></div></li><li class="rv" style="--i:4"><div class="pr" id="prio-5"><span class="sr-only">{t('mq.e.057')} </span><span class="rk r5" aria-hidden="true">5</span><span class="pt"><b>{t('mq.e.042')}</b><small>{t('mq.e.058')}</small></span><span class="badge b-minor"><svg class="ico sm" aria-hidden="true"><use href="#i-st-minor"/></svg>{t('mq.e.040')}</span></div></li></ol><p class="more">{t('mq.e.059')}</p></div>
-<div><h3 class="h">{t('mq.e.060')}</h3><ul class="doms" data-stagger><li class="rv" style="--i:0"><a class="dom act" id="d-perf" href="#n2" data-icon="i-perf" data-short="Perf." data-score="68"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-perf"/></svg></span><span class="gchip g-c" aria-hidden="true">{t('mq.e.012')}</span></span><span class="dom-name">{t('mq.e.022')}</span><span class="sr-only"> {t('mq.e.061')}</span><span class="dt">{t('mq.e.062')}</span><span class="tz on"><svg class="ico sm" aria-hidden="true"><use href="#i-st-crit"/></svg>{t('mq.e.063')}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span></a></li><li class="rv" style="--i:1"><div class="dom off" id="d-seo" data-icon="i-seo" data-short="SEO" data-score="84"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-seo"/></svg></span><span class="gchip g-b" aria-hidden="true">{t('mq.e.064')}</span></span><span class="dom-name">{t('mq.e.052')}</span><span class="sr-only"> {t('mq.e.065')}</span><span class="dt">{t('mq.e.066')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:2"><div class="dom off" id="d-sec" data-icon="i-sec" data-short="Sécurité" data-score="72"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-sec"/></svg></span><span class="gchip g-c" aria-hidden="true">{t('mq.e.012')}</span></span><span class="dom-name">{t('mq.e.054')}</span><span class="sr-only"> {t('mq.e.061')}</span><span class="dt">{t('mq.e.068')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:3"><div class="dom off" id="d-eco" data-icon="i-eco" data-short="Écologie" data-score="70"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-eco"/></svg></span><span class="gchip g-c" aria-hidden="true">{t('mq.e.012')}</span></span><span class="dom-name">{t('mq.e.058')}</span><span class="sr-only"> {t('mq.e.061')}</span><span class="dt">{t('mq.e.069')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:4"><div class="dom off" id="d-a11y" data-icon="i-a11y" data-short="Access." data-score="86"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-a11y"/></svg></span><span class="gchip g-b" aria-hidden="true">{t('mq.e.064')}</span></span><span class="dom-name">{t('mq.e.056')}</span><span class="sr-only"> {t('mq.e.065')}</span><span class="dt">{t('mq.e.070')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:5"><div class="dom off" id="d-code" data-icon="i-code" data-short="Qualité" data-score="88"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-code"/></svg></span><span class="gchip g-b" aria-hidden="true">{t('mq.e.064')}</span></span><span class="dom-name">{t('mq.e.071')}</span><span class="sr-only"> {t('mq.e.065')}</span><span class="dt">{t('mq.e.072')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:6"><div class="dom off" id="d-priv" data-icon="i-priv" data-short="Vie privée"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-priv"/></svg></span><span class="gchip nt" aria-hidden="true">—</span></span><span class="dom-name">{t('mq.e.073')}</span><span class="sr-only"> {t('mq.e.074')}</span><span class="dt">{t('mq.e.075')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:7"><div class="dom off" id="d-dns" data-icon="i-dns" data-short="DNS" data-score="96"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-dns"/></svg></span><span class="gchip g-a" aria-hidden="true">{t('mq.e.076')}</span></span><span class="dom-name">{t('mq.e.077')}</span><span class="sr-only"> {t('mq.e.078')}</span><span class="dt">{t('mq.e.079')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li></ul></div></div>
+<div><h3 class="h">{t('mq.e.060')}</h3><ul class="doms" data-stagger><li class="rv" style="--i:0"><a class="dom act" id="d-perf" href="#n2" data-icon="i-perf" data-short-key="mq.e.short.perf" data-score="68"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-perf"/></svg></span><span class="gchip g-c" aria-hidden="true">{t('mq.e.012')}</span></span><span class="dom-name">{t('mq.e.022')}</span><span class="sr-only"> {t('mq.e.061')}</span><span class="dt">{t('mq.e.062')}</span><span class="tz on"><svg class="ico sm" aria-hidden="true"><use href="#i-st-crit"/></svg>{t('mq.e.063')}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span></a></li><li class="rv" style="--i:1"><div class="dom off" id="d-seo" data-icon="i-seo" data-short-key="mq.e.short.seo" data-score="84"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-seo"/></svg></span><span class="gchip g-b" aria-hidden="true">{t('mq.e.064')}</span></span><span class="dom-name">{t('mq.e.052')}</span><span class="sr-only"> {t('mq.e.065')}</span><span class="dt">{t('mq.e.066')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:2"><div class="dom off" id="d-sec" data-icon="i-sec" data-short-key="mq.e.short.sec" data-score="72"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-sec"/></svg></span><span class="gchip g-c" aria-hidden="true">{t('mq.e.012')}</span></span><span class="dom-name">{t('mq.e.054')}</span><span class="sr-only"> {t('mq.e.061')}</span><span class="dt">{t('mq.e.068')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:3"><div class="dom off" id="d-eco" data-icon="i-eco" data-short-key="mq.e.short.eco" data-score="70"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-eco"/></svg></span><span class="gchip g-c" aria-hidden="true">{t('mq.e.012')}</span></span><span class="dom-name">{t('mq.e.058')}</span><span class="sr-only"> {t('mq.e.061')}</span><span class="dt">{t('mq.e.069')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:4"><div class="dom off" id="d-a11y" data-icon="i-a11y" data-short-key="mq.e.short.a11y" data-score="86"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-a11y"/></svg></span><span class="gchip g-b" aria-hidden="true">{t('mq.e.064')}</span></span><span class="dom-name">{t('mq.e.056')}</span><span class="sr-only"> {t('mq.e.065')}</span><span class="dt">{t('mq.e.070')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:5"><div class="dom off" id="d-code" data-icon="i-code" data-short-key="mq.e.short.code" data-score="88"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-code"/></svg></span><span class="gchip g-b" aria-hidden="true">{t('mq.e.064')}</span></span><span class="dom-name">{t('mq.e.071')}</span><span class="sr-only"> {t('mq.e.065')}</span><span class="dt">{t('mq.e.072')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:6"><div class="dom off" id="d-priv" data-icon="i-priv" data-short-key="mq.e.short.priv"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-priv"/></svg></span><span class="gchip nt" aria-hidden="true">—</span></span><span class="dom-name">{t('mq.e.073')}</span><span class="sr-only"> {t('mq.e.074')}</span><span class="dt">{t('mq.e.075')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li><li class="rv" style="--i:7"><div class="dom off" id="d-dns" data-icon="i-dns" data-short-key="mq.e.short.dns" data-score="96"><span class="dh1"><span class="di"><svg class="ico " aria-hidden="true"><use href="#i-dns"/></svg></span><span class="gchip g-a" aria-hidden="true">{t('mq.e.076')}</span></span><span class="dom-name">{t('mq.e.077')}</span><span class="sr-only"> {t('mq.e.078')}</span><span class="dt">{t('mq.e.079')}</span><span class="tz"><svg class="ico sm" aria-hidden="true"><use href="#i-lock"/></svg>{t('mq.e.067')}</span></div></li></ul></div></div>
 <div class="brief rv"><span class="bi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></span><div class="bt"><small>{t('mq.e.080')}</small><b>{t('mq.e.081')}</b><p>{t('mq.e.082')}</p></div><span class="lk2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>{t('mq.e.067')}</span></div>
 </article></section><div class="cnx" id="cx1" data-src="d-perf" data-dst="z2" aria-hidden="true"><svg preserveAspectRatio="none"><path class="cb"/><path class="cl"/><circle class="cd2" r="6"/></svg><span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg>{t('mq.e.083')}</span></div><section class="lv" id="n2" aria-labelledby="h-n2"><div class="lvh rv"><span class="lvn" aria-hidden="true">02</span><div><h2 id="h-n2"><span class="sr-only">{t('mq.e.084')} </span>{t('mq.e.085')}</h2><p class="s">{t('mq.e.086')}</p></div></div>
 <div class="zf" id="z2" data-from="d-perf"><article class="card zcard" aria-label={t('mq.e.087')}><div class="zi">
@@ -120,7 +149,7 @@ var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;window.AX={red
 /* stagger index within groups */
 d.querySelectorAll('[data-stagger]').forEach(function(g){Array.prototype.forEach.call(g.querySelectorAll(':scope > .rv'),function(el,i){el.style.setProperty('--i',i)})});
 function countUp(el){if(el.dataset.done)return;el.dataset.done=1;var to=+el.dataset.count,dur=reduce?0:1600,t0=performance.now(),dec=+(el.dataset.dec||0);
- function f(t){var p=dur?Math.min(1,(t-t0)/dur):1,e=1-Math.pow(1-p,4);el.textContent=(to*e).toFixed(dec).replace('.',',');if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+ function f(t){var p=dur?Math.min(1,(t-t0)/dur):1,e=1-Math.pow(1-p,4);var n=(to*e).toFixed(dec);el.textContent=dec&&document.documentElement.lang!=='en'?n.replace('.',','):n;if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
 window.AX.countUp=countUp;
 var io='IntersectionObserver' in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var t=e.target;t.classList.add('in');t.querySelectorAll('[data-count]').forEach(countUp);if(t.dataset.count)countUp(t);io.unobserve(t)}})},{threshold:0,rootMargin:'0px 0px -6% 0px'}):null;
 d.querySelectorAll('.rv,.sheen,[data-count],.gbar').forEach(function(el){io?io.observe(el):el.classList.add('in')});
@@ -168,7 +197,7 @@ d.querySelectorAll('.fz').forEach(function(b){
 function fzLetters(b){var name=b.querySelector('.fz-name'),def=b.querySelector('.st-def .lt'),ok=b.querySelector('.st-ok .lt');
  function fill(box,text,from){if(!box||box.dataset.txt===text)return;box.dataset.txt=text;box.textContent='';
   Array.from(text).forEach(function(ch,i){var sp=d.createElement('span');sp.style.setProperty('--i',String(from+i));sp.textContent=ch===' '?'\u00a0':ch;box.appendChild(sp)})}
- fill(def,(name&&name.textContent||'').trim(),0);fill(ok,d.documentElement.lang==='en'?'Prompt copied':'Prompt copié',4)}
+ fill(def,(name&&name.textContent||'').trim(),0);fill(ok,AX.L('mq.e.prompt.copied.short'),4)}
 d.querySelectorAll('.fz').forEach(fzLetters);
 new MutationObserver(function(){d.querySelectorAll('.fz').forEach(fzLetters)}).observe(d.documentElement,{attributes:true,attributeFilter:['lang']});
 AX.fzSend=function(b,msg){if(b.classList.contains('go'))return;b.classList.add('go');AX.say(msg,true);
@@ -180,13 +209,18 @@ AX.fzSend=function(b,msg){if(b.classList.contains('go'))return;b.classList.add('
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var TAU=Math.PI*2,PERIOD=7200,size=0,visible=true;
   /* chaque point = une image détectée ; taille proportionnelle au poids */
+  function poidsLabel(ko){
+    var L=AX.L,en=document.documentElement.lang==='en';
+    if(ko>=1024){var v=(ko/1024).toFixed(1);return (en?v:v.replace('.',','))+' '+L('mq.e.unit.mb');}
+    return String(ko)+' '+L('mq.e.unit.kb');
+  }
   var items=[
-    {n:'hero-accueil.jpg',s:'2,1 Mo',w:2100,a:0.55,d:0.68},
-    {n:'equipe-portrait.png',s:'1,4 Mo',w:1400,a:1.75,d:0.45},
-    {n:'galerie-produit-1.jpg',s:'580 Ko',w:580,a:2.75,d:0.80},
-    {n:'galerie-produit-2.jpg',s:'410 Ko',w:410,a:3.85,d:0.58},
-    {n:'visuel-detail.jpg',s:'220 Ko',w:220,a:4.7,d:0.84},
-    {n:'badge-label.png',s:'90 Ko',w:90,a:5.6,d:0.35}
+    {n:'hero-accueil.jpg',w:2100,a:0.55,d:0.68},
+    {n:'equipe-portrait.png',w:1400,a:1.75,d:0.45},
+    {n:'galerie-produit-1.jpg',w:580,a:2.75,d:0.80},
+    {n:'galerie-produit-2.jpg',w:410,a:3.85,d:0.58},
+    {n:'visuel-detail.jpg',w:220,a:4.7,d:0.84},
+    {n:'badge-label.png',w:90,a:5.6,d:0.35}
   ];
   function resize(){
     var r=cv.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
@@ -302,7 +336,7 @@ AX.fzSend=function(b,msg){if(b.classList.contains('go'))return;b.classList.add('
 
       if(W>=480){
         ctx.font='600 11px "JetBrains Mono",monospace';ctx.textAlign='left';ctx.textBaseline='middle';
-        var txt=it.n+'  '+it.s,tw=ctx.measureText(txt).width,bw=tw+18,bh=24;
+        var txt=it.n+'  '+poidsLabel(it.w),tw=ctx.measureText(txt).width,bw=tw+18,bh=24;
         var bx=x>cx?x-r-12-bw:x+r+12;
         bx=Math.max(4,Math.min(W-bw-4,bx));
         rr(bx,y-bh/2,bw,bh,12);
@@ -342,7 +376,7 @@ var INK={A:'#065F3A',B:'#2B3B85',C:'#8A4B08',D:'#A23B0A'};
 var LET={A:'#065F3A',B:'#2B3B85',C:'#8A4B08',D:'#A23B0A',F:'#9B1C1C'};
 var cards=$$('.dom').map(function(el){
   var s=el.getAttribute('data-score');
-  return {el:el,icon:el.dataset.icon,short:el.dataset.short,name:$('.dom-name',el).textContent,score:s===null?null:+s};
+  return {el:el,icon:el.dataset.icon,short:(window.AX&&AX.L?AX.L(el.dataset.shortKey):el.dataset.shortKey),name:$('.dom-name',el).textContent,score:s===null?null:+s};
 });
 var scored=cards.filter(function(c){return c.score!==null;});
 var g=Math.round(scored.reduce(function(a,c){return a+c.score;},0)/scored.length);
@@ -486,7 +520,7 @@ var roseLang=document.documentElement.lang;
 new MutationObserver(function(){
   var lang=document.documentElement.lang;
   if(lang===roseLang)return;
-  roseLang=lang;roseText();
+  roseLang=lang;cards.forEach(function(c){c.short=L(c.el.dataset.shortKey)});roseText();
   if(done)setCenter(active);else cLabel.textContent=L('mq.e.046');
 }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 function start(){
@@ -560,22 +594,22 @@ addEventListener('resize',function(){segs.forEach(ind)});
 /* Le libellé change de largeur (dictionnaire EN posé après coup, police chargée) : la pastille suit. */
 if(window.ResizeObserver){var segRO=new ResizeObserver(function(){segs.forEach(ind)});segs.forEach(function(s){$$('label',s).forEach(function(l){segRO.observe(l)})})}
 if(d.fonts&&d.fonts.ready)d.fonts.ready.then(function(){segs.forEach(ind)});
-var CJ=[{"id": "images", "t": "Images trop volumineuses", "acts": ["Convertir les 6 visuels vers un format moderne (WebP ou AVIF).", "Définir des dimensions maximales adaptées aux affichages mobiles."], "tgt": "hero-accueil.jpg, equipe-portrait.png"}, {"id": "scripts", "t": "Scripts qui s’exécutent trop tôt", "acts": ["Ajouter defer ou async sur les scripts d’avis et d’analyse.", "Différer les balises marketing après le premier rendu visuel."], "tgt": "widget-reviews.js, analytics-tag.js"}, {"id": "polices", "t": "Trop de styles d’écriture téléchargés", "acts": ["Limiter la charte à 2 polices web et supprimer les graisses non utilisées.", "Activer font-display: swap."], "tgt": "Google Fonts / webfont"}];
-var CJE={"images": {"t": "Oversized images", "acts": ["Convert the 6 visuals to a modern format (WebP or AVIF).", "Set maximum dimensions suited to mobile displays."]}, "scripts": {"t": "Scripts that run too early", "acts": ["Add defer or async to the review and analytics scripts.", "Defer marketing tags until after the first visual render."]}, "polices": {"t": "Too many font styles downloaded", "acts": ["Limit the brand to 2 web fonts and remove unused weights.", "Enable font-display: swap."]}};
 function isEn(){return d.documentElement.lang==='en'}
+function item(id){return {t:L('mq.e.prompt.'+id+'.t'),acts:[L('mq.e.prompt.'+id+'.a1'),L('mq.e.prompt.'+id+'.a2')],tgt:L('mq.e.prompt.'+id+'.files')}}
+var CJ=['images','scripts','polices'];
 function val(id){var r=d.querySelector('input[name="st-'+id+'"]:checked');return r?r.value:'none'}
 function bump(e){e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump')}
 var nF=d.getElementById('nFix'),nC=d.getElementById('nChk');
-function upd(b){var f=0,c=0;CJ.forEach(function(x){var v=val(x.id);if(v==='fix')f++;if(v==='chk')c++});if(nF.textContent!=f){nF.textContent=f;if(b&&!R)bump(nF)}if(nC.textContent!=c){nC.textContent=c;if(b&&!R)bump(nC)}}
+function upd(b){var f=0,c=0;CJ.forEach(function(id){var v=val(id);if(v==='fix')f++;if(v==='chk')c++});if(nF.textContent!=f){nF.textContent=f;if(b&&!R)bump(nF)}if(nC.textContent!=c){nC.textContent=c;if(b&&!R)bump(nC)}}
 upd(false);
-function prompt(){var en=isEn(),L=[en?'You are a web developer. Site: exemple.fr (fictional example). Domain: Performance.':'Tu es un développeur web. Site : exemple.fr (exemple fictif). Domaine : Performance.',''];CJ.forEach(function(x){var v=val(x.id);if(v==='none')return;var y=en?CJE[x.id]:x;L.push((v==='fix'?(en?'To fix':'À corriger'):(en?'To check':'À vérifier'))+' — '+y.t);y.acts.forEach(function(a){L.push('- '+a)});L.push((en?'Files: ':'Fichiers : ')+x.tgt,'')});return L.join('\n')}
+function prompt(){var lines=[L('mq.e.prompt.role'),''];CJ.forEach(function(id){var v=val(id);if(v==='none')return;var y=item(id);lines.push((v==='fix'?L('mq.e.prompt.fix'):L('mq.e.prompt.check'))+' — '+y.t);y.acts.forEach(function(a){lines.push('- '+a)});lines.push(L('mq.e.prompt.files')+y.tgt,'')});return lines.join('\n')}
 var gen=d.getElementById('gen'),live=d.getElementById('plive');
-if(gen)gen.addEventListener('click',function(ev){ev.preventDefault();var t=prompt();function ok(){live.textContent=isEn()?'Prompt copied to the clipboard':'Prompt copié dans le presse-papiers';AX.fzSend&&AX.fzSend(gen)}
+if(gen)gen.addEventListener('click',function(ev){ev.preventDefault();var t=prompt();function ok(){live.textContent=L('mq.e.prompt.copied');AX.fzSend&&AX.fzSend(gen)}
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,ok);else{var ta=d.createElement('textarea');ta.value=t;d.body.appendChild(ta);ta.select();try{d.execCommand('copy')}catch(e){}ta.remove();ok()}});
 var BK=4800,AK=438,net=d.getElementById('net'),oB=d.getElementById('oB'),oA=d.getElementById('oA'),fB=d.getElementById('fB'),fA=d.getElementById('fA'),dl=d.getElementById('delta'),rf=0;
 function fmt(s){var v=s.toFixed(1);return (isEn()?v:v.replace('.',','))+' s'}
 function run(){cancelAnimationFrame(rf);var m=+net.value,tb=BK*8/1000/m,ta=AK*8/1000/m,D=Math.min(2600,Math.max(900,tb*900)),t0=0;dl.innerHTML='&nbsp;';
- function fin(){fB.style.setProperty('--f',1);fA.style.setProperty('--f',1);oB.textContent=fmt(tb);oA.textContent=fmt(ta);dl.textContent=fmt(tb-ta)+(isEn()?' saved on this connection':' gagnées sur cette connexion')}
+ function fin(){fB.style.setProperty('--f',1);fA.style.setProperty('--f',1);oB.textContent=fmt(tb);oA.textContent=fmt(ta);dl.textContent=fmt(tb-ta)+L('mq.e.sim.saved')}
  if(R){fin();return}
  (function f(ts){if(!t0)t0=ts;var e=ts-t0,pb=Math.min(1,e/D),pa=Math.min(1,e/(D*ta/tb));fB.style.setProperty('--f',pb);fA.style.setProperty('--f',pa);oB.textContent=fmt(tb*pb);oA.textContent=fmt(ta*pa);if(pb<1)rf=requestAnimationFrame(f);else fin()})(performance.now())}
 net.addEventListener('change',run);d.getElementById('replay').addEventListener('click',run);
@@ -602,7 +636,7 @@ var ly=scrollY,dir=1;addEventListener('scroll',function(){var y=scrollY;if(y!==l
 var T=[].slice.call(d.querySelectorAll('.rv,.zf,.cnx,.rosewrap'));
 T.forEach(function(e){var t='card';if(e.classList.contains('lvh'))t='head';else if(e.classList.contains('stat'))t='stat';else if(e.classList.contains('sim'))t='sim';else if(e.querySelector(':scope > .dom'))t='dom';else if(e.classList.contains('zf'))t='zoom';else if(e.classList.contains('cnx'))t='cnx';else if(e.classList.contains('rosewrap'))t='rose';e.setAttribute('data-bx',t)});
 [].forEach.call(d.querySelectorAll('.rose .pg'),function(p,i){p.style.setProperty('--pi',i)});
-function fmt(v,dec){return dec?v.toFixed(dec).replace('.',','):String(Math.round(v))}
+function fmt(v,dec){var n=dec?v.toFixed(dec):String(Math.round(v));return dec&&!isEn()?n.replace('.',','):n}
 function cnt(e,up){[].forEach.call(e.querySelectorAll('[data-count]'),function(s){var to=+s.dataset.count,dec=+(s.dataset.dec||0),f=up?0:to,g=up?to:0,du=up?1000:500,t0=0;cancelAnimationFrame(s._r);(function k(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/du,1),q=up?1-Math.pow(1-p,3):p*p;s.textContent=fmt(f+(g-f)*q,dec);if(p<1)s._r=requestAnimationFrame(k);else s.textContent=fmt(g,dec)})(performance.now())})}
 function seen(e){return e.classList.contains('in')||e.classList.contains('done')||e._bxs}
 function enter(e){if(!e.classList.contains('out'))return;e.classList.remove('out');requestAnimationFrame(function(){e.classList.add('in');if(e.dataset.bx==='stat')cnt(e,1)})}

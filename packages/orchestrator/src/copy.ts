@@ -4,6 +4,8 @@
  * Le linter de texte lit ce fichier.
  */
 
+import { mailCopyEn } from './copy-en.js';
+
 export const mailCopy = {
   'mail.alert.down.subject': 'Votre site ne répond plus',
   'mail.alert.down.body': '{site} n’a pas répondu deux fois de suite.',
@@ -102,9 +104,30 @@ type ArgsFor<K extends MailKey> = K extends unknown
     : [params: ParamsOf<K>]
   : never;
 
+let mailLocale: 'fr' | 'en' = 'fr';
+
+export function mailLocaleOf(value: unknown): 'fr' | 'en' {
+  return value === 'en' ? 'en' : 'fr';
+}
+
+export function currentMailLocale(): 'fr' | 'en' {
+  return mailLocale;
+}
+
+/** Isole la langue le temps d’un rendu, puis rétablit la précédente. */
+export function withMailLocale<T>(locale: 'fr' | 'en', fn: () => T): T {
+  const previous = mailLocale;
+  mailLocale = locale;
+  try {
+    return fn();
+  } finally {
+    mailLocale = previous;
+  }
+}
+
 /** Traduit une clé du dictionnaire e-mail. */
 export function t<K extends MailKey>(key: K, ...args: ArgsFor<K>): string {
-  const template: string = fr[key];
+  const template: string = mailLocale === 'en' ? mailCopyEn[key] : fr[key];
   const params = args[0] as
     | Readonly<Record<string, string | number>>
     | undefined;

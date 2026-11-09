@@ -1,9 +1,25 @@
 import { fr, type MessageKey } from '../i18n/index.js';
-import { packLine } from '../i18n/pack.js';
+import { packActive, packLine } from '../i18n/pack.js';
 import { reportLine } from '../i18n/report-fr.js';
 
 function isMessageKey(key: string): key is MessageKey {
   return Object.hasOwn(fr, key);
+}
+
+const MEASURED = new Set(['poids', 'grammes', 'secondes', 'valeur']);
+
+/** Mesures stockées en typographie française, relues à l’affichage anglais. */
+export function localizeMeasured(name: string, value: string): string {
+  if (!packActive() || !MEASURED.has(name)) return value;
+  if (value === 'moins de 0,01') {
+    return packLine('format.lessThan') ?? 'less than 0.01';
+  }
+  const kb = packLine('format.unit.kb') ?? 'kB';
+  const mb = packLine('format.unit.mb') ?? 'MB';
+  return value
+    .replace(/\b(\d+),(\d+)\b/g, '$1.$2')
+    .replace(/\bko\b/gi, kb)
+    .replace(/\bMo\b/g, mb);
 }
 
 /** Traduit une clé venue de l’API. `null` si la clé ou un paramètre manque. */
@@ -22,7 +38,7 @@ export function translate(
   for (const name of names) {
     const value = params?.[name];
     if (typeof value !== 'string' && typeof value !== 'number') return null;
-    filled.set(name, String(value));
+    filled.set(name, localizeMeasured(name, String(value)));
   }
   return template.replace(/\{([A-Za-z0-9_]+)\}/g, (_raw, name: string) => {
     return filled.get(name) ?? '';

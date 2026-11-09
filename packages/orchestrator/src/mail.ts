@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
-import { t } from './copy.js';
+import { currentMailLocale, mailLocaleOf, t, withMailLocale } from './copy.js';
 import type { Logger } from './log.js';
 import { mailGrade, renderRecapMail } from './mail-templates.js';
 
@@ -171,7 +171,7 @@ function layout(
       return `<p style="margin:0 0 16px;"><a href="${escapeHtml(href ?? '')}" style="color:#0F5C5A;">${escapeHtml(label ?? '')}</a></p>`;
     })
     .join('');
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>${escapeHtml(t('mail.link.open'))}</title></head><body style="margin:0;padding:24px;background:#FAF8F4;color:#1B1F24;font-family:Georgia,serif;font-size:16px;line-height:1.5;"><div style="max-width:560px;">${body}${anchors}</div></body></html>`;
+  return `<!DOCTYPE html><html lang="${currentMailLocale()}"><head><meta charset="utf-8"><title>${escapeHtml(t('mail.link.open'))}</title></head><body style="margin:0;padding:24px;background:#FAF8F4;color:#1B1F24;font-family:Georgia,serif;font-size:16px;line-height:1.5;"><div style="max-width:560px;">${body}${anchors}</div></body></html>`;
 }
 
 function textOf(
@@ -217,6 +217,18 @@ function certCopy(
 
 /** Gabarit texte + HTML. `null` si le payload ne correspond pas au type. */
 export function renderAlert(input: {
+  kind: AlertKind;
+  payload: AlertPayload;
+  appUrl: string;
+  unsubscribeUrl: string;
+  locale?: 'fr' | 'en';
+}): RenderedMail | null {
+  return withMailLocale(mailLocaleOf(input.locale), () =>
+    renderAlertBody(input),
+  );
+}
+
+function renderAlertBody(input: {
   kind: AlertKind;
   payload: AlertPayload;
   appUrl: string;
@@ -319,6 +331,17 @@ function countLine(
 }
 
 export function renderDigest(input: {
+  sites: readonly DigestSite[];
+  appUrl: string;
+  unsubscribeUrl: string;
+  locale?: 'fr' | 'en';
+}): RenderedMail {
+  return withMailLocale(mailLocaleOf(input.locale), () =>
+    renderDigestBody(input),
+  );
+}
+
+function renderDigestBody(input: {
   sites: readonly DigestSite[];
   appUrl: string;
   unsubscribeUrl: string;

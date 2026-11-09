@@ -117,3 +117,59 @@ describe('gabarits e-mail', () => {
     expect(mail.html).toContain('Bienvenue sur Audixio');
   });
 });
+
+describe('e-mails selon la locale du compte', () => {
+  it('rend le récap et l’alerte en anglais quand locale=en', async () => {
+    const { renderAlert } = await import('../src/mail.js');
+    const recap = renderRecapMail({
+      mode: 'change',
+      cards: [
+        {
+          grade: 'B',
+          host: 'exemple.example',
+          items: ['One new issue'],
+        },
+      ],
+      reportUrl: 'https://audigy.test',
+      prefsUrl: 'https://audigy.test/compte/alertes',
+      legalUrl: 'https://audigy.test/mentions-legales',
+      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+      logoUrl: 'https://audigy.test/marque/logo-pc.svg',
+      locale: 'en',
+    });
+    expect(recap.subject).toBe('Your Monday recap');
+    expect(recap.html).toContain('lang="en"');
+    expect(recap.subject).not.toBe('Votre récap du lundi');
+
+    const alert = renderAlert({
+      kind: 'site_down',
+      payload: { dedup: 'd1', site: 'exemple.example' },
+      appUrl: 'https://audigy.test',
+      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+      locale: 'en',
+    });
+    expect(alert?.subject).toBe('Your site is not responding');
+    expect(alert?.html).toContain('lang="en"');
+    expect(alert?.text).toContain('failed two checks');
+  });
+
+  it('reste en français par défaut, après un rendu anglais', () => {
+    const again = renderRecapMail({
+      mode: 'change',
+      cards: [
+        {
+          grade: 'B',
+          host: 'exemple.example',
+          items: ['x'],
+        },
+      ],
+      reportUrl: 'https://audigy.test',
+      prefsUrl: 'https://audigy.test/compte/alertes',
+      legalUrl: 'https://audigy.test/mentions-legales',
+      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+      logoUrl: 'https://audigy.test/marque/logo-pc.svg',
+    });
+    expect(again.subject).toBe('Votre récap du lundi');
+    expect(again.html).toContain('lang="fr"');
+  });
+});
