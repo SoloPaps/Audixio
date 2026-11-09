@@ -5,6 +5,7 @@ import {
   isNetError,
   type SafeFetch,
 } from '@audigy/net';
+import { mailLocaleOf } from './copy.js';
 import { apiError } from './http.js';
 import { errorCode, type Logger } from './log.js';
 import {
@@ -125,6 +126,7 @@ export interface PendingAlert {
   kind: AlertKind;
   payload: AlertPayload;
   emailOptOut: boolean;
+  locale?: 'fr' | 'en';
 }
 
 export interface ScheduleStore {
@@ -165,6 +167,7 @@ export interface ScheduleStore {
 export interface DigestRecipient {
   userId: string;
   sites: DigestSite[];
+  locale?: 'fr' | 'en';
 }
 
 export interface DigestStore {
@@ -392,6 +395,7 @@ export interface DigestFacts {
     id: string;
     weeklyDigest: boolean;
     emailOptOut: boolean;
+    locale?: string;
   }[];
   sites: readonly {
     id: string;
@@ -466,7 +470,7 @@ export function assembleDigest(facts: DigestFacts): DigestRecipient[] {
       }
       return card;
     });
-    people.push({ userId: user.id, sites });
+    people.push({ userId: user.id, sites, locale: mailLocaleOf(user.locale) });
   }
   return people;
 }
@@ -875,6 +879,7 @@ async function sendPending(
       payload: alert.payload,
       appUrl: deps.appBaseUrl,
       unsubscribeUrl: link,
+      locale: mailLocaleOf(alert.locale),
     });
     if (!body) {
       deps.logger.warn('alert_invalid', { kind: alert.kind });
@@ -1054,6 +1059,7 @@ export async function runWeeklyDigest(
       sites: person.sites,
       appUrl: deps.appBaseUrl,
       unsubscribeUrl: link,
+      locale: mailLocaleOf(person.locale),
     });
     try {
       await deps.mailer.send({ ...body, to: email, unsubscribeUrl: link });
