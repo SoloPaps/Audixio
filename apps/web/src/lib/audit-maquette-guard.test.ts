@@ -30,8 +30,8 @@ describe('garde maquette audit', () => {
     expect(progressSceneSimulates('?id=abc')).toBe(false);
     expect(progressSceneSimulates('?url=https://bon.audigy.test/')).toBe(false);
     expect(progressSceneSimulates('?site=abc')).toBe(false);
-    expect(progressSceneSimulates('')).toBe(true);
-    expect(progressSceneSimulates('?theme=light')).toBe(true);
+    expect(progressSceneSimulates('')).toBe(false);
+    expect(progressSceneSimulates('?theme=light')).toBe(false);
     expect(progressSceneSimulates('?maquette=1')).toBe(true);
     expect(progressSceneSimulates('?maquette=1&theme=light')).toBe(true);
     const scene = source('./progress-scene.ts');

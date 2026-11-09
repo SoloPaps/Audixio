@@ -8,7 +8,7 @@ import { briefCount } from '../lib/brief-stats.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
 import { REPORT_DOMAINS } from '../lib/domains.js';
-import { briefSelectionRow } from '../lib/finding-choice.js';
+import { briefSelectionRow, savedChoices } from '../lib/finding-choice.js';
 import { gradeForScore } from '../lib/grade.js';
 import { calm, say } from '../lib/motion.js';
 import { detailAllowed } from '../lib/plan-board.js';
@@ -252,14 +252,13 @@ async function loadModes(): Promise<void> {
   if (!session || !supabase) return;
   const { data, error } = await supabase
     .from('brief_selections')
-    .select('finding_id, choice')
+    .select('finding_id, choice, updated_at')
     .eq('audit_id', auditId);
   if (error || !Array.isArray(data)) return;
   const saved: Record<string, Mode> = {};
-  for (const row of data as { finding_id?: unknown; choice?: unknown }[]) {
-    const mode = FROM_CHOICE[String(row.choice)];
-    if (typeof row.finding_id === 'string' && mode)
-      saved[row.finding_id] = mode;
+  for (const [findingId, choice] of Object.entries(savedChoices(data))) {
+    const mode = FROM_CHOICE[choice];
+    if (mode) saved[findingId] = mode;
   }
   overrides = { ...saved, ...overrides };
 }

@@ -3,6 +3,7 @@ import { etaLabel, type Sim, TICK_MS, tickSim } from './progress-sim.js';
 import { progressCountHtml } from './progress-tally.js';
 import {
   hostFromProgressQuery,
+  progressEmpty,
   progressSceneSimulates,
   reportHrefFromSearch,
 } from './progress-target.js';
@@ -43,15 +44,25 @@ export function bindProgressScene(): void {
     if (askedHost) paintHost(askedHost);
   }
   const report = document.getElementById('reportBtn');
-  if (report)
-    report.setAttribute('href', reportHrefFromSearch(location.search));
+  if (report && !progressEmpty(search)) {
+    report.setAttribute('href', reportHrefFromSearch(search));
+  }
+  if (progressEmpty(search)) {
+    const heading = $('#h1T');
+    const lead = $('#leadT');
+    const live = $('#liveT');
+    if (heading) heading.textContent = t('progress.empty.title');
+    if (lead) lead.textContent = t('progress.empty.lead');
+    if (live) live.textContent = t('progress.empty.status');
+  }
   const motion = gsap();
-  const STATUS: Record<string, string> = {
-    done: 'Analysé',
-    active: 'En cours',
-    next: 'Prochain',
-    wait: 'En attente',
-    off: 'Non testé',
+  const stateLabel = (state: string): string => {
+    if (state === 'done') return t('mq.p.021');
+    if (state === 'active') return t('mq.p.030');
+    if (state === 'next') return t('mq.p.033');
+    if (state === 'wait') return t('mq.p.036');
+    if (state === 'off') return t('mq.p.039');
+    return state;
   };
   const pctEl = $('#pct');
   const fill = $('#fill');
@@ -88,7 +99,7 @@ export function bindProgressScene(): void {
     for (const el of $$(`[data-key="${key}"]`)) {
       el.dataset.state = state;
       const label = $('.stt', el);
-      if (label) label.textContent = STATUS[state] ?? state;
+      if (label) label.textContent = stateLabel(state);
     }
     counts();
   };
@@ -206,8 +217,24 @@ export function bindProgressScene(): void {
   };
   (window as unknown as { audixioProgress: typeof api }).audixioProgress = api;
   counts();
-  setPercent(70);
   if (progressSceneSimulates(location.search)) {
+    setPercent(70);
     sim = window.setInterval(tick, TICK_MS);
+  } else if (!progressEmpty(location.search)) {
+    const live = $('#liveT');
+    if (live) live.textContent = t('progress.live');
+    setPercent(0);
+    for (const key of [
+      'seo',
+      'sec',
+      'eco',
+      'dns',
+      'perf',
+      'a11y',
+      'code',
+      'rgpd',
+    ]) {
+      setDomain(key, 'wait');
+    }
   }
 }

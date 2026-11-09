@@ -472,6 +472,11 @@ const frCore = {
   'progress.notify.done': 'Notification activée',
   'progress.retry': 'Relancer l’audit',
   'progress.missing': 'Cet audit est introuvable.',
+  'progress.empty.title': 'Aucun audit en cours',
+  'progress.empty.lead':
+    'Lancez un audit depuis l’accueil pour suivre son avancement ici.',
+  'progress.empty.status': 'Pas d’analyse en cours.',
+  'progress.empty.action': 'Lancer un audit',
   'progress.need_login': 'Connectez-vous pour suivre cet audit.',
   'report.heading': 'Rapport',
   'domain.heading': 'Détail du domaine',
