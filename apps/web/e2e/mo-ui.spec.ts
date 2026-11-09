@@ -154,6 +154,22 @@ test('M13 : badge Complet et Compact affichent le libellé et la note', async ({
   page,
 }) => {
   await verifiedReport(page);
+  // Décision du 6 nov. : sans lien public, le badge demande d’abord de le
+  // créer ; ce test du rendu du badge part donc d’un rapport déjà partagé.
+  await page.route('http://127.0.0.1:54321/rest/v1/reports**', (route) =>
+    route.fulfill({
+      status: 200,
+      headers: {
+        'access-control-allow-origin': 'http://127.0.0.1:4321',
+        'access-control-allow-headers': '*',
+        'access-control-allow-methods': '*',
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify([
+        { share_token: 'm13-public', visibility: 'public', revoked_at: null },
+      ]),
+    }),
+  );
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(`/badge?id=${AUDIT_ID}&theme=light`);
   const stage = page.locator('.stage');
@@ -168,6 +184,7 @@ test('M13 : badge Complet et Compact affichent le libellé et la note', async ({
   await expect(stage.locator('img')).toBeVisible();
   await expect(stage).toHaveText(/Audixio\s*:\s*B/);
   await expect(page.locator('#code')).toHaveValue(/Audixio : B/);
+  await expect(page.locator('#code')).toHaveValue(/\/partage\/m13-public/);
 });
 
 test('B-4 : /domaine Sécurité à 330 px en EN, le texte reste dans la carte de note', async ({

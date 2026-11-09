@@ -1,16 +1,24 @@
 /**
- * Lien du badge : partage public, sinon le rapport de cet audit.
+ * Lien du badge : le partage public.
  * Un visiteur sans compte n’a pas de lien public et son rapport n’est pas
  * lisible par un tiers : le badge renvoie vers l’accueil d’Audixio.
+ * Un compte sans lien public n’a pas encore de cible : le badge demande de
+ * créer le lien d’abord (décision du propriétaire, 6 nov.), jamais /rapport,
+ * qui est privé.
  */
 export function badgeTargetHref(input: {
   origin: string;
   shareToken: string | null;
-  auditId: string;
   guest?: boolean;
-}): string {
+}): string | null {
   if (input.guest) return `${input.origin}/`;
   if (input.shareToken)
     return `${input.origin}/partage/${encodeURIComponent(input.shareToken)}`;
-  return `${input.origin}/rapport?id=${encodeURIComponent(input.auditId)}`;
+  return null;
+}
+
+/** Jeton d’une adresse `/partage/<jeton>` rendue par POST /api/liens. */
+export function shareTokenOf(url: string): string | null {
+  const match = /^\/partage\/([^/?#]+)\/?$/.exec(url);
+  return match?.[1] ? decodeURIComponent(match[1]) : null;
 }
