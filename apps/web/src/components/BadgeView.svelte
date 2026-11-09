@@ -6,15 +6,18 @@ import { badgeTargetHref } from '../lib/badge-target.js';
 import { browserClient } from '../lib/browser-session.js';
 import { gradeForScore } from '../lib/grade.js';
 import { say } from '../lib/motion.js';
+import { loginHref, signupHref } from '../lib/nav.js';
 
 interface Props {
   auditId: string;
   host: string;
   verified: boolean;
   score: number | null;
+  /** Visiteur sans compte : pas de lien public possible. */
+  guest?: boolean;
 }
 
-let { auditId, host, verified, score }: Props = $props();
+let { auditId, host, verified, score, guest = false }: Props = $props();
 
 let style = $state<'complet' | 'compact' | 'pastille'>('complet');
 let link = $state('');
@@ -32,6 +35,7 @@ const snippet = $derived.by(() => {
       origin: location.origin,
       shareToken,
       auditId,
+      guest,
     }),
     origin: location.origin,
     alt,
@@ -47,6 +51,7 @@ const styles = [
 ] as const;
 
 async function loadLink(): Promise<void> {
+  if (guest) return;
   const supabase = browserClient();
   if (!supabase) {
     link = `${location.origin}/partage/`;
@@ -139,12 +144,19 @@ onMount(() => {
       <label for="code">{t('badge.code')}</label>
       <div class="cp"><textarea id="code" readonly spellcheck="false" value={snippet}></textarea><button class="btn btn-primary" class:ok={copied === 'code'} type="button" onclick={() => copy('code')}>{copied === 'code' ? t('badge.copied.short') : t('badge.copy')}</button></div>
     </div>
-    <div class="fld">
-      <label for="lnk">{t('badge.link')}</label>
-      <div class="cp"><input id="lnk" type="text" readonly value={link}><button class="btn btn-ghost" class:ok={copied === 'link'} type="button" disabled={!link} onclick={() => copy('link')}>{copied === 'link' ? t('badge.copied.short') : t('badge.copy.link')}</button></div>
-    </div>
+    {#if guest}
+      <div class="fld">
+        <p class="muted">{t('share.guest')}</p>
+        <div class="acts"><a class="lk-pill" href={signupHref(`${location.pathname}${location.search}`)}>{t('share.guest.signup')}</a><a class="lk-pill" href={loginHref(`${location.pathname}${location.search}`)}>{t('guest.gate.login')}</a></div>
+      </div>
+    {:else}
+      <div class="fld">
+        <label for="lnk">{t('badge.link')}</label>
+        <div class="cp"><input id="lnk" type="text" readonly value={link}><button class="btn btn-ghost" class:ok={copied === 'link'} type="button" disabled={!link} onclick={() => copy('link')}>{copied === 'link' ? t('badge.copied.short') : t('badge.copy.link')}</button></div>
+      </div>
+    {/if}
     <div class="foot">
-      <p>{t('badge.foot')}</p>
+      <p>{guest ? t('badge.foot.guest') : t('badge.foot')}</p>
       <div class="acts">
         <a class="lk-pill" href={rapport}>{t('badge.back')}</a>
         {#if link}<a class="lk-pill" href={link}>{t('badge.public')}</a>{/if}

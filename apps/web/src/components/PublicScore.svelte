@@ -49,6 +49,15 @@ let failure = $state('');
 let view = $state<PublicScoreView | null>(null);
 
 const items = $derived(view ? categoryItems(view) : []);
+// Libellé du bandeau selon le type de lien ouvert : public ou équipe.
+// Lien fermé : type inconnu, libellé neutre.
+const bannerKey = $derived<MessageKey>(
+  phase === 'missing'
+    ? 'share.banner.plain'
+    : view?.access === 'public'
+      ? 'share.banner.public'
+      : 'share.banner',
+);
 const stamp = $derived.by(() => {
   const raw = view?.finishedAt;
   if (!raw) return null;
@@ -144,8 +153,8 @@ onMount(() => {
 </script>
 
 <div class="reading">
-{#if mode === 'share' && (phase !== 'missing' || hasKey)}
-  <p class="share-banner">{t('share.banner')}</p>
+{#if mode === 'share' && phase !== 'loading' && (phase !== 'missing' || hasKey)}
+  <p class="share-banner">{t(bannerKey)}</p>
 {/if}
 {#if phase === 'loading'}
   <section class="glass glass-module">
