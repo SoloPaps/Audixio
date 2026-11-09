@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { formatFixed } from '../i18n/format.js';
-import { t } from '../i18n/index.js';
+import { type MessageKey, t } from '../i18n/index.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
 import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
@@ -183,8 +183,18 @@ const chkN = $derived(
 const selectedN = $derived(fixN + chkN);
 const ladder = ['D', 'C', 'B', 'A'] as const;
 
+// Le gain en secondes n’a de sens que pour la vitesse (QA Mo B8) : un constat
+// Sécurité, SEO… affiche son niveau d’impact, pas une durée.
+const speedDomain = $derived(domainId === 'performance');
+
+function impactKey(item: Finding): MessageKey {
+  if (item.impact >= 3) return 'domaine.impact.level.3';
+  if (item.impact === 2) return 'domaine.impact.level.2';
+  return 'domaine.impact.level.1';
+}
+
 function secondsOf(item: Finding): number {
-  if (item.status === 'pass') return 0;
+  if (!speedDomain || item.status === 'pass') return 0;
   const hard = findings.filter(
     (row) => row.status !== 'pass' && row.severity >= 4,
   );
@@ -425,7 +435,7 @@ function seeLabel(n: number): string {
                 {:else if sev === 'fix'}<span class="badge b-fix">{t('domaine.filter.mod')}</span>
                 {:else}<span class="badge b-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.filter.ok')}</span>{/if}
                 {#if sev === 'ok'}<span class="imp ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.impact.ok')}</span>
-                {:else}<span class="imp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></svg>{t('domaine.impact.s', { n: frSec(secondsOf(item)) })}</span>{/if}
+                {:else}<span class="imp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></svg>{speedDomain ? t('domaine.impact.s', { n: frSec(secondsOf(item)) }) : t(impactKey(item))}</span>{/if}
               </div>
               <h3>{item.title}</h3>
               <p class="cd">{item.why}</p>
