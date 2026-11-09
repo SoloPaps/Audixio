@@ -2858,6 +2858,9 @@ const frCore = {
   'badge.alt.none': 'Aperçu : badge Audixio pour {host}',
   'badge.code': 'Code à coller dans votre site',
   'badge.link': 'Lien public du rapport',
+  'badge.needLink':
+    'Créez d’abord le lien public du rapport pour obtenir le code du badge. Le badge renverra vers cette page publique, jamais vers votre rapport privé.',
+  'badge.needLink.create': 'Créer le lien public',
   'badge.copy.link': 'Copier le lien',
   'badge.copied.short': 'Copié',
   'badge.copied.link': 'Lien copié',

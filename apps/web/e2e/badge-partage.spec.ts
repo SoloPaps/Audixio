@@ -201,3 +201,101 @@ test('B4 : badge Compact lisible en sombre sur le fond d’aperçu', async ({
   expect(colors.text).toBe('rgb(30, 42, 85)');
   expect(colors.stage).toBe('rgb(255, 255, 255)');
 });
+
+test('badge connecté sans lien public : créer le lien d’abord, jamais de code vers /rapport (décision du 6 nov.)', async ({
+  page,
+}) => {
+  await stubSession(page, 'free');
+  await page.route('**/api/audits/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(guestPayload()),
+    });
+  });
+  const posted: string[] = [];
+  await page.route('**/api/liens', async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.fallback();
+      return;
+    }
+    posted.push(route.request().postData() ?? '');
+    await route.fulfill({
+      status: 201,
+      contentType: 'application/json',
+      body: JSON.stringify({ id: 'l1', url: '/partage/jeton-public-1' }),
+    });
+  });
+  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await expect(
+    page.getByText(
+      'Créez d’abord le lien public du rapport pour obtenir le code du badge.',
+    ),
+  ).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#code')).toHaveCount(0);
+  await expect(page.locator('.stage')).toHaveCount(0);
+  await expect(
+    page.locator(`.dlg a[href*="/rapport?id="]:not(.x):not(.lk-pill)`),
+  ).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'Créer le lien public' }).click();
+  const code = page.locator('#code');
+  await expect(code).toHaveValue(
+    /href="http:\/\/127\.0\.0\.1:4321\/partage\/jeton-public-1"/,
+  );
+  expect(posted).toHaveLength(1);
+  expect(JSON.parse(posted[0] ?? '{}')).toEqual({
+    auditId: GUEST_ID,
+    kind: 'public',
+  });
+  for (const style of [/^Complet/, /^Compact/, /^Pastille/]) {
+    await page.getByRole('radio', { name: style }).check();
+    expect(await code.inputValue()).not.toContain('/rapport');
+  }
+  await expect(page.locator('#lnk')).toHaveValue(
+    'http://127.0.0.1:4321/partage/jeton-public-1',
+  );
+  await expect(
+    page.getByRole('link', { name: 'Voir la page publique' }),
+  ).toBeVisible();
+});
+
+test('badge connecté avec lien public : le code vise /partage', async ({
+  page,
+}) => {
+  await stubSession(page, 'free');
+  await page.route('**/api/audits/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(guestPayload()),
+    });
+  });
+  await page.route(
+    'http://127.0.0.1:54321/rest/v1/reports**',
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        headers: {
+          'access-control-allow-origin': 'http://127.0.0.1:4321',
+          'access-control-allow-headers': '*',
+          'access-control-allow-methods': '*',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify([
+          {
+            share_token: 'deja-public',
+            visibility: 'public',
+            revoked_at: null,
+          },
+        ]),
+      });
+    },
+  );
+  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await expect(page.locator('#code')).toHaveValue(
+    /href="http:\/\/127\.0\.0\.1:4321\/partage\/deja-public"/,
+    { timeout: 15_000 },
+  );
+  await expect(page.getByText('Créez d’abord le lien public')).toHaveCount(0);
+});
