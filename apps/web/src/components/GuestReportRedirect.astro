@@ -1,0 +1,99 @@
+---
+/**
+ * Flash de navigation (option a) : un visiteur sans session ni audit visiteur
+ * stocké part vers la destination que ReportView choisit déjà
+ * (/connexion?next=…, ou /audit-echoue si rien n’a été mesuré).
+ *
+ * On ne part pas sur la seule absence de drapeau ou de jeton local : un
+ * compte peut n’avoir que le cookie httpOnly, lu par /api/auth/session
+ * (comme dans plusieurs parcours de test). Tant que la session n’est pas
+ * tranchée, le corps reste masqué (data-guest-boot) pour ne pas peindre
+ * la page intermédiaire. Au moindre doute, on montre l’état de chargement
+ * et ReportView décide.
+ */
+interface Props {
+  /** « domain » : seulement quand ?domaine= est présent (sinon message). */
+  mode: 'report' | 'domain' | 'detail' | 'badge';
+}
+const { mode } = Astro.props;
+---
+
+<style is:inline>
+  html[data-guest-boot] body {
+    visibility: hidden;
+  }
+</style>
+<script is:inline data-guest-mode={mode}>
+(function () {
+  try {
+    var script = document.currentScript;
+    var mode = script && script.getAttribute('data-guest-mode');
+    var query = new URLSearchParams(location.search);
+    var id = query.get('id');
+    if (!id || (mode === 'domain' && !query.get('domaine'))) return;
+    if ((document.cookie || '').split('; ').indexOf('audixio_connecte=1') >= 0)
+      return;
+    try {
+      if (localStorage.getItem('audigy-auth')) return;
+    } catch (err) {
+      return;
+    }
+    var stored = null;
+    try {
+      var bag = JSON.parse(sessionStorage.getItem('audixio-guest-audit') || 'null');
+      if (bag && typeof bag === 'object') {
+        if ('audit' in bag && bag.audit && bag.audit.id === id) stored = bag;
+        else if (bag[id] && bag[id].audit && bag[id].audit.id === id) stored = bag[id];
+      }
+    } catch (err) {
+      stored = null;
+    }
+    var next = location.pathname + location.search;
+    if (next.length > 512) next = '/sites';
+    var login = '/connexion?next=' + encodeURIComponent(next);
+    function empty(audit) {
+      var status = audit.audit && audit.audit.status;
+      var domains = Array.isArray(audit.domains) ? audit.domains : [];
+      return (
+        (status === 'done' || status === 'partial') &&
+        !domains.some(function (row) {
+          return row && typeof row.score === 'number';
+        })
+      );
+    }
+    var root = document.documentElement;
+    root.setAttribute('data-guest-boot', '1');
+    var released = false;
+    function show() {
+      if (released) return;
+      released = true;
+      root.removeAttribute('data-guest-boot');
+    }
+    setTimeout(show, 2000);
+    fetch('/api/auth/session', { credentials: 'include' })
+      .then(function (res) {
+        return res.ok ? res.json() : null;
+      })
+      .then(function (body) {
+        if (body && body.access_token && body.user) {
+          show();
+          return;
+        }
+        if (stored && empty(stored)) {
+          location.replace(
+            '/audit-echoue?id=' + encodeURIComponent(stored.audit.id),
+          );
+          return;
+        }
+        if (stored) {
+          show();
+          return;
+        }
+        location.replace(login);
+      })
+      .catch(show);
+  } catch (err) {
+    /* ReportView décide */
+  }
+})();
+</script>

@@ -315,11 +315,18 @@ onMount(() => {
 });
 </script>
 
-{#if phase === 'loading' || (payload && (payload.audit.status === 'queued' || payload.audit.status === 'running'))}
+{#if phase === 'loading'}
+  <!-- Avant la lecture de l’audit : état neutre, sans « Analyse en cours »
+       ni lien d’accueil (flash de navigation, option a). -->
+  {#if mode === 'badge'}<main id="contenu" hidden></main>{/if}
+  <div class="reading">
+    <AuditOverlay message={t('report.loading')} neutral />
+  </div>
+{:else if payload && (payload.audit.status === 'queued' || payload.audit.status === 'running')}
   {#if mode === 'badge'}<main id="contenu" hidden></main>{/if}
   <div class="reading">
     <AuditOverlay
-      message={progressLive(payload?.audit.status ?? 'queued', finishedNames)}
+      message={progressLive(payload.audit.status, finishedNames)}
     />
   </div>
 {:else if phase === 'brief-gate'}

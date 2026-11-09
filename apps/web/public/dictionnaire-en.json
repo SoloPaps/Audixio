@@ -406,7 +406,7 @@
   "progress.need_login": "Sign in to follow this audit.",
   "report.heading": "Report",
   "domain.heading": "Domain detail",
-  "report.loading": "Loading the report.",
+  "report.loading": "Loading report…",
   "report.pending": "The audit is not finished yet.",
   "report.progress": "See the progress",
   "report.missing": "This report cannot be found.",

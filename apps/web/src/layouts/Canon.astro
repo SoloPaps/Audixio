@@ -79,6 +79,7 @@ const canonical = Astro.url.pathname || '/';
         if (d.dataset.vue !== 'restreint' || !calm) d.classList.add('js');
       })();
     </script>
+    <slot name="head" />
   </head>
   <body>
     <a class="skip" href="#contenu">{t('skip.main')}</a>
