@@ -3171,6 +3171,7 @@
   "mq.co.082": "No shared access",
   "mq.co.083": "Only you can see your sites’ reports. When you accept an access request or create a share link, it appears here.",
   "mq.co.084": "Free account: 1 active link at a time (public or team). The team link stays read-only, even if the recipient has no account.",
+  "mq.co.084.pro": "Pro account: no limit on active links (public or team). The team link stays read-only, even if the recipient has no account.",
   "mq.co.085": "Remove this access?",
   "mq.co.086": "—",
   "mq.co.087": " will no longer be able to view the report or the brief for ",

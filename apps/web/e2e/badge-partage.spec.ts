@@ -77,3 +77,25 @@ test('M3 (bug_5db3cab6, bug_6de9c2d4) : badge visiteur sans lien public ni lien 
     'Sans compte, le badge renvoie vers l’accueil d’Audixio : votre rapport reste privé.',
   );
 });
+
+test('B1 (bug_ce249d1e) : un compte Pro ne lit pas le plafond du compte gratuit', async ({
+  page,
+}) => {
+  await stubSession(page, 'pro');
+  await page.goto('/compte?theme=light#acces-partages');
+  const note = page.locator('#acces-partages .ap-note');
+  await expect(note).toHaveText(
+    'Compte Pro : liens actifs sans limite (public ou équipe). Le lien équipe reste en lecture seule, même sans compte pour le destinataire.',
+    { timeout: 15_000 },
+  );
+  await expect(note).not.toContainText('Compte gratuit');
+});
+
+test('B1 : le compte gratuit garde son plafond d’un lien', async ({ page }) => {
+  await stubSession(page, 'free');
+  await page.goto('/compte?theme=light#acces-partages');
+  await expect(page.locator('#acces-partages .ap-note')).toHaveText(
+    'Compte gratuit : 1 lien actif à la fois (public ou équipe). Le lien équipe reste en lecture seule, même sans compte pour le destinataire.',
+    { timeout: 15_000 },
+  );
+});
