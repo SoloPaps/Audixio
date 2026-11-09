@@ -9,7 +9,7 @@ export function getStaticPaths() {
 ---
 
 <Canon vue="acces" title={t('mq.acces.meta.title')} description={t('mq.acces.meta.desc')} robots="noindex, nofollow">
-<p hidden id="mq.ac.sending">{t('mq.ac.sending')}</p><p hidden id="mq.ac.refused.word">{t('mq.ac.refused.word')}</p><p hidden id="mq.ac.refused.title">{t('mq.ac.refused.title')}</p><p hidden id="mq.ac.granted.title">{t('mq.ac.granted.title')}</p><p hidden id="mq.ac.granted.say">{t('mq.ac.granted.say')}</p><p hidden id="mq.ac.granted.status">{t('mq.ac.granted.status')}</p><p hidden id="mq.ac.refused.say">{t('mq.ac.refused.say')}</p><p hidden id="mq.ac.refused.status">{t('mq.ac.refused.status')}</p><p hidden id="mq.ac.pending">{t('mq.ac.pending')}</p><p hidden id="mq.ac.pending.eyebrow">{t('mq.ac.pending.eyebrow')}</p><p hidden id="mq.ac.undone">{t('mq.ac.undone')}</p><p hidden id="mq.ac.denied">{t('mq.ac.denied')}</p>
+<p hidden id="badge.linkLimit">{t('badge.linkLimit')}</p><p hidden id="mq.ac.sending">{t('mq.ac.sending')}</p><p hidden id="mq.ac.refused.word">{t('mq.ac.refused.word')}</p><p hidden id="mq.ac.refused.title">{t('mq.ac.refused.title')}</p><p hidden id="mq.ac.granted.title">{t('mq.ac.granted.title')}</p><p hidden id="mq.ac.granted.say">{t('mq.ac.granted.say')}</p><p hidden id="mq.ac.granted.status">{t('mq.ac.granted.status')}</p><p hidden id="mq.ac.refused.say">{t('mq.ac.refused.say')}</p><p hidden id="mq.ac.refused.status">{t('mq.ac.refused.status')}</p><p hidden id="mq.ac.pending">{t('mq.ac.pending')}</p><p hidden id="mq.ac.pending.eyebrow">{t('mq.ac.pending.eyebrow')}</p><p hidden id="mq.ac.undone">{t('mq.ac.undone')}</p><p hidden id="mq.ac.denied">{t('mq.ac.denied')}</p>
 
 
 
@@ -459,6 +459,7 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
       if(session&&session.access_token) headers.authorization='Bearer '+session.access_token;
       return fetch('/api/liens/decision',{method:'post',credentials:'same-origin',headers:headers,body:JSON.stringify({auditId:auditId,requestId:requestId,decision:decision,role:role,days:days})});
     }).then(function(res){
+      if(res && res.status===429) return res.json().catch(function(){return {};}).then(function(body){throw new Error(body&&body.error==='user_limit'?'limit':'denied');});
       if(!res || !res.ok) throw new Error('denied');
       return res.json();
     }).then(function(body){
@@ -530,9 +531,11 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
     $('#s-dur').textContent=dur.options[dur.selectedIndex].text;
     sendDecision('accept').then(function(){
       finish(ok,'#pane-ok',tr('mq.ac.granted.say'),tr('mq.ac.granted.status'));
-    }).catch(function(){
-      if(st)st.textContent=tr('mq.ac.denied');
-      say(tr('mq.ac.denied'));
+    }).catch(function(err){
+      /* plafond d’un lien du plan gratuit : le dire, pas « connectez-vous » */
+      var msg=err&&err.message==='limit'?tr('badge.linkLimit'):tr('mq.ac.denied');
+      if(st)st.textContent=msg;
+      say(msg);
     });
   });
   no.addEventListener('click',function(){
