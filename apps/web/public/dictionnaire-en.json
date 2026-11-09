@@ -258,6 +258,8 @@
   "score.public.optout.action": "Manage this site",
   "share.missing": "This link no longer works.",
   "share.banner": "Team link · Read only",
+  "share.banner.public": "Public link · Read only",
+  "share.banner.plain": "Shared link · Read only",
   "score.public.heading": "Public score",
   "score.public.missing.title": "This score is not published",
   "share.heading": "Shared score",

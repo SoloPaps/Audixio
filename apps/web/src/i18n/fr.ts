@@ -303,6 +303,8 @@ const frCore = {
   'score.public.optout.action': 'Gérer ce site',
   'share.missing': 'Ce lien ne fonctionne plus.',
   'share.banner': 'Lien équipe · Lecture seule',
+  'share.banner.public': 'Lien public · Lecture seule',
+  'share.banner.plain': 'Lien de partage · Lecture seule',
   'score.public.heading': 'Score public',
   'score.public.missing.title': 'Ce score n’est pas publié',
   'share.heading': 'Score partagé',

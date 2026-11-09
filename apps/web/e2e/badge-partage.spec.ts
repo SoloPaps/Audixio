@@ -99,3 +99,42 @@ test('B1 : le compte gratuit garde son plafond d’un lien', async ({ page }) =>
     { timeout: 15_000 },
   );
 });
+
+async function openShare(page: Page, access: 'public' | 'team'): Promise<void> {
+  await page.route('**/api/partage', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        access,
+        label: 'bon.audigy.test',
+        url: 'https://bon.audigy.test',
+        finishedAt: '2026-11-05T10:03:00.000Z',
+        methodVersion: '2026.1',
+        auditId: null,
+        noteGlobale: 81,
+        domaines: [{ domain: 'performance', score: 81 }],
+      }),
+    });
+  });
+  await page.goto(`/partage/${'c4'.repeat(16)}/?theme=light`);
+}
+
+test('B2 (bug_7d4e4d31) : un lien public ne s’annonce pas « Lien équipe »', async ({
+  page,
+}) => {
+  await openShare(page, 'public');
+  const banner = page.locator('.share-banner');
+  await expect(banner).toHaveText('Lien public · Lecture seule', {
+    timeout: 15_000,
+  });
+  await expect(page.getByText('Lien équipe')).toHaveCount(0);
+});
+
+test('B2 : un lien équipe garde « Lien équipe »', async ({ page }) => {
+  await openShare(page, 'team');
+  await expect(page.locator('.share-banner')).toHaveText(
+    'Lien équipe · Lecture seule',
+    { timeout: 15_000 },
+  );
+});
