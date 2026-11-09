@@ -220,6 +220,23 @@ describe('buildPdfReport', () => {
   });
 });
 
+describe('buildPdfReport : le score sur 100 accompagne la lettre', () => {
+  it('donne le score global et celui de chaque domaine noté', () => {
+    const view = buildPdfReport(payload(true));
+    expect(view.score).toBe(84);
+    expect(view.domains.map((row) => row.score)).toEqual([
+      84, 68, 82, 95, 55, 66, 85, 96,
+    ]);
+  });
+
+  it('aucun score pour un domaine verrouillé', () => {
+    const view = buildPdfReport(payload(false));
+    for (const row of view.domains.filter((item) => item.locked)) {
+      expect(row.score).toBeNull();
+    }
+  });
+});
+
 describe('buildPdfReport en anglais', () => {
   it('date le rapport à l’anglaise quand le dictionnaire EN est posé', () => {
     installPack({ 'pdf.heading': 'Report' });

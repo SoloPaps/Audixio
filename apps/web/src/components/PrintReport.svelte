@@ -138,6 +138,7 @@ function onPrint(): void {
               <span class="gr big gr-none" aria-label={t('pdf.band.none')}>–</span>
             {/if}
             <div>
+              {#if view.grade && view.score !== null}<p class="pnum" data-score-num>{view.score}<small>{t('gauge.denom')}</small></p>{/if}
               <strong>{t(`pdf.band.${view.grade ?? 'none'}`)}</strong>
               <p>{t(`pdf.hint.${view.grade ?? 'none'}`)}</p>
             </div>
@@ -207,6 +208,7 @@ function onPrint(): void {
                     <span class="badge b-nt">{t('pdf.locked')}</span>
                   {:else}
                     <span class={`gr gr-${row.grade.toLowerCase()}`} aria-label={t('pdf.grade.letter', { grade: row.grade })}>{row.grade}</span>
+                    {#if row.score !== null}<span class="pnum" data-score-num>{row.score}<small>{t('gauge.denom')}</small></span>{/if}
                   {/if}
                 </td>
                 <td class="hide-s">{row.locked ? t('pdf.locked') : row.note}</td>

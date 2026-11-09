@@ -293,12 +293,12 @@ onMount(() => {
         <a class="pg prev rv" href={hrefOf(prev, prevId)}>
           <span class="arr" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></span>
           <span class="txt"><small>{t('domaine.prev')}</small><strong>{domainPager(prevId)}</strong></span>
-          {#if letterOf(prev)}<span class="grade g-{letterOf(prev)?.toLowerCase()}"><span class="sr-only">{t('domaine.grade.note', { grade: letterOf(prev) ?? '' })}</span>{letterOf(prev)}</span>{/if}
+          {#if letterOf(prev) && prev?.score != null}<span class="pg-num" data-score-num>{Math.round(prev.score)}<small>{t('gauge.denom')}</small></span>{/if}{#if letterOf(prev)}<span class="grade g-{letterOf(prev)?.toLowerCase()}"><span class="sr-only">{t('domaine.grade.note', { grade: letterOf(prev) ?? '' })}</span>{letterOf(prev)}</span>{/if}
         </a>
         <a class="pg next rv" href={hrefOf(next, nextId)}>
           <span class="arr" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
           <span class="txt"><small>{t('domaine.next')}</small><strong>{domainPager(nextId)}</strong></span>
-          {#if letterOf(next)}<span class="grade g-{letterOf(next)?.toLowerCase()}"><span class="sr-only">{t('domaine.grade.note', { grade: letterOf(next) ?? '' })}</span>{letterOf(next)}</span>{/if}
+          {#if letterOf(next) && next?.score != null}<span class="pg-num" data-score-num>{Math.round(next.score)}<small>{t('gauge.denom')}</small></span>{/if}{#if letterOf(next)}<span class="grade g-{letterOf(next)?.toLowerCase()}"><span class="sr-only">{t('domaine.grade.note', { grade: letterOf(next) ?? '' })}</span>{letterOf(next)}</span>{/if}
         </a>
       </nav>
       <div class="back-all rv">

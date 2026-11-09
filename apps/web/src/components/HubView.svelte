@@ -315,7 +315,7 @@ onMount(() => {
           <span class="tile g-{grade ?? 'N'}"><svg class="ico" width="26" height="26" aria-hidden="true"><use href={`#${domainSymbol(item.id)}`}/></svg></span>
           <span class="dom-txt"><span class="dom-name">{domainShort(item.id)}</span>{#if blurb(item)}<span class="dom-sum">{blurb(item)}</span>{/if}</span>
           {#if grade && item.score !== null}
-            <span class="dom-score"><span class="bar mt m-{grade}" style={`--w:${Math.max(0, Math.min(100, item.score))}%`} aria-hidden="true"><i></i></span><span class="grade chip m-{grade}" aria-label={t('report.grade.letter', { grade })}>{grade}</span></span>
+            <span class="dom-score"><span class="bar mt m-{grade}" style={`--w:${Math.max(0, Math.min(100, item.score))}%`} aria-hidden="true"><i></i></span><span class="num" data-score-num>{Math.round(item.score)}<small>{t('gauge.denom')}</small></span><span class="grade chip m-{grade}" aria-label={t('report.grade.letter', { grade })}>{grade}</span></span>
           {:else}
             <span class="dom-score"><span class="grade g-N"><svg aria-hidden="true"><use href="#i-lock"/></svg>{item.locked ? t('domain.locked.badge') : t('hub.untested')}</span></span>
           {/if}
