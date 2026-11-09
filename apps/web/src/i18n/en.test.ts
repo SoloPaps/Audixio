@@ -31,8 +31,15 @@ describe('dictionnaire anglais', () => {
     installPack(null);
   });
 
-  it('sert le français hors du JavaScript, clé pour clé', () => {
-    expect(frenchFile).toEqual(fr);
+  it('sert le français hors du JavaScript, clé pour clé, y compris le rapport', () => {
+    for (const key of Object.keys(fr) as MessageKey[]) {
+      expect(frenchFile[key], key).toBe(fr[key]);
+    }
+    // report-fr vit hors de fr.ts (budget de l’accueil) mais le plan live FR→EN
+    // lit le JSON : ces 26 clés doivent y figurer.
+    for (const key of REPORT_KEYS) {
+      expect(frenchFile[key], key).toBe(tReport(key));
+    }
   });
 
   it('couvre chaque clé française et chaque texte de rapport', () => {
