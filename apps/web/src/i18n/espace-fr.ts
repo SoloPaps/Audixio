@@ -431,6 +431,8 @@ export const espaceFr = {
     'Vous seul voyez les rapports de vos sites. Quand vous acceptez une demande d’accès ou créez un lien de partage, il apparaît ici.',
   'mq.co.084':
     'Compte gratuit : 1 lien actif à la fois (public ou équipe). Le lien équipe reste en lecture seule, même sans compte pour le destinataire.',
+  'mq.co.084.pro':
+    'Compte Pro : liens actifs sans limite (public ou équipe). Le lien équipe reste en lecture seule, même sans compte pour le destinataire.',
   'mq.co.085': 'Retirer cet accès ?',
   'mq.co.086': '—',
   'mq.co.087': ' ne pourra plus consulter le rapport ni le brief de ',

@@ -7,6 +7,7 @@ import SessionWall from './SessionWall.svelte';
 let mode = $state<
   'pending' | 'out' | 'empty' | 'list' | 'ready' | 'live' | 'error'
 >('pending');
+let plan = $state<'free' | 'pro'>('free');
 let root: HTMLElement | undefined = $state();
 
 onMount(() => {
@@ -14,6 +15,7 @@ onMount(() => {
     'compte',
     (next) => {
       mode = next.mode;
+      plan = next.plan;
     },
     () => root,
   );
@@ -73,7 +75,7 @@ $effect(() => {
 <ul class="ap-types" aria-label={t('mq.co.064')}><li><b>{t('mq.co.065')}</b> {t('mq.co.066')}</li><li><b>{t('mq.co.067')}</b> {t('mq.co.068')}</li></ul>
 <ul class="ap-list" id="apl" aria-label={t('mq.co.069')}></ul>
 <div class="ap-empty" id="ape"><div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></div><h3 id="apeh" tabindex="-1">{t('mq.co.082')}</h3><p>{t('mq.co.083')}</p></div>
-<p class="ap-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg><span>{t('mq.co.084')}</span></p>
+<p class="ap-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg><span>{plan === 'pro' ? t('mq.co.084.pro') : t('mq.co.084')}</span></p>
 </div></section>
 
 <dialog id="dlgr" aria-labelledby="dlgrt" aria-describedby="dlgrd"><h2 id="dlgrt">{t('mq.co.085')}</h2><p id="dlgrd"><b id="dlgrw">{t('mq.co.086')}</b> {t('mq.co.087')} <span class="ap-site" id="dlgrs">{t('mq.co.086')}</span>{t('mq.co.088')}</p>

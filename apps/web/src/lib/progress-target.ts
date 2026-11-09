@@ -13,16 +13,20 @@ export function hostFromProgressQuery(search: string): string | null {
 }
 
 /**
- * La simulation de la maquette ne joue que sans audit réel.
- * `?id=`, `?url=` et `?site=` attendent la mesure. `?maquette=1` reste l’aperçu.
+ * L’animation de la maquette ne joue que pour l’aperçu `?maquette=1`.
+ * Sans audit, la page reste vide. `?id=`, `?url=` et `?site=` attendent la mesure.
  */
 export function progressSceneSimulates(search: string): boolean {
+  return new URLSearchParams(search).get('maquette') === '1';
+}
+
+/** Vrai tant que l’adresse ne désigne ni un audit, ni l’aperçu maquette. */
+export function progressEmpty(search: string): boolean {
+  if (progressSceneSimulates(search)) return false;
   const params = new URLSearchParams(search);
-  if (params.get('maquette') === '1') return true;
   const present = (key: string): boolean =>
     (params.get(key)?.trim() ?? '') !== '';
-  if (present('id') || present('url') || present('site')) return false;
-  return true;
+  return !present('id') && !present('url') && !present('site');
 }
 
 /**

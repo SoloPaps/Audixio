@@ -5,7 +5,7 @@ test('la fin de la progression reste en anglais (bug #35/#56/#81)', async ({
 }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto('/progression?theme=light');
+  await page.goto('/progression?maquette=1&theme=light');
   await page
     .locator('.axn-tools')
     .getByRole('link', { name: 'EN — English' })
