@@ -2141,6 +2141,7 @@
   "badge.copied.link": "Link copied",
   "badge.style.say": "Style {name} selected",
   "badge.foot": "The public link shows only the report summary. You can revoke it at any time; the badge will then say “unavailable”.",
+  "badge.foot.guest": "Without an account, the badge links to the Audixio home page: your report stays private.",
   "badge.public": "See the public page",
   "badge.close": "Close and return to the report",
   "badge.unavailable": "unavailable",

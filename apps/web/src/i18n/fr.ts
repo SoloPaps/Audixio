@@ -2849,6 +2849,8 @@ const frCore = {
   'badge.style.say': 'Style {name} sélectionné',
   'badge.foot':
     'Le lien public n’affiche que le résumé du rapport. Vous pouvez le révoquer à tout moment ; le badge affichera alors « non disponible ».',
+  'badge.foot.guest':
+    'Sans compte, le badge renvoie vers l’accueil d’Audixio : votre rapport reste privé.',
   'badge.public': 'Voir la page publique',
   'badge.close': 'Fermer et revenir au rapport',
   'badge.unavailable': 'non disponible',

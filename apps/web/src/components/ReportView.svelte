@@ -366,6 +366,7 @@ onMount(() => {
     {host}
     verified={siteVerified}
     score={global}
+    {guest}
   />
 {:else if payload}
   <div class="reading">
