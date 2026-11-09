@@ -164,7 +164,7 @@ function onPrint(): void {
       </article>
       <article class="sheet rv" style="--i:1" aria-label={t('pdf.pager', { page: 2 })}>
         <p class="kicker">{t('pdf.prio.kicker')}</p>
-        <h2 class="sh">{printPriorityTitle(view.priorities.length, t('pdf.prio.title'), t('pdf.prio.empty'))}</h2>
+        <h2 class="sh">{printPriorityTitle(view.priorities.length, t('pdf.prio.title', { n: view.priorities.length }), t('pdf.prio.empty'), t('pdf.prio.title.one'))}</h2>
         <p class="lede muted">{t('pdf.prio.lede')}</p>
         {#if view.priorities.length === 0}
           <p>{t('pdf.prio.empty')}</p>
