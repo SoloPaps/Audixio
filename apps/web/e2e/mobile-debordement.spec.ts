@@ -283,7 +283,7 @@ function scenes(): Scene[] {
     },
     {
       id: 'progression prévient',
-      path: '/progression',
+      path: '/progression?maquette=1',
       action: 'notify',
     },
     {

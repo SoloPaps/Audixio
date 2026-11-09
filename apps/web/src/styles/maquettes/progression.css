@@ -1226,3 +1226,16 @@ h1 .u,
 .four {
   padding-bottom: 0.1em;
 }
+#progress-empty {
+  display: none;
+  margin: 1.5rem 0 0;
+}
+html[data-progress-empty] #progress-empty {
+  display: block;
+}
+html[data-progress-empty] .eyebrow,
+html[data-progress-empty] .stage,
+html[data-progress-empty] .prog,
+html[data-progress-empty] section[aria-labelledby='t-dom'] {
+  display: none;
+}

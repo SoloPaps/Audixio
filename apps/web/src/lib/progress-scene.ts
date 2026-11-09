@@ -3,6 +3,7 @@ import { etaLabel, type Sim, TICK_MS, tickSim } from './progress-sim.js';
 import { progressCountHtml } from './progress-tally.js';
 import {
   hostFromProgressQuery,
+  progressEmpty,
   progressSceneSimulates,
   reportHrefFromSearch,
 } from './progress-target.js';
@@ -43,8 +44,17 @@ export function bindProgressScene(): void {
     if (askedHost) paintHost(askedHost);
   }
   const report = document.getElementById('reportBtn');
-  if (report)
-    report.setAttribute('href', reportHrefFromSearch(location.search));
+  if (report && !progressEmpty(search)) {
+    report.setAttribute('href', reportHrefFromSearch(search));
+  }
+  if (progressEmpty(search)) {
+    const heading = $('#h1T');
+    const lead = $('#leadT');
+    const live = $('#liveT');
+    if (heading) heading.textContent = t('progress.empty.title');
+    if (lead) lead.textContent = t('progress.empty.lead');
+    if (live) live.textContent = t('progress.empty.status');
+  }
   const motion = gsap();
   const STATUS: Record<string, string> = {
     done: 'Analysé',
@@ -206,8 +216,8 @@ export function bindProgressScene(): void {
   };
   (window as unknown as { audixioProgress: typeof api }).audixioProgress = api;
   counts();
-  setPercent(70);
   if (progressSceneSimulates(location.search)) {
+    setPercent(70);
     sim = window.setInterval(tick, TICK_MS);
   }
 }

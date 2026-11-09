@@ -105,7 +105,7 @@ test('M16 : /progression EN, messages d’activité et délai en anglais', async
       });
     });
   `);
-  await page.goto('/progression?theme=light');
+  await page.goto('/progression?maquette=1&theme=light');
   await toEnglish(page);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('body')).toHaveClass(/\bdone\b/, {
