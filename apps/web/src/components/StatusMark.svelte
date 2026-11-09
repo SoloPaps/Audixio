@@ -45,33 +45,17 @@ const color = $derived(
 </span>
 
 <style>
+  /* Couleur et taille de l’icône : style en ligne (tiennent sans feuille). */
   .status {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
     max-width: 100%;
-    color: var(--score-untested);
     font-weight: 600;
     line-height: var(--leading-title);
   }
 
-  .status[data-level='good'] {
-    color: var(--score-good);
-  }
-
-  .status[data-level='improve'] {
-    color: var(--score-improve);
-  }
-
-  .status[data-level='problem'] {
-    color: var(--score-problem);
-  }
-
   svg {
-    display: block;
-    flex: none;
-    width: var(--icon-size);
-    height: var(--icon-size);
     overflow: visible;
   }
 </style>

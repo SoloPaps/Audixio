@@ -1,0 +1,168 @@
+/*
+ * Cadran du score (ScoreGauge.svelte) : tracé, texte, puis teintes par lettre
+ * du barème (A–F), clair puis sombre. Chargée seulement avec le composant.
+ * Mêmes valeurs que les pastilles du rapport (.grade g-A…g-F) ; le sombre
+ * reprend les fonds profonds et les encres claires de theme-dark.css.
+ * Posées directement sur .gauge[data-grade] : pas de variables relais.
+ */
+.gauge {
+  --g-ink: #667085;
+  --g-bg: #eef0f4;
+  --g-band: rgba(61, 82, 160, 0.14);
+  --g-track: rgba(61, 82, 160, 0.1);
+}
+.gauge[data-grade="A"] {
+  --g-ink: #067647;
+  --g-bg: #d6f2e3;
+}
+.gauge[data-grade="B"] {
+  --g-ink: #2b3b85;
+  --g-bg: #dde4f8;
+}
+.gauge[data-grade="C"] {
+  --g-ink: #8a4b08;
+  --g-bg: #fbe8c8;
+}
+.gauge[data-grade="D"] {
+  --g-ink: #9a3a0c;
+  --g-bg: #fce3d6;
+}
+.gauge[data-grade="E"] {
+  --g-ink: #b42318;
+  --g-bg: #fee4e2;
+}
+.gauge[data-grade="F"] {
+  --g-ink: #912018;
+  --g-bg: #fdd9d5;
+}
+
+[data-theme="dark"] .gauge {
+  --g-ink: #adbbda;
+  --g-bg: #243056;
+  --g-band: rgba(173, 187, 218, 0.18);
+  --g-track: rgba(173, 187, 218, 0.16);
+}
+[data-theme="dark"] .gauge[data-grade="A"] {
+  --g-ink: #8ee4b0;
+  --g-bg: #123226;
+}
+[data-theme="dark"] .gauge[data-grade="B"] {
+  --g-ink: #b4c6ff;
+  --g-bg: #1f2b57;
+}
+[data-theme="dark"] .gauge[data-grade="C"] {
+  --g-ink: #f6c56b;
+  --g-bg: #3a2a10;
+}
+[data-theme="dark"] .gauge[data-grade="D"] {
+  --g-ink: #f8a77f;
+  --g-bg: #3d2216;
+}
+[data-theme="dark"] .gauge[data-grade="E"] {
+  --g-ink: #ffb4ab;
+  --g-bg: #3a2220;
+}
+[data-theme="dark"] .gauge[data-grade="F"] {
+  --g-ink: #ff9d92;
+  --g-bg: #43201c;
+}
+
+.gauge-figure {
+  position: relative;
+  aspect-ratio: 1;
+}
+.gauge-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+/* Bandes A–F : le trait vient du groupe. */
+.gauge-bands {
+  stroke: var(--g-band);
+  stroke-width: 5;
+}
+.gauge-bands .on {
+  stroke: var(--g-ink);
+}
+.gauge-track {
+  stroke: var(--g-track);
+}
+.gauge-fill {
+  stroke: var(--g-ink);
+  stroke-linecap: round;
+}
+.gauge-tip {
+  fill: var(--g-ink);
+  stroke: var(--surface);
+}
+/* Montée du trait depuis zéro jusqu’à la valeur de stroke-dasharray. */
+@media (prefers-reduced-motion: no-preference) {
+  .gauge-fill {
+    animation: gauge-rise var(--duration-gauge, 0.4s) var(--ease-out, ease-out)
+      both;
+  }
+}
+@keyframes gauge-rise {
+  from {
+    stroke-dasharray: 0 100;
+  }
+}
+.gauge-hole {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  max-width: none;
+  margin: 0;
+  color: var(--ink);
+  font-size: 24cqw;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+.score-num {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.score-denom {
+  margin-top: 0.2em;
+  color: var(--ink-2);
+  font-size: max(var(--text-xs, 0.75rem), 0.36em);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.gauge-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 0.5rem);
+  position: relative;
+  left: 50%;
+  width: max-content;
+  margin-top: var(--space-2, 0.5rem);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+/* <i> : hors de la remise à zéro des fonds du thème sombre. */
+.gauge-grade {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.9em;
+  height: 1.9em;
+  padding: 0 0.35em;
+  border-radius: 0.5rem;
+  background: var(--g-bg);
+  color: var(--g-ink);
+  font-size: var(--text-sm, 0.875rem);
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1;
+}
+.gauge[data-size="mini"] .gauge-status {
+  display: none;
+}

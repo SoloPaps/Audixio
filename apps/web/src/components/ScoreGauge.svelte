@@ -1,8 +1,28 @@
+<script module lang="ts">
+/** Compteur d’identifiants : un tracé de bande par cadran sur la page. */
+let gauges = 0;
+</script>
+
 <script lang="ts">
+import { GRADE_THRESHOLDS, gradeForScore } from '@audigy/db';
 import { t } from '../i18n/index.js';
-import { GAUGE, gaugeArc, gaugeLabel, levelForScore } from '../lib/score.js';
+import '../styles/maquettes/gauge.css';
+import {
+  GAUGE,
+  gaugeBands,
+  gaugeLabel,
+  gaugePoint,
+  gaugeRing,
+  levelForScore,
+} from '../lib/score.js';
 import StatusMark from './StatusMark.svelte';
 
+/**
+ * Cadran du score (refonte, décision owner du 6 nov.) : anneau complet,
+ * nombre au centre, lettre du barème officiel à côté du statut, et bandes
+ * A–F autour de l’anneau pour situer le score. Mêmes couleurs de lettre que
+ * les pastilles du rapport, en clair et en sombre.
+ */
 interface Props {
   domain: string;
   score: number | null;
@@ -13,24 +33,23 @@ interface Props {
 
 let { domain, score, size = 'compact', label: fixed }: Props = $props();
 const level = $derived(levelForScore(score));
+const grade = $derived(gradeForScore(score));
 const label = $derived(fixed ?? gaugeLabel(domain, score));
-const arc = gaugeArc(GAUGE.cx, GAUGE.cy, GAUGE.r);
+const ring = gaugeRing(GAUGE.cx, GAUGE.cy, GAUGE.r);
+const bandRing = gaugeRing(GAUGE.cx, GAUGE.cy, GAUGE.band);
+const bands = gaugeBands(GRADE_THRESHOLDS);
+/** Un seul tracé de bande par cadran, repris par les six bandes (<use>). */
+const bandId = `gb${++gauges}`;
+const tip = $derived(
+  score === null ? null : gaugePoint(GAUGE.cx, GAUGE.cy, GAUGE.r, score),
+);
 const scoreAttr = $derived(score === null ? 'none' : String(score));
 const frame = $derived(
   size === 'hero'
-    ? 'var(--gauge-hero)'
+    ? 'var(--gauge-hero, 13rem)'
     : size === 'mini'
-      ? 'var(--gauge-mini)'
-      : 'var(--gauge-size)',
-);
-const stroke = $derived(
-  level === 'good'
-    ? 'var(--score-good)'
-    : level === 'improve'
-      ? 'var(--score-improve)'
-      : level === 'problem'
-        ? 'var(--score-problem)'
-        : 'var(--score-untested)',
+      ? 'var(--gauge-mini, 4rem)'
+      : 'var(--gauge-size, 8rem)',
 );
 </script>
 
@@ -39,161 +58,64 @@ const stroke = $derived(
   data-size={size}
   data-score={scoreAttr}
   data-level={level}
+  data-grade={grade ?? 'none'}
   role="img"
   aria-label={label}
-  style={`width: ${frame}; max-width: 100%; container-type: inline-size; --gx: ${GAUGE.cx}; --gy: ${GAUGE.cy}; --gw: ${GAUGE.width}; --gh: ${GAUGE.height}`}
+  style={`width: ${frame}; max-width: 100%; container-type: inline-size`}
 >
-  <div class="gauge-figure" style="position: relative">
+  <div class="gauge-figure">
     <svg
       aria-hidden="true"
       viewBox={GAUGE.viewBox}
       width={GAUGE.width}
       height={GAUGE.height}
-      style="display: block; width: 100%; height: auto"
       data-cx={GAUGE.cx}
       data-cy={GAUGE.cy}
       data-r={GAUGE.r}
     >
-      <path
-        class="gauge-track"
-        d={arc}
-        fill="none"
-        stroke="var(--line)"
-        stroke-width="8"
-        stroke-linecap="round"
-      />
+      {#if size !== 'mini'}
+        <defs><path id={bandId} d={bandRing} pathLength="100" /></defs>
+        <g class="gauge-bands" fill="none">
+          {#each bands as band (band.grade)}
+            <use
+              class="gauge-band"
+              class:on={grade === band.grade}
+              data-band={band.grade}
+              href={`#${bandId}`}
+              stroke-dasharray={`${Math.max(0, band.to - band.from - 0.8)} 100`}
+              stroke-dashoffset={-band.from - 0.4}
+            />
+          {/each}
+        </g>
+      {/if}
+      <path class="gauge-track" d={ring} fill="none" stroke-width="14" />
       <path
         class="gauge-fill"
-        d={arc}
+        d={ring}
         fill="none"
-        stroke={stroke}
-        stroke-width="8"
-        stroke-linecap="round"
+        stroke-width="14"
         pathLength="100"
         stroke-dasharray={`${score ?? 0} 100`}
-        style={`--score: ${score ?? 0}`}
       />
+      {#if tip && score !== null && score > 0}
+        <circle class="gauge-tip" cx={tip.x} cy={tip.y} r="7" stroke-width="3" />
+      {/if}
     </svg>
-    <p
-      class="gauge-hole"
-      aria-hidden="true"
-      style="position: absolute; z-index: 1; left: calc(var(--gx) / var(--gw) * 100%); top: calc(var(--gy) / var(--gh) * 100%); display: flex; flex-direction: column; align-items: center; width: max-content; margin: 0; color: var(--ink); font-size: 20cqw; line-height: 1; text-align: center; transform: translate(-50%, -50%)"
-    >
-      <span class="score-num" style="font-variant-numeric: tabular-nums; font-weight: 600; line-height: 1; white-space: nowrap">{score === null ? t('score.empty') : score}</span>{#if score !== null}<span class="score-denom" style="margin-top: var(--space-1); color: var(--ink-2); font-size: max(var(--text-xs), 0.42em); font-variant-numeric: tabular-nums; font-weight: 400; line-height: 1.2; white-space: nowrap">{t('gauge.denom')}</span>{/if}
+    <p class="gauge-hole" aria-hidden="true">
+      <span class="score-num">{score === null ? t('score.empty') : score}</span>{#if score !== null}<span class="score-denom">{t('gauge.denom')}</span>{/if}
     </p>
   </div>
-  <div class="gauge-status" aria-hidden="true" style="display: flex; justify-content: center; margin-top: var(--space-2)">
+  <div class="gauge-status" aria-hidden="true">
+    {#if grade}<i class="gauge-grade">{grade}</i>{/if}
     <StatusMark {level} />
   </div>
 </div>
 
 <style>
-  .gauge {
-    container-type: inline-size;
-    width: var(--gauge-size);
-    max-width: 100%;
-  }
-
+  /* Tracé, texte et teintes par lettre : maquettes/gauge.css, chargée avec
+     le composant (pas de classes de portée répétées dans le HTML). Largeur et
+     container-type : style en ligne, le cadran tient sans feuille de style. */
   .gauge[data-size='hero'] {
-    width: var(--gauge-hero);
     view-transition-name: audigy-gauge;
-  }
-
-  .gauge[data-size='mini'] {
-    width: var(--gauge-mini);
-  }
-
-  .gauge-figure {
-    position: relative;
-  }
-
-  svg {
-    position: relative;
-    z-index: 0;
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  .gauge-track,
-  .gauge-fill {
-    fill: none;
-    stroke-linecap: round;
-    stroke-width: var(--gauge-stroke);
-  }
-
-  .gauge-track {
-    stroke: var(--line);
-  }
-
-  .gauge-fill {
-    stroke: var(--score-untested);
-    stroke-dasharray: var(--score) 100;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .gauge-fill {
-      animation: gauge-rise var(--duration-gauge) var(--ease-out) both;
-    }
-  }
-
-  @keyframes gauge-rise {
-    from {
-      stroke-dasharray: 0 100;
-    }
-  }
-
-  .gauge[data-level='good'] .gauge-fill {
-    stroke: var(--score-good);
-  }
-
-  .gauge[data-level='improve'] .gauge-fill {
-    stroke: var(--score-improve);
-  }
-
-  .gauge[data-level='problem'] .gauge-fill {
-    stroke: var(--score-problem);
-  }
-
-  .gauge-hole {
-    position: absolute;
-    z-index: 1;
-    left: calc(var(--gx) / var(--gw) * 100%);
-    top: calc(var(--gy) / var(--gh) * 100%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: max-content;
-    max-width: none;
-    margin: 0;
-    color: var(--ink);
-    font-size: 20cqw;
-    line-height: 1;
-    text-align: center;
-    transform: translate(-50%, -50%);
-  }
-
-  .score-num {
-    font-size: 1em;
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  .score-denom {
-    margin-top: var(--space-1);
-    color: var(--ink-2);
-    font-size: max(var(--text-xs), 0.42em);
-    font-variant-numeric: tabular-nums;
-    font-weight: 400;
-    line-height: 1.2;
-    white-space: nowrap;
-  }
-
-  .gauge-status {
-    display: flex;
-    justify-content: center;
-    margin-top: var(--space-2);
   }
 </style>

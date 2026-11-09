@@ -640,7 +640,7 @@ const frCore = {
   'status.fail': 'Problème',
   'status.untested': 'Non testé',
   'status.na': 'Non applicable',
-  'gauge.score': '{domain} : {score} sur 100, {level}',
+  'gauge.score': '{domain} : {score} sur 100, note {grade}, {level}',
   'gauge.untested': '{domain} : {level}',
   'gauge.denom': '/100',
   'gauge.sample.zero': 'Note de zéro',

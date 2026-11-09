@@ -1362,6 +1362,19 @@ html:where([data-vue="domaine"]),
   font-size: 15px;
   margin-top: 4px;
 }
+/* Score sur 100 à côté de la lettre (la carte n’avait que la lettre). */
+:where(html[data-vue="domaine"]) .gtop .gnum {
+  color: var(--ink);
+  font:
+    700 1.05rem "JetBrains Mono",
+    monospace;
+  letter-spacing: -0.02em;
+}
+:where(html[data-vue="domaine"]) .gtop .gnum small {
+  color: var(--muted);
+  font-size: 0.75em;
+  margin-left: 1px;
+}
 :where(html[data-vue="domaine"]) .gcard .gbar {
   margin-top: var(--s3);
   height: 10px;

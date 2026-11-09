@@ -32,7 +32,9 @@ test('l’accueil montre l’exemple avant de demander l’adresse', async ({
   ).toHaveAttribute('href', '/methode');
   await expect(page.getByText('Exemple', { exact: true })).toBeVisible();
   await expect(
-    page.getByRole('img', { name: /Score global : 66 sur 100, à améliorer/ }),
+    page.getByRole('img', {
+      name: /Score global : 66 sur 100, note C, à améliorer/,
+    }),
   ).toBeVisible();
   const preview = page.getByRole('complementary');
   await expect(preview.getByText('Visibilité sur Google')).toBeVisible();

@@ -2023,6 +2023,20 @@ html:where([data-vue="restreint"]) {
   flex: 1;
   min-width: 0;
 }
+/* Score sur 100 à côté de la lettre du domaine voisin. */
+:where(html[data-vue="restreint"]) .pg .pg-num {
+  flex: none;
+  color: var(--ink);
+  font:
+    700 0.95rem "JetBrains Mono",
+    monospace;
+  letter-spacing: -0.02em;
+}
+:where(html[data-vue="restreint"]) .pg .pg-num small {
+  color: var(--muted);
+  font-size: 0.75em;
+  margin-left: 1px;
+}
 :where(html[data-vue="restreint"]) .pg.next {
   flex-direction: row-reverse;
   text-align: right;

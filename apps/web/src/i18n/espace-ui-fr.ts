@@ -92,5 +92,5 @@ export const espaceUiFr = {
   'mq.ui.meta.brief.title': 'Brief pour votre assistant IA — Audixio',
   'mq.ui.meta.constat.title': 'Détail du constat — Audixio',
   'mq.ui.meta.plan.title': 'Plan d’action — Audixio',
-  'mq.ui.home.gauge': 'Score global : 66 sur 100, à améliorer',
+  'mq.ui.home.gauge': 'Score global : 66 sur 100, note C, à améliorer',
 } as const;

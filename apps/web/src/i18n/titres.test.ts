@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gradeForScore } from '@audigy/db';
 import { describe, expect, it } from 'vitest';
 import { HOME_EXAMPLE_SCORE } from '../lib/home-example.js';
 import { gaugeLabel } from '../lib/score.js';
@@ -60,6 +61,7 @@ describe('jauge d’exemple de l’accueil (C10)', () => {
     const english = (pack['gauge.score'] ?? '')
       .replace('{domain}', pack['domain.global'] ?? '')
       .replace('{score}', String(HOME_EXAMPLE_SCORE))
+      .replace('{grade}', gradeForScore(HOME_EXAMPLE_SCORE) ?? '')
       .replace('{level}', pack['level.improve.sentence'] ?? '');
     expect(pack['mq.ui.home.gauge']).toBe(english);
   });

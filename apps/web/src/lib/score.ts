@@ -1,15 +1,18 @@
+import { gradeForScore } from '@audigy/db';
 import { type MessageKey, t } from '../i18n/index.js';
 
 export const LEVELS = ['good', 'improve', 'problem', 'untested'] as const;
 export type Level = (typeof LEVELS)[number];
 
+/** Cadran du score : anneau complet, bandes du barème autour. */
 export const GAUGE = {
   cx: 100,
-  cy: 84,
-  r: 74,
+  cy: 100,
+  r: 78,
+  band: 94,
   width: 200,
-  height: 148,
-  viewBox: '0 0 200 148',
+  height: 200,
+  viewBox: '0 0 200 200',
 } as const;
 
 const SENTENCE: Record<Level, MessageKey> = {
@@ -42,7 +45,12 @@ export function gaugeLabel(domain: string, score: number | null): string {
   if (score === null) {
     return t('gauge.untested', { domain, level: t(SENTENCE[level]) });
   }
-  return t('gauge.score', { domain, score, level: t(SENTENCE[level]) });
+  return t('gauge.score', {
+    domain,
+    score,
+    grade: gradeForScore(score) ?? '',
+    level: t(SENTENCE[level]),
+  });
 }
 
 function point(
@@ -59,11 +67,40 @@ function round(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-/** Arc de 270°, ouverture en bas. Pas un donut fermé. */
-export function gaugeArc(cx: number, cy: number, r: number): string {
-  const start = 135;
-  const end = start + 270;
-  const a = point(cx, cy, r, start);
-  const b = point(cx, cy, r, end);
-  return `M ${round(a.x)} ${round(a.y)} A ${r} ${r} 0 1 1 ${round(b.x)} ${round(b.y)}`;
+/** Anneau complet, départ en haut, sens horaire (pathLength 100 = score). */
+export function gaugeRing(cx: number, cy: number, r: number): string {
+  return `M ${cx} ${round(cy - r)} A ${r} ${r} 0 1 1 ${cx} ${round(cy + r)} A ${r} ${r} 0 1 1 ${cx} ${round(cy - r)}`;
+}
+
+/** Position du score sur l’anneau (0 en haut, 100 au tour complet). */
+export function gaugePoint(
+  cx: number,
+  cy: number,
+  r: number,
+  score: number,
+): { x: number; y: number } {
+  const clamped = Math.max(0, Math.min(100, score));
+  const p = point(cx, cy, r, -90 + (clamped / 100) * 360);
+  return { x: round(p.x), y: round(p.y) };
+}
+
+/**
+ * Bandes du barème officiel (F < E < D < C < B < A), en part de l’anneau.
+ * Les seuils viennent de GRADE_THRESHOLDS : une seule source.
+ */
+export function gaugeBands(thresholds: {
+  A: number;
+  B: number;
+  C: number;
+  D: number;
+  E: number;
+}): { grade: 'A' | 'B' | 'C' | 'D' | 'E' | 'F'; from: number; to: number }[] {
+  return [
+    { grade: 'F', from: 0, to: thresholds.E },
+    { grade: 'E', from: thresholds.E, to: thresholds.D },
+    { grade: 'D', from: thresholds.D, to: thresholds.C },
+    { grade: 'C', from: thresholds.C, to: thresholds.B },
+    { grade: 'B', from: thresholds.B, to: thresholds.A },
+    { grade: 'A', from: thresholds.A, to: 100 },
+  ];
 }

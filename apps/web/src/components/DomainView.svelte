@@ -390,7 +390,7 @@ function seeLabel(n: number): string {
         </div>
       </div>
       <section class="card gcard g-{letter?.toLowerCase() ?? 'n'} rv" aria-labelledby="gt">
-        <div class="gtop"><span class="gbig" aria-hidden="true">{letter ?? '–'}</span><div><h2 id="gt">{#if letter}<span class="sr-only">{t('domaine.grade.note', { grade: letter })}</span>{/if}{cardTitle}</h2><p>{cardSub}</p></div></div>
+        <div class="gtop"><span class="gbig" aria-hidden="true">{letter ?? '–'}</span><div><h2 id="gt">{#if letter}<span class="sr-only">{t('domaine.grade.note', { grade: letter })}</span>{/if}{cardTitle}</h2><p>{cardSub}</p>{#if letter && score !== null}<p class="gnum" data-score-num>{Math.round(score)}<small>{t('gauge.denom')}</small></p>{/if}</div></div>
         <div class="gbar" aria-hidden="true"><i style={`--v:${Math.max(0, Math.min(100, score ?? 0)) / 100}`}></i></div>
         <ol class="ladder rv" aria-label={t('domaine.ladder')}>
           {#each ladder as step (step)}

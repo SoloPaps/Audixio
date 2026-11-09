@@ -40,6 +40,8 @@ export interface PdfDomainRow {
   id: (typeof ORDER)[number];
   label: string;
   grade: Grade | null;
+  /** Score sur 100 affiché à côté de la lettre ; null si verrouillé. */
+  score: number | null;
   locked: boolean;
   note: string;
   open: number;
@@ -52,6 +54,8 @@ export interface PdfReport {
   verified: boolean;
   critical: number;
   grade: Grade | null;
+  /** Score global sur 100 ; null si non mesuré. */
+  score: number | null;
   priorities: PdfPriority[];
   domains: PdfDomainRow[];
 }
@@ -143,6 +147,7 @@ export function buildPdfReport(payload: AuditPayload): PdfReport {
       id,
       label: t(LABEL[id]),
       grade,
+      score: grade === null ? null : Math.round(source?.score ?? 0),
       locked,
       note,
       open,
@@ -157,6 +162,10 @@ export function buildPdfReport(payload: AuditPayload): PdfReport {
       (row) => row.status === 'fail' && row.severity >= 4 && !isConstat(row),
     ).length,
     grade: gradeForScore(payload.audit.globalScore),
+    score:
+      payload.audit.globalScore === null
+        ? null
+        : Math.round(payload.audit.globalScore),
     priorities,
     domains,
   };

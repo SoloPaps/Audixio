@@ -29,7 +29,7 @@ test('C10 : accueil EN, titre, jauge et lecture passive en anglais', async ({
   );
   await expect(page.locator('.score-slot [role="img"]')).toHaveAttribute(
     'aria-label',
-    'Overall score: 66 out of 100, needs work',
+    'Overall score: 66 out of 100, grade C, needs work',
   );
   const seen = new Set<string>();
   const sub = page.locator('#win-sub');
