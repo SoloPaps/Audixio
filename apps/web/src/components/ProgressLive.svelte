@@ -74,8 +74,8 @@ onMount(() => {
       node.textContent = host;
     }
     const preview = guest && !revealed;
-    const shown = preview
-      ? guestDisplayStatus(payload.audit.status, false)
+    const shown = guest
+      ? guestDisplayStatus(payload.audit.status, revealed)
       : payload.audit.status;
     const unmeasured =
       !preview &&

@@ -35,6 +35,13 @@ describe('guestBeatPhase', () => {
 });
 
 describe('guestDisplayStatus', () => {
+  it('un audit visiteur « partial » révélé est terminé : il ne sera jamais relu', () => {
+    expect(guestDisplayStatus('partial', true)).toBe('done');
+    expect(progressLive(guestDisplayStatus('partial', true), [])).toBe(
+      'Rapport prêt.',
+    );
+  });
+
   it('montre l’analyse, puis le statut réel déjà stocké', () => {
     expect(guestDisplayStatus('queued', false)).toBe('queued');
     expect(guestDisplayStatus('running', false)).toBe('running');
@@ -42,6 +49,7 @@ describe('guestDisplayStatus', () => {
     expect(guestDisplayStatus('partial', false)).toBe('running');
     expect(guestDisplayStatus('failed', false)).toBe('running');
     expect(guestDisplayStatus('done', true)).toBe('done');
+    expect(guestDisplayStatus('failed', true)).toBe('failed');
     expect(progressLive(guestDisplayStatus('done', false), [])).toBe(
       'Analyse en cours.',
     );

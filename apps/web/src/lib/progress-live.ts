@@ -20,8 +20,13 @@ export function nothingMeasured(
   return !domains.some((domain) => typeof domain.score === 'number');
 }
 
+/**
+ * Statut montré à un visiteur. Son audit est stocké une fois pour toutes
+ * (sessionStorage) et n’est jamais relu : un statut « partial » enregistré ne
+ * deviendra jamais « done ». Une fois révélé, il compte donc comme terminé.
+ */
 export function guestDisplayStatus(status: string, revealed: boolean): string {
-  if (revealed) return status;
+  if (revealed) return status === 'partial' ? 'done' : status;
   if (status === 'done' || status === 'partial' || status === 'failed') {
     return 'running';
   }
