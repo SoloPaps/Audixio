@@ -64,6 +64,12 @@ onMount(() => {
     step: number,
   ): boolean => {
     const host = hostOf(payload.audit.site.url);
+    // B6 : un visiteur reçoit un aperçu partiel ; le plan demande un compte.
+    if (guest) {
+      document.documentElement.dataset.auditViewer = 'guest';
+      const eyebrow = document.querySelector('.eyebrow.intro');
+      if (eyebrow) eyebrow.textContent = t('progress.eyebrow.guest');
+    }
     for (const node of document.querySelectorAll('.mono')) {
       node.textContent = host;
     }
@@ -110,7 +116,11 @@ onMount(() => {
       : progressPhase(shown, names.length, names.includes('vie_privee'));
     if (view.finished) {
       if (heading) heading.textContent = t('progress.ready.heading');
-      if (lead) lead.textContent = t('progress.ready.lead');
+      if (lead) {
+        lead.textContent = guest
+          ? t('progress.ready.lead.guest')
+          : t('progress.ready.lead');
+      }
       if (task) task.textContent = t('progress.ready');
       if (eta) eta.textContent = '';
     } else if (view.failed) {

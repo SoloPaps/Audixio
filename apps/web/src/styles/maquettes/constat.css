@@ -1834,18 +1834,21 @@
 :where(html[data-vue="constat"]) .steps {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* B3 : minmax(0, …) pour qu’un exemple de code ne force pas la largeur. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--s3);
   margin-top: var(--s4);
 }
 @media (max-width: 900px) {
   :where(html[data-vue="constat"]) .steps {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 :where(html[data-vue="constat"]) .step {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
   position: relative;
   padding: var(--s4);
   border-radius: 26px;

@@ -49,7 +49,7 @@ export const briefFr = {
   'brief.count.many': '{n} sélectionnés',
   'brief.allFails': 'Tous les échecs',
   'brief.allVerif': 'Tous en vérif',
-  'brief.allFix': 'Tous en fix',
+  'brief.allFix': 'Tous à corriger',
   'brief.generate': 'Générer le brief',
   'brief.generate.hint': 'Cochez un constat, ou prenez tous les échecs.',
   'brief.none': 'Aucun constat à corriger',
@@ -69,7 +69,7 @@ export const briefFr = {
   'brief.terminal.rien.long': 'Pas de commande',
   'brief.terminal.verif': 'Vérif',
   'brief.terminal.verif.long': 'Vérifier, sans écrire',
-  'brief.terminal.fix': 'Fix',
+  'brief.terminal.fix': 'Corriger',
   'brief.terminal.fix.long': 'Proposer une correction',
   'brief.notProof': 'Ce fichier n’est pas une preuve.',
 } as const satisfies Record<string, string>;
