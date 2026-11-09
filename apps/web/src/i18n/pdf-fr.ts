@@ -37,7 +37,8 @@ export const pdfFr = {
   'pdf.foot': 'Audixio · {host} · {date}',
   'pdf.pager': 'Page {page} / 3',
   'pdf.prio.kicker': 'Ce qu’il faut faire d’abord',
-  'pdf.prio.title': 'Les 5 priorités',
+  'pdf.prio.title': 'Les {n} priorités',
+  'pdf.prio.title.one': 'La priorité',
   'pdf.prio.lede':
     'Classées par impact sur la note et sur vos visiteurs. Le détail de chaque correction figure dans le rapport en ligne.',
   'pdf.prio.empty': 'Aucune priorité ouverte sur cet audit.',
