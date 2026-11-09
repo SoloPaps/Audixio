@@ -14,7 +14,11 @@ import {
   domainShort,
   REPORT_DOMAINS,
 } from '../lib/domains.js';
-import { briefSelectionRow } from '../lib/finding-choice.js';
+import {
+  briefSelectionRow,
+  choiceKey,
+  savedChoices,
+} from '../lib/finding-choice.js';
 import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
@@ -97,24 +101,16 @@ function sevOf(item: Finding): Sev {
   if (item.status === 'fail' && item.severity >= 4) return 'crit';
   return 'fix';
 }
-function isChoice(value: string): value is Choice {
-  return value === 'none' || value === 'chk' || value === 'fix';
-}
-
 async function loadChoices(): Promise<void> {
   const session = await currentSession();
   const supabase = browserClient();
   if (!session || !supabase) return;
   const { data, error } = await supabase
     .from('brief_selections')
-    .select('finding_id, choice')
+    .select('finding_id, choice, updated_at')
     .eq('audit_id', auditId);
-  if (error || !data) return;
-  const next = { ...choices };
-  for (const row of data) {
-    if (isChoice(row.choice)) next[row.finding_id] = row.choice;
-  }
-  choices = next;
+  if (error || !Array.isArray(data)) return;
+  choices = { ...choices, ...savedChoices(data) };
 }
 
 async function persistChoice(
@@ -143,7 +139,9 @@ async function persistChoice(
   say(t('api.error.internal'), document.getElementById('live'));
 }
 
-function choose(id: string, choice: Choice): void {
+function choose(itemId: string, choice: Choice): void {
+  // Même clé que /brief : le checkId, pas l’identifiant `checkId-N` du rapport.
+  const id = choiceKey(itemId);
   const previous = choices[id];
   choices = { ...choices, [id]: choice };
   void persistChoice(id, choice, previous);
@@ -151,7 +149,7 @@ function choose(id: string, choice: Choice): void {
 
 function choiceOf(item: Finding): Choice {
   return (
-    choices[item.id] ??
+    choices[choiceKey(item.id)] ??
     (item.status === 'fail' ? 'fix' : item.status === 'warn' ? 'chk' : 'none')
   );
 }
