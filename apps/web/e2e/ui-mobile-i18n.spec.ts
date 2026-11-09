@@ -1,5 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
-import { stubSession } from './en-session.js';
+import { stubSession, toEnglish } from './en-session.js';
 
 const CORS = {
   'access-control-allow-origin': 'http://127.0.0.1:4321',
@@ -66,3 +66,74 @@ test('B10 (bug_b3d701fc) : contact en anglais, motif entièrement anglais et lis
   expect(box).not.toBeNull();
   expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(330);
 });
+
+for (const lang of ['en', 'fr'] as const) {
+  test(`B7 (bug_bbf3506c) : le point du consentement reste sur la ligne du lien (${lang})`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    if (lang === 'en') {
+      await page.goto('/bienvenue?theme=dark');
+      await toEnglish(page);
+    }
+    for (const width of [1920, 1280, 330]) {
+      await page.setViewportSize({ width, height: 1080 });
+      await page.goto('/inscription?theme=dark');
+      await expect(page.locator('html')).toHaveAttribute('lang', lang);
+      const label = page.locator('.auth-card .chk').filter({
+        has: page.locator('a[href="/confidentialite"]'),
+      });
+      await expect(label).toBeVisible({ timeout: 15_000 });
+      const lines = await label.evaluate((node) => {
+        const doc = (node as unknown as { ownerDocument: unknown })
+          .ownerDocument as {
+          createRange: () => {
+            setStart: (n: unknown, o: number) => void;
+            setEnd: (n: unknown, o: number) => void;
+            getBoundingClientRect: () => { top: number; bottom: number };
+          };
+        };
+        const root = node as unknown as {
+          querySelector: (s: string) => {
+            nextSibling: { textContent: string } | null;
+            getBoundingClientRect: () => { top: number; bottom: number };
+          };
+          getBoundingClientRect: () => { right: number };
+        };
+        const link = root.querySelector('a[href="/confidentialite"]');
+        const dot = link.nextSibling;
+        if (!dot || dot.textContent !== '.') return null;
+        const range = doc.createRange();
+        range.setStart(dot, 0);
+        range.setEnd(dot, 1);
+        const a = link.getBoundingClientRect();
+        const b = range.getBoundingClientRect();
+        return {
+          linkTop: a.top,
+          linkBottom: a.bottom,
+          dotTop: b.top,
+          dotBottom: b.bottom,
+        };
+      });
+      expect(lines, `${lang} ${width}`).not.toBeNull();
+      // Le point se trouve dans la hauteur de la dernière ligne du lien.
+      expect(lines?.dotTop ?? 0, `${lang} ${width}`).toBeGreaterThanOrEqual(
+        (lines?.linkTop ?? 0) - 1,
+      );
+      expect(lines?.dotBottom ?? 0, `${lang} ${width}`).toBeLessThanOrEqual(
+        (lines?.linkBottom ?? 0) + 1,
+      );
+      const overflow = await page.evaluate(
+        () =>
+          (
+            globalThis as unknown as {
+              document: { documentElement: { scrollWidth: number } };
+              innerWidth: number;
+            }
+          ).document.documentElement.scrollWidth -
+          (globalThis as unknown as { innerWidth: number }).innerWidth,
+      );
+      expect(overflow, `${lang} ${width}`).toBeLessThanOrEqual(0);
+    }
+  });
+}
