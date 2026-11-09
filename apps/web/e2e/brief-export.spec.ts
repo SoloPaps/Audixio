@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 
 const AUDIT_ID = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10';
@@ -421,3 +422,49 @@ test('B3 sombre : les pastilles « à corriger / à vérifier » gardent leur fo
     expect(bg).not.toBe(card);
   }
 });
+
+for (const theme of ['light', 'dark'] as const) {
+  test(`prompt IA structuré et coloré, lisible en ${theme === 'dark' ? 'sombre' : 'clair'} (décision du 6 nov.)`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' });
+    await install(page);
+    await page.goto(`/brief?id=${AUDIT_ID}&theme=${theme}`);
+    const md = page.locator('#md');
+    await expect(md.locator('.l-h1')).toHaveCount(1, { timeout: 15_000 });
+    await expect(md.locator('.l-h2').first()).toBeVisible();
+    expect(await md.locator('.l-h2').count()).toBeGreaterThanOrEqual(4);
+    await expect(md.locator('.l-b').first()).toBeVisible();
+    await expect(md.locator('.l-d .l-k').first()).toBeVisible();
+    await expect(md.locator('.l-tag.fix, .l-tag.check').first()).toBeVisible();
+    const look = await md.evaluate((root) => {
+      const view = globalThis as unknown as {
+        getComputedStyle: (n: unknown) => { color: string; fontWeight: string };
+      };
+      const node = root as unknown as {
+        querySelector: (s: string) => unknown;
+      };
+      const pick = (selector: string) =>
+        view.getComputedStyle(node.querySelector(selector));
+      return {
+        section: pick('.l-h2').color,
+        sectionWeight: pick('.l-h2').fontWeight,
+        detail: pick('.l-d').color,
+        detailWeight: pick('.l-d').fontWeight,
+        key: pick('.l-d .l-k').color,
+      };
+    });
+    expect(look.section).not.toBe(look.detail);
+    expect(look.key).not.toBe(look.detail);
+    expect(Number(look.sectionWeight)).toBeGreaterThan(
+      Number(look.detailWeight),
+    );
+    const result = await new AxeBuilder({ page })
+      .include('#md')
+      .withRules(['color-contrast'])
+      .analyze();
+    expect(
+      result.violations.flatMap((v) => v.nodes.map((n) => n.html)),
+    ).toEqual([]);
+  });
+}

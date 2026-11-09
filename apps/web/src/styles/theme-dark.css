@@ -847,3 +847,46 @@ html[data-theme="dark"][data-board] .eco-line a {
 html[data-theme="dark"] .axn-burger i b {
   background-color: currentColor;
 }
+
+/* Aperçu du prompt IA (brief) : couleurs seulement. */
+html[data-theme="dark"][data-vue="brief"] .mdbody {
+  --pv-title: #f0f2f5;
+  --pv-sec: #d6e2ff;
+  --pv-bar: #a9bbf3;
+  --pv-mark: #8fa2d8;
+  --pv-text: #e4e8f2;
+  --pv-key: #c5d4ff;
+  --pv-note: #c5d0ea;
+  --pv-fix: #f6c56b;
+  --pv-fix-bg: #3a2a10;
+  --pv-check: #d6e2ff;
+  --pv-check-bg: #26325c;
+}
+/* Les lignes sont des div : la règle sombre générique leur imposerait --text. */
+html[data-theme="dark"][data-vue="brief"] .mdbody .l-h1 {
+  color: var(--pv-title);
+}
+html[data-theme="dark"][data-vue="brief"] .mdbody .l-h2 {
+  color: var(--pv-sec);
+  border-left-color: var(--pv-bar);
+}
+html[data-theme="dark"][data-vue="brief"] .mdbody :is(.l-b, .l-d) {
+  color: var(--pv-text);
+}
+html[data-theme="dark"][data-vue="brief"] .mdbody .l-n {
+  color: var(--pv-note);
+}
+html[data-theme="dark"][data-vue="brief"] .mdbody .l-m {
+  color: var(--pv-mark);
+}
+html[data-theme="dark"][data-vue="brief"] .mdbody .l-k {
+  color: var(--pv-key);
+}
+html[data-theme="dark"][data-vue="brief"] .mdbody .l-tag.fix {
+  color: var(--pv-fix);
+  background-color: var(--pv-fix-bg);
+}
+html[data-theme="dark"][data-vue="brief"] .mdbody .l-tag.check {
+  color: var(--pv-check);
+  background-color: var(--pv-check-bg);
+}
