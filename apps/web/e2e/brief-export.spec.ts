@@ -331,6 +331,29 @@ test('la page domaine copie, télécharge et prépare le courriel serveur', asyn
   expect(posted.every((body) => !body.includes('title'))).toBe(true);
 });
 
+test('M5 (bug_df4d0934) : le domaine envoie au serveur les checkId choisis, sans rang', async ({
+  page,
+}) => {
+  await install(page);
+  const posted = await fulfillBrief(page, 200, `${MARKER}\n`);
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance`);
+  await page
+    .getByRole('button', { name: 'Générer et copier le prompt' })
+    .click();
+  await expect(page.locator('#toast')).toHaveText('Prompt copié');
+  await expect.poll(() => posted.length).toBe(1);
+  const body = JSON.parse(posted[0] ?? '{}') as {
+    selection?: { checkId: string; mode: string }[];
+  };
+  // Même forme que le schéma serveur (brief-export.ts) : un id `checkId-N`
+  // y est rejeté et le brief sort sans constats ni référentiel.
+  expect(body.selection).toEqual([{ checkId: 'performance.lcp', mode: 'fix' }]);
+  for (const item of body.selection ?? []) {
+    expect(item.checkId).toMatch(/^[a-z0-9_]{1,40}(?:\.[a-z0-9_]{1,80})+$/);
+  }
+});
+
 test('le lien d’évitement de l’impression reste masqué hors focus clavier', async ({
   page,
 }) => {

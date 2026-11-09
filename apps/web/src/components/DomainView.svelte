@@ -233,7 +233,8 @@ function selection(): BriefChoice[] {
     const choice = choiceOf(item);
     if (choice === 'none') continue;
     chosen.push({
-      checkId: item.id,
+      // Le serveur attend le checkId (`securite.hsts`), pas l’id `checkId-N` du rapport.
+      checkId: choiceKey(item.id),
       mode: choice === 'fix' ? 'fix' : 'verif',
     });
   }
