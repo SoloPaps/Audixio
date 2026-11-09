@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
 /** Vue du navigateur, sans le DOM de TypeScript. */
@@ -131,3 +133,52 @@ test('cadran : la lettre change de teinte entre clair et sombre', async ({
   const dark = await opaque(page.locator('.score-slot .gauge-grade'));
   expect(dark).not.toBe(light);
 });
+
+/**
+ * Poids de l’accueil (parcours.spec : < 500 Ko) : les six bandes reprennent un
+ * seul tracé (<use>), sans classes de portée répétées, et restent dessinées.
+ */
+for (const theme of THEMES) {
+  test(`accueil : cadran léger, bandes depuis un seul tracé (${theme})`, async ({
+    page,
+  }) => {
+    await page.goto(`/?theme=${theme}`);
+    const gauge = page.locator('.score-slot .gauge');
+    await expect(gauge.locator('defs path')).toHaveCount(1);
+    await expect(gauge.locator('use.gauge-band')).toHaveCount(6);
+    // HTML construit (même source que builtHomeBytes de parcours.spec).
+    const built = readFileSync(path.resolve('dist/index.html'), 'utf8');
+    const from = built.indexOf('<div class="gauge ');
+    const to = built.indexOf('<div class="gauge-status', from);
+    expect(from).toBeGreaterThan(-1);
+    expect(to - from).toBeLessThan(2000);
+    const strokes = await gauge.locator('.gauge-band').evaluateAll((nodes) =>
+      nodes.map((node) => {
+        const rect = (
+          node as unknown as {
+            getBoundingClientRect: () => { width: number; height: number };
+          }
+        ).getBoundingClientRect();
+        return {
+          on: (
+            node as unknown as {
+              classList: { contains: (c: string) => boolean };
+            }
+          ).classList.contains('on'),
+          stroke: (globalThis as unknown as View).getComputedStyle(node).stroke,
+          drawn: rect.width > 0 && rect.height > 0,
+        };
+      }),
+    );
+    expect(strokes.every((band) => band.drawn)).toBe(true);
+    const ink = await gauge
+      .locator('.gauge-grade')
+      .evaluate(
+        (node) => (globalThis as unknown as View).getComputedStyle(node).color,
+      );
+    expect(
+      strokes.filter((band) => band.on).map((band) => band.stroke),
+    ).toEqual([ink]);
+    expect(strokes.find((band) => !band.on)?.stroke).not.toBe(ink);
+  });
+}
