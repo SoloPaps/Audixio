@@ -117,8 +117,8 @@ test('tous en vérif et tous en fix règlent le prompt', async ({ page }) => {
     failRow.getByRole('radio', { name: 'Vérifier, sans écrire' }),
   ).toBeChecked();
   await expect(page.getByText('1 sélectionné')).toBeVisible();
-  await page.getByRole('button', { name: 'Tous en fix' }).click();
-  await expect(zone).toHaveValue(/— Fix/);
+  await page.getByRole('button', { name: 'Tous à corriger' }).click();
+  await expect(zone).toHaveValue(/— Corriger/);
   await expect(zone).toHaveValue(/Proposez un fichier/);
   await expect(
     failRow.getByRole('radio', { name: 'Proposer une correction' }),
