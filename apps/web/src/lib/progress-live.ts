@@ -61,6 +61,78 @@ export function progressEta(status: string, scored: number): string | null {
   return tReport('eta.long');
 }
 
+export interface ProgressDomainInput {
+  domain: string;
+  score: number | null;
+  level: string;
+  locked?: boolean;
+}
+
+export type ProgressChipState = 'done' | 'active' | 'next' | 'wait' | 'off';
+
+export interface AuditProgress {
+  percent: number;
+  finished: boolean;
+  failed: boolean;
+  poll: boolean;
+  domains: { key: string; state: ProgressChipState }[];
+}
+
+/** Pastilles de la page, dans l’ordre de la grille. */
+export const PROGRESS_CHIPS = [
+  ['seo', 'seo'],
+  ['securite', 'sec'],
+  ['ecologie', 'eco'],
+  ['dns_email', 'dns'],
+  ['performance', 'perf'],
+  ['accessibilite', 'a11y'],
+  ['qualite', 'code'],
+  ['vie_privee', 'rgpd'],
+] as const;
+
+function rowLocked(row: ProgressDomainInput | undefined): boolean {
+  return row?.locked === true || row?.level === 'locked';
+}
+
+function rowScored(row: ProgressDomainInput | undefined): boolean {
+  return typeof row?.score === 'number';
+}
+
+/**
+ * Avancement réel : 100 % seulement quand l’audit est terminé.
+ * Un domaine noté est analysé. Un domaine verrouillé ou non mesuré
+ * à la fin est « non testé », jamais laissé en cours.
+ */
+export function auditProgress(input: {
+  status: string;
+  domains: readonly ProgressDomainInput[];
+}): AuditProgress {
+  const byName = new Map(input.domains.map((row) => [row.domain, row]));
+  const finished = input.status === 'done';
+  const failed = input.status === 'failed';
+  const terminal = finished || failed;
+  const domains = PROGRESS_CHIPS.map(([name, key]) => {
+    const row = byName.get(name);
+    let state: ProgressChipState = 'wait';
+    if (rowLocked(row) || (terminal && !rowScored(row))) state = 'off';
+    else if (rowScored(row)) state = 'done';
+    return { key, state };
+  });
+  const measured = PROGRESS_CHIPS.filter(([name]) => {
+    const row = byName.get(name);
+    if (failed) return rowScored(row);
+    return rowScored(row) || rowLocked(row);
+  }).length;
+  const ratio = Math.round((measured / PROGRESS_CHIPS.length) * 100);
+  return {
+    percent: finished ? 100 : Math.min(99, ratio),
+    finished,
+    failed,
+    poll: !terminal,
+    domains,
+  };
+}
+
 /** Phase nommée : file, DNS, pages, vie privée, fin. */
 export function progressPhase(
   status: string,

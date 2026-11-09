@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  auditProgress,
   guestBeatPhase,
   guestDisplayStatus,
   nothingMeasured,
@@ -62,6 +63,41 @@ describe('progressLive', () => {
       'Non testé : le navigateur d’audit n’a pas tourné.',
     );
     expect(runnerGap([{ reason: null }])).toBeNull();
+  });
+});
+
+describe('audit terminé', () => {
+  it('vaut 100 % et aucun domaine encore en cours ou en attente', () => {
+    const view = auditProgress({
+      status: 'done',
+      domains: [
+        { domain: 'seo', score: 40, level: 'problem' },
+        { domain: 'securite', score: null, level: 'locked', locked: true },
+        { domain: 'ecologie', score: null, level: 'untested' },
+        { domain: 'dns_email', score: null, level: 'locked', locked: true },
+        { domain: 'performance', score: null, level: 'untested' },
+        { domain: 'accessibilite', score: 70, level: 'improve' },
+        { domain: 'qualite', score: 80, level: 'good' },
+        { domain: 'vie_privee', score: null, level: 'locked', locked: true },
+      ],
+    });
+    expect(view.percent).toBe(100);
+    expect(view.finished).toBe(true);
+    expect(
+      view.domains.filter(
+        (item) =>
+          item.state === 'active' ||
+          item.state === 'wait' ||
+          item.state === 'next',
+      ),
+    ).toEqual([]);
+    expect(
+      view.domains
+        .filter((item) => item.state === 'done')
+        .map((item) => item.key)
+        .sort(),
+    ).toEqual(['a11y', 'code', 'seo']);
+    expect(view.domains.filter((item) => item.state === 'off')).toHaveLength(5);
   });
 });
 
