@@ -11,9 +11,11 @@ import { currentSession } from '../lib/browser-session.js';
 import { readGuestAudit, saveGuestAudit } from '../lib/guest-store.js';
 import { loginHref } from '../lib/nav.js';
 import {
+  auditProgress,
   guestBeatPhase,
   guestDisplayStatus,
   nothingMeasured,
+  progressEta,
   progressLive,
   progressPhase,
 } from '../lib/progress-live.js';
@@ -60,17 +62,18 @@ onMount(() => {
     revealed: boolean,
     guest: boolean,
     step: number,
-  ): void => {
+  ): boolean => {
     const host = hostOf(payload.audit.site.url);
     for (const node of document.querySelectorAll('.mono')) {
       node.textContent = host;
     }
-    const names = payload.domains
-      .filter((domain) => typeof domain.score === 'number')
-      .map((domain) => domain.domain);
-    const shown = guestDisplayStatus(payload.audit.status, revealed);
+    const preview = guest && !revealed;
+    const shown = preview
+      ? guestDisplayStatus(payload.audit.status, false)
+      : payload.audit.status;
     const unmeasured =
-      (shown === 'done' || shown === 'partial') &&
+      !preview &&
+      (payload.audit.status === 'done' || payload.audit.status === 'partial') &&
       nothingMeasured(payload.domains);
     if (shown === 'failed' || unmeasured) {
       document.documentElement.dataset.auditOutcome = 'echec';
@@ -79,47 +82,77 @@ onMount(() => {
       location.replace(
         `/audit-echoue?id=${encodeURIComponent(payload.audit.id)}`,
       );
-      return;
+      return false;
     }
-    const waiting = shown === 'queued' || shown === 'running';
+    const names = (preview ? [] : payload.domains)
+      .filter((domain) => typeof domain.score === 'number')
+      .map((domain) => domain.domain);
+    const view = auditProgress({
+      status: shown,
+      domains: preview ? [] : payload.domains,
+    });
+    const board = (
+      window as unknown as {
+        audixioProgress?: {
+          set: (value: number) => void;
+          domain: (key: string, state: string) => void;
+        };
+      }
+    ).audixioProgress;
+    if (board) {
+      board.set(view.percent);
+      for (const item of view.domains) board.domain(item.key, item.state);
+    }
     if (status) status.textContent = progressLive(shown, names);
-    if (home) home.hidden = !waiting;
+    if (home) home.hidden = !view.poll;
     const phase = guest
       ? guestBeatPhase(step)
       : progressPhase(shown, names.length, names.includes('vie_privee'));
-    const done = shown === 'done' || shown === 'partial';
-    const failed = shown === 'failed';
-    if (done) {
+    if (view.finished) {
       if (heading) heading.textContent = t('progress.ready.heading');
       if (lead) lead.textContent = t('progress.ready.lead');
       if (task) task.textContent = t('progress.ready');
       if (eta) eta.textContent = '';
+    } else if (view.failed) {
+      if (heading) heading.textContent = t('mq.p.004');
+      if (lead) lead.textContent = t('progress.failed');
+      if (task) task.textContent = t('progress.failed');
+      if (eta) eta.textContent = '';
     } else if (heading) {
       heading.textContent = t('mq.p.004');
-      if (lead && phase) lead.textContent = phase;
-      if (task && phase) task.textContent = phase;
+      const line =
+        phase ??
+        (shown === 'partial' ? t('progress.partial') : t('progress.live'));
+      if (lead) lead.textContent = line;
+      if (task) task.textContent = line;
+      if (eta) eta.textContent = progressEta(shown, names.length) ?? '';
     }
     const href = `/rapport?id=${encodeURIComponent(payload.audit.id)}`;
     const reportBtn = document.getElementById('reportBtn');
     if (reportBtn) reportBtn.setAttribute('href', href);
     const slot = document.getElementById('ready-slot');
-    if (done && slot && reportBtn && reportBtn.parentElement !== slot) {
+    if (
+      view.finished &&
+      slot &&
+      reportBtn &&
+      reportBtn.parentElement !== slot
+    ) {
       slot.hidden = false;
       slot.append(reportBtn);
     }
-    document.body.classList.toggle('done', done);
+    document.body.classList.toggle('done', view.finished);
     const fail = document.getElementById('fail-back');
     const failLink = document.getElementById('fail-link');
     if (fail && failLink) {
-      fail.hidden = !failed;
-      if (failed) {
+      fail.hidden = !view.failed;
+      if (view.failed) {
         failLink.setAttribute(
           'href',
           `/audit-echoue?id=${encodeURIComponent(payload.audit.id)}`,
         );
-        if (lead) lead.textContent = t('progress.failed');
       }
     }
+    return view.poll;
   };
 
   const ensureId = async (): Promise<string | null> => {
@@ -179,20 +212,19 @@ onMount(() => {
     const result = await readAudit(session.access_token, id);
     if (cancelled) return;
     if (!result.ok) {
-      if (status) {
-        status.textContent =
-          result.status === 404 ? t('progress.missing') : result.message;
+      if (result.status === 404 || result.status === 401) {
+        if (status) {
+          status.textContent =
+            result.status === 404 ? t('progress.missing') : result.message;
+        }
+        return;
       }
+      timer = window.setTimeout(() => {
+        void tick();
+      }, POLL_MS);
       return;
     }
-    paint(result.payload, true, false, 0);
-    if (
-      result.payload.audit.status === 'done' ||
-      result.payload.audit.status === 'failed' ||
-      result.payload.audit.status === 'partial'
-    ) {
-      return;
-    }
+    if (!paint(result.payload, true, false, 0) || cancelled) return;
     timer = window.setTimeout(() => {
       void tick();
     }, POLL_MS);

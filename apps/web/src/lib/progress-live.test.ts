@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   auditProgress,
@@ -9,6 +11,10 @@ import {
   progressPhase,
   runnerGap,
 } from './progress-live.js';
+
+function source(name: string): string {
+  return readFileSync(fileURLToPath(new URL(name, import.meta.url)), 'utf8');
+}
 
 describe('nothingMeasured', () => {
   it('refuse une note absente et garde une note 0 mesurée', () => {
@@ -98,6 +104,45 @@ describe('audit terminé', () => {
         .sort(),
     ).toEqual(['a11y', 'code', 'seo']);
     expect(view.domains.filter((item) => item.state === 'off')).toHaveLength(5);
+  });
+});
+
+describe('suivi en direct', () => {
+  it('reflète la mesure et s’arrête à la fin ou à l’échec', () => {
+    const running = auditProgress({ status: 'running', domains: [] });
+    expect(running.poll).toBe(true);
+    expect(running.finished).toBe(false);
+    expect(running.percent).toBe(0);
+    const measured = [
+      { domain: 'seo', score: 40, level: 'problem' },
+      { domain: 'accessibilite', score: 70, level: 'improve' },
+      { domain: 'qualite', score: 80, level: 'good' },
+      { domain: 'performance', score: null, level: 'untested' },
+    ];
+    const partial = auditProgress({ status: 'partial', domains: measured });
+    expect(partial.poll).toBe(true);
+    expect(partial.finished).toBe(false);
+    expect(partial.percent).toBeGreaterThan(running.percent);
+    expect(partial.percent).toBeLessThan(100);
+    expect(partial.domains.find((item) => item.key === 'seo')?.state).toBe(
+      'done',
+    );
+    expect(partial.domains.find((item) => item.key === 'perf')?.state).toBe(
+      'wait',
+    );
+    const done = auditProgress({ status: 'done', domains: measured });
+    expect(done.percent).toBe(100);
+    expect(done.poll).toBe(false);
+    expect(done.domains.find((item) => item.key === 'seo')?.state).toBe('done');
+    expect(done.domains.find((item) => item.key === 'perf')?.state).toBe('off');
+    const failed = auditProgress({ status: 'failed', domains: [] });
+    expect(failed.poll).toBe(false);
+    expect(failed.failed).toBe(true);
+    expect(failed.finished).toBe(false);
+    expect(failed.percent).not.toBe(100);
+    const live = source('../components/ProgressLive.svelte');
+    expect(live).toContain('view.poll');
+    expect(source('./progress-scene.ts')).toContain('setPercent(0)');
   });
 });
 

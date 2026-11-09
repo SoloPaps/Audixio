@@ -61,16 +61,16 @@ export function progressEta(status: string, scored: number): string | null {
   return tReport('eta.long');
 }
 
-export interface ProgressDomainInput {
+interface ProgressDomainInput {
   domain: string;
   score: number | null;
   level: string;
   locked?: boolean;
 }
 
-export type ProgressChipState = 'done' | 'active' | 'next' | 'wait' | 'off';
+type ProgressChipState = 'done' | 'active' | 'next' | 'wait' | 'off';
 
-export interface AuditProgress {
+interface AuditProgress {
   percent: number;
   finished: boolean;
   failed: boolean;
@@ -79,7 +79,7 @@ export interface AuditProgress {
 }
 
 /** Pastilles de la page, dans l’ordre de la grille. */
-export const PROGRESS_CHIPS = [
+const PROGRESS_CHIPS = [
   ['seo', 'seo'],
   ['securite', 'sec'],
   ['ecologie', 'eco'],
