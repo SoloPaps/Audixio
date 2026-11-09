@@ -3,6 +3,7 @@ import { onMount, tick } from 'svelte';
 import { type MessageKey, t } from '../i18n/index.js';
 import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
+import { BRIEF_TAGS, briefPreviewHtml } from '../lib/brief-preview.js';
 import { briefScreen } from '../lib/brief-screen.js';
 import { briefCount } from '../lib/brief-stats.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
@@ -124,14 +125,7 @@ function domainDots(id: string): { fix: number; check: number; skip: number } {
   return briefCount(domain?.issues ?? [], modeOf);
 }
 
-function esc(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;');
-}
-
-const previewHtml = $derived.by(() => {
+const previewText = $derived.by(() => {
   const chosen = domains.flatMap((domain) =>
     domain.issues.flatMap((issue) => {
       const mode = modeOf(issue);
@@ -146,13 +140,13 @@ const previewHtml = $derived.by(() => {
       ];
     }),
   );
-  return briefScreen({ url, items: chosen, verified })
-    .split('\n')
-    .map((line) => `<div class="l">${esc(line)}</div>`)
-    .join('');
+  return briefScreen({ url, items: chosen, verified });
 });
 
-const tokenCount = $derived(Math.max(1, Math.round(previewHtml.length / 3.8)));
+// Aperçu structuré et coloré ; le texte copié ou exporté reste previewText.
+const previewHtml = $derived(briefPreviewHtml(previewText, BRIEF_TAGS));
+
+const tokenCount = $derived(Math.max(1, Math.round(previewText.length / 3.8)));
 
 function selection(): BriefChoice[] {
   const chosen: BriefChoice[] = [];
