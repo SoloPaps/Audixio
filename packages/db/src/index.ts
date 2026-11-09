@@ -81,6 +81,7 @@ export {
   FREE_LINK_CAP,
   FREE_SITE_CAP,
   FREE_SSL_WARN_DAYS,
+  GRADE_THRESHOLDS,
   GRADES,
   type Grade,
   gradeForScore,
