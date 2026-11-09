@@ -29,9 +29,8 @@ const FR_MARK =
 const ALLOW = [
   /FR — Français/,
   /Français/,
-  /Défenseur des droits/,
-  /Libre réponse/,
-  /Observatoire Numérique/,
+  /Defender of Rights \(Défenseur des droits\)/,
+  /Freepost \(Libre réponse 71120\)/,
   /exemple\.fr/,
   /audixio\.fr/,
   /I don’t know/,

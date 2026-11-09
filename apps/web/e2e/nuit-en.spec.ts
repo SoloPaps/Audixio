@@ -33,15 +33,53 @@ test('/compte/alertes EN : titre entièrement anglais', async ({ page }) => {
   await expect(page.locator('h1')).toHaveText('Settings for alerts');
 });
 
-test('/accessibilite EN : plus de « Le Défenseur des droits » en français', async ({
+test('/accessibilite EN : Défenseur des droits et Libre réponse sont traduits', async ({
   page,
 }) => {
   await page.goto('/accessibilite?theme=light');
   await toEnglish(page);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await expect(page.locator('main')).toContainText('The Défenseur des droits');
+  await expect(page.locator('main')).toContainText(
+    'Defender of Rights (Défenseur des droits)',
+  );
+  await expect(page.locator('main')).toContainText(
+    'Freepost (Libre réponse 71120)',
+  );
+  await expect(page.locator('address')).toContainText('75342 Paris CEDEX 07');
   await expect(page.locator('main')).not.toContainText(
     'Le Défenseur des droits',
+  );
+  await expect(page.locator('main')).not.toContainText(
+    'French Rights Defender',
+  );
+  await expect(page.locator('main')).not.toContainText(
+    'The Défenseur des droits',
+  );
+});
+
+test('/mentions-legales EN : Observatoire Numérique est traduit', async ({
+  page,
+}) => {
+  await page.goto('/mentions-legales?theme=light');
+  await toEnglish(page);
+  await expect(page.locator('main')).toContainText(
+    'Audixio Digital Observatory',
+  );
+  await expect(page.locator('main')).not.toContainText(
+    'Audixio Observatoire Numérique',
+  );
+});
+
+test('/confidentialite EN : Observatoire Numérique est traduit', async ({
+  page,
+}) => {
+  await page.goto('/confidentialite?theme=light');
+  await toEnglish(page);
+  await expect(page.locator('main')).toContainText(
+    'Audixio Digital Observatory',
+  );
+  await expect(page.locator('main')).not.toContainText(
+    'Audixio Observatoire Numérique',
   );
 });
 
