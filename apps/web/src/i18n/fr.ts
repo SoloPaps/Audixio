@@ -473,6 +473,8 @@ const frCore = {
   'progress.notify.ok': 'Notification activée. Vous pouvez fermer cette page.',
   'progress.notify.close': 'Fermer',
   'progress.notify.done': 'Notification activée',
+  'progress.notify.sent': 'C’est noté !',
+  'progress.notify.placeholder': 'vous@exemple.fr',
   'progress.retry': 'Relancer l’audit',
   'progress.missing': 'Cet audit est introuvable.',
   'progress.empty.title': 'Aucun audit en cours',

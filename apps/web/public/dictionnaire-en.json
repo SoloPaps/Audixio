@@ -2770,6 +2770,8 @@
   "progress.notify.body": "The diagnosis finishes in a few moments. You will receive a short summary and the access link.",
   "progress.notify.close": "Close",
   "progress.notify.done": "Notification on",
+  "progress.notify.sent": "Got it!",
+  "progress.notify.placeholder": "you@example.com",
   "progress.notify.email": "Your email address",
   "progress.notify.invalid": "Please enter a valid email address.",
   "progress.notify.ok": "Notification on. You can close this page.",

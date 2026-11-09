@@ -208,3 +208,36 @@ for (const lang of ['fr', 'en'] as const) {
     );
   });
 }
+
+for (const lang of ['fr', 'en'] as const) {
+  test(`/progression : la fenêtre e-mail suit la langue jusqu’à la confirmation (${lang})`, async ({
+    page,
+  }) => {
+    if (lang === 'en') {
+      await page.goto('/bienvenue?theme=light');
+      await toEnglish(page);
+    }
+    await page.goto('/progression?maquette=1&theme=light');
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+    const copy =
+      lang === 'en'
+        ? {
+            placeholder: 'you@example.com',
+            sent: 'Got it!',
+            done: 'Notification on',
+          }
+        : {
+            placeholder: 'vous@exemple.fr',
+            sent: 'C’est noté !',
+            done: 'Notification activée',
+          };
+    await page.locator('#notifyBtn').click();
+    const mail = page.locator('#notify #email');
+    await expect(mail).toBeVisible();
+    await expect(mail).toHaveAttribute('placeholder', copy.placeholder);
+    await mail.fill('qa@example.com');
+    await page.locator('#notifyForm button[type="submit"]').click();
+    await expect(page.locator('#dlgT')).toHaveText(copy.sent);
+    await expect(page.locator('#notifyBtn')).toHaveText(copy.done);
+  });
+}
