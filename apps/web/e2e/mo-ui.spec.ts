@@ -240,7 +240,10 @@ test('B-5 : /rapport sombre à 330 px, la note 86/100 se lit sur le disque centr
   };
   expect(colors.stops.length).toBeGreaterThan(0);
   for (const stop of colors.stops) {
-    const [hi, lo] = [lum(colors.fill), lum(stop)].sort((a, b) => b - a);
+    const a = lum(colors.fill);
+    const b = lum(stop);
+    const hi = Math.max(a, b);
+    const lo = Math.min(a, b);
     expect((hi + 0.05) / (lo + 0.05), stop).toBeGreaterThanOrEqual(4.5);
   }
 });
