@@ -1,4 +1,5 @@
 import {
+  renderAuditEndMail,
   renderRecapMail,
   renderSignupMail,
 } from '@audigy/orchestrator/mail-templates';
@@ -63,5 +64,39 @@ export function recapPreview(mode: 'change' | 'steady'): string {
     legalUrl: LEGAL,
     unsubscribeUrl: PREFS,
     logoUrl: LOGO,
+  }).html;
+}
+
+const END_PRIORITIES_FR = [
+  'Ajouter un texte alternatif aux images du bandeau.',
+  'Activer HSTS sur le domaine.',
+  'Publier un fichier robots.txt explicite.',
+];
+const END_PRIORITIES_EN = [
+  'Add alt text to the banner images.',
+  'Enable HSTS on the domain.',
+  'Publish an explicit robots.txt file.',
+];
+
+export function auditEndPreview(
+  outcome: 'ready' | 'failed',
+  locale: 'fr' | 'en',
+  reason: 'denied' | 'down' | 'stale' | 'generic' = 'denied',
+): string {
+  const report =
+    'https://audixio.fr/rapport?id=11111111-1111-4111-8111-111111111111';
+  const retry =
+    'https://audixio.fr/progression?site=22222222-2222-4222-8222-222222222222&url=https%3A%2F%2Fexemple.fr';
+  return renderAuditEndMail({
+    outcome,
+    domain: 'exemple.fr',
+    score: 65,
+    grade: 'C',
+    priorities: locale === 'en' ? END_PRIORITIES_EN : END_PRIORITIES_FR,
+    reason,
+    actionUrl: outcome === 'failed' ? retry : report,
+    prefsUrl: 'https://audixio.fr/compte',
+    legalUrl: 'https://audixio.fr/mentions-legales',
+    locale,
   }).html;
 }

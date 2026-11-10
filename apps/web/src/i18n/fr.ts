@@ -2008,6 +2008,11 @@ const frCore = {
     'Accessibilité conforme (Atkinson Hyperlegible, contrastes élevés).',
   'account.title': 'Votre compte',
   'account.lead': 'Gérez l’export de vos données et la suppression du compte.',
+  'account.notify.label': 'M’avertir par e-mail à la fin d’un audit',
+  'account.notify.hint':
+    'Un message à l’adresse de votre compte, uniquement pour un audit lancé à la main.',
+  'account.notify.saved': 'Le réglage est enregistré.',
+  'progress.endEmail': 'Vous recevrez un e-mail à la fin.',
   'domain.cause.coverage':
     'Moins de la moitié des tests ont abouti. Ce domaine n’a pas de note.',
   'domain.cause.closing': 'Ce n’est pas une note du site.',

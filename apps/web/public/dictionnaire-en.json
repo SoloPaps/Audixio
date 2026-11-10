@@ -5426,5 +5426,9 @@
   "fix.vie_privee.traceurs.github_pages.4": "Publish the repository, then run the audit again.",
   "fix.vie_privee.traceurs.generic.1": "Find the scripts that contact another site as soon as the page opens.",
   "fix.vie_privee.traceurs.generic.2": "Move them after the consent button.",
-  "fix.vie_privee.traceurs.generic.3": "Run the audit again."
+  "fix.vie_privee.traceurs.generic.3": "Run the audit again.",
+  "account.notify.label": "Email me when an audit ends",
+  "account.notify.hint": "A message to your account address, only for an audit you start yourself.",
+  "account.notify.saved": "The setting has been saved.",
+  "progress.endEmail": "You will receive an email when it finishes."
 }

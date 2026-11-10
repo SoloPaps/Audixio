@@ -216,3 +216,100 @@ export function supabaseSignupTemplate(siteUrl: string): {
   });
   return { html: mail.html, text: mail.text };
 }
+
+function endFooter(prefsUrl: string, legalUrl: string): string {
+  const link = (label: string, href: string) =>
+    `<a href="${escapeHtml(href)}" style="color:#3D52A0;">${escapeHtml(label)}</a>`;
+  return `${escapeHtml(t('mail.end.why'))}<br>${escapeHtml(t('mail.digest.question'))} ${link(t('mail.digest.contact'), `mailto:${t('mail.digest.contact')}`)}<br>${link(t('mail.end.prefs'), prefsUrl)} · ${link(t('mail.digest.legal'), legalUrl)}<br>${escapeHtml(t('mail.digest.copy'))}`;
+}
+
+export type AuditEndReason = 'denied' | 'down' | 'stale' | 'generic';
+
+export interface AuditEndMailInput {
+  outcome: 'ready' | 'failed';
+  domain: string;
+  score?: number | null;
+  grade?: string | null;
+  priorities?: readonly string[];
+  reason?: AuditEndReason;
+  actionUrl: string;
+  prefsUrl: string;
+  legalUrl: string;
+  locale?: 'fr' | 'en';
+}
+
+export function renderAuditEndMail(input: AuditEndMailInput): MailDocument {
+  return withMailLocale(mailLocaleOf(input.locale), () =>
+    renderAuditEndMailBody(input),
+  );
+}
+
+function renderAuditEndMailBody(input: AuditEndMailInput): MailDocument {
+  const domain = input.domain;
+  if (input.outcome === 'ready') {
+    const score = input.score ?? 0;
+    const grade = input.grade ?? mailGrade(score) ?? '–';
+    const subject = t('mail.end.ready.subject', {
+      domaine: domain,
+      lettre: grade,
+      score,
+    });
+    const lead = t('mail.end.ready.lead', {
+      domaine: domain,
+      lettre: grade,
+      score,
+    });
+    const priorities = [...(input.priorities ?? [])].slice(0, 3);
+    const list =
+      priorities.length === 0
+        ? `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3B4675;">${escapeHtml(t('mail.end.ready.none'))}</p>`
+        : `<p style="margin:16px 0 8px;font-size:15px;line-height:1.6;color:#3B4675;">${escapeHtml(t('mail.end.ready.priorities'))}</p><ol style="margin:0 0 16px;padding-left:20px;color:#3B4675;font-size:15px;line-height:1.6;">${priorities.map((line) => `<li style="margin:0 0 8px;">${escapeHtml(line)}</li>`).join('')}</ol>`;
+    const body = `<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;color:#1E2A55;font-family:${FONT};">${escapeHtml(t('mail.end.ready.title'))}</h1><p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3B4675;">${escapeHtml(lead)}</p>${list}${button(t('mail.end.ready.action'), input.actionUrl)}`;
+    const html = shell({
+      title: subject,
+      logoUrl: '',
+      body,
+      footer: endFooter(input.prefsUrl, input.legalUrl),
+    });
+    const lines = [subject, lead];
+    if (priorities.length === 0) lines.push(t('mail.end.ready.none'));
+    else {
+      lines.push(t('mail.end.ready.priorities'));
+      lines.push(...priorities);
+    }
+    lines.push(
+      `${t('mail.end.ready.action')}\n${input.actionUrl}`,
+      t('mail.end.why'),
+      `${t('mail.end.prefs')}\n${input.prefsUrl}`,
+    );
+    return { subject, text: lines.join('\n\n'), html };
+  }
+
+  const reasonKey =
+    input.reason === 'denied'
+      ? 'mail.end.reason.denied'
+      : input.reason === 'down'
+        ? 'mail.end.reason.down'
+        : input.reason === 'stale'
+          ? 'mail.end.reason.stale'
+          : 'mail.end.reason.generic';
+  const subject = t('mail.end.failed.subject', { domaine: domain });
+  const lead = t('mail.end.failed.lead', { domaine: domain });
+  const reason = t(reasonKey);
+  const body = `<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;color:#1E2A55;font-family:${FONT};">${escapeHtml(t('mail.end.failed.title'))}</h1><p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3B4675;">${escapeHtml(lead)}</p><p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#3B4675;">${escapeHtml(reason)}</p>${button(t('mail.end.failed.action'), input.actionUrl)}`;
+  const html = shell({
+    title: subject,
+    logoUrl: '',
+    body,
+    footer: endFooter(input.prefsUrl, input.legalUrl),
+  });
+  const lines = [
+    subject,
+    lead,
+    reason,
+    `${t('mail.end.failed.action')}\n${input.actionUrl}`,
+    t('mail.end.why'),
+    `${t('mail.end.prefs')}\n${input.prefsUrl}`,
+  ];
+  return { subject, text: lines.join('\n\n'), html };
+}
