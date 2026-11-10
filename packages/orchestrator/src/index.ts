@@ -70,10 +70,13 @@ export {
 } from './account.js';
 export { accountDepsFromEnv } from './account-db.js';
 export {
+  AUDIT_END_EMAIL_LOOKBACK_MS,
   auditEndEmailEnabled,
   privateReportUrl,
   relaunchAuditUrl,
   sendAuditEndEmail,
+  sweepAuditEndEmails,
+  withinAuditEndLookback,
 } from './audit-end-mail.js';
 export {
   BRIEF_EXPORT_FILENAME,

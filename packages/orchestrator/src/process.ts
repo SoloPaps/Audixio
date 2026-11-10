@@ -80,6 +80,11 @@ export interface ProcessDeps {
   planSync?(auditId: string): Promise<void>;
   /** E-mail de fin d’audit manuel. Une erreur ne rate pas l’audit. */
   notifyEndEmail?(auditId: string): Promise<void>;
+  /**
+   * Balayage des audits manuels terminés récemment (fail_stale ou tout
+   * chemin hors writeResults). Une erreur ne rate pas l’audit en cours.
+   */
+  sweepEndEmails?(): Promise<void>;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
   runnerWaitMs?: number;
@@ -143,6 +148,14 @@ export async function processNextAudit(
 
   const stale = await deps.store.failStale(STALE_AFTER_MINUTES);
   if (stale > 0) log.warn('audits_stale', { count: stale });
+
+  if (deps.sweepEndEmails) {
+    try {
+      await deps.sweepEndEmails();
+    } catch (error) {
+      log.error('audit_end_email_sweep', { code: errorCode(error) });
+    }
+  }
 
   const audit = await deps.store.claimNext();
   if (!audit) return null;

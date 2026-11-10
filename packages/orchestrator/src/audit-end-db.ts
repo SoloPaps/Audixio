@@ -2,8 +2,14 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { Database, Json } from '@audigy/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { AuditEndRecord, AuditEndStore } from './audit-end-mail.js';
+import {
+  type AuditEndRecord,
+  type AuditEndStore,
+  sendAuditEndEmail,
+  sweepAuditEndEmails,
+} from './audit-end-mail.js';
 import { mailLocaleOf } from './copy.js';
+import type { Logger } from './log.js';
 
 type Service = SupabaseClient<Database>;
 
@@ -122,6 +128,20 @@ export function supabaseAuditEndStore(
       });
       if (error) throw new Error('audit_end_release');
     },
+    async listRecentPending(now, lookbackMs) {
+      const since = new Date(now.getTime() - lookbackMs).toISOString();
+      const until = now.toISOString();
+      const { data, error } = await service
+        .from('audits')
+        .select('id')
+        .eq('trigger', 'manual')
+        .in('status', ['done', 'failed'])
+        .is('end_email_sent_at', null)
+        .gte('finished_at', since)
+        .lte('finished_at', until);
+      if (error) throw new Error('audit_end_list_pending');
+      return (data ?? []).map((row) => row.id);
+    },
   };
 }
 
@@ -150,4 +170,20 @@ export function loadFindingCatalog(
     catalogCache.set(locale, {});
     return {};
   }
+}
+
+export function auditEndEmailFns(
+  service: Service,
+  env: NodeJS.ProcessEnv,
+  logger: Logger,
+) {
+  const store = supabaseAuditEndStore(service, loadFindingCatalog);
+  return {
+    notify(auditId: string) {
+      return sendAuditEndEmail({ auditId, env, logger, store });
+    },
+    sweep() {
+      return sweepAuditEndEmails({ env, logger, store });
+    },
+  };
 }

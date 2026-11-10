@@ -34,6 +34,24 @@ export interface AuditEndStore {
   load(auditId: string): Promise<AuditEndRecord | null>;
   claim(auditId: string): Promise<boolean>;
   release(auditId: string): Promise<void>;
+  /** Audits manuels terminés récemment, sans e-mail encore réservé. */
+  listRecentPending?(now: Date, lookbackMs: number): Promise<string[]>;
+}
+
+/** Fenêtre du balayage : n'écrit jamais aux audits plus anciens. */
+export const AUDIT_END_EMAIL_LOOKBACK_MS = 24 * 60 * 60 * 1000;
+
+export function withinAuditEndLookback(
+  finishedAt: string | Date | null,
+  now: Date,
+  lookbackMs: number = AUDIT_END_EMAIL_LOOKBACK_MS,
+): boolean {
+  if (!finishedAt) return false;
+  const at =
+    finishedAt instanceof Date ? finishedAt.getTime() : Date.parse(finishedAt);
+  if (!Number.isFinite(at)) return false;
+  const instant = now.getTime();
+  return at <= instant && instant - at <= lookbackMs;
 }
 
 export function auditEndEmailEnabled(
@@ -201,4 +219,36 @@ export async function sendAuditEndEmail(input: {
     });
     return 'failed';
   }
+}
+
+export async function sweepAuditEndEmails(input: {
+  env: Record<string, string | undefined>;
+  logger: Logger;
+  store: AuditEndStore;
+  mailer?: TransactionalMailer;
+  now?: Date;
+  lookbackMs?: number;
+}): Promise<{ considered: number }> {
+  const list = input.store.listRecentPending;
+  if (!list) return { considered: 0 };
+  const now = input.now ?? new Date();
+  const lookback = input.lookbackMs ?? AUDIT_END_EMAIL_LOOKBACK_MS;
+  const ids = await list.call(input.store, now, lookback);
+  for (const auditId of ids) {
+    try {
+      await sendAuditEndEmail({
+        auditId,
+        env: input.env,
+        logger: input.logger,
+        store: input.store,
+        ...(input.mailer ? { mailer: input.mailer } : {}),
+      });
+    } catch (error) {
+      input.logger.error('audit_end_email_sweep', {
+        auditId,
+        code: error instanceof Error ? error.message : 'error',
+      });
+    }
+  }
+  return { considered: ids.length };
 }
