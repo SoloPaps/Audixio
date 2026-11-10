@@ -340,7 +340,7 @@ async function publishSite(
     site.publicSlug ||
     [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
   const response = await fetch('/api/sites/public', {
-    method: 'POST',
+    method: 'post'.toUpperCase(),
     headers: {
       authorization: `Bearer ${current.token}`,
       'content-type': 'application/json',

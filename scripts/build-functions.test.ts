@@ -66,6 +66,7 @@ describe('fonctions Netlify', () => {
       'api-partage',
       'api-places',
       'api-robot',
+      'api-sites-public',
       'api-unsubscribe',
       'api-verifications-check',
       'api-verifications-create',
