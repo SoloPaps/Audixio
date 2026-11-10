@@ -75,5 +75,28 @@ export const mailCopyEn: Record<keyof typeof mailCopy, string> = {
   'mail.unsub.prompt': 'Confirm to stop these messages.',
   'mail.unsub.button': 'Unsubscribe',
   'mail.unsub.done': 'Done. You will no longer receive alerts or the recap.',
+
+  'mail.end.ready.subject':
+    'Your audit of {domaine} is ready: {lettre} ({score}/100)',
+  'mail.end.ready.title': 'Your audit is ready',
+  'mail.end.ready.lead':
+    'The overall grade for {domaine} is {lettre} ({score}/100), the same as in the report.',
+  'mail.end.ready.priorities': 'The top 3 priorities:',
+  'mail.end.ready.none': 'There is no priority to handle right now.',
+  'mail.end.ready.action': 'View the report',
+  'mail.end.failed.subject': 'Your audit of {domaine} could not be completed',
+  'mail.end.failed.title': 'The audit could not be completed',
+  'mail.end.failed.lead': 'The audit of {domaine} could not be finished.',
+  'mail.end.failed.action': 'Rerun the audit',
+  'mail.end.reason.denied':
+    'The site refused the reading (WAF or HTTP 403). Nothing was forced.',
+  'mail.end.reason.down':
+    'The site was unreachable at the time of the measurement.',
+  'mail.end.reason.stale': 'The audit ran too long and could not be completed.',
+  'mail.end.reason.generic':
+    'The audit could not be completed. Rerun it or allow the Audixio crawler.',
+  'mail.end.why':
+    'You are receiving this email because “Email me when an audit ends” is on in your account.',
+  'mail.end.prefs': 'Manage this setting',
   'mail.unsub.invalid': 'This link is not valid.',
 };

@@ -4595,5 +4595,9 @@
   "rgesn.screen.lead": "Répondez seulement à ce que vous savez. Une question vide n’est pas un échec.",
   "rgesn.screen.submit": "Enregistrer les réponses",
   "rgesn.screen.progress": "{answered} réponses sur {total}. Une question sans réponse n’est pas un échec.",
-  "rgesn.screen.empty": "Aucune réponse enregistrée. Ce n’est pas un échec."
+  "rgesn.screen.empty": "Aucune réponse enregistrée. Ce n’est pas un échec.",
+  "account.notify.label": "M’avertir par e-mail à la fin d’un audit",
+  "account.notify.hint": "Un message à l’adresse de votre compte, uniquement pour un audit lancé à la main.",
+  "account.notify.saved": "Le réglage est enregistré.",
+  "progress.endEmail": "Vous recevrez un e-mail à la fin."
 }

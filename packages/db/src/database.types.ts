@@ -261,6 +261,7 @@ export type Database = {
           coverage: number | null;
           created_at: string;
           engine_version: string;
+          end_email_sent_at: string | null;
           error: string | null;
           finished_at: string | null;
           global_score: number | null;
@@ -278,6 +279,7 @@ export type Database = {
           coverage?: number | null;
           created_at?: string;
           engine_version: string;
+          end_email_sent_at?: string | null;
           error?: string | null;
           finished_at?: string | null;
           global_score?: number | null;
@@ -293,6 +295,7 @@ export type Database = {
           coverage?: number | null;
           created_at?: string;
           engine_version?: string;
+          end_email_sent_at?: string | null;
           error?: string | null;
           finished_at?: string | null;
           global_score?: number | null;
@@ -509,6 +512,7 @@ export type Database = {
           email_opt_out: boolean;
           id: string;
           locale: string;
+          notify_audit_end: boolean;
           onboarding_vu: boolean;
           plan: string;
           weekly_digest: boolean;
@@ -520,6 +524,7 @@ export type Database = {
           email_opt_out?: boolean;
           id: string;
           locale?: string;
+          notify_audit_end?: boolean;
           onboarding_vu?: boolean;
           plan?: string;
           weekly_digest?: boolean;
@@ -530,6 +535,7 @@ export type Database = {
           email_opt_out?: boolean;
           id?: string;
           locale?: string;
+          notify_audit_end?: boolean;
           onboarding_vu?: boolean;
           plan?: string;
           weekly_digest?: boolean;
@@ -889,6 +895,7 @@ export type Database = {
           coverage: number | null;
           created_at: string;
           engine_version: string;
+          end_email_sent_at: string | null;
           error: string | null;
           finished_at: string | null;
           global_score: number | null;
@@ -907,6 +914,11 @@ export type Database = {
           isOneToOne: false;
           isSetofReturn: true;
         };
+      };
+      claim_audit_end_email: { Args: { p_audit_id: string }; Returns: boolean };
+      release_audit_end_email: {
+        Args: { p_audit_id: string };
+        Returns: undefined;
       };
       fail_stale_audits: { Args: { p_older_than: string }; Returns: number };
       list_my_oauth_connections: {

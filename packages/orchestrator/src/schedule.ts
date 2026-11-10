@@ -187,6 +187,8 @@ export interface ScheduleDeps {
   signingKey: string;
   logger: Logger;
   trigger(): Promise<void>;
+  /** Balayage des e-mails de fin d’audit manuels récemment terminés. */
+  sweepEndEmails?(): Promise<void>;
 }
 
 export interface DigestDeps {
@@ -901,6 +903,13 @@ export async function runScheduleTick(deps: ScheduleDeps): Promise<TickResult> {
   const started = Date.now();
   const budget = deps.budgetMs ?? TICK_BUDGET_MS;
   const expired = () => Date.now() - started >= budget;
+  if (deps.sweepEndEmails) {
+    try {
+      await deps.sweepEndEmails();
+    } catch (error) {
+      deps.logger.error('audit_end_email_sweep', { code: errorCode(error) });
+    }
+  }
   const roster = await deps.store.roster(now);
   let enqueued = 0;
   let wake = false;

@@ -82,6 +82,30 @@ export const mailCopy = {
   'mail.unsub.button': 'Me désabonner',
   'mail.unsub.done':
     'C’est fait. Vous ne recevrez plus les alertes ni le résumé.',
+
+  'mail.end.ready.subject':
+    'Votre audit de {domaine} est prêt : {lettre} ({score}/100)',
+  'mail.end.ready.title': 'Votre audit est prêt',
+  'mail.end.ready.lead':
+    'La note globale de {domaine} est {lettre} ({score}/100), la même que dans le rapport.',
+  'mail.end.ready.priorities': 'Les 3 priorités principales :',
+  'mail.end.ready.none': 'Aucune priorité à traiter pour le moment.',
+  'mail.end.ready.action': 'Voir le rapport',
+  'mail.end.failed.subject':
+    'Votre audit de {domaine} n’a pas pu aller au bout',
+  'mail.end.failed.title': 'L’audit n’a pas pu aller au bout',
+  'mail.end.failed.lead': 'L’audit de {domaine} n’a pas pu être terminé.',
+  'mail.end.failed.action': 'Relancer l’audit',
+  'mail.end.reason.denied':
+    'Le site a refusé la lecture (WAF ou HTTP 403). Rien n’a été forcé.',
+  'mail.end.reason.down': 'Le site était injoignable au moment de la mesure.',
+  'mail.end.reason.stale':
+    'L’audit a duré trop longtemps et n’a pas pu être terminé.',
+  'mail.end.reason.generic':
+    'L’audit n’a pas pu aboutir. Relancez-le ou vérifiez l’accès du robot Audixio.',
+  'mail.end.why':
+    'Vous recevez cet e-mail car l’option « M’avertir par e-mail à la fin d’un audit » est activée sur votre compte.',
+  'mail.end.prefs': 'Gérer ce réglage',
   'mail.unsub.invalid': 'Ce lien n’est pas valable.',
 } as const;
 

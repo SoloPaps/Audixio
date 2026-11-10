@@ -2,7 +2,11 @@
 import { TERMS_VERSION } from '@audigy/db';
 import { onMount } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
-import { currentSession, signOut } from '../lib/browser-session.js';
+import {
+  browserClient,
+  currentSession,
+  signOut,
+} from '../lib/browser-session.js';
 import { loginHref } from '../lib/nav.js';
 import { authConfigured } from '../lib/public-config.js';
 
@@ -19,6 +23,7 @@ let pending = $state(false);
 let status = $state('');
 let error = $state('');
 let token = $state('');
+let notifyEnd = $state(true);
 
 onMount(async () => {
   configured = authConfigured();
@@ -30,6 +35,7 @@ onMount(async () => {
   email = session.user.email ?? '';
   loggedIn = true;
   await loadTerms();
+  await loadNotify();
 });
 
 function failure(code: string | undefined): string {
@@ -93,6 +99,45 @@ async function onAccept(event: SubmitEvent): Promise<void> {
   accepted = true;
   status = t('account.terms.done');
   await loadTerms();
+}
+
+async function loadNotify(): Promise<void> {
+  const supabase = browserClient();
+  const session = await currentSession();
+  if (!supabase || !session) return;
+  const { data, error: readError } = await supabase
+    .from('profiles')
+    .select('notify_audit_end')
+    .eq('id', session.user.id)
+    .maybeSingle();
+  if (readError) {
+    error = t('account.error');
+    return;
+  }
+  notifyEnd = data?.notify_audit_end !== false;
+}
+
+async function onNotifyChange(event: Event): Promise<void> {
+  const box = event.currentTarget as HTMLInputElement;
+  const next = box.checked;
+  error = '';
+  status = '';
+  const supabase = browserClient();
+  const session = await currentSession();
+  if (!supabase || !session) return;
+  pending = true;
+  const { error: writeError } = await supabase
+    .from('profiles')
+    .update({ notify_audit_end: next })
+    .eq('id', session.user.id);
+  pending = false;
+  if (writeError) {
+    box.checked = notifyEnd;
+    error = t('account.error');
+    return;
+  }
+  notifyEnd = next;
+  status = t('account.notify.saved');
 }
 
 async function onExport(): Promise<void> {
@@ -163,6 +208,23 @@ async function onDelete(): Promise<void> {
         {t('login.signout')}
       </button>
       <p><a class="link-action" href="/bienvenue">{t('account.checklist')}</a></p>
+    </div>
+  </section>
+  <section class="glass glass-module">
+    <div class="glass-plate">
+      <div class="field">
+        <label>
+          <input
+            type="checkbox"
+            name="notify-audit-end"
+            checked={notifyEnd}
+            disabled={pending}
+            onchange={onNotifyChange}
+          />
+          {t('account.notify.label')}
+        </label>
+      </div>
+      <p>{t('account.notify.hint')}</p>
     </div>
   </section>
   <section class="glass glass-module">

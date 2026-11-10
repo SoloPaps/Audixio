@@ -205,7 +205,7 @@ async function loadExport(
   const { data: profile, error: profileError } = await service
     .from('profiles')
     .select(
-      'id, display_name, locale, weekly_digest, email_opt_out, created_at',
+      'id, display_name, locale, weekly_digest, email_opt_out, notify_audit_end, created_at',
     )
     .eq('id', userId)
     .maybeSingle();
@@ -424,6 +424,7 @@ function mapProfile(
     | 'locale'
     | 'weekly_digest'
     | 'email_opt_out'
+    | 'notify_audit_end'
     | 'created_at'
   >,
   email: string | null,
@@ -435,6 +436,7 @@ function mapProfile(
     courriel: email,
     resumeHebdo: profile.weekly_digest,
     courrielCoupe: profile.email_opt_out,
+    avertirFinAudit: profile.notify_audit_end,
     creeLe: profile.created_at,
   };
 }

@@ -7,6 +7,7 @@ import {
 import { ENGINE_VERSION, METHOD_VERSION } from '@audigy/engine';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { auditEndEmailFns } from './audit-end-db.js';
 import { mailLocaleOf } from './copy.js';
 import type { Logger } from './log.js';
 import {
@@ -710,6 +711,7 @@ export function scheduleDepsFromEnv(options: FromEnv): ScheduleDeps {
   const origin = publicOrigin(options.env);
   const wake = selfOrigin(options.env, options.requestUrl);
   const uptime = createUptimeProbe(origin ?? undefined);
+  const endMail = auditEndEmailFns(service, options.env, options.logger);
   return {
     now: () => new Date(),
     store: supabaseScheduleStore(service),
@@ -718,6 +720,9 @@ export function scheduleDepsFromEnv(options: FromEnv): ScheduleDeps {
     appBaseUrl: origin,
     signingKey: db.serviceRoleKey,
     logger: options.logger,
+    sweepEndEmails: async () => {
+      await endMail.sweep();
+    },
     trigger: wake
       ? createTrigger({
           origin: wake,

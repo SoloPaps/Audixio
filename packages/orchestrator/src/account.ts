@@ -21,6 +21,7 @@ export interface AccountExport {
     courriel: string | null;
     resumeHebdo: boolean;
     courrielCoupe: boolean;
+    avertirFinAudit: boolean;
     creeLe: string;
   } | null;
   acceptations: { version: string; accepteeLe: string }[];

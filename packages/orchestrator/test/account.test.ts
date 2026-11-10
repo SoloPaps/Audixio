@@ -29,6 +29,7 @@ function emptyExport(url = 'https://a.exemple'): AccountExport {
       courriel: 'ada@exemple.fr',
       resumeHebdo: false,
       courrielCoupe: false,
+      avertirFinAudit: true,
       creeLe: '2026-10-01T00:00:00.000Z',
     },
     acceptations: [],
