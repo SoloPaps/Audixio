@@ -878,6 +878,16 @@ html[data-vue="pdf"] .lk-d {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
+
+  /* B4 : en thème sombre, la feuille reste foncée à l’impression ;
+     le chiffre (#1e2a55) se confondait avec le fond. Couleur seule. */
+  html[data-theme="dark"][data-vue="pdf"] .pnum,
+  html[data-theme="dark"][data-vue="pdf"] .bigg p.pnum {
+    color: #f0f2f5 !important;
+  }
+  html[data-theme="dark"][data-vue="pdf"] .pnum small {
+    color: #d5d9e8 !important;
+  }
 }
 
 /* #96 : à l'écran en sombre, la feuille est sombre ; le logo bleu nuit passe en blanc (l'impression garde l'original). */
