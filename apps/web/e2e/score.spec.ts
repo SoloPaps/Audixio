@@ -35,6 +35,7 @@ test('la page publique montre les notes sans le détail sécurité', async ({
   await expect(
     page.getByText('Le détail de la protection n’est pas publié.'),
   ).toBeVisible();
+  await expect(page.getByText('PARTIEL')).toHaveCount(0);
   await expect(page.getByText('Méthode 2026.1')).toBeVisible();
   await expect(
     page.getByRole('link', { name: 'Vérifier ce rapport' }),

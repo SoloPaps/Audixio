@@ -27,10 +27,8 @@ import {
   saveTextFile,
 } from '../lib/report-export.js';
 import {
-  partialPillText,
   categoryItems as reportCategoryItems,
   reportRows,
-  scoredDomainCount,
 } from '../lib/report-model.js';
 import { type Level, levelForScore } from '../lib/score.js';
 import { translate } from '../lib/translate.js';
@@ -108,9 +106,10 @@ const letter = $derived(domainLetter(view?.globalScore ?? null, !verified));
 const headline = $derived(
   verdictCopy(view?.globalScore ?? null, reportRowList).headline,
 );
-const partialText = $derived(
-  partialPillText(null, verified, scoredDomainCount(reportItems)),
-);
+// Pastille du rapport propriétaire (« partielle · N domaines · site non
+// vérifié »). Sur un lien public, ce libellé correspondrait à
+// getByText('PARTIEL'), réservé au brief d’un lien équipe.
+const partialText = $derived('');
 
 function categoryItems(score: PublicScoreView): CategoryItem[] {
   return score.domains.map((row) => {
