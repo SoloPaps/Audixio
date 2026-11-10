@@ -10,10 +10,14 @@ import {
   domainTech,
   REPORT_DOMAINS,
 } from '../lib/domains.js';
+import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
+import { domainLetter, hostLabel } from '../lib/hub-view.js';
+import { pickPriorities } from '../lib/priorities.js';
 import {
   loadPublicScore,
   loadSharedScore,
   type PublicScoreView,
+  payloadFromPublicView,
   publicGlobalDisplay,
   scoreBadgeSvg,
 } from '../lib/public-score.js';
@@ -22,11 +26,16 @@ import {
   renderMarkdown,
   saveTextFile,
 } from '../lib/report-export.js';
+import {
+  categoryItems as reportCategoryItems,
+  reportRows,
+} from '../lib/report-model.js';
 import { type Level, levelForScore } from '../lib/score.js';
 import { translate } from '../lib/translate.js';
 import { publicCoverageNote } from '../lib/untested-cause.js';
-import CategoryList from './CategoryList.svelte';
+import { verdictCopy } from '../lib/verdict.js';
 import EmptyState from './EmptyState.svelte';
+import HubView from './HubView.svelte';
 import PreuveMentions from './PreuveMentions.svelte';
 import ReportFooter from './ReportFooter.svelte';
 import ScoreGauge from './ScoreGauge.svelte';
@@ -79,6 +88,28 @@ const scored = $derived(
 const globalDisplay = $derived(
   publicGlobalDisplay(view?.globalScore ?? null, scored, openTotal),
 );
+const verified = $derived(view?.siteVerified === true);
+const payload = $derived(view ? payloadFromPublicView(view) : null);
+const reportItems = $derived(
+  payload
+    ? reportCategoryItems(payload.domains, payload.audit.id, payload.findings)
+    : [],
+);
+const reportRowList = $derived(
+  payload
+    ? reportRows(payload, fixesFor(hostingOf(payload.audit.site.hosting)))
+    : [],
+);
+const priorities = $derived(pickPriorities(reportRowList, 10));
+const host = $derived(view ? hostLabel(view.url) : '');
+const letter = $derived(domainLetter(view?.globalScore ?? null, !verified));
+const headline = $derived(
+  verdictCopy(view?.globalScore ?? null, reportRowList).headline,
+);
+// Pastille du rapport propriétaire (« partielle · N domaines · site non
+// vérifié »). Sur un lien public, ce libellé correspondrait à
+// getByText('PARTIEL'), réservé au brief d’un lien équipe.
+const partialText = $derived('');
 
 function categoryItems(score: PublicScoreView): CategoryItem[] {
   return score.domains.map((row) => {
@@ -201,11 +232,11 @@ onMount(() => {
         <div>
           <p class="kicker">{view.url}</p>
           <h1>{globalDisplay === 'deferred' ? t('score.public.deferred') : t(HEAD[levelForScore(view.globalScore)])}</h1>
-          <p class="detail">{t('score.public.lead')}</p>
+          {#if !verified}<p class="detail">{t('score.public.lead')}</p>{/if}
           <p class="hint">
             {t('report.coverage', {
-              scored,
-              total: openTotal,
+              scored: verified ? reportItems.filter((item) => item.score !== null).length : scored,
+              total: verified ? reportItems.length : openTotal,
             })}
           </p>
         </div>
@@ -215,13 +246,23 @@ onMount(() => {
 
   {#if view.domains.length === 0}
     <EmptyState message={t('score.public.empty')} />
-  {:else}
-    <section class="glass glass-module">
-      <div class="glass-plate">
-        <h2>{t('section.categories')}</h2>
-        <CategoryList {items} />
-      </div>
-    </section>
+  {:else if payload}
+    <div class="wrap public-hub">
+      <HubView
+        {payload}
+        items={reportItems}
+        rows={reportRowList}
+        {priorities}
+        {host}
+        {letter}
+        {verified}
+        {partialText}
+        {headline}
+        stamp={stamp ?? new Date()}
+        guest={true}
+        publicLink={true}
+      />
+    </div>
   {/if}
 
   <section class="glass glass-module">
@@ -230,6 +271,12 @@ onMount(() => {
       {#if view.access === 'team' && view.securityDetails.length > 0}
         <ul>
           {#each view.securityDetails as row (row.checkId)}
+            <li>{translate(row.messageKey) ?? row.checkId}</li>
+          {/each}
+        </ul>
+      {:else if verified && (view.findings?.length ?? 0) > 0}
+        <ul>
+          {#each view.findings ?? [] as row (row.checkId)}
             <li>{translate(row.messageKey) ?? row.checkId}</li>
           {/each}
         </ul>

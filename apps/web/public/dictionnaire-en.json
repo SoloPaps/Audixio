@@ -2963,6 +2963,7 @@
   "mq.sl.115": "Close",
   "mq.sl.live.n": "{n}",
   "mq.sl.live.of": " / {n}",
+  "mq.sl.live.of.unlimited": " / ∞",
   "mq.sl.live.sites.one": "1 followed site out of {max}.",
   "mq.sl.live.sites.sr": "{used} tracked sites out of {max}.",
   "mq.sl.live.links.none": "No active link out of {max}.",

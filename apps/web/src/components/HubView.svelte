@@ -44,6 +44,8 @@ interface Props {
   headline: string;
   stamp: Date;
   guest?: boolean;
+  /** Lien public : même habillage, sans actions propriétaire. */
+  publicLink?: boolean;
 }
 
 let {
@@ -58,6 +60,7 @@ let {
   headline,
   stamp,
   guest = false,
+  publicLink = false,
 }: Props = $props();
 
 let shareOpen = $state(false);
@@ -229,7 +232,7 @@ onMount(() => {
 <div class:guest-hub={guest} style="display:contents" bind:this={root}>
   <div class="page-h rv">
     <div>
-      <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li aria-current="page">{host}</li></ol></nav>
+      <nav class="crumbs" aria-label={t('hub.crumbs')}><ol>{#if !publicLink}<li><a href="/sites">{t('nav.sites.long')}</a></li>{/if}<li aria-current="page">{host}</li></ol></nav>
       <div class="ttl">
         <h1>{t('hub.audit.lead')} <span class="u mono">{host}</span></h1>
         {#if verified}
@@ -238,14 +241,14 @@ onMount(() => {
           <span class="verified partial"><svg aria-hidden="true"><use href="#i-lock"/></svg>{partialText}</span>
         {/if}
       </div>
-      <p class="date">{t('hub.date')} <time datetime={stamp.toISOString().slice(0, 10)}>{formatDate(stamp)}</time></p>
+      {#if !publicLink}<p class="date">{t('hub.date')} <time datetime={stamp.toISOString().slice(0, 10)}>{formatDate(stamp)}</time></p>{/if}
     </div>
-    <div class="acts">
+    {#if !publicLink}<div class="acts">
       <a class="btn btn-ghost" id="shareBtn" href={`/rapport?id=${encodeURIComponent(auditId)}#partager`} onclick={onShare}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>{t('hub.share')}</a>
       <a class="btn btn-ghost" href={badgeHref(auditId)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg>{t('hub.badge')}</a>
       <a class="btn btn-ghost" href={`/rapport/${auditId}/imprimer`}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>{t('hub.pdf')}</a>
       <a class="btn btn-ghost" id="rerunBtn" href={relaunchHref(payload.audit.site.id, payload.audit.site.url)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>{t('hub.rerun')}</a>
-    </div>
+    </div>{/if}
   </div>
 
   <section class="hero rv" id="hero" aria-labelledby="t-note">
@@ -256,9 +259,11 @@ onMount(() => {
             <div class="bar-top">
               <span class="lights" aria-hidden="true"><i></i><i></i><i></i></span>
               <div class="pill"><svg class="ico" width="13" height="13" aria-hidden="true"><use href="#i-lock"/></svg>{host}
+                {#if !publicLink}
                 {#each pins as item, index (item.id)}
                   {#if PIN_SPOTS[index]?.bar}{@render pin(item, index)}{/if}
                 {/each}
+                {/if}
               </div>
               <svg class="ico muted" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>
             </div>
@@ -270,9 +275,11 @@ onMount(() => {
                 <div class="s-cards"><i></i><i></i><i></i></div>
               </div>
               <div class="pins">
+                {#if !publicLink}
                 {#each pins as item, index (item.id)}
                   {#if !PIN_SPOTS[index]?.bar}{@render pin(item, index)}{/if}
                 {/each}
+                {/if}
               </div>
             </div>
           </div>
@@ -298,7 +305,7 @@ onMount(() => {
     </div>
     <ol class="prio">
       {#each prioRows as item, index (item.id)}
-        <li class="pr rv" class:l1={index === 0} class:l2={index === 1} class:l3={index === 2} id={`prio-${item.rank}`} style={`--i:${index}`}><a href={item.href}><span class="rk" class:r1={index === 0} class:r2={index === 1} class:r3={index === 2}>{item.rank}</span><span class="pt">{item.title}</span><span class="sev st st-{toneClass(item.tone)}"><svg aria-hidden="true"><use href={`#${toneIcon(item.tone)}`}/></svg>{toneLabel(item.tone)}</span><span class="dchip">{domainShort(item.domain)}</span><svg class="ico chev" width="20" height="20" aria-hidden="true"><use href="#i-chev"/></svg></a></li>
+        <li class="pr rv" class:l1={index === 0} class:l2={index === 1} class:l3={index === 2} id={`prio-${item.rank}`} style={`--i:${index}`}><a href={publicLink ? `#prio-${item.rank}` : item.href}><span class="rk" class:r1={index === 0} class:r2={index === 1} class:r3={index === 2}>{item.rank}</span><span class="pt">{item.title}</span><span class="sev st st-{toneClass(item.tone)}"><svg aria-hidden="true"><use href={`#${toneIcon(item.tone)}`}/></svg>{toneLabel(item.tone)}</span><span class="dchip">{domainShort(item.domain)}</span><svg class="ico chev" width="20" height="20" aria-hidden="true"><use href="#i-chev"/></svg></a></li>
       {/each}
     </ol>
   </section>
@@ -311,7 +318,7 @@ onMount(() => {
     <ul class="doms">
       {#each items as item, index (item.id)}
         {@const grade = gradeOf(item)}
-        <li class="rv" style={`--i:${index}`}><a class="dom" id={`domaine-${item.id}`} href={item.href} data-key={item.id} data-g={grade ?? 'N'} data-icon={domainSymbol(item.id)} data-short={domainShort(item.id)} onclick={(event) => onDomain(event, item)}>
+        <li class="rv" style={`--i:${index}`}><a class="dom" id={`domaine-${item.id}`} href={publicLink ? `#domaine-${item.id}` : item.href} data-key={item.id} data-g={grade ?? 'N'} data-icon={domainSymbol(item.id)} data-short={domainShort(item.id)} onclick={(event) => { if (publicLink) { event.preventDefault(); return; } onDomain(event, item); }}>
           <span class="tile g-{grade ?? 'N'}"><svg class="ico" width="26" height="26" aria-hidden="true"><use href={`#${domainSymbol(item.id)}`}/></svg></span>
           <span class="dom-txt"><span class="dom-name">{domainShort(item.id)}</span>{#if blurb(item)}<span class="dom-sum">{blurb(item)}</span>{/if}</span>
           {#if grade && item.score !== null}
@@ -324,7 +331,7 @@ onMount(() => {
     </ul>
   </section>
 
-  <section class="ai rv" aria-labelledby="t-ai">
+  {#if !publicLink}<section class="ai rv" aria-labelledby="t-ai">
     <div class="ai-l">
       <div class="orb" aria-hidden="true"><i class="spk"></i><i class="spk"></i><i class="spk"></i></div>
       <div>
@@ -334,7 +341,7 @@ onMount(() => {
       </div>
     </div>
     <a class="btn btn-w" href={guest ? '/connexion' : briefHref(auditId)} onclick={(event) => { if (!guest) return; event.preventDefault(); gate = true; }}><svg class="ico" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></svg>{t('hub.brief.cta')}</a>
-  </section>
+  </section>{/if}
   {#if avis && avis.rating !== null && avis.score !== null}
     <section aria-labelledby="t-avis">
       <h2 id="t-avis">{t('places.aside.title')}</h2>

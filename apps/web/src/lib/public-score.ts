@@ -12,6 +12,7 @@ import { readLocalShare } from './local-share.js';
 /** Exemple servi hors ligne en dev (Lighthouse, Playwright). */
 export const EXAMPLE_SLUG = 'exemple-score';
 export const EXAMPLE_INCOMPLETE_SLUG = 'exemple-score-partiel';
+export const EXAMPLE_VERIFIED_SLUG = 'exemple-score-verifie';
 export const EXAMPLE_SHARE = 'ab'.repeat(16);
 export const REVOKED_SHARE = '00'.repeat(16);
 
@@ -32,6 +33,17 @@ export interface PublicDomain {
   level: string;
   /** Couverture déjà calculée, si la réponse la porte. */
   coverage: number | null;
+  locked?: boolean;
+}
+
+export interface PublicFinding {
+  domain: string;
+  checkId: string;
+  status: string;
+  severity: number;
+  impact: number;
+  messageKey: string;
+  fixKey: string | null;
 }
 
 /** Vue publique : scores seulement. `measured` n'est jamais recopié. */
@@ -47,6 +59,9 @@ export interface PublicScoreView {
   /** Absent sur l’exemple hors ligne. `team` seulement pour un lien équipe ouvert. */
   access?: 'public' | 'team' | 'retired';
   briefText?: string | null;
+  siteVerified?: boolean;
+  siteId?: string | null;
+  findings?: PublicFinding[];
 }
 
 export interface ShareRow {
@@ -83,6 +98,7 @@ export interface RawPublicScore {
     score: number | null;
     level?: string;
     coverage?: number | null;
+    locked?: boolean;
   }[];
   securityDetails?: readonly RawDetail[];
 }
@@ -181,12 +197,49 @@ function asDomainList(value: Json): RawPublicScore['domains'] {
     };
     if (typeof item.level === 'string') row.level = item.level;
     if (typeof item.coverage === 'number') row.coverage = item.coverage;
+    if (item.locked === true) (row as { locked?: boolean }).locked = true;
     domains.push(row);
   }
   return domains;
 }
 
-export function fromScoreRow(row: RpcRow): RawPublicScore {
+function asPublicFindings(value: Json | null | undefined): PublicFinding[] {
+  if (!Array.isArray(value)) return [];
+  const rows: PublicFinding[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) continue;
+    const domain = item.domain;
+    const checkId = item.check_id ?? item.checkId;
+    const status = item.status;
+    const messageKey = item.message_key ?? item.messageKey;
+    const severity = item.severity;
+    const impact = item.impact;
+    if (typeof domain !== 'string' || typeof checkId !== 'string') continue;
+    if (typeof status !== 'string' || typeof messageKey !== 'string') continue;
+    rows.push({
+      domain,
+      checkId,
+      status,
+      severity: typeof severity === 'number' ? severity : 1,
+      impact: typeof impact === 'number' ? impact : 1,
+      messageKey,
+      fixKey:
+        typeof item.fix_key === 'string'
+          ? item.fix_key
+          : typeof item.fixKey === 'string'
+            ? item.fixKey
+            : null,
+    });
+  }
+  return rows;
+}
+
+type ScoreRowInput =
+  | RpcRow
+  | (Omit<RpcRow, 'findings' | 'site_verified' | 'site_id'> &
+      Partial<Pick<RpcRow, 'findings' | 'site_verified' | 'site_id'>>);
+
+export function fromScoreRow(row: ScoreRowInput): RawPublicScore {
   return {
     label: row.site_label,
     url: row.site_url,
@@ -200,14 +253,29 @@ export function fromScoreRow(row: RpcRow): RawPublicScore {
   };
 }
 
-export function presentRow(row: RpcRow): PublicScoreView {
+export function presentRow(row: ScoreRowInput): PublicScoreView {
   const raw = fromScoreRow(row);
+  const verified = row.site_verified === true;
   const view = toPublicScore(raw, { exposeSecurity: false });
+  const domains = verified
+    ? raw.domains
+        .filter((item) => isKnownDomain(item.domain))
+        .map((item) => ({
+          domain: item.domain,
+          score: item.score,
+          level: typeof item.level === 'string' ? item.level : 'untested',
+          coverage: item.coverage ?? null,
+          locked: item.locked === true || isLockedDomain(item.domain),
+        }))
+    : view.domains.filter((item) => !isLockedDomain(item.domain));
   return {
     ...view,
     globalScore: raw.globalScore,
     securityDetails: [],
-    domains: view.domains.filter((item) => !isLockedDomain(item.domain)),
+    domains,
+    siteVerified: verified,
+    siteId: row.site_id ?? null,
+    findings: verified ? asPublicFindings(row.findings) : [],
   };
 }
 
@@ -269,6 +337,88 @@ export function exampleIncompleteView(): PublicScoreView {
   return toPublicScore(raw, { exposeSecurity: false });
 }
 
+/** Même site, vérifié : le lien public montre le détail des constats. */
+export function exampleVerifiedView(): PublicScoreView {
+  const view = exampleView();
+  return {
+    ...view,
+    siteVerified: true,
+    siteId: '00000000-0000-4000-8000-000000000019',
+    domains: [
+      ...view.domains,
+      {
+        domain: 'securite',
+        score: 40,
+        level: 'problem',
+        coverage: null,
+        locked: false,
+      },
+    ],
+    findings: [
+      {
+        domain: 'securite',
+        checkId: 'securite.hsts',
+        status: 'fail',
+        severity: 4,
+        impact: 3,
+        messageKey: 'securite.hsts.fail_missing',
+        fixKey: 'securite.hsts',
+      },
+    ],
+  };
+}
+
+export function payloadFromPublicView(view: PublicScoreView): AuditPayload {
+  const when = view.finishedAt ?? '2026-10-23T08:00:00.000Z';
+  const verified = view.siteVerified === true;
+  return {
+    audit: {
+      id: view.auditId ?? '00000000-0000-4000-8000-000000000000',
+      status: 'done',
+      mode: 'passive',
+      trigger: 'manual',
+      methodVersion: view.methodVersion ?? '2026.1',
+      engineVersion: 'public',
+      globalScore: view.globalScore,
+      siteVerified: verified,
+      partialLabel: null,
+      coverage: null,
+      createdAt: when,
+      startedAt: when,
+      finishedAt: view.finishedAt,
+      error: null,
+      site: {
+        id: view.siteId ?? '00000000-0000-4000-8000-000000000000',
+        url: view.url,
+        label: view.label,
+        scope: 'origin',
+        hosting: 'other',
+      },
+    },
+    domains: view.domains.map((item) => ({
+      domain: item.domain,
+      score: item.score,
+      coverage: item.coverage ?? 1,
+      level: item.level,
+      locked: item.locked === true,
+    })),
+    findings: (view.findings ?? []).map((item) => ({
+      domain: item.domain,
+      checkId: item.checkId,
+      status: item.status,
+      severity: item.severity,
+      impact: item.impact,
+      score: null,
+      measured: {},
+      messageKey: item.messageKey,
+      params: {},
+      fixKey: item.fixKey,
+      effortMinutes: null,
+      reason: null,
+    })),
+  };
+}
+
 function xml(value: string): string {
   return value
     .replaceAll('&', '&amp;')
@@ -318,6 +468,8 @@ export async function loadPublicScore(
   if (import.meta.env.DEV && slug === EXAMPLE_SLUG) return exampleView();
   if (import.meta.env.DEV && slug === EXAMPLE_INCOMPLETE_SLUG)
     return exampleIncompleteView();
+  if (import.meta.env.DEV && slug === EXAMPLE_VERIFIED_SLUG)
+    return exampleVerifiedView();
   if (!client) return null;
   const row = await readPublicScore(client, slug);
   return row ? presentRow(row) : null;

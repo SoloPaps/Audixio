@@ -947,15 +947,15 @@ html[data-board="liste"] .ring .bg {
 html[data-board="liste"] .ring .fg {
   stroke: var(--primary);
   stroke-linecap: round;
-  stroke-dasharray: 226;
-  stroke-dashoffset: 226;
-  transition: stroke-dashoffset 1.6s var(--out) 0.3s;
+  /* pathLength 100 sur le cercle : le trait suit --p / stroke-dasharray. */
+  stroke-dashoffset: 0;
 }
 html[data-board="liste"] .ring.full .fg {
   stroke: url(#rgrad);
 }
-html[data-board="liste"] .in .ring .fg {
-  stroke-dashoffset: calc(226 - 226 * var(--p));
+html[data-board="liste"] .ring.unlimited .fg {
+  stroke-dasharray: 0 100;
+  stroke: transparent;
 }
 html[data-board="liste"] .ring b {
   position: absolute;
@@ -1465,12 +1465,11 @@ html[data-board="liste"] .cd .bg {
 html[data-board="liste"] .cd .fg {
   stroke: #2fa36b;
   stroke-linecap: round;
-  stroke-dasharray: 188.5;
-  stroke-dashoffset: 188.5;
-  transition: stroke-dashoffset 1.6s var(--out) 0.4s;
+  stroke-dashoffset: 0;
 }
-html[data-board="liste"] .in .cd .fg {
-  stroke-dashoffset: calc(188.5 - 188.5 * var(--p));
+html[data-board="liste"] .cd.unlimited .fg {
+  stroke-dasharray: 0 100;
+  stroke: transparent;
 }
 html[data-board="liste"] .cd b {
   position: absolute;

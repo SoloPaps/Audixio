@@ -4,6 +4,7 @@ import { t } from '../i18n/index.js';
 import {
   GAUGE,
   gaugeBands,
+  gaugeFillDash,
   gaugeLabel,
   gaugePoint,
   gaugeRing,
@@ -15,6 +16,19 @@ describe('cadran du score (refonte)', () => {
     expect(d.startsWith(`M ${GAUGE.cx} ${GAUGE.cy - GAUGE.r} `)).toBe(true);
     expect(d.endsWith(`${GAUGE.cx} ${GAUGE.cy - GAUGE.r}`)).toBe(true);
     expect(GAUGE.viewBox).toBe(`0 0 ${GAUGE.width} ${GAUGE.height}`);
+    // Quatre quarts, pas deux demi-cercles à 180° (large-arc 1 ambigu).
+    expect(d.split(`A ${GAUGE.r} ${GAUGE.r} 0 0 1`)).toHaveLength(5);
+    expect(d.includes(' 0 1 1 ')).toBe(false);
+  });
+
+  it('le trait du score occupe exactement la part du tour', () => {
+    expect(gaugeFillDash(null)).toBe('0 100');
+    expect(gaugeFillDash(0)).toBe('0 100');
+    expect(gaugeFillDash(66)).toBe('66 34');
+    expect(gaugeFillDash(72)).toBe('72 28');
+    expect(gaugeFillDash(100)).toBe('100 0');
+    expect(gaugeFillDash(140)).toBe('100 0');
+    expect(gaugeFillDash(-5)).toBe('0 100');
   });
 
   it('le point suit le score : haut, droite, bas, gauche', () => {

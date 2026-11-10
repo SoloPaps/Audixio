@@ -936,13 +936,16 @@ export type Database = {
           coverage: number | null;
           domains: Json;
           expose_security: boolean;
+          findings: Json;
           finished_at: string | null;
           global_score: number | null;
           method_version: string | null;
           report_id: string | null;
           security_details: Json;
+          site_id: string | null;
           site_label: string;
           site_url: string;
+          site_verified: boolean;
         }[];
       };
       read_report_by_share_token: {
@@ -965,13 +968,16 @@ export type Database = {
           coverage: number | null;
           domains: Json;
           expose_security: boolean;
+          findings: Json;
           finished_at: string | null;
           global_score: number | null;
           method_version: string | null;
           report_id: string | null;
           security_details: Json;
+          site_id: string | null;
           site_label: string;
           site_url: string;
+          site_verified: boolean;
         }[];
       };
       request_audit: {
