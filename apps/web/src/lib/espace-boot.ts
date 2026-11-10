@@ -1379,7 +1379,7 @@ function shareAccessRow(link: ActiveShare): HTMLLIElement {
   copy.type = 'button';
   copy.className = 'btn btn-ghost btn-sm btn-copy';
   copy.dataset.copy = `${location.origin}${link.urlPath}`;
-  copy.dataset.msg = t('mq.co.078');
+  copy.dataset.msg = t(shareCopiedKey(link.kind));
   const copyLabel = document.createElement('span');
   copyLabel.className = 'bl';
   copyLabel.textContent = t('mq.co.079');
