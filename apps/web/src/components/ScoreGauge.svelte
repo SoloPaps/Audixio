@@ -10,8 +10,8 @@ import '../styles/maquettes/gauge.css';
 import {
   GAUGE,
   gaugeBands,
+  gaugeFillDash,
   gaugeLabel,
-  gaugePoint,
   gaugeRing,
   levelForScore,
 } from '../lib/score.js';
@@ -40,10 +40,8 @@ const bandRing = gaugeRing(GAUGE.cx, GAUGE.cy, GAUGE.band);
 const bands = gaugeBands(GRADE_THRESHOLDS);
 /** Un seul tracé de bande par cadran, repris par les six bandes (<use>). */
 const bandId = `gb${++gauges}`;
-const tip = $derived(
-  score === null ? null : gaugePoint(GAUGE.cx, GAUGE.cy, GAUGE.r, score),
-);
 const scoreAttr = $derived(score === null ? 'none' : String(score));
+const fillDash = $derived(gaugeFillDash(score));
 const frame = $derived(
   size === 'hero'
     ? 'var(--gauge-hero, 13rem)'
@@ -95,11 +93,9 @@ const frame = $derived(
         fill="none"
         stroke-width="14"
         pathLength="100"
-        stroke-dasharray={`${score ?? 0} 100`}
+        stroke-dasharray={fillDash}
+        stroke-dashoffset="0"
       />
-      {#if tip && score !== null && score > 0}
-        <circle class="gauge-tip" cx={tip.x} cy={tip.y} r="7" stroke-width="3" />
-      {/if}
     </svg>
     <p class="gauge-hole" aria-hidden="true">
       <span class="score-num">{score === null ? t('score.empty') : score}</span>{#if score !== null}<span class="score-denom">{t('gauge.denom')}</span>{/if}

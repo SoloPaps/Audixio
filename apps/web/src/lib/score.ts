@@ -67,9 +67,16 @@ function round(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-/** Anneau complet, départ en haut, sens horaire (pathLength 100 = score). */
+/** Anneau complet, départ en haut, sens horaire (pathLength 100 = score).
+ * Quatre quarts d’arc (large-arc 0) : deux demi-cercles à 180° avec
+ * large-arc 1 sont ambigus et peuvent allonger le tracé. */
 export function gaugeRing(cx: number, cy: number, r: number): string {
-  return `M ${cx} ${round(cy - r)} A ${r} ${r} 0 1 1 ${cx} ${round(cy + r)} A ${r} ${r} 0 1 1 ${cx} ${round(cy - r)}`;
+  const top = `${cx} ${round(cy - r)}`;
+  const right = `${round(cx + r)} ${cy}`;
+  const bottom = `${cx} ${round(cy + r)}`;
+  const left = `${round(cx - r)} ${cy}`;
+  const q = `A ${r} ${r} 0 0 1`;
+  return `M ${top} ${q} ${right} ${q} ${bottom} ${q} ${left} ${q} ${top}`;
 }
 
 /** Position du score sur l’anneau (0 en haut, 100 au tour complet). */
@@ -82,6 +89,14 @@ export function gaugePoint(
   const clamped = Math.max(0, Math.min(100, score));
   const p = point(cx, cy, r, -90 + (clamped / 100) * 360);
   return { x: round(p.x), y: round(p.y) };
+}
+
+/** Trait du score : N unités de remplissage, 100−N de vide (pathLength 100). */
+export function gaugeFillDash(score: number | null): string {
+  if (score === null) return '0 100';
+  const clamped = Math.max(0, Math.min(100, score));
+  const filled = Math.round(clamped * 100) / 100;
+  return `${filled} ${100 - filled}`;
 }
 
 /**
