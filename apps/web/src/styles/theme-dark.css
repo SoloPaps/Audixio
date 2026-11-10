@@ -685,6 +685,22 @@ html[data-theme="dark"][data-vue] .session-wall :is(h1, p, .lede) {
   color: #f0f2f5;
 }
 
+/* B1 : fonds de la fenêtre visiteur, spécificité > filet :is(div).
+   Le détail (textes, boutons) est dans theme-dark-qa.css, hors graphe d’accueil. */
+html[data-theme="dark"][data-vue] .gg-root .gg-veil,
+html[data-theme="dark"][data-board] .gg-root .gg-veil {
+  background-color: rgba(18, 22, 42, 0.8);
+  background-image: none;
+}
+
+html[data-theme="dark"][data-vue] .gg-root .gg,
+html[data-theme="dark"][data-board] .gg-root .gg {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #3d4d7a;
+  color: #f0f2f5;
+}
+
 html[data-theme="dark"][data-vue] .cap,
 html[data-theme="dark"][data-board] .cap {
   background-color: #1c2340;

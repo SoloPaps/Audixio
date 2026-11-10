@@ -81,3 +81,59 @@ html[data-theme="dark"][data-board="liste"] .pm .meter .lab span:last-child {
 html[data-theme="dark"][data-board="liste"] .pm .meter {
   background: #243056;
 }
+
+/* B1 : le filet ` :is(div, …) { background-color: transparent }`
+   annule le fond de la fenêtre visiteur (.gg / .gg-veil). */
+html[data-theme="dark"][data-vue] .gg-root .gg-veil,
+html[data-theme="dark"][data-board] .gg-root .gg-veil {
+  background-color: rgba(18, 22, 42, 0.8);
+  background-image: none;
+}
+
+html[data-theme="dark"][data-vue] .gg-root .gg,
+html[data-theme="dark"][data-board] .gg-root .gg {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #3d4d7a;
+  color: #f0f2f5;
+  box-shadow: none;
+}
+
+html[data-theme="dark"][data-vue] .gg-root h2,
+html[data-theme="dark"][data-board] .gg-root h2,
+html[data-theme="dark"][data-vue] .gg-root .gg-lead,
+html[data-theme="dark"][data-board] .gg-root .gg-lead,
+html[data-theme="dark"][data-vue] .gg-root .gg-close,
+html[data-theme="dark"][data-board] .gg-root .gg-close {
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] .gg-root .gg-lead,
+html[data-theme="dark"][data-board] .gg-root .gg-lead,
+html[data-theme="dark"][data-vue] .gg-root .gg-close,
+html[data-theme="dark"][data-board] .gg-root .gg-close {
+  color: #c5d0ea;
+}
+
+html[data-theme="dark"][data-vue] .gg-root .gg-pill-k,
+html[data-theme="dark"][data-board] .gg-root .gg-pill-k {
+  background-color: #243056;
+  background-image: none;
+  color: #d6e2ff;
+}
+
+html[data-theme="dark"][data-vue] .gg-root a.gg-btn,
+html[data-theme="dark"][data-board] .gg-root a.gg-btn {
+  background-color: #1c2340;
+  background-image: none;
+  border-color: #8ea0c8;
+  color: #f0f2f5;
+}
+
+html[data-theme="dark"][data-vue] .gg-root a.gg-btn-main,
+html[data-theme="dark"][data-board] .gg-root a.gg-btn-main {
+  background-color: #3d52a0;
+  background-image: none;
+  border-color: transparent;
+  color: #fff;
+}
