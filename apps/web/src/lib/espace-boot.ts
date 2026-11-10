@@ -229,7 +229,13 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       place: places?.places.find((item) => item.siteId === row.id) ?? null,
     };
   });
-  const shares = await readActiveShares();
+  let shareLinkCount = 0;
+  try {
+    const shares = await readActiveShares();
+    shareLinkCount = shares?.length ?? 0;
+  } catch {
+    // La liste des sites reste affichable si le décompte des liens échoue.
+  }
   return {
     mode: 'live',
     notice: '',
@@ -238,7 +244,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
     name: displayName(session),
     sites,
     plan,
-    shareLinkCount: shares?.length ?? 0,
+    shareLinkCount,
   };
 }
 
