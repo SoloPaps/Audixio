@@ -141,7 +141,9 @@ function onStyle(value: 'complet' | 'compact' | 'pastille'): void {
 
 onMount(() => {
   void loadLink();
-  dialog?.focus();
+  // Ne pas défiler : le dialogue est plus haut que l’écran à 330 px,
+  // et un focus() natif masquait le bouton fermer au-dessus du viewport.
+  dialog?.focus({ preventScroll: true });
   const node = dialog;
   const onKey = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
