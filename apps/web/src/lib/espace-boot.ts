@@ -398,44 +398,58 @@ function bindSites(
   };
   rerun?.addEventListener('click', onRerun);
   if (rerun) off.push(() => rerun.removeEventListener('click', onRerun));
-  const menuButton = root.querySelector<HTMLButtonElement>('#expb');
-  const menu = root.querySelector<HTMLElement>('#expm');
-  const closeMenu = (): void => {
-    if (!menu || !menuButton) return;
-    menu.hidden = true;
-    menuButton.setAttribute('aria-expanded', 'false');
+  const exportMenus = [...root.querySelectorAll<HTMLElement>('.export-menu')];
+  const closeMenus = (except?: HTMLElement): void => {
+    for (const wrap of exportMenus) {
+      if (wrap === except) continue;
+      const menu = wrap.querySelector('ul');
+      const menuButton = wrap.querySelector('button');
+      if (!menu || !menuButton) continue;
+      menu.hidden = true;
+      menuButton.setAttribute('aria-expanded', 'false');
+    }
   };
-  const onMenu = (): void => {
-    if (!menu || !menuButton) return;
-    const open = menu.hidden;
-    menu.hidden = !open;
-    menuButton.setAttribute('aria-expanded', String(open));
-    if (open) menu.querySelector('button')?.focus();
-  };
-  menuButton?.addEventListener('click', onMenu);
-  if (menuButton)
-    off.push(() => menuButton.removeEventListener('click', onMenu));
-  const onPick = (event: Event): void => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-    const button = target.closest('button');
-    if (!button || !menu?.contains(button)) return;
-    const fmt = button.dataset.fmt ?? '';
-    closeMenu();
-    menuButton?.focus();
-    say(t('mq.ui.export', { fmt }), true);
-  };
-  menu?.addEventListener('click', onPick);
-  if (menu) off.push(() => menu.removeEventListener('click', onPick));
+  for (const wrap of exportMenus) {
+    const menuButton = wrap.querySelector<HTMLButtonElement>(':scope > button');
+    const menu = wrap.querySelector<HTMLElement>(':scope > ul');
+    const onMenu = (): void => {
+      if (!menu || !menuButton) return;
+      const open = menu.hidden;
+      closeMenus(wrap);
+      menu.hidden = !open;
+      menuButton.setAttribute('aria-expanded', String(open));
+      if (open) menu.querySelector('button')?.focus();
+    };
+    const onPick = (event: Event): void => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest('button');
+      if (!button || !menu?.contains(button)) return;
+      const fmt = button.dataset.fmt ?? '';
+      closeMenus();
+      menuButton?.focus();
+      say(t('mq.ui.export', { fmt }), true);
+    };
+    menuButton?.addEventListener('click', onMenu);
+    menu?.addEventListener('click', onPick);
+    if (menuButton)
+      off.push(() => menuButton.removeEventListener('click', onMenu));
+    if (menu) off.push(() => menu.removeEventListener('click', onPick));
+  }
   const onDoc = (event: Event): void => {
     const target = event.target;
-    if (!(target instanceof Element) || !target.closest('.menu')) closeMenu();
+    if (!(target instanceof Element) || !target.closest('.export-menu')) {
+      closeMenus();
+    }
   };
   const onKey = (event: KeyboardEvent): void => {
-    if (event.key === 'Escape' && menu && !menu.hidden) {
-      closeMenu();
-      menuButton?.focus();
-    }
+    if (event.key !== 'Escape') return;
+    const open = exportMenus.find(
+      (wrap) => wrap.querySelector('ul') && !wrap.querySelector('ul')?.hidden,
+    );
+    if (!open) return;
+    closeMenus();
+    open.querySelector('button')?.focus();
   };
   document.addEventListener('click', onDoc);
   document.addEventListener('keydown', onKey);
