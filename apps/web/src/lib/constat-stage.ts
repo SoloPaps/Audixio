@@ -1,6 +1,7 @@
 /** Chiffres et radar du constat « images », repris du comportement de la maquette. */
 
 import { formatFixed } from '../i18n/format.js';
+import { roleColor } from './theme-role.js';
 
 export interface StageImage {
   name: string;
@@ -303,13 +304,18 @@ export function drawRadar(
       let bx = x > cx ? x - r - 12 - bw : x + r + 12;
       bx = Math.max(4, Math.min(width - bw - 4, bx));
       roundRect(ctx, bx, y - bh / 2, bw, bh, 12);
-      ctx.fillStyle = `rgba(255,255,255,${0.94 * k})`;
+      const alpha = ctx.globalAlpha;
+      ctx.globalAlpha = alpha * 0.94 * k;
+      ctx.fillStyle = roleColor('sf', '#fff');
       ctx.fill();
+      ctx.globalAlpha = alpha;
       ctx.strokeStyle = `rgba(61,82,160,${0.3 * k})`;
       ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.fillStyle = `rgba(30,42,85,${k})`;
+      ctx.globalAlpha = alpha * k;
+      ctx.fillStyle = roleColor('tx', '#1e2a55');
       ctx.fillText(txt, bx + 9, y + 0.5);
+      ctx.globalAlpha = alpha;
     }
   }
   const pc = reduce ? 0.4 : (time % 2000) / 2000;
@@ -318,7 +324,7 @@ export function drawRadar(
   ctx.beginPath();
   ctx.arc(cx, cy, 6 + pc * 18, 0, tau);
   ctx.stroke();
-  ctx.fillStyle = '#3D52A0';
+  ctx.fillStyle = roleColor('ic', '#3D52A0');
   ctx.beginPath();
   ctx.arc(cx, cy, 5.5, 0, tau);
   ctx.fill();

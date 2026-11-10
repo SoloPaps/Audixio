@@ -16,37 +16,37 @@ svg.material-symbols-outlined {
    UNIVERS : QUANTUM ACCESS VAULT
    ============================================================ */
 :root {
-  --p900: #1e2a55;
-  --p700: #3d52a0;
-  --p500: #7091e6;
-  --p300: #adbbda;
-  --ink: #1e2a55;
-  --ink-2: #4a5585;
-  --bg1: #ede8f5;
-  --bg2: #dce2f2;
-  --surface: #ffffff;
-  --surface-2: #f8f7fc;
-  --line: rgba(61, 82, 160, 0.15);
-  --line-strong: rgba(61, 82, 160, 0.28);
-  --tint: rgba(61, 82, 160, 0.06);
-  --tint-2: rgba(112, 145, 230, 0.12);
-  --primary: #3d52a0;
-  --primary-h: #2f4084;
+  --p900: var(--d-tx, #1e2a55);
+  --p700: var(--d-ac, #3d52a0);
+  --p500: var(--d-ic, #7091e6);
+  --p300: var(--d-ln2, #adbbda);
+  --ink: var(--d-tx, #1e2a55);
+  --ink-2: var(--d-mu, #4a5585);
+  --bg1: var(--d-bg, #ede8f5);
+  --bg2: var(--d-sf2, #dce2f2);
+  --surface: var(--d-sf, #ffffff);
+  --surface-2: var(--d-sf2, #f8f7fc);
+  --line: var(--d-ln, rgba(61, 82, 160, 0.15));
+  --line-strong: var(--d-ln, rgba(61, 82, 160, 0.28));
+  --tint: var(--d-t1, rgba(61, 82, 160, 0.06));
+  --tint-2: var(--d-t2, rgba(112, 145, 230, 0.12));
+  --primary: var(--d-ac, #3d52a0);
+  --primary-h: var(--d-ac, #2f4084);
   --on-primary: #fff;
-  --accent: #7091e6;
-  --ok: #067647;
-  --ok-bg: #ecfdf3;
-  --ok-bd: #abefc6;
-  --crit: #b42318;
-  --crit-bg: #fef3f2;
-  --crit-bd: #fecdca;
-  --own: #155e75;
-  --own-bg: #ecfdff;
-  --own-bd: #67d4e8;
-  --chk: #854a0e;
-  --chk-bg: #fefbe8;
-  --chk-bd: #fde272;
-  --focus: #3d52a0;
+  --accent: var(--d-ic, #7091e6);
+  --ok: var(--d-ok, #067647);
+  --ok-bg: var(--d-okb, #ecfdf3);
+  --ok-bd: var(--d-okd, #abefc6);
+  --crit: var(--d-er, #b42318);
+  --crit-bg: var(--d-erb, #fef3f2);
+  --crit-bd: var(--d-erd, #fecdca);
+  --own: var(--d-in, #155e75);
+  --own-bg: var(--d-inb, #ecfdff);
+  --own-bd: var(--d-ind, #67d4e8);
+  --chk: var(--d-wa, #854a0e);
+  --chk-bg: var(--d-wab, #fefbe8);
+  --chk-bd: var(--d-wad, #fde272);
+  --focus: var(--d-ac, #3d52a0);
   --sh-1: 0 1px 2px rgba(30, 42, 85, 0.05);
   --sh-2:
     0 1px 2px rgba(30, 42, 85, 0.05), 0 20px 40px -24px rgba(61, 82, 160, 0.28);
@@ -106,7 +106,7 @@ a {
   left: 16px;
   top: -60px;
   z-index: 2000;
-  background: var(--primary);
+  background: var(--d-cta, var(--primary));
   color: #fff;
   padding: 10px 16px;
   border-radius: 99px;
@@ -131,8 +131,12 @@ a {
   z-index: -4;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(61, 82, 160, 0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(61, 82, 160, 0.05) 1px, transparent 1px);
+    linear-gradient(var(--d-t1, rgba(61, 82, 160, 0.05)) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      var(--d-t1, rgba(61, 82, 160, 0.05)) 1px,
+      transparent 1px
+    );
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(
     ellipse at 50% 20%,
@@ -168,7 +172,7 @@ a {
   right: -140px;
   background: radial-gradient(
     circle,
-    rgba(173, 187, 218, 0.42),
+    var(--d-t2, rgba(173, 187, 218, 0.42)),
     transparent 65%
   );
   animation: drift2 26s ease-in-out infinite alternate;
@@ -199,7 +203,7 @@ a {
 }
 .radar circle {
   fill: none;
-  stroke: rgba(61, 82, 160, 0.18);
+  stroke: var(--d-t2, rgba(61, 82, 160, 0.18));
   stroke-width: 1;
 }
 .radar .rng {
@@ -288,7 +292,7 @@ main {
   gap: 10px;
   padding: 8px 16px 8px 12px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--d-gl, rgba(255, 255, 255, 0.78));
   border: 1px solid var(--line);
   backdrop-filter: blur(10px);
   font: 700 11px var(--mono);
@@ -306,7 +310,7 @@ main {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(112, 145, 230, 0.15),
+    var(--d-t2, rgba(112, 145, 230, 0.15)),
     transparent
   );
   transform: translateX(-100%);
@@ -326,7 +330,7 @@ main {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--primary);
+  background: var(--d-cta, var(--primary));
   box-shadow: 0 0 0 0 rgba(61, 82, 160, 0.55);
   animation: pulseDot 2s ease-out infinite;
 }
@@ -397,9 +401,9 @@ h1 em {
   font-style: normal;
   background: linear-gradient(
     100deg,
-    var(--primary) 10%,
-    var(--accent) 50%,
-    var(--primary) 90%
+    var(--d-ac, var(--primary)) 10%,
+    var(--d-ic, var(--accent)) 50%,
+    var(--d-ac, var(--primary)) 90%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -437,7 +441,7 @@ h1 em {
   font-size: 13px;
   font-weight: 600;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--d-gl, rgba(255, 255, 255, 0.72));
   backdrop-filter: blur(8px);
   color: var(--ink);
   transition:
@@ -484,7 +488,11 @@ h1 em {
 /* CARTE HOLOGRAPHIQUE */
 .card {
   position: relative;
-  background: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0.94));
+  background: linear-gradient(
+    180deg,
+    var(--d-sf, #fff),
+    var(--d-gl, rgba(255, 255, 255, 0.94))
+  );
   border: 1px solid var(--line);
   border-radius: var(--r-l);
   box-shadow: var(--sh-2);
@@ -499,14 +507,30 @@ h1 em {
   z-index: 0;
   border-radius: inherit;
   background:
-    linear-gradient(135deg, var(--primary) 0 14px, transparent 14px) top left /
-    14px 14px no-repeat,
-    linear-gradient(225deg, var(--primary) 0 14px, transparent 14px) top right /
-    14px 14px no-repeat,
-    linear-gradient(45deg, var(--accent) 0 14px, transparent 14px) bottom left /
-    14px 14px no-repeat,
-    linear-gradient(315deg, var(--accent) 0 14px, transparent 14px) bottom right
-    / 14px 14px no-repeat;
+    linear-gradient(
+      135deg,
+      var(--d-cta, var(--primary)) 0 14px,
+      transparent 14px
+    )
+    top left / 14px 14px no-repeat,
+    linear-gradient(
+      225deg,
+      var(--d-cta, var(--primary)) 0 14px,
+      transparent 14px
+    )
+    top right / 14px 14px no-repeat,
+    linear-gradient(
+      45deg,
+      var(--d-cta2, var(--accent)) 0 14px,
+      transparent 14px
+    )
+    bottom left / 14px 14px no-repeat,
+    linear-gradient(
+      315deg,
+      var(--d-cta2, var(--accent)) 0 14px,
+      transparent 14px
+    )
+    bottom right / 14px 14px no-repeat;
   opacity: 0.75;
 }
 .card--scan::after {
@@ -520,7 +544,7 @@ h1 em {
   background: linear-gradient(
     180deg,
     transparent,
-    rgba(112, 145, 230, 0.06) 50%,
+    var(--d-t1, rgba(112, 145, 230, 0.06)) 50%,
     transparent
   );
   animation: cardScan 7s ease-in-out infinite;
@@ -561,7 +585,7 @@ h1 em {
     transparent 44%,
     rgba(255, 255, 255, 0.1) 47%,
     rgba(255, 255, 255, 0.28) 49.6%,
-    rgba(173, 187, 218, 0.22) 50%,
+    var(--d-t2, rgba(173, 187, 218, 0.22)) 50%,
     rgba(255, 255, 255, 0.28) 50.4%,
     rgba(255, 255, 255, 0.1) 53%,
     transparent 56%
@@ -603,9 +627,9 @@ h1 em {
   background: linear-gradient(
     115deg,
     transparent 48%,
-    rgba(173, 187, 218, 0.1) 49.5%,
-    rgba(112, 145, 230, 0.08) 50%,
-    rgba(173, 187, 218, 0.1) 50.5%,
+    var(--d-t2, rgba(173, 187, 218, 0.1)) 49.5%,
+    var(--d-t1, rgba(112, 145, 230, 0.08)) 50%,
+    var(--d-t2, rgba(173, 187, 218, 0.1)) 50.5%,
     transparent 52%
   );
   transform: translate(-70%, -70%) rotate(0deg);
@@ -669,7 +693,11 @@ h1 em {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: linear-gradient(140deg, var(--p500), var(--p700));
+  background: linear-gradient(
+    140deg,
+    var(--d-cta2, var(--p500)),
+    var(--d-cta, var(--p700))
+  );
   color: #fff;
   font-weight: 700;
   font-size: 18px;
@@ -699,7 +727,7 @@ h1 em {
   height: 16px;
   border-radius: 50%;
   background: var(--own);
-  border: 2.5px solid #fff;
+  border: 2.5px solid var(--d-ln, #fff);
   z-index: 3;
   box-shadow: 0 0 0 0 rgba(21, 94, 117, 0.5);
   animation: pulseOwn 2.4s ease-out infinite;
@@ -827,7 +855,11 @@ legend::before {
   width: 4px;
   height: 18px;
   border-radius: 2px;
-  background: linear-gradient(180deg, var(--primary), var(--accent));
+  background: linear-gradient(
+    180deg,
+    var(--d-cta, var(--primary)),
+    var(--d-cta2, var(--accent))
+  );
 }
 .help {
   font-size: 14px;
@@ -847,7 +879,7 @@ legend::before {
   padding: 18px 20px;
   border-radius: 18px;
   border: 1.5px solid var(--line);
-  background: #fff;
+  background: var(--d-sf, #fff);
   cursor: pointer;
   transition:
     border-color 0.25s,
@@ -868,7 +900,7 @@ legend::before {
   background: linear-gradient(
     100deg,
     transparent,
-    rgba(112, 145, 230, 0.08),
+    var(--d-t1, rgba(112, 145, 230, 0.08)),
     transparent
   );
   transform: translateX(-100%);
@@ -905,7 +937,7 @@ legend::before {
   width: 11px;
   height: 11px;
   border-radius: 50%;
-  background: var(--primary);
+  background: var(--d-cta, var(--primary));
   transform: scale(0);
   transition: transform 0.4s var(--spring);
 }
@@ -920,7 +952,11 @@ legend::before {
   box-shadow:
     0 0 0 4px var(--tint-2),
     0 16px 32px -20px rgba(61, 82, 160, 0.5);
-  background: linear-gradient(180deg, #fff, rgba(237, 232, 245, 0.35));
+  background: linear-gradient(
+    180deg,
+    var(--d-sf, #fff),
+    var(--d-t1, rgba(237, 232, 245, 0.35))
+  );
 }
 .role:has(input:checked)::after {
   content: "";
@@ -929,7 +965,11 @@ legend::before {
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(180deg, var(--primary), var(--accent));
+  background: linear-gradient(
+    180deg,
+    var(--d-cta, var(--primary)),
+    var(--d-cta2, var(--accent))
+  );
   animation: sideIn 0.4s var(--out) both;
 }
 @keyframes sideIn {
@@ -1003,7 +1043,7 @@ legend::before {
   color: var(--ink-2);
   display: flex;
   gap: 12px;
-  background: rgba(237, 232, 245, 0.5);
+  background: var(--d-t1, rgba(237, 232, 245, 0.5));
 }
 .never svg {
   width: 18px;
@@ -1034,14 +1074,14 @@ legend::before {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--d-cta2, var(--accent));
 }
 select,
 textarea {
   font: inherit;
   font-size: 15px;
   color: var(--ink);
-  background: #fff;
+  background: var(--d-sf, #fff);
   border: 1.5px solid var(--line);
   border-radius: 12px;
   padding: 12px 16px;
@@ -1056,8 +1096,8 @@ select {
   appearance: none;
   -webkit-appearance: none;
   background-image:
-    linear-gradient(45deg, transparent 50%, var(--primary) 50%),
-    linear-gradient(135deg, var(--primary) 50%, transparent 50%);
+    linear-gradient(45deg, transparent 50%, var(--d-cta, var(--primary)) 50%),
+    linear-gradient(135deg, var(--d-cta, var(--primary)) 50%, transparent 50%);
   background-position:
     calc(100% - 22px) 55%,
     calc(100% - 15px) 55%;
@@ -1158,17 +1198,17 @@ textarea:focus-visible {
   transform: translateX(120%);
 }
 .btn-primary {
-  background: var(--primary);
+  background: var(--d-cta, var(--primary));
   color: #fff;
   box-shadow: 0 10px 26px -12px rgba(61, 82, 160, 0.75);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 32px -12px rgba(61, 82, 160, 0.8);
-  background: var(--primary-h);
+  background: var(--d-cta2, var(--primary-h));
 }
 .btn-danger {
-  background: #fff;
+  background: var(--d-sf, #fff);
   color: var(--crit);
   border-color: var(--crit-bd);
 }
@@ -1290,7 +1330,7 @@ textarea:focus-visible {
   background: var(--crit);
 }
 .confirm textarea {
-  background: #fff;
+  background: var(--d-sf, #fff);
   border-color: var(--crit-bd);
 }
 .confirm .row {
@@ -1623,8 +1663,8 @@ dl.sum dd.status::before {
   --ax-edge: clamp(12px, 3vw, 32px);
   --ax-r: 28px;
   --ax-max: 1240px;
-  --ax-bd: #adbbda;
-  --ax-sf: #ede8f5;
+  --ax-bd: var(--d-ln, #adbbda);
+  --ax-sf: var(--d-bg, #ede8f5);
 }
 
 /* AX-SURFACE: fond integre, hero en panneau arrondi en retrait */
@@ -1648,19 +1688,19 @@ main {
   margin: 0 0 36px;
   padding: clamp(24px, 5vw, 48px);
   border-radius: var(--ax-r);
-  border: 1px solid rgba(173, 187, 218, 0.7);
+  border: 1px solid var(--d-ln, rgba(173, 187, 218, 0.7));
   background:
     radial-gradient(
       60% 80% at 15% 0%,
-      rgba(112, 145, 230, 0.22),
+      var(--d-t2, rgba(112, 145, 230, 0.22)),
       transparent 70%
     ),
     radial-gradient(
       50% 70% at 95% 0%,
-      rgba(134, 151, 196, 0.22),
+      var(--d-t2, rgba(134, 151, 196, 0.22)),
       transparent 70%
     ),
-    linear-gradient(180deg, #ede8f5, #f7f5fc);
+    linear-gradient(180deg, var(--d-bg, #ede8f5), var(--d-sf2, #f7f5fc));
   box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
 }
 .head {
@@ -1707,10 +1747,10 @@ main {
   gap: 16px;
   min-height: 44px;
   padding: 16px 16px 16px 16px;
-  border: 1px solid #adbbda;
+  border: 1px solid var(--d-ln, #adbbda);
   border-radius: 20px;
-  background: #fff;
-  color: #1e2a55;
+  background: var(--d-sf, #fff);
+  color: var(--d-tx, #1e2a55);
   text-decoration: none;
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
   box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
@@ -1722,11 +1762,11 @@ main {
 .lk:hover,
 .lk:focus-visible {
   transform: translateY(-3px);
-  border-color: #7091e6;
+  border-color: var(--d-ic, #7091e6);
   box-shadow: 0 16px 32px -16px rgba(61, 82, 160, 0.45);
 }
 .lk:focus-visible {
-  outline: 2px solid #3d52a0;
+  outline: 2px solid var(--d-ac, #3d52a0);
   outline-offset: 3px;
 }
 .lk-ico {
@@ -1734,8 +1774,8 @@ main {
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: #ede8f5;
-  color: #3d52a0;
+  background: var(--d-bg, #ede8f5);
+  color: var(--d-ac, #3d52a0);
   display: grid;
   place-items: center;
 }
@@ -1757,7 +1797,7 @@ main {
   font-weight: 700;
   font-size: 16px;
   line-height: 1.3;
-  color: #1e2a55;
+  color: var(--d-tx, #1e2a55);
 }
 .lk-d {
   display: block;
@@ -1765,13 +1805,13 @@ main {
   font-size: 14px;
   line-height: 1.45;
   font-weight: 400;
-  color: #4a5585;
+  color: var(--d-mu, #4a5585);
 }
 .lk-ar {
   flex: none;
   width: 20px;
   height: 20px;
-  color: #3d52a0;
+  color: var(--d-ac, #3d52a0);
   fill: none;
   stroke: currentColor;
   stroke-width: 2.2;
@@ -1782,7 +1822,7 @@ main {
 .lk:hover .lk-ar,
 .lk:focus-visible .lk-ar {
   transform: translateX(4px);
-  color: #1e2a55;
+  color: var(--d-tx, #1e2a55);
 }
 .lk-pill {
   display: inline-flex;
@@ -1790,10 +1830,10 @@ main {
   gap: 8px;
   min-height: 44px;
   padding: 8px 16px 8px 18px;
-  border: 1px solid #adbbda;
+  border: 1px solid var(--d-ln, #adbbda);
   border-radius: 999px;
-  background: #fff;
-  color: #3d52a0;
+  background: var(--d-sf, #fff);
+  color: var(--d-ac, #3d52a0);
   font-weight: 700;
   font-size: 15px;
   text-decoration: none;
@@ -1806,9 +1846,9 @@ main {
 .lk-pill:hover,
 .lk-pill:focus-visible {
   transform: translateY(-2px);
-  border-color: #7091e6;
-  background: #ede8f5;
-  color: #1e2a55;
+  border-color: var(--d-ic, #7091e6);
+  background: var(--d-bg, #ede8f5);
+  color: var(--d-tx, #1e2a55);
   box-shadow: 0 10px 24px -14px rgba(61, 82, 160, 0.5);
   text-decoration: none;
 }
@@ -1853,14 +1893,14 @@ h1 .u,
   box-sizing: border-box;
 }
 .axn {
-  --axn-p: #3d52a0;
-  --axn-ph: #1e2a55;
-  --axn-ac: #7091e6;
-  --axn-sec: #8697c4;
-  --axn-bd: #adbbda;
-  --axn-sf: #ede8f5;
-  --axn-tx: #1e2a55;
-  --axn-tx2: #4a5585;
+  --axn-p: var(--d-ac, #3d52a0);
+  --axn-ph: var(--d-tx, #1e2a55);
+  --axn-ac: var(--d-ic, #7091e6);
+  --axn-sec: var(--d-ic, #8697c4);
+  --axn-bd: var(--d-ln, #adbbda);
+  --axn-sf: var(--d-bg, #ede8f5);
+  --axn-tx: var(--d-tx, #1e2a55);
+  --axn-tx2: var(--d-mu, #4a5585);
   --axn-font:
     Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
   position: sticky;
@@ -1879,7 +1919,7 @@ h1 .u,
   gap: 16px;
   height: 64px;
   padding: 0 10px 0 20px;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--d-gl, rgba(255, 255, 255, 0.92));
   -webkit-backdrop-filter: blur(14px) saturate(1.4);
   backdrop-filter: blur(14px) saturate(1.4);
   border: 1px solid var(--axn-bd);
@@ -1899,7 +1939,7 @@ h1 .u,
   box-shadow:
     0 10px 30px -12px rgba(30, 42, 85, 0.28),
     0 1px 2px rgba(30, 42, 85, 0.06);
-  border-color: rgba(173, 187, 218, 0.7);
+  border-color: var(--d-ln, rgba(173, 187, 218, 0.7));
 }
 .axn-logo {
   display: inline-flex;
@@ -1946,7 +1986,7 @@ h1 .u,
   bottom: 5px;
   height: 2px;
   border-radius: 2px;
-  background: var(--axn-ac);
+  background: var(--d-cta2, var(--axn-ac));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1976,7 +2016,7 @@ h1 .u,
   padding: 3px;
   border: 1px solid var(--axn-bd);
   border-radius: 999px;
-  background: #fff;
+  background: var(--d-sf, #fff);
 }
 .axn-lang a,
 .axn-lang span {
@@ -2000,7 +2040,7 @@ h1 .u,
 }
 .axn-lang a:hover {
   color: var(--axn-tx);
-  background: #f6f4fb;
+  background: var(--d-sf2, #f6f4fb);
 }
 .axn-theme {
   display: grid;
@@ -2009,7 +2049,7 @@ h1 .u,
   height: 40px;
   border: 1px solid var(--axn-bd);
   border-radius: 999px;
-  background: #fff;
+  background: var(--d-sf, #fff);
   color: var(--axn-tx);
   cursor: pointer;
   transition:
@@ -2027,7 +2067,7 @@ h1 .u,
   height: 42px;
   padding: 0 18px;
   border-radius: 999px;
-  background: var(--axn-p);
+  background: var(--d-cta, var(--axn-p));
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -2039,7 +2079,7 @@ h1 .u,
     box-shadow 0.2s;
 }
 .axn-cta:hover {
-  background: var(--axn-ph);
+  background: var(--d-cta2, var(--axn-ph));
   transform: translateY(-1px);
   box-shadow: 0 10px 20px -10px rgba(30, 42, 85, 0.8);
 }
@@ -2057,7 +2097,7 @@ h1 .u,
 .axn a:focus-visible,
 .axn button:focus-visible,
 .axn-top:focus-visible {
-  outline: 3px solid var(--axn-ac, #7091e6);
+  outline: 3px solid var(--axn-ac, var(--d-ic, #7091e6));
   outline-offset: 3px;
 }
 /* Mobile (<=900px) : burger + panneau déroulant ; back-to-top */
@@ -2112,7 +2152,7 @@ h1 .u,
     height: 44px;
     border: 1px solid var(--axn-bd);
     border-radius: 14px;
-    background: #fff;
+    background: var(--d-sf, #fff);
     color: var(--axn-tx);
     cursor: pointer;
     transition: background-color 0.2s;
@@ -2187,7 +2227,7 @@ h1 .u,
     max-height: calc(100dvh - 90px);
     overflow: auto;
     padding: 14px;
-    background: #fff;
+    background: var(--d-sf, #fff);
     border: 1px solid var(--axn-bd);
     border-radius: 22px;
     box-shadow: 0 30px 60px -24px rgba(30, 42, 85, 0.45);
@@ -2250,7 +2290,7 @@ h1 .u,
     transition: transform 0.2s;
   }
   .axn-sheet ul a:hover {
-    background: #f6f4fb;
+    background: var(--d-sf2, #f6f4fb);
   }
   .axn-sheet ul a:hover::after {
     transform: translateX(3px) rotate(45deg);
@@ -2284,9 +2324,9 @@ h1 .u,
     width: 48px;
     height: 48px;
     border-radius: 16px;
-    border: 1px solid #adbbda;
-    background: #fff;
-    color: #1e2a55;
+    border: 1px solid var(--d-ln, #adbbda);
+    background: var(--d-sf, #fff);
+    color: var(--d-tx, #1e2a55);
     box-shadow: 0 8px 22px -10px rgba(30, 42, 85, 0.4);
     cursor: pointer;
     opacity: 0;
@@ -2329,7 +2369,7 @@ h1 .u,
   padding: 0 clamp(12px, 3vw, 32px) 24px;
   font-family:
     Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
-  color: #4a5585;
+  color: var(--d-mu, #4a5585);
 }
 .axf * {
   box-sizing: border-box;
@@ -2338,8 +2378,8 @@ h1 .u,
   max-width: 1240px;
   margin: 0 auto;
   padding: 36px clamp(20px, 4vw, 48px) 22px;
-  background: #fff;
-  border: 1px solid #adbbda;
+  background: var(--d-sf, #fff);
+  border: 1px solid var(--d-ln, #adbbda);
   border-radius: 28px;
 }
 .axf-top {
@@ -2349,7 +2389,7 @@ h1 .u,
   gap: 24px 48px;
   flex-wrap: wrap;
   padding-bottom: 24px;
-  border-bottom: 1px solid #ede8f5;
+  border-bottom: 1px solid var(--d-ln, #ede8f5);
 }
 .axf-brand {
   display: flex;
@@ -2370,10 +2410,10 @@ h1 .u,
 }
 .axf-v {
   padding: 2px 8px;
-  border: 1px solid #adbbda;
+  border: 1px solid var(--d-ln, #adbbda);
   border-radius: 6px;
-  background: #ede8f5;
-  color: #1e2a55;
+  background: var(--d-bg, #ede8f5);
+  color: var(--d-tx, #1e2a55);
   font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -2382,7 +2422,7 @@ h1 .u,
   margin: 10px 0 0;
   font-size: 14px;
   line-height: 1.5;
-  color: #4a5585;
+  color: var(--d-mu, #4a5585);
   max-width: 44ch;
 }
 .axf-links {
@@ -2404,7 +2444,7 @@ h1 .u,
   min-width: 44px;
   font-size: 14px;
   font-weight: 500;
-  color: #1e2a55;
+  color: var(--d-tx, #1e2a55);
   text-decoration: none;
 }
 .axf-links a::after {
@@ -2414,7 +2454,7 @@ h1 .u,
   right: 0;
   bottom: 2px;
   height: 1.5px;
-  background: #7091e6;
+  background: var(--d-cta2, #7091e6);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2424,7 +2464,7 @@ h1 .u,
 }
 .axf-links a.axf-pro {
   font-weight: 700;
-  color: #3d52a0;
+  color: var(--d-ac, #3d52a0);
 }
 .axf-links svg {
   width: 14px;
@@ -2442,10 +2482,10 @@ h1 .u,
   flex-wrap: wrap;
   padding-top: 18px;
   font-size: 12.5px;
-  color: #4a5585;
+  color: var(--d-mu, #4a5585);
 }
 .axf a:focus-visible {
-  outline: 3px solid #7091e6;
+  outline: 3px solid var(--d-ic, #7091e6);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -2483,27 +2523,31 @@ h1 .u,
   background:
     radial-gradient(
       42% 60% at 0% 0%,
-      rgba(134, 151, 196, 0.22),
+      var(--d-t1, rgba(134, 151, 196, 0.22)),
       transparent 70%
     ),
     radial-gradient(
       36% 55% at 100% 100%,
-      rgba(243, 201, 168, 0.18),
+      var(--d-t1, rgba(243, 201, 168, 0.18)),
       transparent 72%
     ),
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.25),
-      rgba(237, 232, 245, 0.12)
+      var(--d-hl, rgba(255, 255, 255, 0.25)),
+      var(--d-hl, rgba(237, 232, 245, 0.12))
     ) !important;
 }
 .khero {
   background:
-    radial-gradient(40% 70% at 0% 0%, rgba(134, 151, 196, 0.2), transparent 70%),
+    radial-gradient(
+      40% 70% at 0% 0%,
+      var(--d-t2, rgba(134, 151, 196, 0.2)),
+      transparent 70%
+    ),
     radial-gradient(
       34% 60% at 100% 100%,
-      rgba(243, 201, 168, 0.16),
+      var(--d-t1, rgba(243, 201, 168, 0.16)),
       transparent 72%
     ),
-    linear-gradient(180deg, #fbfafe, #f5f3fa) !important;
+    linear-gradient(180deg, var(--d-sf, #fbfafe), var(--d-sf2, #f5f3fa)) !important;
 }

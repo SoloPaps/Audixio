@@ -26,32 +26,6 @@
   text-decoration-thickness: 2px;
   text-decoration-color: currentColor;
 }
-
-/* Sombre : les liens se distinguent du texte (bleu clair, pas blanc). */
-:root[data-theme="dark"]:is([data-vue], [data-board])
-  :is(main, #contenu)
-  :is(p, li, dd, small, figcaption, td)
-  > a:not([class]),
-:root[data-theme="dark"]:is([data-vue], [data-board])
-  body
-  a.link-inline:not(.axn-cta),
-:root[data-theme="dark"]:is([data-vue], [data-board]) body .auth-card a.lk {
-  color: #a9c1ff;
-}
-:root[data-theme="dark"]:is([data-vue], [data-board])
-  :is(main, #contenu)
-  :is(p, li, dd, small, figcaption, td)
-  > a:not([class]):is(:hover, :focus-visible),
-:root[data-theme="dark"]:is([data-vue], [data-board])
-  body
-  a.link-inline:not(.axn-cta):is(:hover, :focus-visible),
-:root[data-theme="dark"]:is([data-vue], [data-board])
-  body
-  .auth-card
-  a.lk:is(:hover, :focus-visible) {
-  color: #d6e2ff;
-}
-
 /* Lien-action (pilule bordée) : la bordure suffit, pas de soulignement en plus. */
 :root:is([data-vue], [data-board]) .link-action {
   text-decoration-line: none;

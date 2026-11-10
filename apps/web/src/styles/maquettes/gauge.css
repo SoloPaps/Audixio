@@ -1,72 +1,40 @@
 /*
  * Cadran du score (ScoreGauge.svelte) : tracé, texte, puis teintes par lettre
- * du barème (A–F), clair puis sombre. Chargée seulement avec le composant.
- * Mêmes valeurs que les pastilles du rapport (.grade g-A…g-F) ; le sombre
- * reprend les fonds profonds et les encres claires de theme-dark.css.
+ * du barème (A–F). Chargée seulement avec le composant.
+ * Mêmes valeurs que les pastilles du rapport (.grade g-A…g-F) ; en sombre,
+ * chaque var(--d-…) prend le rôle défini dans theme-dark.css.
  * Posées directement sur .gauge[data-grade] : pas de variables relais.
  */
 .gauge {
-  --g-ink: #667085;
-  --g-bg: #eef0f4;
-  --g-band: rgba(61, 82, 160, 0.14);
-  --g-track: rgba(61, 82, 160, 0.1);
+  --g-ink: var(--d-mu, #667085);
+  --g-bg: var(--d-sf2, #eef0f4);
+  --g-band: var(--d-t2, rgba(61, 82, 160, 0.14));
+  --g-track: var(--d-t2, rgba(61, 82, 160, 0.1));
 }
 .gauge[data-grade="A"] {
-  --g-ink: #067647;
-  --g-bg: #d6f2e3;
+  --g-ink: var(--d-ok, #067647);
+  --g-bg: var(--d-okb, #d6f2e3);
 }
 .gauge[data-grade="B"] {
-  --g-ink: #2b3b85;
-  --g-bg: #dde4f8;
+  --g-ink: var(--d-ac, #2b3b85);
+  --g-bg: var(--d-sf2, #dde4f8);
 }
 .gauge[data-grade="C"] {
-  --g-ink: #8a4b08;
-  --g-bg: #fbe8c8;
+  --g-ink: var(--d-wa, #8a4b08);
+  --g-bg: var(--d-wab, #fbe8c8);
 }
 .gauge[data-grade="D"] {
-  --g-ink: #9a3a0c;
-  --g-bg: #fce3d6;
+  --g-ink: var(--d-or, #9a3a0c);
+  --g-bg: var(--d-orb, #fce3d6);
 }
 .gauge[data-grade="E"] {
-  --g-ink: #b42318;
-  --g-bg: #fee4e2;
+  --g-ink: var(--d-er, #b42318);
+  --g-bg: var(--d-erb, #fee4e2);
 }
 .gauge[data-grade="F"] {
-  --g-ink: #912018;
-  --g-bg: #fdd9d5;
+  --g-ink: var(--d-er, #912018);
+  --g-bg: var(--d-erb, #fdd9d5);
 }
-
-[data-theme="dark"] .gauge {
-  --g-ink: #adbbda;
-  --g-bg: #243056;
-  --g-band: rgba(173, 187, 218, 0.18);
-  --g-track: rgba(173, 187, 218, 0.16);
-}
-[data-theme="dark"] .gauge[data-grade="A"] {
-  --g-ink: #8ee4b0;
-  --g-bg: #123226;
-}
-[data-theme="dark"] .gauge[data-grade="B"] {
-  --g-ink: #b4c6ff;
-  --g-bg: #1f2b57;
-}
-[data-theme="dark"] .gauge[data-grade="C"] {
-  --g-ink: #f6c56b;
-  --g-bg: #3a2a10;
-}
-[data-theme="dark"] .gauge[data-grade="D"] {
-  --g-ink: #f8a77f;
-  --g-bg: #3d2216;
-}
-[data-theme="dark"] .gauge[data-grade="E"] {
-  --g-ink: #ffb4ab;
-  --g-bg: #3a2220;
-}
-[data-theme="dark"] .gauge[data-grade="F"] {
-  --g-ink: #ff9d92;
-  --g-bg: #43201c;
-}
-
 .gauge-figure {
   position: relative;
   aspect-ratio: 1;

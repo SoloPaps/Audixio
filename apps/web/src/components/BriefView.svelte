@@ -14,6 +14,7 @@ import { gradeForScore } from '../lib/grade.js';
 import { calm, say } from '../lib/motion.js';
 import { detailAllowed } from '../lib/plan-board.js';
 import type { ReportRow } from '../lib/report-model.js';
+import { roleColor } from '../lib/theme-role.js';
 
 interface Props {
   auditId: string;
@@ -323,16 +324,16 @@ function drawOrbit(): void {
     const y = Math.sin(angle) * radius * fr;
     const dots = domainDots(domain.id);
     const main = domain.untested
-      ? '#adbbda'
+      ? roleColor('ln2', '#adbbda')
       : dots.fix
-        ? '#B54708'
+        ? roleColor('or', '#B54708')
         : dots.check
-          ? '#3D52A0'
+          ? roleColor('ac', '#3D52A0')
           : '#8697C4';
     ctx.strokeStyle = main;
     ctx.lineWidth = 2.5;
     ctx.setLineDash(domain.untested ? [4, 4] : []);
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = roleColor('sf', '#fff');
     ctx.beginPath();
     ctx.arc(x, y, node, 0, tau);
     ctx.fill();
@@ -429,8 +430,14 @@ onMount(() => {
   }
   const onResize = (): void => drawOrbit();
   window.addEventListener('resize', onResize);
+  const theme = new MutationObserver(onResize);
+  theme.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme'],
+  });
   return () => {
     for (const io of observers) io.disconnect();
+    theme.disconnect();
     window.removeEventListener('resize', onResize);
   };
 });

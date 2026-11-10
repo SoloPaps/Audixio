@@ -33,10 +33,10 @@ html.gg-lock[data-vue] body {
   margin: 0;
   overflow: auto;
   padding: 1.5rem;
-  border: 1px solid rgba(61, 82, 160, 0.18);
+  border: 1px solid var(--d-ln, rgba(61, 82, 160, 0.18));
   border-radius: 24px;
-  background: #fff;
-  color: #1e2a55;
+  background: var(--d-sf, #fff);
+  color: var(--d-tx, #1e2a55);
   box-shadow:
     0 1px 2px rgba(30, 42, 85, 0.05),
     0 24px 48px -18px rgba(30, 42, 85, 0.45);
@@ -54,8 +54,8 @@ html.gg-lock[data-vue] body {
   margin: 0 0 0.75rem;
   padding: 0.2rem 0.75rem;
   border-radius: 999px;
-  background: #ede8f5;
-  color: #3d52a0;
+  background: var(--d-bg, #ede8f5);
+  color: var(--d-ac, #3d52a0);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.01em;
@@ -63,7 +63,7 @@ html.gg-lock[data-vue] body {
 
 .gg-root h2 {
   margin: 0;
-  color: #1e2a55;
+  color: var(--d-tx, #1e2a55);
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
   font-size: 1.35rem;
   font-weight: 700;
@@ -73,7 +73,7 @@ html.gg-lock[data-vue] body {
 
 .gg-root .gg-lead {
   margin: 0.75rem 0 0;
-  color: #4a5585;
+  color: var(--d-mu, #4a5585);
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -94,10 +94,10 @@ html.gg-lock[data-vue] body {
   width: auto;
   min-height: 44px;
   padding: 0 1.1rem;
-  border: 1px solid #adbbda;
+  border: 1px solid var(--d-ln, #adbbda);
   border-radius: 999px;
-  background: #fff;
-  color: #1e2a55;
+  background: var(--d-sf, #fff);
+  color: var(--d-tx, #1e2a55);
   font: inherit;
   font-weight: 700;
   line-height: 1;
@@ -106,27 +106,27 @@ html.gg-lock[data-vue] body {
 
 .gg-root a.gg-btn-main {
   border-color: transparent;
-  background: #3d52a0;
-  background-color: #3d52a0;
+  background: var(--d-cta, #3d52a0);
+  background-color: var(--d-cta, #3d52a0);
   color: #fff;
 }
 
 @media (max-width: 900px) {
   .gg-root a.gg-btn.gg-btn-main {
     border-color: transparent;
-    background: #3d52a0;
-    background-color: #3d52a0;
+    background: var(--d-cta, #3d52a0);
+    background-color: var(--d-cta, #3d52a0);
     color: #fff;
   }
 }
 
 .gg-root a.gg-btn-main:hover {
-  background: #1e2a55;
+  background: var(--d-inv, #1e2a55);
 }
 
 .gg-root a.gg-btn:focus-visible,
 .gg-root .gg-close:focus-visible {
-  outline: 2px solid #7091e6;
+  outline: 2px solid var(--d-ic, #7091e6);
   outline-offset: 3px;
 }
 
@@ -138,7 +138,7 @@ html.gg-lock[data-vue] body {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #4a5585;
+  color: var(--d-mu, #4a5585);
   font: inherit;
   text-decoration: underline;
   text-underline-offset: 0.15em;
@@ -148,7 +148,7 @@ html.gg-lock[data-vue] body {
 .launch-wait {
   width: min(40rem, calc(100% - 2.5rem));
   margin: 2.5rem auto 4rem;
-  color: #1e2a55;
+  color: var(--d-tx, #1e2a55);
   font-family: Inter, "Segoe UI", system-ui, sans-serif;
 }
 
@@ -161,7 +161,7 @@ html.gg-lock[data-vue] body {
 
 .launch-wait [role="status"] {
   margin: 0;
-  color: #4a5585;
+  color: var(--d-mu, #4a5585);
   line-height: 1.5;
 }
 

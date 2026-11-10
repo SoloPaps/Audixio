@@ -239,7 +239,7 @@ function addToBrief(item: Priority): void {
   }
 
   .guide::backdrop {
-    background: var(--ink);
+    background: var(--d-inv, var(--ink));
     opacity: 0.4;
   }
 
