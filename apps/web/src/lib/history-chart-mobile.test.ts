@@ -55,3 +55,23 @@ describe('graphique d’historique sur mobile (retest C11)', () => {
     expect(shownLabels([70, 234, 398], null)).toEqual([true, true, true]);
   });
 });
+
+describe('B2 — libellé du seuil B à 330 px', () => {
+  it('écarte le texte du seuil du 78 sur la série 64 / 78 / 86', () => {
+    const points = [
+      { label: '15 oct.', value: 64 },
+      { label: '26 oct.', value: 78 },
+      { label: '4 nov.', value: 86 },
+    ];
+    const chart = evolutionChart(points, CHART_NARROW);
+    expect(chart?.threshold.visible).toBe(true);
+    const textY = Number(chart?.threshold.textY);
+    for (const mark of chart?.marks ?? []) {
+      const valueY = mark.y - 20;
+      expect(
+        Math.abs(valueY - textY),
+        `note ${mark.value}`,
+      ).toBeGreaterThanOrEqual(16);
+    }
+  });
+});
