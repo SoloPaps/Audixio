@@ -20,13 +20,16 @@ function payload(): unknown {
       error: null,
       site: {
         id: '7a2b3c4d-5e6f-4789-a012-bcdef0123456',
-        url: 'https://mauvais.audigy.test',
-        label: 'mauvais.audigy.test',
+        url: 'https://bon.audigy.test',
+        label: 'bon.audigy.test',
         scope: 'origin',
         hosting: 'other',
       },
     },
-    domains: [],
+    domains: [
+      { domain: 'performance', score: 70, coverage: 1, level: 'improve' },
+      { domain: 'seo', score: 80, coverage: 1, level: 'good' },
+    ],
     findings: [],
   };
 }
