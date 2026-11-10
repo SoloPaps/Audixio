@@ -223,6 +223,12 @@ describe('lien public expiré (SQL local)', () => {
       join pg_namespace as n on n.oid = c.relnamespace
       where n.nspname = 'public' and c.relname = 'reports'
     `;
+    // Un lien actif occupe déjà le slot gratuit : le relâcher avant d’en créer un autre.
+    await admin`
+      update public.reports
+      set revoked_at = now()
+      where id = ${openId}::uuid
+    `;
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256)
       values (${AUDIT}::uuid, 'link', ${SHA})

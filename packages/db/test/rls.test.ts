@@ -149,9 +149,15 @@ describe('RLS Supabase local', () => {
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256) values
         (${B_AUDIT}::uuid, 'private', ${SHA}),
-        (${B_AUDIT}::uuid, 'public', ${SHA}),
+        (${B_AUDIT}::uuid, 'public', ${SHA})
+    `;
+    // B a déjà un site public : le lien d’amorçage exige le plan Pro le temps de l’insert.
+    await admin`update public.profiles set plan = 'pro' where id = ${B}::uuid`;
+    await admin`
+      insert into public.reports (audit_id, visibility, manifest_sha256) values
         (${B_AUDIT}::uuid, 'link', ${SHA})
     `;
+    await admin`update public.profiles set plan = 'free' where id = ${B}::uuid`;
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256, revoked_at)
       values (${B_AUDIT}::uuid, 'public', ${SHA}, now())
@@ -556,10 +562,12 @@ describe('RLS Supabase local', () => {
       where id = ${B_PUBLIC}::uuid
     `;
 
+    await admin`update public.profiles set plan = 'pro' where id = ${B}::uuid`;
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256)
       values (${auditId}::uuid, 'link', ${SHA})
     `;
+    await admin`update public.profiles set plan = 'free' where id = ${B}::uuid`;
     const [created] = await admin<{ share_token: string; id: string }[]>`
       select id::text as id, share_token
       from public.reports
