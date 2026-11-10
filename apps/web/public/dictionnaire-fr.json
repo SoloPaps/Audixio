@@ -253,6 +253,7 @@
   "score.public.error": "Le score ne s’affiche pas. Réessayez.",
   "score.public.empty": "Aucun audit terminé pour l’instant.",
   "score.public.lead": "Les notes sont publiques. Le détail des failles ne l’est pas.",
+  "score.public.deferred": "Note globale disponible dans le rapport complet",
   "score.security.hidden": "Le détail de la protection n’est pas publié.",
   "score.security.title": "Détail de la protection",
   "score.security.generic": "Un point de protection est signalé.",
