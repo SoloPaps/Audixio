@@ -250,6 +250,7 @@
   "score.public.error": "The score is not showing. Try again.",
   "score.public.empty": "No finished audit yet.",
   "score.public.lead": "The scores are public. The detail of weaknesses is not.",
+  "score.public.deferred": "Overall grade available in the full report",
   "score.security.hidden": "The protection detail is not published.",
   "score.security.title": "Protection detail",
   "score.security.generic": "A protection point is flagged.",
