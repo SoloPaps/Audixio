@@ -7,6 +7,7 @@ import {
   type ActiveShare,
   activeShareLinks,
   type ReportLinkRow,
+  shareCopiedKey,
 } from './account-access.js';
 import {
   askedHistorySite,
@@ -20,6 +21,7 @@ import {
   welcomeDone,
 } from './account-prefs.js';
 import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
+import { isLinkLimit } from './badge-target.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { DELETE_TOKEN, deleteConfirmed } from './delete-confirm.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
@@ -100,6 +102,7 @@ export interface EspaceNext {
   name: string;
   sites: LiveSite[];
   plan: Plan;
+  shareLinkCount: number;
 }
 
 const DEMO = new Set(['monsite-exemple.fr', 'boutique.exemple.fr']);
@@ -112,6 +115,7 @@ const emptyNext = (mode: EspaceMode): EspaceNext => ({
   name: '',
   sites: [],
   plan: 'free',
+  shareLinkCount: 0,
 });
 
 function displayName(session: Session): string {
@@ -225,6 +229,13 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       place: places?.places.find((item) => item.siteId === row.id) ?? null,
     };
   });
+  let shareLinkCount = 0;
+  try {
+    const shares = await readActiveShares();
+    shareLinkCount = shares?.length ?? 0;
+  } catch {
+    // La liste des sites reste affichable si le décompte des liens échoue.
+  }
   return {
     mode: 'live',
     notice: '',
@@ -233,6 +244,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
     name: displayName(session),
     sites,
     plan,
+    shareLinkCount,
   };
 }
 
@@ -333,22 +345,36 @@ async function publishSite(
   const slug =
     site.publicSlug ||
     [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
-  const { data, error } = await supabase
-    .from('sites')
-    .update({ is_public: visible, public_slug: slug })
-    .eq('id', id)
-    .select('is_public, public_slug')
-    .single();
+  const response = await fetch('/api/sites/public', {
+    method: 'post'.toUpperCase(),
+    headers: {
+      authorization: `Bearer ${current.token}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({ siteId: id, visible, publicSlug: slug }),
+  });
+  const body = (await response.json().catch(() => null)) as {
+    visible?: boolean;
+    publicSlug?: string | null;
+    error?: string;
+  } | null;
   button.removeAttribute('aria-busy');
-  if (error || !data) {
-    say(t('sites.error'), true);
+  if (!response.ok || !body) {
+    say(
+      t(isLinkLimit(response.status, body) ? 'badge.linkLimit' : 'sites.error'),
+      true,
+    );
     return;
   }
   publish({
     ...current,
     sites: current.sites.map((item) =>
       item.id === id
-        ? { ...item, isPublic: data.is_public, publicSlug: data.public_slug }
+        ? {
+            ...item,
+            isPublic: body.visible === true,
+            publicSlug: body.publicSlug ?? item.publicSlug,
+          }
         : item,
     ),
   });
@@ -1359,7 +1385,7 @@ function shareAccessRow(link: ActiveShare): HTMLLIElement {
   copy.type = 'button';
   copy.className = 'btn btn-ghost btn-sm btn-copy';
   copy.dataset.copy = `${location.origin}${link.urlPath}`;
-  copy.dataset.msg = t('mq.co.078');
+  copy.dataset.msg = t(shareCopiedKey(link.kind));
   const copyLabel = document.createElement('span');
   copyLabel.className = 'bl';
   copyLabel.textContent = t('mq.co.079');

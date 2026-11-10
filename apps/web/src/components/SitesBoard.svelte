@@ -1,5 +1,10 @@
 <script lang="ts">
-import { FREE_LINK_CAP, FREE_SITE_CAP, PRO_SITE_CAP } from '@audigy/db';
+import {
+  FREE_LINK_CAP,
+  FREE_SITE_CAP,
+  linkSlotsUsed,
+  PRO_SITE_CAP,
+} from '@audigy/db';
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import type { MesureDomaine } from '../lib/apercu.js';
@@ -17,11 +22,14 @@ let notice = $state('');
 let token = $state('');
 let plan = $state<'free' | 'pro'>('free');
 let sites = $state<LiveSite[]>([]);
+let shareLinkCount = $state(0);
 
 const siteCap = $derived(plan === 'pro' ? PRO_SITE_CAP : FREE_SITE_CAP);
 const linkCap = $derived(plan === 'pro' ? null : FREE_LINK_CAP);
 const sitesUsed = $derived(sites.length);
-const linksUsed = $derived(sites.filter((site) => site.isPublic).length);
+const linksUsed = $derived(
+  linkSlotsUsed(sites.filter((site) => site.isPublic).length, shareLinkCount),
+);
 
 onMount(() => {
   const stop = bootEspace(
@@ -32,6 +40,7 @@ onMount(() => {
       token = next.token;
       plan = next.plan;
       sites = next.sites;
+      shareLinkCount = next.shareLinkCount;
     },
     () => root,
   );

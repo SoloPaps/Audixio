@@ -119,6 +119,19 @@ export function gateLink(link: LinkRecord | null, now: Date): LinkGate {
   };
 }
 
+/**
+ * Occupants du plafond de liens : publications /score (`is_public`)
+ * et liens de partage /api/liens encore actifs.
+ */
+export function linkSlotsUsed(
+  publishedSites: number,
+  activeShareLinks: number,
+): number {
+  const published = Math.max(0, publishedSites);
+  const shares = Math.max(0, activeShareLinks);
+  return published + shares;
+}
+
 export function peutCreerLien(plan: Plan, actifs: number): boolean {
   return withinLinkQuota(plan, actifs);
 }

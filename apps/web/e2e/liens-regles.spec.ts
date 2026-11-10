@@ -55,6 +55,15 @@ function box() {
     async verified() {
       return true;
     },
+    async publishedSites() {
+      return 0;
+    },
+    async ownsSite() {
+      return false;
+    },
+    async setPublic() {
+      return 'missing';
+    },
     async linksOf(userId) {
       return links.filter((row) => row.ownerId === userId);
     },

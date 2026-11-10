@@ -82,3 +82,10 @@ export function activeShareLinks(
   }
   return links;
 }
+
+/** Toast de copie : le lien public n’est pas un lien équipe. */
+export function shareCopiedKey(
+  kind: 'public' | 'team',
+): 'mq.co.078' | 'mq.co.078.public' {
+  return kind === 'team' ? 'mq.co.078' : 'mq.co.078.public';
+}
