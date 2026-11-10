@@ -1,5 +1,4 @@
 import { expect, type Page, test } from '@playwright/test';
-import { toEnglish } from './en-session.js';
 
 const COMPLETE = '/score/exemple-score/';
 const INCOMPLETE = '/score/exemple-score-partiel/';
@@ -14,9 +13,23 @@ async function openScore(
   lang: 'fr' | 'en',
 ): Promise<void> {
   await page.setViewportSize({ width, height: width === 330 ? 800 : 900 });
+  if (lang === 'en') {
+    const pack = await (await page.request.get('/dictionnaire-en.json')).text();
+    await page.addInitScript((dictionary) => {
+      const storage = (
+        globalThis as unknown as {
+          localStorage: { setItem: (key: string, item: string) => void };
+        }
+      ).localStorage;
+      storage.setItem('audigy-en', dictionary);
+      storage.setItem('audigy-locale', 'en');
+    }, pack);
+  }
   await page.goto(`${path}?theme=${theme}`);
   await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-  if (lang === 'en') await toEnglish(page);
+  if (lang === 'en') {
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  }
 }
 
 test.describe('note globale publique', () => {
