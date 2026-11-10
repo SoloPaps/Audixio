@@ -444,3 +444,15 @@ export async function loadSharedScore(
     return viewFromLocal(token);
   }
 }
+
+/** Affichage de la note globale sur /score : absente par conception, pas « non testé ». */
+export type PublicGlobalDisplay = 'score' | 'deferred' | 'untested';
+
+export function publicGlobalDisplay(
+  globalScore: number | null,
+  scoredOpenDomains: number,
+): PublicGlobalDisplay {
+  if (globalScore !== null) return 'score';
+  if (scoredOpenDomains > 0) return 'deferred';
+  return 'untested';
+}

@@ -6,6 +6,7 @@ import {
   type LinkKind,
   type LinkRecord,
   lienActif,
+  linkSlotsUsed,
   type Plan,
   peutCreerLien,
   SHARE_TOKEN,
@@ -41,6 +42,13 @@ export interface LienStore {
   owns(userId: string, auditId: string): Promise<boolean>;
   verified(auditId: string): Promise<boolean>;
   linksOf(userId: string): Promise<LinkRecord[]>;
+  publishedSites(userId: string): Promise<number>;
+  ownsSite(userId: string, siteId: string): Promise<boolean>;
+  setPublic(
+    userId: string,
+    siteId: string,
+    input: { visible: boolean; publicSlug: string },
+  ): Promise<{ isPublic: boolean; publicSlug: string | null } | 'missing'>;
   tokenOf(tokenHash: string): Promise<string | null>;
   mint(input: {
     ownerId: string;
@@ -183,13 +191,24 @@ async function createPublic(req: Request, deps: LienDeps): Promise<Response> {
   });
 }
 
+async function usedSlots(
+  store: LienStore,
+  user: string,
+  now: Date,
+): Promise<number> {
+  return linkSlotsUsed(
+    await store.publishedSites(user),
+    await actifs(store, user, now),
+  );
+}
+
 async function room(
   deps: LienDeps,
   user: string,
   plan: Plan,
   now: Date,
 ): Promise<boolean> {
-  return peutCreerLien(plan, await actifs(deps.store, user, now));
+  return peutCreerLien(plan, await usedSlots(deps.store, user, now));
 }
 
 async function decision(req: Request, deps: LienDeps): Promise<Response> {
@@ -309,4 +328,53 @@ export async function handlePartage(
     deps.logger.error('lien_lecture', { code: errorCode(error) });
     return apiError(500, 'internal');
   }
+}
+
+const publishBody = z.object({
+  siteId: z.string().uuid(),
+  visible: z.boolean(),
+  publicSlug: z.string().min(8).max(64).optional(),
+});
+
+/** Publication /score : même plafond que POST /api/liens. */
+export async function handleSitePublic(
+  req: Request,
+  deps: LienDeps,
+): Promise<Response> {
+  if (req.method !== 'POST') {
+    return apiError(405, 'method_not_allowed', {}, { allow: 'POST' });
+  }
+  const user = await userId(req, deps);
+  if (!user) return apiError(401, 'unauthorized');
+  let body: unknown;
+  try {
+    body = await readJson(req);
+  } catch {
+    return apiError(400, 'invalid_input');
+  }
+  const parsed = publishBody.safeParse(body);
+  if (!parsed.success) return apiError(400, 'invalid_input');
+  const { siteId, visible } = parsed.data;
+  if (!(await deps.store.ownsSite(user, siteId))) {
+    return apiError(404, 'site_not_found');
+  }
+  const plan = await deps.store.planOf(user);
+  if (visible && !(await room(deps, user, plan, deps.store.now()))) {
+    return apiError(429, 'user_limit');
+  }
+  const slug =
+    parsed.data.publicSlug ??
+    [...crypto.getRandomValues(new Uint8Array(16))]
+      .map((byte) => byte.toString(16).padStart(2, '0'))
+      .join('');
+  const result = await deps.store.setPublic(user, siteId, {
+    visible,
+    publicSlug: slug,
+  });
+  if (result === 'missing') return apiError(404, 'site_not_found');
+  return json(200, {
+    ok: true,
+    visible: result.isPublic,
+    publicSlug: result.publicSlug,
+  });
 }

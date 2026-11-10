@@ -66,6 +66,7 @@ describe('fonctions Netlify', () => {
       'api-partage',
       'api-places',
       'api-robot',
+      'api-sites-public',
       'api-unsubscribe',
       'api-verifications-check',
       'api-verifications-create',
@@ -113,6 +114,10 @@ describe('fonctions Netlify', () => {
     expect((await load('api-partage')).config).toEqual({
       path: '/api/partage',
       method: 'POST',
+    });
+    expect((await load('api-sites-public')).config).toEqual({
+      path: '/api/sites/public',
+      method: ['POST'],
     });
     expect((await load('api-robot')).config).toEqual({
       path: '/api/robot',

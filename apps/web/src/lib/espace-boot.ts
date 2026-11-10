@@ -7,7 +7,9 @@ import {
   type ActiveShare,
   activeShareLinks,
   type ReportLinkRow,
+  shareCopiedKey,
 } from './account-access.js';
+import { ACCOUNT_EXPORT_FILENAME } from './account-export.js';
 import {
   askedHistorySite,
   historySource,
@@ -19,7 +21,9 @@ import {
   latestReportHref,
   welcomeDone,
 } from './account-prefs.js';
+import { applyCadenceSummary } from './alerts-cadence.js';
 import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
+import { isLinkLimit } from './badge-target.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { DELETE_TOKEN, deleteConfirmed } from './delete-confirm.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
@@ -100,6 +104,7 @@ export interface EspaceNext {
   name: string;
   sites: LiveSite[];
   plan: Plan;
+  shareLinkCount: number;
 }
 
 const DEMO = new Set(['monsite-exemple.fr', 'boutique.exemple.fr']);
@@ -112,6 +117,7 @@ const emptyNext = (mode: EspaceMode): EspaceNext => ({
   name: '',
   sites: [],
   plan: 'free',
+  shareLinkCount: 0,
 });
 
 function displayName(session: Session): string {
@@ -225,6 +231,13 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       place: places?.places.find((item) => item.siteId === row.id) ?? null,
     };
   });
+  let shareLinkCount = 0;
+  try {
+    const shares = await readActiveShares();
+    shareLinkCount = shares?.length ?? 0;
+  } catch {
+    // La liste des sites reste affichable si le décompte des liens échoue.
+  }
   return {
     mode: 'live',
     notice: '',
@@ -233,6 +246,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
     name: displayName(session),
     sites,
     plan,
+    shareLinkCount,
   };
 }
 
@@ -333,22 +347,36 @@ async function publishSite(
   const slug =
     site.publicSlug ||
     [...bytes].map((byte) => byte.toString(16).padStart(2, '0')).join('');
-  const { data, error } = await supabase
-    .from('sites')
-    .update({ is_public: visible, public_slug: slug })
-    .eq('id', id)
-    .select('is_public, public_slug')
-    .single();
+  const response = await fetch('/api/sites/public', {
+    method: 'post'.toUpperCase(),
+    headers: {
+      authorization: `Bearer ${current.token}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({ siteId: id, visible, publicSlug: slug }),
+  });
+  const body = (await response.json().catch(() => null)) as {
+    visible?: boolean;
+    publicSlug?: string | null;
+    error?: string;
+  } | null;
   button.removeAttribute('aria-busy');
-  if (error || !data) {
-    say(t('sites.error'), true);
+  if (!response.ok || !body) {
+    say(
+      t(isLinkLimit(response.status, body) ? 'badge.linkLimit' : 'sites.error'),
+      true,
+    );
     return;
   }
   publish({
     ...current,
     sites: current.sites.map((item) =>
       item.id === id
-        ? { ...item, isPublic: data.is_public, publicSlug: data.public_slug }
+        ? {
+            ...item,
+            isPublic: body.visible === true,
+            publicSlug: body.publicSlug ?? item.publicSlug,
+          }
         : item,
     ),
   });
@@ -397,44 +425,58 @@ function bindSites(
   };
   rerun?.addEventListener('click', onRerun);
   if (rerun) off.push(() => rerun.removeEventListener('click', onRerun));
-  const menuButton = root.querySelector<HTMLButtonElement>('#expb');
-  const menu = root.querySelector<HTMLElement>('#expm');
-  const closeMenu = (): void => {
-    if (!menu || !menuButton) return;
-    menu.hidden = true;
-    menuButton.setAttribute('aria-expanded', 'false');
+  const exportMenus = [...root.querySelectorAll<HTMLElement>('.export-menu')];
+  const closeMenus = (except?: HTMLElement): void => {
+    for (const wrap of exportMenus) {
+      if (wrap === except) continue;
+      const menu = wrap.querySelector('ul');
+      const menuButton = wrap.querySelector('button');
+      if (!menu || !menuButton) continue;
+      menu.hidden = true;
+      menuButton.setAttribute('aria-expanded', 'false');
+    }
   };
-  const onMenu = (): void => {
-    if (!menu || !menuButton) return;
-    const open = menu.hidden;
-    menu.hidden = !open;
-    menuButton.setAttribute('aria-expanded', String(open));
-    if (open) menu.querySelector('button')?.focus();
-  };
-  menuButton?.addEventListener('click', onMenu);
-  if (menuButton)
-    off.push(() => menuButton.removeEventListener('click', onMenu));
-  const onPick = (event: Event): void => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-    const button = target.closest('button');
-    if (!button || !menu?.contains(button)) return;
-    const fmt = button.dataset.fmt ?? '';
-    closeMenu();
-    menuButton?.focus();
-    say(t('mq.ui.export', { fmt }), true);
-  };
-  menu?.addEventListener('click', onPick);
-  if (menu) off.push(() => menu.removeEventListener('click', onPick));
+  for (const wrap of exportMenus) {
+    const menuButton = wrap.querySelector<HTMLButtonElement>(':scope > button');
+    const menu = wrap.querySelector<HTMLElement>(':scope > ul');
+    const onMenu = (): void => {
+      if (!menu || !menuButton) return;
+      const open = menu.hidden;
+      closeMenus(wrap);
+      menu.hidden = !open;
+      menuButton.setAttribute('aria-expanded', String(open));
+      if (open) menu.querySelector('button')?.focus();
+    };
+    const onPick = (event: Event): void => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest('button');
+      if (!button || !menu?.contains(button)) return;
+      const fmt = button.dataset.fmt ?? '';
+      closeMenus();
+      menuButton?.focus();
+      say(t('mq.ui.export', { fmt }), true);
+    };
+    menuButton?.addEventListener('click', onMenu);
+    menu?.addEventListener('click', onPick);
+    if (menuButton)
+      off.push(() => menuButton.removeEventListener('click', onMenu));
+    if (menu) off.push(() => menu.removeEventListener('click', onPick));
+  }
   const onDoc = (event: Event): void => {
     const target = event.target;
-    if (!(target instanceof Element) || !target.closest('.menu')) closeMenu();
+    if (!(target instanceof Element) || !target.closest('.export-menu')) {
+      closeMenus();
+    }
   };
   const onKey = (event: KeyboardEvent): void => {
-    if (event.key === 'Escape' && menu && !menu.hidden) {
-      closeMenu();
-      menuButton?.focus();
-    }
+    if (event.key !== 'Escape') return;
+    const open = exportMenus.find(
+      (wrap) => wrap.querySelector('ul') && !wrap.querySelector('ul')?.hidden,
+    );
+    if (!open) return;
+    closeMenus();
+    open.querySelector('button')?.focus();
   };
   document.addEventListener('click', onDoc);
   document.addEventListener('keydown', onKey);
@@ -1359,7 +1401,7 @@ function shareAccessRow(link: ActiveShare): HTMLLIElement {
   copy.type = 'button';
   copy.className = 'btn btn-ghost btn-sm btn-copy';
   copy.dataset.copy = `${location.origin}${link.urlPath}`;
-  copy.dataset.msg = t('mq.co.078');
+  copy.dataset.msg = t(shareCopiedKey(link.kind));
   const copyLabel = document.createElement('span');
   copyLabel.className = 'bl';
   copyLabel.textContent = t('mq.co.079');
@@ -1490,7 +1532,7 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'audixio-donnees.json';
+        link.download = ACCOUNT_EXPORT_FILENAME;
         link.click();
         URL.revokeObjectURL(url);
         say(t('mq.ui.export.done'), true);
@@ -1740,7 +1782,7 @@ function bindAlerts(root: HTMLElement, next: EspaceNext): () => void {
   const form = root.querySelector<HTMLFormElement>('#fPro');
   const onForm = (event: Event): void => {
     event.preventDefault();
-    void saveAlerts(next);
+    void saveAlerts(root, next);
   };
   form?.addEventListener('submit', onForm);
   if (form) off.push(() => form.removeEventListener('submit', onForm));
@@ -1806,10 +1848,7 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   else if (drop && row.score_drop_points !== 10) {
     drop.textContent = t('mq.ui.drop.points', { n: row.score_drop_points });
   }
-  if (cadence && row.reaudit_cadence === 'daily')
-    cadence.textContent = t('mq.ui.cadence.daily');
-  if (cadence && row.reaudit_cadence === 'weekly')
-    cadence.textContent = t('mq.ui.cadence.weekly');
+  applyCadenceSummary(cadence, row.reaudit_cadence);
   const radio = root.querySelector<HTMLInputElement>(
     `input[name="fq"][value="${CADENCE_RADIO[row.reaudit_cadence] ?? 'h'}"]`,
   );
@@ -1851,7 +1890,7 @@ function radioCadence(value: string | undefined): string {
   return found?.[0] ?? 'weekly';
 }
 
-async function saveAlerts(next: EspaceNext): Promise<void> {
+async function saveAlerts(root: HTMLElement, next: EspaceNext): Promise<void> {
   const supabase = browserClient();
   const sites = await alertSites();
   // Jamais de clic muet : sans site ni client, on le dit.
@@ -1887,6 +1926,11 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
       say(t('mq.ui.alerts.error'), true);
       return;
     }
+  }
+  const first = sites[0];
+  if (first) {
+    applyCadenceSummary(root.querySelectorAll('.rows .val')[3], cadence);
+    void paintAlerts(root, first);
   }
   say(t('mq.ui.saved'), true);
   void next;

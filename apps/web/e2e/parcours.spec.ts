@@ -173,13 +173,18 @@ function auditBody(status: 'queued' | 'running' | 'done'): unknown {
 /** Invité : /lancer doit passer par /progression avant le rapport. */
 async function expectGuestThroughProgression(page: Page): Promise<void> {
   await expect(page).toHaveURL(/\/progression\?id=/, { timeout: 20_000 });
-  const status = page.getByRole('status');
-  await expect(status).toContainText(/Analyse en cours|securite/);
-  await expect(
-    page.getByRole('link', { name: 'Revenir à l’accueil' }),
-  ).toBeVisible();
+  // Un audit déjà terminé (réponse guest « done ») ne rejoue plus l’aperçu
+  // qui faisait reculer la barre (M8). Le lien « Revenir à l’accueil »
+  // n’est visible que pendant l’analyse ; ensuite « Voir le rapport ».
+  const home = page.getByRole('link', { name: 'Revenir à l’accueil' });
+  const reportReady = page.getByRole('link', { name: 'Voir le rapport' });
+  await expect(home.or(reportReady)).toBeVisible({ timeout: 20_000 });
   await expect(page.locator('[aria-modal="true"]')).toHaveCount(0);
-  await expect(status).toContainText('Rapport prêt', { timeout: 15_000 });
+  if (await home.isVisible()) {
+    await expect(page.getByRole('status')).toContainText('Rapport prêt', {
+      timeout: 15_000,
+    });
+  }
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'Votre diagnostic est prêt pour',
   );

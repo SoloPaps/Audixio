@@ -703,6 +703,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
+  z-index: 3;
   width: 44px;
   height: 44px;
   border-radius: 14px;
@@ -949,7 +950,10 @@
   outline: none;
 }
 :where(html[data-vue="badge"]) .dlg > .kicker {
-  padding-right: 56px;
+  position: relative;
+  z-index: 0;
+  padding-right: 64px;
+  overflow-wrap: anywhere;
 }
 :where(html[data-vue="badge"]) .cp:has(textarea) {
   align-items: flex-start;

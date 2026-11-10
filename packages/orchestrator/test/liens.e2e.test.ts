@@ -64,6 +64,7 @@ function memory(plan: 'free' | 'pro', verified = true) {
   const tokens = new Map<string, string>();
   const refusals: string[] = [];
   let clock = Date.parse('2026-11-03T12:00:00.000Z');
+  let published = 0;
   const store: LienStore = {
     now: () => new Date(clock),
     async planOf() {
@@ -74,6 +75,15 @@ function memory(plan: 'free' | 'pro', verified = true) {
     },
     async verified() {
       return verified;
+    },
+    async publishedSites() {
+      return published;
+    },
+    async ownsSite() {
+      return false;
+    },
+    async setPublic() {
+      return 'missing';
     },
     async linksOf(userId) {
       return links.filter((row) => row.ownerId === userId);
@@ -119,6 +129,9 @@ function memory(plan: 'free' | 'pro', verified = true) {
     store,
     links,
     refusals,
+    setPublished(count: number) {
+      published = count;
+    },
     setNow(iso: string) {
       clock = Date.parse(iso);
     },

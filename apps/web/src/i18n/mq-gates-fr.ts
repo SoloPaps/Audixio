@@ -99,7 +99,7 @@ export const mqGatesFr = {
   'mq.pro.077': '14 jours avant expiration',
   'mq.pro.078': 'Délai réglable de 7 à 60 jours',
   'mq.pro.079': 'Alerte baisse de note',
-  'mq.pro.080': 'Non',
+  'mq.pro.080': 'Oui, seuil fixe',
   'mq.pro.081': 'Seuil réglable',
   'mq.pro.082': 'Résumé du lundi',
   'mq.pro.083': 'Oui',
