@@ -16,7 +16,7 @@ function cssEscape(value: string): string {
     }
   ).CSS;
   if (css && typeof css.escape === 'function') return css.escape(value);
-  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  return value.replace(/[^A-Za-z0-9_-]/g, (ch) => `\\${ch}`);
 }
 
 interface FindingTarget {

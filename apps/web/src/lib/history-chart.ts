@@ -95,7 +95,7 @@ function thresholdLabelY(
   const collide = (textY: number): boolean =>
     markYs.some((y) => Math.abs(y - VALUE_LABEL_RISE - textY) < LABEL_MIN_GAP);
   if (!collide(preferred)) return one(preferred);
-  const below = thresholdY + 14;
+  const below = thresholdY + 24;
   if (!collide(below)) return one(below);
   return one(18);
 }

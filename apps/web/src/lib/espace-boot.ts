@@ -41,6 +41,7 @@ import {
   type ChartFrame,
   type EvolutionChart,
   evolutionChart,
+  GRADE_B_THRESHOLD,
   NARROW_LABEL_GAP,
   shownLabels,
 } from './history-chart.js';
@@ -712,7 +713,12 @@ function applyChartFrame(svg: SVGSVGElement, frame: ChartFrame): void {
   svg.querySelectorAll('.grid text').forEach((text) => {
     text.setAttribute('x', String(frame.x0 - 26));
   });
-  svg.querySelector('.thr text')?.setAttribute('x', String(frame.width - 34));
+  const thrText = svg.querySelector('.thr text');
+  if (thrText) {
+    thrText.setAttribute('x', String(frame.width - 34));
+    const key = frame === CHART_NARROW ? 'mq.hi.032.narrow' : 'mq.hi.032';
+    thrText.textContent = t(key, { n: GRADE_B_THRESHOLD });
+  }
 }
 
 function applyEvolutionChart(

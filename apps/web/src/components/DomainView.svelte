@@ -436,7 +436,7 @@ function seeLabel(n: number): string {
         <ol class="list" id="list">
           {#each shown as item, index (item.id)}
             {@const sev = sevOf(item)}
-            <li class="cst card rv" data-sev={sev} style={`--i:${index}`}>
+            <li class="cst card rv" id={`finding-${item.id}`} data-sev={sev} style={`--i:${index}`}>
               <div class="cst-h">
                 {#if sev === 'crit'}<span class="badge b-crit">{t('domaine.filter.crit')}</span>
                 {:else if sev === 'fix'}<span class="badge b-fix">{t('domaine.filter.mod')}</span>
