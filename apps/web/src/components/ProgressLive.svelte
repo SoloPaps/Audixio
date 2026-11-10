@@ -7,7 +7,7 @@ import {
   createGuestAudit,
   readAudit,
 } from '../lib/audit-api.js';
-import { currentSession } from '../lib/browser-session.js';
+import { browserClient, currentSession } from '../lib/browser-session.js';
 import { readGuestAudit, saveGuestAudit } from '../lib/guest-store.js';
 import { loginHref } from '../lib/nav.js';
 import {
@@ -26,6 +26,8 @@ import { progressionHref } from '../lib/relaunch.js';
 import GuestGate from './GuestGate.svelte';
 
 let gate = $state(false);
+
+let { endEmailEnabled = false }: { endEmailEnabled?: boolean } = $props();
 
 const POLL_MS = 1500;
 const GUEST_BEAT_MS = 800;
@@ -282,6 +284,21 @@ onMount(() => {
       void tick();
     }, POLL_MS);
   };
+
+  if (endEmailEnabled) {
+    void (async () => {
+      const session = await currentSession();
+      const supabase = browserClient();
+      if (!session || !supabase) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('notify_audit_end')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      const hint = document.getElementById('end-email-hint');
+      if (hint && data?.notify_audit_end !== false) hint.hidden = false;
+    })();
+  }
 
   void tick();
   return () => {

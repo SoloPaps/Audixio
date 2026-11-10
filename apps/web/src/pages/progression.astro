@@ -4,6 +4,10 @@ import '../styles/maquettes/theme-dark-qa.css';
 import '../styles/maquettes/progression.css';
 import ProgressLive from '../components/ProgressLive.svelte';
 import { t } from '../i18n/index.js';
+
+const endEmailEnabled =
+  (import.meta.env.AUDIT_END_EMAIL_ENABLED ?? '').toLowerCase() === 'true';
+
 import Canon from '../layouts/Canon.astro';
 ---
 
@@ -26,6 +30,7 @@ import Canon from '../layouts/Canon.astro';
   <p class="eyebrow intro">{t('mq.p.003')}</p>
   <h1 class="intro" id="t-h1" aria-label={t('progress.title')}><span id="h1T" data-empty={t('progress.empty.title')}>{t('mq.p.004')}</span> <span class="grad mono" style="font-size:.82em;letter-spacing:-.04em" data-i18n-skip></span></h1>
   <p class="lead intro" id="leadT" data-empty={t('progress.empty.lead')}>{t('mq.p.005')}</p>
+  <p id="end-email-hint" hidden>{t('progress.endEmail')}</p>
   <p id="progress-empty"><a class="btn btn-primary" href="/#audit-form">{t('progress.empty.action')}</a></p>
 <script is:inline>
 (function () {
@@ -141,7 +146,7 @@ import Canon from '../layouts/Canon.astro';
     <p class="ok-msg">{t('progress.notify.ok')}</p>
   </div>
 </dialog>
-<ProgressLive client:load />
+<ProgressLive client:load endEmailEnabled={endEmailEnabled} />
 <script>
   import { bindProgressScene } from '../lib/progress-scene.ts';
   bindProgressScene();
