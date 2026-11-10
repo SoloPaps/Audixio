@@ -156,6 +156,7 @@ export const espaceFr = {
   'mq.sl.115': 'Fermer',
   'mq.sl.live.n': '{n}',
   'mq.sl.live.of': ' / {n}',
+  'mq.sl.live.of.unlimited': ' / ∞',
   'mq.sl.live.sites.one': '1 site suivi sur {max} autorisés.',
   'mq.sl.live.sites.sr': '{used} sites suivis sur {max} autorisés.',
   'mq.sl.live.links.none': 'Aucun lien actif sur {max} autorisé.',

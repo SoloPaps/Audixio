@@ -10,6 +10,7 @@ import { t } from '../i18n/index.js';
 import type { MesureDomaine } from '../lib/apercu.js';
 import { bootEspace, type LiveSite } from '../lib/espace-boot.js';
 import { gradeForScore } from '../lib/grade.js';
+import { quotaFillDash, quotaRatio } from '../lib/quota-ring.js';
 import { levelForScore, levelLabel } from '../lib/score.js';
 import ReputationPanel from './ReputationPanel.svelte';
 import SessionWall from './SessionWall.svelte';
@@ -46,11 +47,6 @@ onMount(() => {
   );
   return () => stop();
 });
-
-function ratio(used: number, max: number): number {
-  if (max <= 0) return 0;
-  return Math.min(1, used / max);
-}
 
 function letterOf(note: string | null, score: number | null): string | null {
   if (note && /^[A-F]$/.test(note)) return note;
@@ -137,8 +133,8 @@ function levelOf(metric: MesureDomaine): string {
 <div class="gpanel quota in" aria-labelledby="qt">
 <svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs><linearGradient id="rgrad" x1="0" x2="1"><stop offset="0" stop-color="#3D52A0"/><stop offset="1" stop-color="#7091E6"/></linearGradient></defs></svg>
 <p class="kicker" id="qt">{plan === 'pro' ? t('mq.sl.live.kicker.pro') : t('mq.sl.010')}</p>
-<div class="qrow"><div class="ring" class:full={sitesUsed >= siteCap} style="--p:{ratio(sitesUsed, siteCap)}" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36"/></svg><b><span><span>{t('mq.sl.live.n', { n: sitesUsed })}</span><small>{t('mq.sl.live.of', { n: siteCap })}</small></span></b></div><div><h2>{t('mq.sl.003')}</h2><p><span class="sr-only">{sitesCaption(sitesUsed, siteCap)} </span>{#if sitesUsed >= siteCap}<span class="badge b-chk">{t('mq.sl.014')}</span>{/if}</p></div></div>
-<div class="qrow"><div class="ring" class:full={linkCap !== null && linksUsed >= linkCap} style="--p:{linkCap === null ? (linksUsed > 0 ? 1 : 0) : ratio(linksUsed, linkCap)}" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36"/></svg><b><span><span>{t('mq.sl.live.n', { n: linksUsed })}</span>{#if linkCap !== null}<small>{t('mq.sl.live.of', { n: linkCap })}</small>{/if}</span></b></div><div><h2>{t('mq.sl.017')}</h2><p><span class="sr-only">{linksCaption(linksUsed, linkCap)} </span>{#if linkCap !== null && linksUsed >= linkCap}<span class="badge b-chk">{t('mq.sl.014')}</span>{/if}</p></div></div>
+<div class="qrow"><div class="ring" class:full={sitesUsed >= siteCap} style="--p:{quotaRatio(sitesUsed, siteCap)}" data-fill={quotaFillDash(sitesUsed, siteCap)} aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36" pathLength="100" stroke-dasharray={quotaFillDash(sitesUsed, siteCap)} /></svg><b><span><span>{t('mq.sl.live.n', { n: sitesUsed })}</span><small>{t('mq.sl.live.of', { n: siteCap })}</small></span></b></div><div><h2>{t('mq.sl.003')}</h2><p><span class="sr-only">{sitesCaption(sitesUsed, siteCap)} </span>{#if sitesUsed >= siteCap}<span class="badge b-chk">{t('mq.sl.014')}</span>{/if}</p></div></div>
+<div class="qrow"><div class="ring" class:full={linkCap !== null && linksUsed >= linkCap} class:unlimited={linkCap === null} style="--p:{quotaRatio(linksUsed, linkCap)}" data-fill={quotaFillDash(linksUsed, linkCap)} aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="bg" cx="42" cy="42" r="36"/><circle class="fg" cx="42" cy="42" r="36" pathLength="100" stroke-dasharray={quotaFillDash(linksUsed, linkCap)} /></svg><b><span><span>{t('mq.sl.live.n', { n: linksUsed })}</span>{#if linkCap !== null}<small>{t('mq.sl.live.of', { n: linkCap })}</small>{:else}<small>{t('mq.sl.live.of.unlimited')}</small>{/if}</span></b></div><div><h2>{t('mq.sl.017')}</h2><p><span class="sr-only">{linksCaption(linksUsed, linkCap)} </span>{#if linkCap !== null && linksUsed >= linkCap}<span class="badge b-chk">{t('mq.sl.014')}</span>{/if}</p></div></div>
 {#if plan !== 'pro'}<a class="qlink lk-pill" href="/passer-pro">{t('mq.sl.019')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>{/if}
 </div>
 </div>
@@ -189,7 +185,7 @@ function levelOf(metric: MesureDomaine): string {
 <a class="btn btn-primary btn-sm" href={site.href}>{t('mq.sl.064')} <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
 </div>
 <div class="share">
-<div class="cd" style="--p:{linkCap === null ? (linksUsed > 0 ? 1 : 0) : ratio(linksUsed, linkCap)}" aria-hidden="true"><svg viewBox="0 0 70 70"><circle class="bg" cx="35" cy="35" r="30"/><circle class="fg" cx="35" cy="35" r="30"/></svg><b><span><span>{t('mq.sl.live.n', { n: linksUsed })}</span>{#if linkCap !== null}<small>{t('mq.sl.live.of', { n: linkCap })}</small>{/if}</span></b></div>
+<div class="cd" class:unlimited={linkCap === null} style="--p:{quotaRatio(linksUsed, linkCap)}" data-fill={quotaFillDash(linksUsed, linkCap)} aria-hidden="true"><svg viewBox="0 0 70 70"><circle class="bg" cx="35" cy="35" r="30"/><circle class="fg" cx="35" cy="35" r="30" pathLength="100" stroke-dasharray={quotaFillDash(linksUsed, linkCap)} /></svg><b><span><span>{t('mq.sl.live.n', { n: linksUsed })}</span>{#if linkCap !== null}<small>{t('mq.sl.live.of', { n: linkCap })}</small>{/if}</span></b></div>
 <div><h3>{t('mq.sl.017')}</h3><p>{#if site.isPublic && publicUrl(site)}{t('mq.sl.live.share.on', { url: publicUrl(site) })}{:else if linkCap === null}{t('mq.sl.live.share.pro', { used: linksUsed })}{:else}{t('mq.sl.live.share.none', { used: linksUsed, max: linkCap })}{/if}</p><div class="tags"><span>{t('mq.sl.068')}</span><span>{t('mq.sl.069')}</span><span>{t('mq.sl.070')}</span></div></div>
 <div class="sb">{#if site.isPublic && publicUrl(site)}<button class="btn btn-ghost btn-sm cp" type="button" data-copy={publicUrl(site)} data-msg={t('mq.sl.071')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg><span class="bl">{t('mq.sl.072')}</span></button><button class="btn btn-ghost btn-sm" type="button" data-unpublish={site.id}>{t('sites.unpublish')}</button>{:else}<button class="btn btn-primary btn-sm" type="button" data-pro={linkCap !== null && linksUsed >= linkCap ? 'liens' : undefined} data-publish={linkCap !== null && linksUsed >= linkCap ? undefined : site.id}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>{t('mq.sl.079')}</button>{/if}</div>
 </div>
