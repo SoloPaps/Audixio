@@ -9,7 +9,8 @@ describe('B1 — paroi de session opaque en sombre étroit', () => {
     );
     expect(css).toMatch(/max-width:\s*390px/);
     expect(css).toMatch(
-      /session-wall(?:\.report-message)?\s*\{[^}]*background-color:\s*#1c2340/s,
+      /session-wall(?:\.report-message)?\s*\{[^}]*background-color:\s*var\(--d-sf\)/s,
     );
+    expect(css).toMatch(/--d-sf:\s*#[0-9a-f]{6};/);
   });
 });

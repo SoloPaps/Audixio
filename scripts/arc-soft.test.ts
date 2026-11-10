@@ -56,15 +56,23 @@ describe('tokens Arc Soft', () => {
 
   it('assombrit le fond, le verre et les blobs sans toucher au pêche ni aux scores', () => {
     const tokens = css();
-    expect(tokens).toContain('--wash-bottom: #1a2830');
-    expect(tokens).toContain('--glass: rgb(29 33 38 / 0.72)');
-    expect(tokens).toContain('--glass-border: rgb(255 255 255 / 0.18)');
-    expect(tokens).toContain('--shadow-float: 0 18px 48px rgb(0 0 0 / 0.35)');
-    expect(tokens).toContain('--plate: #1d2126');
-    expect(tokens).toContain('--blob-opacity-petrol: 0.18');
-    expect(tokens).toContain('--blob-opacity-peach: 0.18');
-    expect(tokens).toContain('--blob-opacity-lilac: 0.18');
-    expect(tokens).toContain('--score-good: #7fb0ee');
+    const dark = text('apps/web/src/styles/theme-dark.css').toLowerCase();
+    expect(tokens).not.toContain('data-theme="dark"');
+    expect(tokens).not.toContain('prefers-color-scheme');
+    expect(dark).toContain('--d-bg: #0b0f20');
+    expect(dark).toContain('--d-sf: #1b2347');
+    expect(dark).toContain('--d-gl: rgb(27 35 71 / 0.9)');
+    expect(dark).toContain('--d-ac: #a9bdf6');
+    expect(dark).toContain('--wash-bottom: var(--d-bg)');
+    expect(dark).toContain('--glass: var(--d-gl)');
+    expect(dark).toContain('--glass-border: rgb(255 255 255 / 0.18)');
+    expect(dark).toContain('--shadow-float: 0 18px 48px rgb(0 0 0 / 0.35)');
+    expect(dark).toContain('--plate: var(--d-sf)');
+    expect(dark).toContain('--blob-opacity-petrol: 0.18');
+    expect(dark).toContain('--blob-opacity-peach: 0.18');
+    expect(dark).toContain('--blob-opacity-lilac: 0.18');
+    expect(dark).toContain('--score-good: var(--d-ac)');
+    expect(dark).not.toMatch(/--(on-)?peach-[a-z]*\s*:|--on-peach\s*:/);
     expect(tokens.match(/--on-peach: #1b1f24/g)?.length).toBe(1);
   });
 });
