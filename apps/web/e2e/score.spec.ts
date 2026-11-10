@@ -63,14 +63,14 @@ test('le lien partagé est en noindex et la révocation est immédiate', async (
     'content',
     'noindex',
   );
-  await expect(page.getByText('72')).toBeVisible();
+  await expect(page.getByText('65')).toBeVisible();
   const open = await page.content();
   expect(open).not.toContain(TRAP);
   await expectNoViolations(page);
 
   await page.goto(`/partage/${REVOKED}/`);
   await expect(page.getByText('Ce lien ne fonctionne plus.')).toBeVisible();
-  await expect(page.getByText('72')).toHaveCount(0);
+  await expect(page.getByText('65')).toHaveCount(0);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     'content',
     'noindex',

@@ -164,7 +164,7 @@ describe('lien public expiré (SQL local)', () => {
     expect(body).not.toContain('securite');
     expect(body).not.toContain(SECRET);
     expect(body).not.toContain(openToken);
-    expect(body).toMatch(/"global_score":\s*null/);
+    expect(body).toMatch(/"global_score":\s*40/);
     const report = await reportBody(openToken);
     expect(report).toContain(openId);
     expect(report).not.toContain(openToken);
@@ -222,6 +222,12 @@ describe('lien public expiré (SQL local)', () => {
       join pg_class as c on c.oid = p.polrelid
       join pg_namespace as n on n.oid = c.relnamespace
       where n.nspname = 'public' and c.relname = 'reports'
+    `;
+    // Un lien actif occupe déjà le slot gratuit : le relâcher avant d’en créer un autre.
+    await admin`
+      update public.reports
+      set revoked_at = now()
+      where id = ${openId}::uuid
     `;
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256)

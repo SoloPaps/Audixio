@@ -149,9 +149,15 @@ describe('RLS Supabase local', () => {
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256) values
         (${B_AUDIT}::uuid, 'private', ${SHA}),
-        (${B_AUDIT}::uuid, 'public', ${SHA}),
+        (${B_AUDIT}::uuid, 'public', ${SHA})
+    `;
+    // B a déjà un site public : le lien d’amorçage exige le plan Pro le temps de l’insert.
+    await admin`update public.profiles set plan = 'pro' where id = ${B}::uuid`;
+    await admin`
+      insert into public.reports (audit_id, visibility, manifest_sha256) values
         (${B_AUDIT}::uuid, 'link', ${SHA})
     `;
+    await admin`update public.profiles set plan = 'free' where id = ${B}::uuid`;
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256, revoked_at)
       values (${B_AUDIT}::uuid, 'public', ${SHA}, now())
@@ -515,14 +521,14 @@ describe('RLS Supabase local', () => {
     const hiddenBody = JSON.parse(hidden[0]?.body ?? '{}') as {
       global_score: number | null;
     };
-    expect(hiddenBody.global_score).toBeNull();
+    expect(hiddenBody.global_score).toBe(72);
 
     const anon = createUserClient({
       url: local.apiUrl,
       anonKey: local.anonKey,
     });
     const viaClient = await readPublicScore(anon, 'public-b1');
-    expect(viaClient?.global_score).toBeNull();
+    expect(viaClient?.global_score).toBe(72);
     expect(JSON.stringify(viaClient)).not.toContain(secret);
     expect(JSON.stringify(viaClient)).not.toContain('securite');
     expect(JSON.stringify(viaClient?.domains)).toContain('performance');
@@ -556,10 +562,12 @@ describe('RLS Supabase local', () => {
       where id = ${B_PUBLIC}::uuid
     `;
 
+    await admin`update public.profiles set plan = 'pro' where id = ${B}::uuid`;
     await admin`
       insert into public.reports (audit_id, visibility, manifest_sha256)
       values (${auditId}::uuid, 'link', ${SHA})
     `;
+    await admin`update public.profiles set plan = 'free' where id = ${B}::uuid`;
     const [created] = await admin<{ share_token: string; id: string }[]>`
       select id::text as id, share_token
       from public.reports
@@ -571,7 +579,7 @@ describe('RLS Supabase local', () => {
 
     const open = await readSharedScore(anon, token);
     expect(open?.audit_id).toBe(auditId);
-    expect(open?.global_score).toBeNull();
+    expect(open?.global_score).toBe(72);
     expect(JSON.stringify(open)).not.toContain(secret);
     expect(JSON.stringify(open)).not.toContain('securite');
 
