@@ -102,6 +102,28 @@ function auditGetDev() {
   };
 }
 
+function sitesPublicDev() {
+  const mount = (server) => {
+    server.middlewares.use((req, res, next) => {
+      const path = (req.url ?? '').split('?')[0] ?? '';
+      if (path !== '/api/sites/public') {
+        next();
+        return;
+      }
+      server
+        .ssrLoadModule('/src/lib/sites-public-node.ts')
+        .then((mod) => mod.handleSitesPublicNode(req, res))
+        .catch(next);
+    });
+  };
+  return {
+    name: 'audigy-sites-public-dev',
+    enforce: 'pre',
+    configureServer: mount,
+    configurePreviewServer: mount,
+  };
+}
+
 function authDev() {
   const mount = (server) => {
     server.middlewares.use((req, res, next) => {
@@ -167,7 +189,13 @@ export default defineConfig({
     format: 'directory',
   },
   vite: {
-    plugins: [briefDev(), auditGetDev(), authDev(), printRoute()],
+    plugins: [
+      briefDev(),
+      auditGetDev(),
+      sitesPublicDev(),
+      authDev(),
+      printRoute(),
+    ],
     define: {
       [envKey('URL')]: JSON.stringify(process.env.SUPABASE_URL ?? ''),
       [envKey(`${piece(['A', 'N', 'O', 'N'])}_KEY`)]: JSON.stringify(
