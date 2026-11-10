@@ -70,6 +70,12 @@ export {
 } from './account.js';
 export { accountDepsFromEnv } from './account-db.js';
 export {
+  auditEndEmailEnabled,
+  privateReportUrl,
+  relaunchAuditUrl,
+  sendAuditEndEmail,
+} from './audit-end-mail.js';
+export {
   BRIEF_EXPORT_FILENAME,
   type BriefExportDeps,
   type BriefRenderInput,
@@ -148,7 +154,13 @@ export {
   SECRET_ENV_NAMES,
   secretsFromEnv,
 } from './log.js';
-export { handleUnsubscribe, type UnsubscribeDeps } from './mail.js';
+export {
+  createResendMailer,
+  handleUnsubscribe,
+  RESEND_URL,
+  type UnsubscribeDeps,
+} from './mail.js';
+export { renderAuditEndMail } from './mail-templates.js';
 export {
   handleOauthCallback,
   handleOauthRevoke,

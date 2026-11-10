@@ -78,6 +78,8 @@ export interface ProcessDeps {
   logger: Logger;
   /** Ferme ou rouvre le plan après un audit terminé. Une erreur ne rate pas l’audit. */
   planSync?(auditId: string): Promise<void>;
+  /** E-mail de fin d’audit manuel. Une erreur ne rate pas l’audit. */
+  notifyEndEmail?(auditId: string): Promise<void>;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
   runnerWaitMs?: number;
@@ -118,6 +120,19 @@ function resultsInput(
  * Runner absent, refusé ou trop lent : checks navigateur `untested`
  * (`reason.runner_absent`), l'audit finit quand même en `done`.
  */
+
+async function notifyEnd(deps: ProcessDeps, auditId: string): Promise<void> {
+  if (!deps.notifyEndEmail) return;
+  try {
+    await deps.notifyEndEmail(auditId);
+  } catch (error) {
+    deps.logger.error('audit_end_email_hook', {
+      auditId,
+      code: errorCode(error),
+    });
+  }
+}
+
 export async function processNextAudit(
   deps: ProcessDeps,
 ): Promise<ProcessResult | null> {
@@ -236,6 +251,7 @@ export async function processNextAudit(
         });
       }
     }
+    await notifyEnd(deps, audit.id);
     return { auditId: audit.id, status: 'done', runner };
   } catch (error) {
     log.error('audit_failed', { auditId: audit.id, code: errorCode(error) });
@@ -249,6 +265,7 @@ export async function processNextAudit(
         code: errorCode(writeError),
       });
     }
+    await notifyEnd(deps, audit.id);
     return { auditId: audit.id, status: 'failed', runner: 'none' };
   }
 }

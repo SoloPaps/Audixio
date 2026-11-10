@@ -26,6 +26,8 @@ import { windowStartIso } from '@audigy/db/auth-policy';
 import { type FixSheet, loadFixes, placesApiKey } from '@audigy/engine';
 import { fileFixStore } from '@audigy/engine/fixes-fs';
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { loadFindingCatalog, supabaseAuditEndStore } from './audit-end-db.js';
+import { sendAuditEndEmail } from './audit-end-mail.js';
 import { createAuditContext, defaultChecks } from './context.js';
 import type { CreateDeps } from './create.js';
 import {
@@ -539,6 +541,14 @@ export function runDepsFromEnv(options: RunFromEnvOptions): RunDeps {
         store: supabaseAuditStore(service, logger),
         planSync: async (auditId) => {
           await syncAuditPlan(service, auditId, new Date());
+        },
+        notifyEndEmail: async (auditId) => {
+          await sendAuditEndEmail({
+            auditId,
+            env,
+            logger,
+            store: supabaseAuditEndStore(service, loadFindingCatalog),
+          });
         },
         dispatcher,
         checks: defaultChecks(env, supabasePlacesCache(service)),
