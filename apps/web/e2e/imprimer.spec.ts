@@ -270,3 +270,43 @@ test('#96 logo de l’aperçu lisible en sombre', async ({ page }) => {
   expect((0.2126 * r + 0.7152 * g + 0.0722 * b) / 255).toBeLessThan(0.3);
   expect(look.filter).toContain('invert(1)');
 });
+
+test('B4 : le score chiffré reste lisible en impression sombre', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await install(page);
+  await page.goto(`/rapport/${AUDIT_ID}/imprimer?theme=dark`);
+  await expect(page.locator('.bigg p.pnum[data-score-num]').first()).toBeVisible(
+    { timeout: 15_000 },
+  );
+  await page.emulateMedia({ media: 'print' });
+  await page.evaluate(
+    `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`,
+  );
+  const ratio = await page.evaluate(`(() => {
+    const rgb = (v) => (v.match(/[\\d.]+/g) || []).map(Number);
+    const lum = (c) => {
+      const [r, g, b] = c.slice(0, 3).map((x) => {
+        const s = x / 255;
+        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const el = document.querySelector('.bigg p.pnum[data-score-num]');
+    if (!el) return 0;
+    const fg = rgb(getComputedStyle(el).color);
+    let node = el;
+    let bg = [255, 255, 255];
+    while (node) {
+      const value = getComputedStyle(node).backgroundColor;
+      const c = rgb(value);
+      if (c.length < 4 || c[3] > 0.5) { bg = c; break; }
+      node = node.parentElement;
+    }
+    const a = lum(fg);
+    const b = lum(bg);
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  })()`);
+  expect(ratio).toBeGreaterThanOrEqual(4.5);
+});
