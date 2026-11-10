@@ -148,6 +148,43 @@ export function supabaseLienStore(
       if (readError) throw new Error('lien_preuve');
       return (data ?? []).length > 0;
     },
+    async publishedSites(userId) {
+      const { count, error } = await service
+        .from('sites')
+        .select('id', { count: 'exact', head: true })
+        .eq('owner_id', userId)
+        .eq('is_public', true)
+        .is('deleted_at', null);
+      if (error) throw new Error('lien_publications');
+      return count ?? 0;
+    },
+    async ownsSite(userId, siteId) {
+      const { data, error } = await service
+        .from('sites')
+        .select('id')
+        .eq('id', siteId)
+        .eq('owner_id', userId)
+        .is('deleted_at', null)
+        .maybeSingle();
+      if (error) throw new Error('lien_site');
+      return Boolean(data);
+    },
+    async setPublic(userId, siteId, input) {
+      const { data, error } = await service
+        .from('sites')
+        .update({ is_public: input.visible, public_slug: input.publicSlug })
+        .eq('id', siteId)
+        .eq('owner_id', userId)
+        .is('deleted_at', null)
+        .select('is_public, public_slug')
+        .maybeSingle();
+      if (error) throw new Error('lien_publication');
+      if (!data) return 'missing';
+      return {
+        isPublic: data.is_public === true,
+        publicSlug: data.public_slug,
+      };
+    },
     async linksOf(userId) {
       const { data, error } = await service
         .from('audit_log')

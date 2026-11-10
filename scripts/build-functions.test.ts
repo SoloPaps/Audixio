@@ -114,6 +114,10 @@ describe('fonctions Netlify', () => {
       path: '/api/partage',
       method: 'POST',
     });
+    expect((await load('api-sites-public')).config).toEqual({
+      path: '/api/sites/public',
+      method: ['POST'],
+    });
     expect((await load('api-robot')).config).toEqual({
       path: '/api/robot',
       method: 'POST',
