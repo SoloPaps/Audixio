@@ -277,9 +277,9 @@ test('B4 : le score chiffré reste lisible en impression sombre', async ({
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await install(page);
   await page.goto(`/rapport/${AUDIT_ID}/imprimer?theme=dark`);
-  await expect(page.locator('.bigg p.pnum[data-score-num]').first()).toBeVisible(
-    { timeout: 15_000 },
-  );
+  await expect(
+    page.locator('.bigg p.pnum[data-score-num]').first(),
+  ).toBeVisible({ timeout: 15_000 });
   await page.emulateMedia({ media: 'print' });
   await page.evaluate(
     `new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))`,
