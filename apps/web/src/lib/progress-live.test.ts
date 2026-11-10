@@ -5,11 +5,14 @@ import {
   auditProgress,
   guestBeatPhase,
   guestDisplayStatus,
+  holdProgress,
+  nextPercent,
   nothingMeasured,
   progressEta,
   progressLive,
   progressPhase,
   runnerGap,
+  shouldReplayGuestPreview,
 } from './progress-live.js';
 
 function source(name: string): string {
@@ -175,5 +178,21 @@ describe('progressPhase', () => {
       'Phase : dernières mesures.',
     );
     expect(progressPhase('done', 8, true)).toBeNull();
+  });
+});
+
+describe('M8 — progression monotone après la fin', () => {
+  it('ne rejoue pas l’aperçu et ne recule pas après 100 %', () => {
+    expect(shouldReplayGuestPreview('done')).toBe(false);
+    expect(shouldReplayGuestPreview('partial')).toBe(false);
+    expect(shouldReplayGuestPreview('failed')).toBe(false);
+    expect(shouldReplayGuestPreview('running')).toBe(true);
+    const held = holdProgress(
+      { status: 'done', percent: 100 },
+      { status: 'running', percent: 0 },
+    );
+    expect(held).toEqual({ status: 'done', percent: 100 });
+    expect(nextPercent(true, 100, 0)).toBe(100);
+    expect(nextPercent(false, 40, 10)).toBe(10);
   });
 });

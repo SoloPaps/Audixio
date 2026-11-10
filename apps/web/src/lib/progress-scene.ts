@@ -1,4 +1,5 @@
 import { t } from '../i18n/index.js';
+import { nextPercent } from './progress-live.js';
 import { etaLabel, type Sim, TICK_MS, tickSim } from './progress-sim.js';
 import { progressCountHtml } from './progress-tally.js';
 import {
@@ -105,7 +106,7 @@ export function bindProgressScene(): void {
   };
 
   const setPercent = (value: number): void => {
-    percent = Math.max(0, Math.min(100, value));
+    percent = nextPercent(finished, percent, value);
     const rounded = Math.round(percent);
     pctEl.textContent = String(rounded);
     fill.style.width = `${percent}%`;
@@ -229,7 +230,9 @@ export function bindProgressScene(): void {
   } else if (!progressEmpty(location.search)) {
     const live = $('#liveT');
     if (live) live.textContent = t('progress.live');
-    setPercent(0);
+    if (!finished && !document.body.classList.contains('done')) {
+      setPercent(0);
+    }
     for (const key of [
       'seo',
       'sec',
