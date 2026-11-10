@@ -75,7 +75,38 @@ async function checkGauge(
       (node) => (globalThis as unknown as View).getComputedStyle(node).color,
     );
   expect(fill).toBe(ink);
+  await expect(gauge.locator('.gauge-tip')).toHaveCount(0);
   void page;
+}
+
+/** Angle du bout du trait (atan2, 0 à droite, sens horaire en Y vers le bas). */
+async function fillEndAngle(gauge: Locator): Promise<number> {
+  return gauge.locator('.gauge-fill').evaluate((node) => {
+    const path = node as unknown as {
+      getTotalLength: () => number;
+      getPointAtLength: (n: number) => { x: number; y: number };
+      getAttribute: (name: string) => string | null;
+      ownerSVGElement: { getAttribute: (name: string) => string | null } | null;
+    };
+    const filled = Number(
+      (path.getAttribute('stroke-dasharray') ?? '0').split(/[\s,]+/)[0],
+    );
+    const len = path.getTotalLength();
+    const pt = path.getPointAtLength((filled / 100) * len);
+    const svg = path.ownerSVGElement;
+    const cx = Number(svg?.getAttribute('data-cx') ?? 100);
+    const cy = Number(svg?.getAttribute('data-cy') ?? 100);
+    return (Math.atan2(pt.y - cy, pt.x - cx) * 180) / Math.PI;
+  });
+}
+
+function expectedEndAngle(score: number): number {
+  return -90 + (score / 100) * 360;
+}
+
+function angleGap(a: number, b: number): number {
+  const delta = ((a - b + 540) % 360) - 180;
+  return Math.abs(delta);
 }
 
 for (const theme of THEMES) {
@@ -121,6 +152,37 @@ for (const theme of THEMES) {
     await expect(none.locator('.gauge-tip')).toHaveCount(0);
   });
 }
+
+test('cadran : l’arc de 66 et de 100 suit le score, sans point parasite', async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/?theme=light');
+  const home = page.locator('.score-slot .gauge');
+  await expect(home).toHaveAttribute('data-score', '66');
+  await expect(home.locator('.gauge-fill')).toHaveAttribute(
+    'stroke-dasharray',
+    '66 34',
+  );
+  expect(angleGap(await fillEndAngle(home), expectedEndAngle(66))).toBeLessThan(
+    3,
+  );
+  await expect(home.locator('.gauge-tip')).toHaveCount(0);
+
+  await page.goto('/dev/composants?theme=light');
+  const full = page.locator('.gauge[data-score="100"]').last();
+  await expect(full.locator('.gauge-fill')).toHaveAttribute(
+    'stroke-dasharray',
+    '100 0',
+  );
+  const zero = page.locator('.gauge[data-score="0"]').last();
+  await expect(zero.locator('.gauge-fill')).toHaveAttribute(
+    'stroke-dasharray',
+    '0 100',
+  );
+  await expect(page.locator('.gauge-tip')).toHaveCount(0);
+});
 
 test('cadran : la lettre change de teinte entre clair et sombre', async ({
   page,

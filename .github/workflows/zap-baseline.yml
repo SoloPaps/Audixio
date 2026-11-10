@@ -40,7 +40,7 @@ jobs:
 
       - name: zap-baseline
         if: steps.cible.outputs.scan == 'true'
-        uses: zaproxy/action-baseline@f948cb8d66e25e330a23e64e3fc72a5c0018b16d # 2026-05-09
+        uses: zaproxy/action-baseline@72166cb1b917b984128586ed28801f4b4a37a0e2 # 2026-05-09
         with:
           target: ${{ vars.ZAP_TARGET }}
           rules_file_name: .zap/rules.tsv

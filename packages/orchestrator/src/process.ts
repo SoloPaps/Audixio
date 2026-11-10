@@ -78,6 +78,13 @@ export interface ProcessDeps {
   logger: Logger;
   /** Ferme ou rouvre le plan après un audit terminé. Une erreur ne rate pas l’audit. */
   planSync?(auditId: string): Promise<void>;
+  /** E-mail de fin d’audit manuel. Une erreur ne rate pas l’audit. */
+  notifyEndEmail?(auditId: string): Promise<void>;
+  /**
+   * Balayage des audits manuels terminés récemment (fail_stale ou tout
+   * chemin hors writeResults). Une erreur ne rate pas l’audit en cours.
+   */
+  sweepEndEmails?(): Promise<void>;
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
   runnerWaitMs?: number;
@@ -118,6 +125,19 @@ function resultsInput(
  * Runner absent, refusé ou trop lent : checks navigateur `untested`
  * (`reason.runner_absent`), l'audit finit quand même en `done`.
  */
+
+async function notifyEnd(deps: ProcessDeps, auditId: string): Promise<void> {
+  if (!deps.notifyEndEmail) return;
+  try {
+    await deps.notifyEndEmail(auditId);
+  } catch (error) {
+    deps.logger.error('audit_end_email_hook', {
+      auditId,
+      code: errorCode(error),
+    });
+  }
+}
+
 export async function processNextAudit(
   deps: ProcessDeps,
 ): Promise<ProcessResult | null> {
@@ -128,6 +148,14 @@ export async function processNextAudit(
 
   const stale = await deps.store.failStale(STALE_AFTER_MINUTES);
   if (stale > 0) log.warn('audits_stale', { count: stale });
+
+  if (deps.sweepEndEmails) {
+    try {
+      await deps.sweepEndEmails();
+    } catch (error) {
+      log.error('audit_end_email_sweep', { code: errorCode(error) });
+    }
+  }
 
   const audit = await deps.store.claimNext();
   if (!audit) return null;
@@ -236,6 +264,7 @@ export async function processNextAudit(
         });
       }
     }
+    await notifyEnd(deps, audit.id);
     return { auditId: audit.id, status: 'done', runner };
   } catch (error) {
     log.error('audit_failed', { auditId: audit.id, code: errorCode(error) });
@@ -249,6 +278,7 @@ export async function processNextAudit(
         code: errorCode(writeError),
       });
     }
+    await notifyEnd(deps, audit.id);
     return { auditId: audit.id, status: 'failed', runner: 'none' };
   }
 }

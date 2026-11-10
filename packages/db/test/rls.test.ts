@@ -607,6 +607,100 @@ describe('RLS Supabase local', () => {
     expect(gone).toHaveLength(0);
   });
 
+  it('sur un site public vérifié, montre les constats sans measured', async () => {
+    const auditId = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbb22';
+    const secret = 'secret-header-value-verifie';
+    await admin`
+      insert into public.audits (
+        id, site_id, trigger, mode, status, method_version, engine_version,
+        global_score, coverage, started_at, finished_at
+      ) values (
+        ${auditId}::uuid, ${B_PUBLIC}::uuid, 'manual', 'passive', 'done',
+        '2026.1', 'test', 61, 1, now(), now()
+      )
+    `;
+    await admin`
+      insert into public.domain_scores (audit_id, domain, score, coverage, level)
+      values
+        (${auditId}::uuid, 'securite', 40, 1, 'problem'),
+        (${auditId}::uuid, 'performance', 80, 1, 'good')
+    `;
+    await admin`
+      insert into public.findings (
+        audit_id, domain, check_id, status, severity, impact, score,
+        measured, message_key, fix_key
+      ) values (
+        ${auditId}::uuid, 'securite', 'securite.hsts', 'fail', 4, 3, 0,
+        ${JSON.stringify({ header: secret })}::jsonb,
+        'finding.securite.hsts', 'fix.securite.hsts'
+      )
+    `;
+    await admin`
+      insert into public.site_verifications (
+        site_id, method, token, status, verified_at
+      ) values (
+        ${B_PUBLIC}::uuid, 'dns_txt', ${'v'.repeat(32)}, 'verified', now()
+      )
+    `;
+
+    const shown = await asUser(
+      null,
+      (tx) => tx<{ body: string; findings: string; verified: boolean }[]>`
+        select
+          row_to_json(x)::text as body,
+          x.findings::text as findings,
+          x.site_verified as verified
+        from public.read_public_score('public-b1') as x
+      `,
+    );
+    expect(shown).toHaveLength(1);
+    expect(shown[0]?.verified).toBe(true);
+    expect(shown[0]?.findings).toContain('securite.hsts');
+    expect(shown[0]?.findings).toContain('finding.securite.hsts');
+    expect(shown[0]?.body).toContain('securite');
+    expect(shown[0]?.body).not.toContain(secret);
+    expect(shown[0]?.body).not.toContain('measured');
+    const body = JSON.parse(shown[0]?.body ?? '{}') as {
+      global_score: number | null;
+    };
+    expect(body.global_score).toBe(61);
+
+    const anon = createUserClient({
+      url: local.apiUrl,
+      anonKey: local.anonKey,
+    });
+    const viaClient = await readPublicScore(anon, 'public-b1');
+    expect(viaClient?.global_score).toBe(61);
+    expect(viaClient?.site_verified).toBe(true);
+    expect(JSON.stringify(viaClient?.findings)).toContain('securite.hsts');
+    expect(JSON.stringify(viaClient)).not.toContain(secret);
+    expect(JSON.stringify(viaClient)).not.toContain('measured');
+    expect(JSON.stringify(viaClient?.domains)).toContain('securite');
+    expect(JSON.stringify(viaClient?.security_details)).toBe('[]');
+
+    await admin`update public.profiles set plan = 'pro' where id = ${B}::uuid`;
+    await admin`
+      insert into public.reports (audit_id, visibility, manifest_sha256)
+      values (${auditId}::uuid, 'link', ${SHA})
+    `;
+    await admin`update public.profiles set plan = 'free' where id = ${B}::uuid`;
+    const [created] = await admin<{ share_token: string }[]>`
+      select share_token
+      from public.reports
+      where audit_id = ${auditId}::uuid and visibility = 'link' and revoked_at is null
+    `;
+    if (!created) throw new Error('lien absent');
+    const shared = await readSharedScore(anon, created.share_token);
+    expect(shared?.site_verified).toBe(true);
+    expect(JSON.stringify(shared?.findings)).toContain('securite.hsts');
+    expect(JSON.stringify(shared)).not.toContain(secret);
+    expect(JSON.stringify(shared)).not.toContain('measured');
+
+    await admin`
+      delete from public.site_verifications where site_id = ${B_PUBLIC}::uuid
+    `;
+  });
+
   it("n'expose pas un rapport public expiré sur /score", async () => {
     const auditId = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbb21';
     await admin`

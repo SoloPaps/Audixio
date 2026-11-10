@@ -85,7 +85,11 @@ $effect(() => {
 <div class="card box c7 rv"><div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></div><p class="sub">{t('mq.co.090')}</p><h2 class="sec" id="hc" style="font-size:24px;margin:0 0 6px">{t('mq.co.091')}</h2>
 <div class="meta"><span class="mc">{t('mq.co.092')} <b>{t('mq.co.093')}</b></span><span class="mc">{t('mq.co.094')} <b id="acd">{t('mq.co.095')}</b></span></div>
 <label class="sw"><input type="checkbox" id="consent" checked><span class="tg" aria-hidden="true"></span><span class="t">{t('mq.co.096')}</span></label>
-<div class="row"><a class="lnk lk-pill" href="/cgu">{t('mq.co.097')}</a><button type="button" class="btn btn-primary" id="acc"><span class="bl">{t('mq.co.098')}</span><span class="spin" aria-hidden="true"></span></button><span class="done" id="accd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.co.099')}</span></div></div>
+<div class="row"><a class="lnk lk-pill" href="/cgu">{t('mq.co.097')}</a><button type="button" class="btn btn-primary" id="acc"><span class="bl">{t('mq.co.098')}</span><span class="spin" aria-hidden="true"></span></button><span class="done" id="accd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.co.099')}</span></div>
+<label class="sw"><input type="checkbox" id="notify-audit-end" checked><span class="tg" aria-hidden="true"></span><span class="t">{t('account.notify.label')}</span></label>
+<p class="fine" id="notify-audit-end-hint">{t('account.notify.hint')}</p>
+<p class="fine" id="notify-audit-end-status" role="status"></p>
+</div>
 <div class="card box c5 rv" id="export"><div class="hic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div><p class="sub">{t('mq.co.100')}</p><h2 class="sec" style="font-size:24px;margin:0 0 6px">{t('mq.co.101')}</h2>
 <p>{t('mq.co.102')}</p>
 <div class="jf"><span class="br" aria-hidden="true">{t('mq.co.103')}</span><div><b>{t('mq.co.104')}</b><small>{t('mq.co.105')}</small></div></div>

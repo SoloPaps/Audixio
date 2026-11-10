@@ -7,6 +7,9 @@ import { mailGrade, renderRecapMail } from './mail-templates.js';
 /** API transactionnelle Brevo. Jamais le site audité. */
 export const BREVO_URL = 'https://api.brevo.com/v3/smtp/email';
 
+/** API HTTP Resend. Jamais le site audité. */
+export const RESEND_URL = 'https://api.resend.com/emails';
+
 const SENDER_NAME = 'Audixio';
 
 export const ALERT_KINDS = [
@@ -449,6 +452,63 @@ export function createBrevoMailer(options: {
       });
       await res.body?.cancel();
       if (!res.ok) throw new Error('brevo_rejected');
+    },
+  };
+}
+
+export interface TransactionalMail extends RenderedMail {
+  to: string;
+  replyTo?: string;
+  idempotencyKey?: string;
+}
+
+export interface TransactionalMailer {
+  send(message: TransactionalMail): Promise<void>;
+}
+
+export function createResendMailer(options: {
+  apiKey: string;
+  senderEmail: string;
+  replyTo?: string;
+  fetch?: typeof globalThis.fetch;
+}): TransactionalMailer {
+  const doFetch = options.fetch ?? globalThis.fetch;
+  return {
+    async send(message) {
+      const replyTo = message.replyTo ?? options.replyTo ?? '';
+      if (
+        /[\r\n]/.test(message.to) ||
+        /[\r\n]/.test(message.subject) ||
+        /[\r\n]/.test(options.senderEmail) ||
+        (replyTo !== '' && /[\r\n]/.test(replyTo))
+      ) {
+        throw new Error('mail_header');
+      }
+      const headers: Record<string, string> = {
+        accept: 'application/json',
+        authorization: `Bearer ${options.apiKey}`,
+        'content-type': 'application/json',
+      };
+      if (message.idempotencyKey) {
+        headers['Idempotency-Key'] = message.idempotencyKey;
+      }
+      const body: Record<string, unknown> = {
+        from: `${SENDER_NAME} <${options.senderEmail}>`,
+        to: [message.to],
+        subject: message.subject,
+        html: message.html,
+        text: message.text,
+      };
+      if (replyTo) body.reply_to = replyTo;
+      const res = await doFetch(RESEND_URL, {
+        method: 'POST',
+        redirect: 'error',
+        signal: AbortSignal.timeout(8_000),
+        headers,
+        body: JSON.stringify(body),
+      });
+      await res.body?.cancel();
+      if (!res.ok) throw new Error('resend_rejected');
     },
   };
 }

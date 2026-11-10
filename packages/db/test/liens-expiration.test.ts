@@ -258,6 +258,12 @@ describe('lien public expiré (SQL local)', () => {
         })}
       )
     `;
+    // La signature actuelle de read_shared_score a plus de colonnes :
+    // CREATE OR REPLACE refuse de changer le type de retour. On dépose
+    // d’abord, comme la migration récente, pour rejouer le SQL historique.
+    await admin.unsafe(
+      'drop function if exists public.read_shared_score(text);',
+    );
     await admin.unsafe(MIGRATION);
     await admin.unsafe(MIGRATION);
     const [filled] = await admin<

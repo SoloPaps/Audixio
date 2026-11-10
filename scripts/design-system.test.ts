@@ -32,7 +32,7 @@ describe('jauge', () => {
   it('trace un anneau complet, sans fermeture Z', () => {
     const ring = gaugeRing(GAUGE.cx, GAUGE.cy, GAUGE.r);
     expect(ring.startsWith('M ')).toBe(true);
-    expect(ring.split(`A ${GAUGE.r} ${GAUGE.r} 0 1 1`)).toHaveLength(3);
+    expect(ring.split(`A ${GAUGE.r} ${GAUGE.r} 0 0 1`)).toHaveLength(5);
     expect(ring.includes('Z')).toBe(false);
     expect(GAUGE.r).toBeGreaterThan(60);
   });
