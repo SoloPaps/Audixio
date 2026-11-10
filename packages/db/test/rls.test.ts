@@ -515,14 +515,14 @@ describe('RLS Supabase local', () => {
     const hiddenBody = JSON.parse(hidden[0]?.body ?? '{}') as {
       global_score: number | null;
     };
-    expect(hiddenBody.global_score).toBeNull();
+    expect(hiddenBody.global_score).toBe(72);
 
     const anon = createUserClient({
       url: local.apiUrl,
       anonKey: local.anonKey,
     });
     const viaClient = await readPublicScore(anon, 'public-b1');
-    expect(viaClient?.global_score).toBeNull();
+    expect(viaClient?.global_score).toBe(72);
     expect(JSON.stringify(viaClient)).not.toContain(secret);
     expect(JSON.stringify(viaClient)).not.toContain('securite');
     expect(JSON.stringify(viaClient?.domains)).toContain('performance');
@@ -571,7 +571,7 @@ describe('RLS Supabase local', () => {
 
     const open = await readSharedScore(anon, token);
     expect(open?.audit_id).toBe(auditId);
-    expect(open?.global_score).toBeNull();
+    expect(open?.global_score).toBe(72);
     expect(JSON.stringify(open)).not.toContain(secret);
     expect(JSON.stringify(open)).not.toContain('securite');
 

@@ -146,7 +146,7 @@ describe('lien public expiré (API locale)', () => {
 
     const open = await rpc('read_shared_score', openToken);
     expect(open).toContain('performance');
-    expect(open).toContain('"global_score":null');
+    expect(open).toContain('"global_score":55');
     expect(open).not.toContain('securite');
     expect(open).not.toContain(SECRET);
     expect(open).not.toContain(openToken);

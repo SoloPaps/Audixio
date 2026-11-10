@@ -65,15 +65,19 @@ const stamp = $derived.by(() => {
   const date = new Date(raw);
   return Number.isNaN(date.getTime()) ? null : date;
 });
+const openTotal = $derived(
+  REPORT_DOMAINS.filter((id) => !isLockedDomain(id)).length,
+);
 const scored = $derived(
   items.filter(
     (item) =>
       (REPORT_DOMAINS as readonly string[]).includes(item.id) &&
+      !isLockedDomain(item.id) &&
       item.score !== null,
   ).length,
 );
 const globalDisplay = $derived(
-  publicGlobalDisplay(view?.globalScore ?? null, scored),
+  publicGlobalDisplay(view?.globalScore ?? null, scored, openTotal),
 );
 
 function categoryItems(score: PublicScoreView): CategoryItem[] {
@@ -201,7 +205,7 @@ onMount(() => {
           <p class="hint">
             {t('report.coverage', {
               scored,
-              total: REPORT_DOMAINS.filter((id) => !isLockedDomain(id)).length,
+              total: openTotal,
             })}
           </p>
         </div>

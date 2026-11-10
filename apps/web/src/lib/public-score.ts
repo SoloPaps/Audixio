@@ -11,6 +11,7 @@ import { readLocalShare } from './local-share.js';
 
 /** Exemple servi hors ligne en dev (Lighthouse, Playwright). */
 export const EXAMPLE_SLUG = 'exemple-score';
+export const EXAMPLE_INCOMPLETE_SLUG = 'exemple-score-partiel';
 export const EXAMPLE_SHARE = 'ab'.repeat(16);
 export const REVOKED_SHARE = '00'.repeat(16);
 
@@ -219,12 +220,16 @@ export function exampleRaw(): RawPublicScore {
     url: 'https://exemple.fr',
     finishedAt: '2026-10-23T08:00:00.000Z',
     methodVersion: '2026.1',
-    globalScore: 72,
+    // 65 = scoreGlobal des 8 domaines principaux : 5 ouverts à 80 + 3 verrouillés à 40.
+    globalScore: 65,
     auditId: EXAMPLE_AUDIT,
     exposeSecurity: false,
     domains: [
       { domain: 'performance', score: 80, level: 'good' },
-      { domain: 'securite', score: 40, level: 'problem' },
+      { domain: 'seo', score: 80, level: 'good' },
+      { domain: 'ecologie', score: 80, level: 'good' },
+      { domain: 'accessibilite', score: 80, level: 'good' },
+      { domain: 'qualite', score: 80, level: 'good' },
       { domain: 'inconnu', score: 10, level: 'problem' },
     ],
     securityDetails: [
@@ -241,6 +246,27 @@ export function exampleRaw(): RawPublicScore {
 export function exampleView(): PublicScoreView {
   const raw = exampleRaw();
   return toPublicScore(raw, { exposeSecurity: raw.exposeSecurity === true });
+}
+
+/** Même site, mais deux domaines ouverts encore sans note : message différé #188. */
+export function exampleIncompleteRaw(): RawPublicScore {
+  const raw = exampleRaw();
+  return {
+    ...raw,
+    globalScore: 80,
+    domains: [
+      { domain: 'performance', score: 80, level: 'good' },
+      { domain: 'seo', score: 80, level: 'good' },
+      { domain: 'ecologie', score: 80, level: 'good' },
+      { domain: 'accessibilite', score: null, level: 'untested' },
+      { domain: 'qualite', score: null, level: 'untested' },
+    ],
+  };
+}
+
+export function exampleIncompleteView(): PublicScoreView {
+  const raw = exampleIncompleteRaw();
+  return toPublicScore(raw, { exposeSecurity: false });
 }
 
 function xml(value: string): string {
@@ -290,6 +316,8 @@ export async function loadPublicScore(
 ): Promise<PublicScoreView | null> {
   if (!SLUG.test(slug)) return null;
   if (import.meta.env.DEV && slug === EXAMPLE_SLUG) return exampleView();
+  if (import.meta.env.DEV && slug === EXAMPLE_INCOMPLETE_SLUG)
+    return exampleIncompleteView();
   if (!client) return null;
   const row = await readPublicScore(client, slug);
   return row ? presentRow(row) : null;
@@ -445,14 +473,26 @@ export async function loadSharedScore(
   }
 }
 
-/** Affichage de la note globale sur /score : absente par conception, pas « non testé ». */
+/** Affichage de la note globale sur /score. */
 export type PublicGlobalDisplay = 'score' | 'deferred' | 'untested';
 
+/**
+ * La vraie note (chiffre + lettre, même jauge que le rapport) s’affiche seulement
+ * si elle est connue et si tous les domaines ouverts sont notés (ex. 5/5).
+ * Sinon, dès qu’au moins un domaine ouvert est noté, on garde le libellé #188.
+ */
 export function publicGlobalDisplay(
   globalScore: number | null,
   scoredOpenDomains: number,
+  totalOpenDomains: number,
 ): PublicGlobalDisplay {
-  if (globalScore !== null) return 'score';
+  if (
+    globalScore !== null &&
+    totalOpenDomains > 0 &&
+    scoredOpenDomains >= totalOpenDomains
+  ) {
+    return 'score';
+  }
   if (scoredOpenDomains > 0) return 'deferred';
   return 'untested';
 }

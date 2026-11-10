@@ -20,10 +20,13 @@ describe('score public', () => {
     expect(dumped).not.toContain(TRAP);
     expect(dumped).not.toContain('securite.hsts');
     expect(dumped).not.toContain('measured');
-    expect(view.globalScore).toBe(72);
+    expect(view.globalScore).toBe(65);
     expect(view.domains.map((row) => row.domain)).toEqual([
       'performance',
-      'securite',
+      'seo',
+      'ecologie',
+      'accessibilite',
+      'qualite',
     ]);
     expect(view.methodVersion).toBe('2026.1');
     expect(view.auditId).toBe('00000000-0000-4000-8000-000000000019');

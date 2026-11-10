@@ -164,7 +164,7 @@ describe('lien public expiré (SQL local)', () => {
     expect(body).not.toContain('securite');
     expect(body).not.toContain(SECRET);
     expect(body).not.toContain(openToken);
-    expect(body).toMatch(/"global_score":\s*null/);
+    expect(body).toMatch(/"global_score":\s*40/);
     const report = await reportBody(openToken);
     expect(report).toContain(openId);
     expect(report).not.toContain(openToken);
