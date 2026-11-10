@@ -1703,6 +1703,43 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
   };
   acc?.addEventListener('click', onAcc);
   if (acc) off.push(() => acc.removeEventListener('click', onAcc));
+
+  const notifyBox = root.querySelector<HTMLInputElement>('#notify-audit-end');
+  const notifyStatus = root.querySelector('#notify-audit-end-status');
+  const paintNotify = async (): Promise<void> => {
+    const supabase = browserClient();
+    const session = await currentSession();
+    if (!supabase || !session || !notifyBox) return;
+    const { data } = await supabase
+      .from('profiles')
+      .select('notify_audit_end')
+      .eq('id', session.user.id)
+      .maybeSingle();
+    notifyBox.checked = data?.notify_audit_end !== false;
+  };
+  void paintNotify();
+  const onNotify = (): void => {
+    const supabase = browserClient();
+    const sessionPromise = currentSession();
+    if (!notifyBox) return;
+    const next = notifyBox.checked;
+    void sessionPromise.then(async (session) => {
+      if (!supabase || !session) return;
+      const { error } = await supabase
+        .from('profiles')
+        .update({ notify_audit_end: next })
+        .eq('id', session.user.id);
+      if (error) {
+        notifyBox.checked = !next;
+        return;
+      }
+      if (notifyStatus) notifyStatus.textContent = t('account.notify.saved');
+    });
+  };
+  notifyBox?.addEventListener('change', onNotify);
+  if (notifyBox)
+    off.push(() => notifyBox.removeEventListener('change', onNotify));
+
   const paintShares = (links: readonly ActiveShare[]): void => {
     const list = root.querySelector('#apl');
     list?.replaceChildren(...links.map((link) => shareAccessRow(link)));
