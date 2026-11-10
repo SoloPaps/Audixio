@@ -151,3 +151,41 @@ export function progressPhase(
   if (scored < 4) return tReport('phase.pages');
   return tReport('phase.privacy');
 }
+
+const TERMINAL_STATUS = new Set(['done', 'partial', 'failed']);
+
+export function isTerminalStatus(status: string): boolean {
+  return TERMINAL_STATUS.has(status);
+}
+
+/** L’aperçu visiteur ne rejoue pas un audit déjà terminé. */
+export function shouldReplayGuestPreview(status: string): boolean {
+  return !isTerminalStatus(status);
+}
+
+/**
+ * Une fois l’audit terminé, la barre et l’état ne reculent plus,
+ * même si un poll, un événement plus ancien ou un remount renvoie
+ * un état en cours à 0 %.
+ */
+export function holdProgress(
+  prev: { status: string; percent: number } | null,
+  next: { status: string; percent: number },
+): { status: string; percent: number } {
+  if (!prev || !isTerminalStatus(prev.status)) return next;
+  return {
+    status: prev.status,
+    percent: Math.max(prev.percent, next.percent),
+  };
+}
+
+/** Pourcentage affiché : jamais en baisse après la fin. */
+export function nextPercent(
+  finished: boolean,
+  current: number,
+  incoming: number,
+): number {
+  const value = Math.max(0, Math.min(100, incoming));
+  if (finished && value < current) return current;
+  return value;
+}

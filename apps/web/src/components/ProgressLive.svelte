@@ -14,10 +14,12 @@ import {
   auditProgress,
   guestBeatPhase,
   guestDisplayStatus,
+  holdProgress,
   nothingMeasured,
   progressEta,
   progressLive,
   progressPhase,
+  shouldReplayGuestPreview,
 } from '../lib/progress-live.js';
 import { hostFromProgressQuery } from '../lib/progress-target.js';
 import { progressionHref } from '../lib/relaunch.js';
@@ -56,6 +58,7 @@ onMount(() => {
 
   let timer = 0;
   let cancelled = false;
+  let held: { id: string; status: string; percent: number } | null = null;
 
   const paint = (
     payload: AuditPayload,
@@ -80,9 +83,13 @@ onMount(() => {
       node.textContent = host;
     }
     const preview = guest && !revealed;
-    const shown = guest
+    const rawShown = guest
       ? guestDisplayStatus(payload.audit.status, revealed)
       : payload.audit.status;
+    const shown = holdProgress(
+      held && held.id === payload.audit.id ? held : null,
+      { status: rawShown, percent: 0 },
+    ).status;
     const unmeasured =
       !preview &&
       (payload.audit.status === 'done' || payload.audit.status === 'partial') &&
@@ -99,10 +106,34 @@ onMount(() => {
     const names = (preview ? [] : payload.domains)
       .filter((domain) => typeof domain.score === 'number')
       .map((domain) => domain.domain);
-    const view = auditProgress({
+    const rawView = auditProgress({
       status: shown,
       domains: preview ? [] : payload.domains,
     });
+    const heldView = holdProgress(
+      held && held.id === payload.audit.id ? held : null,
+      { status: shown, percent: rawView.percent },
+    );
+    const terminalHold =
+      heldView.status !== rawShown &&
+      (heldView.status === 'done' ||
+        heldView.status === 'partial' ||
+        heldView.status === 'failed');
+    const view = {
+      ...rawView,
+      percent: heldView.percent,
+      finished:
+        rawView.finished ||
+        heldView.status === 'done' ||
+        heldView.status === 'partial',
+      failed: rawView.failed || heldView.status === 'failed',
+      poll: rawView.poll && !terminalHold,
+    };
+    held = {
+      id: payload.audit.id,
+      status: heldView.status,
+      percent: heldView.percent,
+    };
     const board = (
       window as unknown as {
         audixioProgress?: {
@@ -211,6 +242,10 @@ onMount(() => {
       const stored = readGuestAudit(id);
       if (!stored) {
         location.replace(loginHref(`${location.pathname}${location.search}`));
+        return;
+      }
+      if (!shouldReplayGuestPreview(stored.audit.status)) {
+        paint(stored, true, true, 3);
         return;
       }
       let step = 0;
