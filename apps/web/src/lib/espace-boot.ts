@@ -8,6 +8,7 @@ import {
   activeShareLinks,
   type ReportLinkRow,
 } from './account-access.js';
+import { ACCOUNT_EXPORT_FILENAME } from './account-export.js';
 import {
   askedHistorySite,
   historySource,
@@ -1505,7 +1506,7 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'audixio-donnees.json';
+        link.download = ACCOUNT_EXPORT_FILENAME;
         link.click();
         URL.revokeObjectURL(url);
         say(t('mq.ui.export.done'), true);

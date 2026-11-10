@@ -455,7 +455,7 @@ export const espaceFr = {
     'Le fichier contient vos sites audités, vos rapports passés et l’historique complet des diagnostics passifs de vos domaines.',
   'mq.co.103': '{ }',
   'mq.co.104': 'Télécharger mes données',
-  'mq.co.105': 'audixio_export_2026.json · ~142 Ko',
+  'mq.co.105': 'audixio-donnees.json',
   'mq.co.106': 'Exporter en JSON',
   'mq.co.107': 'PRO',
   'mq.co.108': 'Bientôt disponible',
