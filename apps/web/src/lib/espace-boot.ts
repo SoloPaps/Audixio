@@ -19,6 +19,7 @@ import {
   latestReportHref,
   welcomeDone,
 } from './account-prefs.js';
+import { applyCadenceSummary } from './alerts-cadence.js';
 import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
 import { DELETE_TOKEN, deleteConfirmed } from './delete-confirm.js';
@@ -1740,7 +1741,7 @@ function bindAlerts(root: HTMLElement, next: EspaceNext): () => void {
   const form = root.querySelector<HTMLFormElement>('#fPro');
   const onForm = (event: Event): void => {
     event.preventDefault();
-    void saveAlerts(next);
+    void saveAlerts(root, next);
   };
   form?.addEventListener('submit', onForm);
   if (form) off.push(() => form.removeEventListener('submit', onForm));
@@ -1806,10 +1807,7 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   else if (drop && row.score_drop_points !== 10) {
     drop.textContent = t('mq.ui.drop.points', { n: row.score_drop_points });
   }
-  if (cadence && row.reaudit_cadence === 'daily')
-    cadence.textContent = t('mq.ui.cadence.daily');
-  if (cadence && row.reaudit_cadence === 'weekly')
-    cadence.textContent = t('mq.ui.cadence.weekly');
+  applyCadenceSummary(cadence, row.reaudit_cadence);
   const radio = root.querySelector<HTMLInputElement>(
     `input[name="fq"][value="${CADENCE_RADIO[row.reaudit_cadence] ?? 'h'}"]`,
   );
@@ -1851,7 +1849,7 @@ function radioCadence(value: string | undefined): string {
   return found?.[0] ?? 'weekly';
 }
 
-async function saveAlerts(next: EspaceNext): Promise<void> {
+async function saveAlerts(root: HTMLElement, next: EspaceNext): Promise<void> {
   const supabase = browserClient();
   const sites = await alertSites();
   // Jamais de clic muet : sans site ni client, on le dit.
@@ -1887,6 +1885,11 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
       say(t('mq.ui.alerts.error'), true);
       return;
     }
+  }
+  const first = sites[0];
+  if (first) {
+    applyCadenceSummary(root.querySelectorAll('.rows .val')[3], cadence);
+    void paintAlerts(root, first);
   }
   say(t('mq.ui.saved'), true);
   void next;
