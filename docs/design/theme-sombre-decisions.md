@@ -127,14 +127,32 @@ La conversion applique ces règles à chaque valeur en dur, selon la propriété
 Les variables de page (`--bg`, `--text`, `--muted`, `--line`, `--crit-bg`…) suivent la
 même conversion à leur définition : elles prennent le jeton sombre sans être redéclarées.
 
+Cas particuliers de la conversion :
+
+- **Texte en dégradé** (`background-clip: text`) : les arrêts prennent des rôles de texte
+  (`--d-ac`, `--d-ic`, `--d-tx`, `--d-mu`), jamais un rôle de fond.
+- **Fond de page** : la fin du dégradé de page prend `--d-bg` (le clair éclaircit vers
+  `#adbbda`, ce qui donnerait une tache claire en bas des pages sombres).
+- **Voiles d’aurore** (blanc 25 % sur les en-têtes) → `--d-hl` ; halos pêche → `--d-t1`.
+- **SVG** : un attribut `fill="…"` n’accepte pas `var()`. Le rôle passe par `style`
+  (`style="fill:var(--d-tx, #1e2a55)"`) ou par une classe ; l’attribut garde le clair.
+- **Canvas** (radar du constat, orbite du brief) : `lib/theme-role.ts` lit le rôle au
+  moment du dessin (`roleColor('sf', '#fff')`) ; le canvas se redessine au changement
+  de thème.
+- **`tokens.css`** garde ses valeurs claires en dur ; le fichier unique relaie ses
+  variables (`--paper`, `--ink`, `--glass`, `--score-*`…) vers les rôles.
+- **Pêche** (`--peach-fill`, `--on-peach`, `--peach-border`) : identique dans les deux
+  thèmes.
+
 ## 5. Exceptions écrites dans le fichier unique
 
-Peu nombreuses, toutes dans `theme-dark.css`, toutes en couleurs seulement :
+Peu nombreuses, toutes dans `theme-dark.css` :
 
-- logos en blanc (`filter`), comme avant ;
+- logos en blanc (`filter`), y compris la couverture de l’aperçu PDF ;
 - surtitres de section en lavande (`--d-lv`) ;
+- textes indicatifs des champs et étapes en attente : pleine opacité (sinon trop pâles) ;
 - aperçu du badge : la scène reste claire, car le badge s’affichera sur un site clair ;
-- texte du bouton coché du sélecteur Rien / À vérifier / À corriger, posé sur l’accent.
+- encart hors session en écran étroit : fond opaque `--d-sf`.
 
 ## 6. Ce qui disparaît
 
@@ -147,8 +165,11 @@ Peu nombreuses, toutes dans `theme-dark.css`, toutes en couleurs seulement :
 ## 7. Garde-fous
 
 - Test Vitest `theme-dark-unique.test.ts` : échoue si un sélecteur sombre
-  (`data-theme="dark"`, `prefers-color-scheme: dark`) ou une définition de jeton `--d-*`
-  apparaît hors de `theme-dark.css`, et si un jeton utilisé n’est pas défini dans la palette.
+  (`[data-theme="dark"]`, `:not([data-theme="light"])`, `@media (prefers-color-scheme:
+  dark)`) ou une définition de jeton `--d-*` apparaît hors de `theme-dark.css`, si un
+  jeton utilisé n’est pas défini dans la palette, si une règle du fichier unique ne
+  commence pas par `html[data-theme="dark"]`, ou si une ancienne feuille
+  `theme-dark-*.css` revient.
 - Les tests Playwright existants (contraste axe en sombre, géométrie clair = sombre,
   pixels du clair) restent tous actifs.
 - Budget de l’accueil (512 000 octets) : le fichier unique, sans filet ni doublons, pèse
