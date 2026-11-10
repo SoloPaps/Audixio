@@ -1343,7 +1343,7 @@ main {
   }
 }
 
-/* Exemple robots.txt : lavande en clair, foncé en sombre (QA Mo B-9). Couleurs seulement. */
+/* Exemple robots.txt : lavande en clair, carte en sombre (QA Mo B-9). Couleurs seulement. */
 .robots-ex {
-  background: var(--d-bg, #ede8f5);
+  background: var(--d-sf, #ede8f5);
 }

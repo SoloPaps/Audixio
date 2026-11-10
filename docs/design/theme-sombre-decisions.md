@@ -64,7 +64,7 @@ d’éléments actifs ≥ 3:1).
 | `--d-sf2` | `#242e58` | Sous-surface : encart dans une carte, champ, ligne de tableau | Un cran au-dessus de la carte, comme le lilas pâle du clair. |
 | `--d-sf3` | `#2e3a68` | Contrôle, puce, survol, onglet actif | Plus haut plan, pour ce qui se clique. |
 | `--d-inv` | `#26306a` | Blocs marine du clair (bandeaux, infobulles) | Garde l’effet « bloc fort » avec un marine plus saturé. |
-| `--d-gl` | `rgb(27 35 71 / 0.9)` | Verre (barre de navigation, cartes en verre) | Même teinte que la carte, légèrement translucide. |
+| `--d-gl` | `rgb(27 35 71 / 0.95)` | Verre (barre de navigation, barres collantes, cartes en verre) | Même teinte que la carte, à peine translucide : une barre collante reste opaque (≥ 95 %). |
 
 ### 3.2 Traits
 

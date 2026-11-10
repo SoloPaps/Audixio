@@ -173,7 +173,9 @@
   background: var(--axn-sf);
   transform: rotate(-18deg);
 }
-.axn-theme .axn-sun,
+.axn-theme .axn-sun {
+  display: var(--axn-sun-display, block);
+}
 .axn-theme .axn-moon {
   display: block;
 }

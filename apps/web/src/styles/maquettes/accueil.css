@@ -2980,6 +2980,7 @@ a.link-inline {
   padding: 18px 20px;
   border-radius: 20px;
   background: linear-gradient(180deg, var(--d-sf, #fff), var(--d-sf2, #f8f6fc));
+  background-color: var(--d-sf, transparent);
   border: 1px solid var(--d-ln, #d9dfee);
   color: var(--d-tx, #1e2a55);
   text-decoration: none;
@@ -2999,7 +3000,7 @@ a.link-inline {
   width: 36px;
   height: 36px;
   border-radius: 12px;
-  background: var(--d-bg, #ede8f5);
+  background: var(--d-sf3, #ede8f5);
 }
 @media (min-width: 1100px) {
   .lcards {

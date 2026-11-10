@@ -6,8 +6,9 @@
  * sa valeur sombre. Couleurs seulement, écran seulement (l'impression reste claire).
  */
 
-html[data-theme="dark"] .axn-theme .axn-sun {
-  display: none;
+/* Icône soleil masquée par chrome.css quand il est chargé (pas sur les écrans de connexion). */
+html[data-theme="dark"] {
+  --axn-sun-display: none;
 }
 
 @media screen {
@@ -21,7 +22,7 @@ html[data-theme="dark"] .axn-theme .axn-sun {
     --d-sf2: #242e58;
     --d-sf3: #2e3a68;
     --d-inv: #26306a;
-    --d-gl: rgb(27 35 71 / 0.9);
+    --d-gl: rgb(27 35 71 / 0.95);
 
     /* Traits. */
     --d-ln: #38467c;

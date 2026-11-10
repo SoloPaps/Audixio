@@ -2789,7 +2789,7 @@ h3.h {
   display: inline-flex;
   padding: 4px;
   border-radius: 99px;
-  background: var(--d-bg, #ede8f5);
+  background: var(--d-sf3, #ede8f5);
 }
 .seg label {
   position: relative;
@@ -3890,7 +3890,7 @@ main {
   gap: 16px;
   padding: 22px;
   border-radius: 22px;
-  background: var(--d-gl, rgba(255, 255, 255, 0.78));
+  background: var(--d-sf, rgba(255, 255, 255, 0.78));
   border: 1px solid var(--d-ln, #d9dfee);
   box-shadow: 0 18px 40px -28px rgba(30, 42, 85, 0.45);
 }

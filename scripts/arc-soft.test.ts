@@ -61,7 +61,7 @@ describe('tokens Arc Soft', () => {
     expect(tokens).not.toContain('prefers-color-scheme');
     expect(dark).toContain('--d-bg: #0b0f20');
     expect(dark).toContain('--d-sf: #1b2347');
-    expect(dark).toContain('--d-gl: rgb(27 35 71 / 0.9)');
+    expect(dark).toContain('--d-gl: rgb(27 35 71 / 0.95)');
     expect(dark).toContain('--d-ac: #a9bdf6');
     expect(dark).toContain('--wash-bottom: var(--d-bg)');
     expect(dark).toContain('--glass: var(--d-gl)');

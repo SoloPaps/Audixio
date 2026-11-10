@@ -1058,6 +1058,7 @@ body {
   padding: 6px 14px;
   border-radius: 99px;
   background: linear-gradient(135deg, #f3dfa8, #d9b25f);
+  background-color: #d9b25f;
   color: #3a2a05;
   font:
     800 12.5px Inter,
@@ -1295,8 +1296,8 @@ body {
 .pf h3 b {
   font-size: 13px;
   font-weight: 700;
-  color: var(--d-tx, #0f1530);
-  background: var(--d-ln2, #adbbda);
+  color: var(--d-bg, #0f1530);
+  background: var(--d-ac, #adbbda);
   padding: 2px 10px;
   border-radius: 99px;
 }

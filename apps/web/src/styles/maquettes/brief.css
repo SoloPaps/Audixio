@@ -847,7 +847,7 @@
 }
 :where(html[data-vue="brief"]) .mdbody {
   /* Aperçu du prompt IA structuré (décision du 6 nov.) */
-  --pv-title: #1e2a55;
+  --pv-title: var(--d-tx, #1e2a55);
   --pv-sec: var(--d-ac, #3d52a0);
   --pv-bar: var(--d-ic, #7091e6);
   --pv-mark: var(--d-ic, #6b7bb5);
