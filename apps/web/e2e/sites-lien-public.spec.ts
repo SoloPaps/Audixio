@@ -17,6 +17,7 @@ async function openSites(
     theme?: 'light' | 'dark';
     published?: boolean;
     slug?: string;
+    shareLinks?: number;
   } = {},
 ): Promise<void> {
   patches.length = 0;
@@ -30,6 +31,7 @@ async function openSites(
       ? (options.slug ?? 'gratuit-audigy-01')
       : null) as string | null,
     expose_security: false,
+    owner_id: USER,
   };
   await page.addInitScript((value) => {
     const storage = (
@@ -96,7 +98,75 @@ async function openSites(
       });
       return;
     }
+    if (url.includes('/rest/v1/reports')) {
+      const shares = options.shareLinks ?? 0;
+      const rows = shares
+        ? [
+            {
+              id: '00000000-0000-4000-8000-0000000000ae',
+              audit_id: '00000000-0000-4000-8000-0000000000ad',
+              share_token: 'aa'.repeat(16),
+              link_kind: 'public',
+              visibility: 'link',
+              revoked_at: null,
+              expires_at: '2027-01-01T00:00:00.000Z',
+              created_at: '2026-11-01T00:00:00.000Z',
+            },
+          ]
+        : [];
+      await route.fulfill({
+        status: 200,
+        headers,
+        body: JSON.stringify(rows),
+      });
+      return;
+    }
+    if (url.includes('/rest/v1/audits')) {
+      const shares = options.shareLinks ?? 0;
+      const rows = shares
+        ? [
+            {
+              id: '00000000-0000-4000-8000-0000000000ad',
+              site_id: SITE,
+              status: 'done',
+              finished_at: '2026-11-01T00:00:00.000Z',
+              created_at: '2026-11-01T00:00:00.000Z',
+            },
+          ]
+        : [];
+      await route.fulfill({
+        status: 200,
+        headers,
+        body: JSON.stringify(rows),
+      });
+      return;
+    }
     await route.fulfill({ status: 200, headers, body: '[]' });
+  });
+  await page.route('**/api/sites/public', async (route) => {
+    if (route.request().method() === 'OPTIONS') {
+      await route.fulfill({ status: 204 });
+      return;
+    }
+    const body = route.request().postDataJSON() as {
+      visible?: boolean;
+      publicSlug?: string;
+    };
+    const patch = {
+      is_public: body.visible === true,
+      public_slug: body.publicSlug ?? row.public_slug,
+    };
+    patches.push(patch);
+    row = { ...row, ...patch };
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        visible: patch.is_public,
+        publicSlug: patch.public_slug,
+      }),
+    });
   });
   await page.goto(`/sites?theme=${options.theme ?? 'light'}`);
 }
@@ -205,3 +275,20 @@ for (const width of [330, 390]) {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
+
+test('un compte gratuit avec un lien de partage est déjà au plafond', async ({
+  page,
+}) => {
+  await openSites(page, { shareLinks: 1 });
+  await expect(
+    page.getByRole('button', { name: 'Créer un lien de partage' }),
+  ).toBeVisible({ timeout: 15_000 });
+  await expect(
+    page.locator('.qrow .badge, .badge.b-chk').first(),
+  ).toBeVisible();
+  const publish = page.getByRole('button', {
+    name: 'Créer un lien de partage',
+  });
+  await expect(publish).toHaveAttribute('data-pro', 'liens');
+  await expect(publish).not.toHaveAttribute('data-publish', SITE);
+});

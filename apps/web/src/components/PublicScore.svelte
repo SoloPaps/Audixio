@@ -14,6 +14,7 @@ import {
   loadPublicScore,
   loadSharedScore,
   type PublicScoreView,
+  publicGlobalDisplay,
   scoreBadgeSvg,
 } from '../lib/public-score.js';
 import {
@@ -70,6 +71,9 @@ const scored = $derived(
       (REPORT_DOMAINS as readonly string[]).includes(item.id) &&
       item.score !== null,
   ).length,
+);
+const globalDisplay = $derived(
+  publicGlobalDisplay(view?.globalScore ?? null, scored),
 );
 
 function categoryItems(score: PublicScoreView): CategoryItem[] {
@@ -187,10 +191,12 @@ onMount(() => {
   <section class="glass glass-module">
     <div class="glass-plate">
       <header class="verdict">
-        <ScoreGauge domain={t('domain.global')} score={view.globalScore} size="hero" />
+        {#if globalDisplay !== 'deferred'}
+          <ScoreGauge domain={t('domain.global')} score={view.globalScore} size="hero" />
+        {/if}
         <div>
           <p class="kicker">{view.url}</p>
-          <h1>{t(HEAD[levelForScore(view.globalScore)])}</h1>
+          <h1>{globalDisplay === 'deferred' ? t('score.public.deferred') : t(HEAD[levelForScore(view.globalScore)])}</h1>
           <p class="detail">{t('score.public.lead')}</p>
           <p class="hint">
             {t('report.coverage', {

@@ -117,6 +117,7 @@ export {
   type LinkKind,
   type LinkRecord,
   lienActif,
+  linkSlotsUsed,
   PUBLIC_LINK_DAYS,
   peutCreerLien,
   SHARE_TOKEN,

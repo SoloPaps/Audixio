@@ -136,6 +136,7 @@ export { lienDepsFromEnv, supabaseLienStore } from './liens-db.js';
 export {
   handleLien,
   handlePartage,
+  handleSitePublic,
   type LienDeps,
   type LienStore,
 } from './liens-http.js';
