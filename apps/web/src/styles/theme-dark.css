@@ -665,11 +665,20 @@ html[data-theme="dark"][data-vue] .verifier-page .vcard button {
   border-color: #3d52a0;
 }
 
-html[data-theme="dark"][data-vue] .session-wall {
+html[data-theme="dark"][data-vue] .session-wall,
+html[data-theme="dark"][data-vue] .session-wall.report-message {
   background-color: #1c2340;
   background-image: none;
   border-color: #3d4d7a;
   box-shadow: none;
+}
+
+@media (max-width: 390px) {
+  html[data-theme="dark"][data-vue] .session-wall,
+  html[data-theme="dark"][data-vue] .session-wall.report-message {
+    background-color: #1c2340;
+    background-image: none;
+  }
 }
 
 html[data-theme="dark"][data-vue] .session-wall :is(h1, p, .lede) {
