@@ -1252,7 +1252,11 @@
       var(--d-gl, rgba(255, 255, 255, 0.85)),
       rgba(255, 255, 255, 0) 55%
     ),
-    linear-gradient(150deg, rgba(112, 145, 230, 0.4), var(--d-t2, rgba(112, 145, 230, 0.2)));
+    linear-gradient(
+      150deg,
+      rgba(112, 145, 230, 0.4),
+      var(--d-t2, rgba(112, 145, 230, 0.2))
+    );
   color: var(--d-ac, #2b3b85);
   border: 1px solid rgba(112, 145, 230, 0.38);
   box-shadow:
@@ -1592,7 +1596,12 @@
   border-radius: 32px;
   overflow: hidden;
   color: #fff;
-  background: linear-gradient(120deg, var(--d-cta, #3d52a0) 0%, var(--d-inv, #1e2a55) 58%, var(--d-inv, #1e2a55) 100%);
+  background: linear-gradient(
+    120deg,
+    var(--d-cta, #3d52a0) 0%,
+    var(--d-inv, #1e2a55) 58%,
+    var(--d-inv, #1e2a55) 100%
+  );
   padding: clamp(2rem, 5vw, 3.5rem);
   display: flex;
   flex-wrap: wrap;
