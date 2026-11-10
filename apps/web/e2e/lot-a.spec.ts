@@ -63,7 +63,7 @@ test('le thème bascule au clic et suit l’appareil', async ({ page }) => {
     };
     return view.getComputedStyle(view.document.body).backgroundColor;
   });
-  expect(paper).toBe('rgb(18, 22, 42)');
+  expect(paper).toBe('rgb(11, 15, 32)');
   const button = page
     .locator('.axn-tools')
     .getByRole('button', { name: 'Thème' });
