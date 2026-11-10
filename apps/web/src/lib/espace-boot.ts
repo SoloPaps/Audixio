@@ -9,6 +9,7 @@ import {
   type ReportLinkRow,
   shareCopiedKey,
 } from './account-access.js';
+import { ACCOUNT_EXPORT_FILENAME } from './account-export.js';
 import {
   askedHistorySite,
   historySource,
@@ -20,6 +21,7 @@ import {
   latestReportHref,
   welcomeDone,
 } from './account-prefs.js';
+import { applyCadenceSummary } from './alerts-cadence.js';
 import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
 import { isLinkLimit } from './badge-target.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
@@ -423,44 +425,58 @@ function bindSites(
   };
   rerun?.addEventListener('click', onRerun);
   if (rerun) off.push(() => rerun.removeEventListener('click', onRerun));
-  const menuButton = root.querySelector<HTMLButtonElement>('#expb');
-  const menu = root.querySelector<HTMLElement>('#expm');
-  const closeMenu = (): void => {
-    if (!menu || !menuButton) return;
-    menu.hidden = true;
-    menuButton.setAttribute('aria-expanded', 'false');
+  const exportMenus = [...root.querySelectorAll<HTMLElement>('.export-menu')];
+  const closeMenus = (except?: HTMLElement): void => {
+    for (const wrap of exportMenus) {
+      if (wrap === except) continue;
+      const menu = wrap.querySelector('ul');
+      const menuButton = wrap.querySelector('button');
+      if (!menu || !menuButton) continue;
+      menu.hidden = true;
+      menuButton.setAttribute('aria-expanded', 'false');
+    }
   };
-  const onMenu = (): void => {
-    if (!menu || !menuButton) return;
-    const open = menu.hidden;
-    menu.hidden = !open;
-    menuButton.setAttribute('aria-expanded', String(open));
-    if (open) menu.querySelector('button')?.focus();
-  };
-  menuButton?.addEventListener('click', onMenu);
-  if (menuButton)
-    off.push(() => menuButton.removeEventListener('click', onMenu));
-  const onPick = (event: Event): void => {
-    const target = event.target;
-    if (!(target instanceof Element)) return;
-    const button = target.closest('button');
-    if (!button || !menu?.contains(button)) return;
-    const fmt = button.dataset.fmt ?? '';
-    closeMenu();
-    menuButton?.focus();
-    say(t('mq.ui.export', { fmt }), true);
-  };
-  menu?.addEventListener('click', onPick);
-  if (menu) off.push(() => menu.removeEventListener('click', onPick));
+  for (const wrap of exportMenus) {
+    const menuButton = wrap.querySelector<HTMLButtonElement>(':scope > button');
+    const menu = wrap.querySelector<HTMLElement>(':scope > ul');
+    const onMenu = (): void => {
+      if (!menu || !menuButton) return;
+      const open = menu.hidden;
+      closeMenus(wrap);
+      menu.hidden = !open;
+      menuButton.setAttribute('aria-expanded', String(open));
+      if (open) menu.querySelector('button')?.focus();
+    };
+    const onPick = (event: Event): void => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const button = target.closest('button');
+      if (!button || !menu?.contains(button)) return;
+      const fmt = button.dataset.fmt ?? '';
+      closeMenus();
+      menuButton?.focus();
+      say(t('mq.ui.export', { fmt }), true);
+    };
+    menuButton?.addEventListener('click', onMenu);
+    menu?.addEventListener('click', onPick);
+    if (menuButton)
+      off.push(() => menuButton.removeEventListener('click', onMenu));
+    if (menu) off.push(() => menu.removeEventListener('click', onPick));
+  }
   const onDoc = (event: Event): void => {
     const target = event.target;
-    if (!(target instanceof Element) || !target.closest('.menu')) closeMenu();
+    if (!(target instanceof Element) || !target.closest('.export-menu')) {
+      closeMenus();
+    }
   };
   const onKey = (event: KeyboardEvent): void => {
-    if (event.key === 'Escape' && menu && !menu.hidden) {
-      closeMenu();
-      menuButton?.focus();
-    }
+    if (event.key !== 'Escape') return;
+    const open = exportMenus.find(
+      (wrap) => wrap.querySelector('ul') && !wrap.querySelector('ul')?.hidden,
+    );
+    if (!open) return;
+    closeMenus();
+    open.querySelector('button')?.focus();
   };
   document.addEventListener('click', onDoc);
   document.addEventListener('keydown', onKey);
@@ -1516,7 +1532,7 @@ function bindAccount(root: HTMLElement, next: EspaceNext): () => void {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'audixio-donnees.json';
+        link.download = ACCOUNT_EXPORT_FILENAME;
         link.click();
         URL.revokeObjectURL(url);
         say(t('mq.ui.export.done'), true);
@@ -1766,7 +1782,7 @@ function bindAlerts(root: HTMLElement, next: EspaceNext): () => void {
   const form = root.querySelector<HTMLFormElement>('#fPro');
   const onForm = (event: Event): void => {
     event.preventDefault();
-    void saveAlerts(next);
+    void saveAlerts(root, next);
   };
   form?.addEventListener('submit', onForm);
   if (form) off.push(() => form.removeEventListener('submit', onForm));
@@ -1832,10 +1848,7 @@ async function paintAlerts(root: HTMLElement, siteId: string): Promise<void> {
   else if (drop && row.score_drop_points !== 10) {
     drop.textContent = t('mq.ui.drop.points', { n: row.score_drop_points });
   }
-  if (cadence && row.reaudit_cadence === 'daily')
-    cadence.textContent = t('mq.ui.cadence.daily');
-  if (cadence && row.reaudit_cadence === 'weekly')
-    cadence.textContent = t('mq.ui.cadence.weekly');
+  applyCadenceSummary(cadence, row.reaudit_cadence);
   const radio = root.querySelector<HTMLInputElement>(
     `input[name="fq"][value="${CADENCE_RADIO[row.reaudit_cadence] ?? 'h'}"]`,
   );
@@ -1877,7 +1890,7 @@ function radioCadence(value: string | undefined): string {
   return found?.[0] ?? 'weekly';
 }
 
-async function saveAlerts(next: EspaceNext): Promise<void> {
+async function saveAlerts(root: HTMLElement, next: EspaceNext): Promise<void> {
   const supabase = browserClient();
   const sites = await alertSites();
   // Jamais de clic muet : sans site ni client, on le dit.
@@ -1913,6 +1926,11 @@ async function saveAlerts(next: EspaceNext): Promise<void> {
       say(t('mq.ui.alerts.error'), true);
       return;
     }
+  }
+  const first = sites[0];
+  if (first) {
+    applyCadenceSummary(root.querySelectorAll('.rows .val')[3], cadence);
+    void paintAlerts(root, first);
   }
   say(t('mq.ui.saved'), true);
   void next;
