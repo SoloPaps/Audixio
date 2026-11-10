@@ -80,6 +80,26 @@ function range(values: readonly number[]): { min: number; max: number } {
   return { min, max };
 }
 
+/** Décalage du libellé de note au-dessus de la pastille (espace-boot). */
+const VALUE_LABEL_RISE = 20;
+/** Écart minimal, en unités viewBox, entre ce libellé et le texte du seuil. */
+const LABEL_MIN_GAP = 16;
+
+function thresholdLabelY(
+  thresholdY: number,
+  markYs: readonly number[],
+  narrow: boolean,
+): string {
+  const preferred = thresholdY - 10;
+  if (!narrow) return one(preferred);
+  const collide = (textY: number): boolean =>
+    markYs.some((y) => Math.abs(y - VALUE_LABEL_RISE - textY) < LABEL_MIN_GAP);
+  if (!collide(preferred)) return one(preferred);
+  const below = thresholdY + 14;
+  if (!collide(below)) return one(below);
+  return one(18);
+}
+
 /** Courbe, aires et pastilles. `null` s’il n’y a aucun point. */
 export function evolutionChart(
   points: readonly EvolutionPoint[],
@@ -119,7 +139,11 @@ export function evolutionChart(
   const thresholdY = yOf(GRADE_B_THRESHOLD);
   const threshold = {
     y: one(thresholdY),
-    textY: one(thresholdY - 10),
+    textY: thresholdLabelY(
+      thresholdY,
+      marks.map((mark) => mark.y),
+      frame.width === CHART_NARROW.width,
+    ),
     visible: GRADE_B_THRESHOLD >= min && GRADE_B_THRESHOLD <= max,
   };
   return {
