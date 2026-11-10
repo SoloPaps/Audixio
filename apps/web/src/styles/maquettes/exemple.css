@@ -1050,6 +1050,17 @@ body {
   opacity: 1;
   animation: fzWave 0.5s ease forwards calc(var(--i) * 0.018s);
 }
+.prompt-live {
+  min-height: 1.4em;
+  margin: 8px 0 0;
+  color: var(--muted, #4a5585);
+  font-size: 14px;
+  line-height: 1.4;
+}
+html[data-theme="dark"] .prompt-live {
+  color: #d5d9e8;
+}
+
 .fz .st-ok {
   display: none;
 }

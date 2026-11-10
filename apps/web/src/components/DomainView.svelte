@@ -19,6 +19,7 @@ import {
   choiceKey,
   savedChoices,
 } from '../lib/finding-choice.js';
+import { applyFindingHash } from '../lib/finding-hash.js';
 import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
@@ -345,19 +346,25 @@ onMount(() => {
   document.documentElement.dataset.vue = 'domaine';
   document.documentElement.classList.add('has-ind');
   let stop = (): void => {};
+  const goHash = (): void => {
+    if (root) applyFindingHash(root, location.hash);
+  };
   void tick().then(() => {
     if (!root) return;
     placeInd(root);
     stop = revealAll(root, '.rv,.gbar');
     countUp(root);
+    goHash();
   });
   const onResize = (): void => {
     if (root) placeInd(root);
   };
   window.addEventListener('resize', onResize);
+  window.addEventListener('hashchange', goHash);
   return () => {
     stop();
     window.removeEventListener('resize', onResize);
+    window.removeEventListener('hashchange', goHash);
   };
 });
 
