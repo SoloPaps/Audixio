@@ -103,7 +103,7 @@
   --paper: #f7f5ef; --surface: #ffffff; --sub: #efece4; --line: #d6d2c7;
   --grid-1: transparent; --grid-2: transparent;
   --ink: #0f1115; --ink-2: #4b4a47;
-  --mark: #c9a400; --swash: #ffe14d; --fix: #0f1115; --check: #0f1115;
+  --mark: #e0b800; --swash: #ffe14d; --fix: #0f1115; --check: #0f1115;
   --lab-bg: #ffe14d; --lab-fg: #0f1115; --lab-bd: #0f1115;
   --cta-bg: #0f1115; --cta-fg: #f7f5ef; --cta-bd: #0f1115; --cta-hbg: #2a2e36; --cta-hfg: #f7f5ef;
   --state: #2445b5; --state-fg: #ffffff;
@@ -171,6 +171,8 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .sw .draw { stroke: var(--swash); stroke-width: 16; stroke-linecap: butt; }
 :root:is([data-palette="B"], [data-palette="B2"]):not([data-theme="dark"]) .sw > svg { mix-blend-mode: multiply; }
 .arrow-svg .draw { stroke: var(--mark); stroke-width: 2.4; }
+:root[data-palette="B2"]:not([data-theme="dark"]) :is(.circ .draw, .arrow-svg .draw) { stroke-width: 3.6; }
+:root[data-palette="B2"]:not([data-theme="dark"]) .und .draw { stroke-width: 4.5; }
 
 /* Lettre-note */
 .g { --g: var(--gC); color: var(--g); font-weight: 900; }

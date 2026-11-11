@@ -36,7 +36,7 @@ Notes A→F : clair `#0F7A55 #3F7F14 #9A6B00 #B9520F #B3261E #8A1538` (C en `#8F
 | Fond / surface | `#F7F5EF` / `#FFFFFF` | `#0F1115` / `#181B21` |
 | Encre / douce | `#0F1115` / `#4B4A47` | `#F3F1EA` / `#B3B0A7` |
 | Bouton principal | `#0F1115`, texte `#F7F5EF` | `#FFE14D`, texte `#0F1115` |
-| Traits de correction | cercles et flèches `#C9A400`, surligneur `#FFE14D` (multiply) | `#FFE14D` (surligneur à 36 %) |
+| Traits de correction | cercles et flèches `#E0B800` (trait épaissi), surligneur `#FFE14D` (multiply) | `#FFE14D` (surligneur à 36 %) |
 | Secondaire : liens, focus, états (piste, boussole, puces actives, nav) | `#2445B5` | `#8FB8FF` |
 
 Les notes A–F sont celles de B. Contrastes du texte et du bouton : AA ou mieux.
