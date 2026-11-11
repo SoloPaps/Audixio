@@ -265,70 +265,81 @@ onMount(() => {
     </div>
   {/if}
 
-  <section class="glass glass-module">
-    <div class="glass-plate">
-      <h2>{t('score.security.title')}</h2>
-      {#if view.access === 'team' && view.securityDetails.length > 0}
-        <ul>
-          {#each view.securityDetails as row (row.checkId)}
-            <li>{translate(row.messageKey) ?? row.checkId}</li>
-          {/each}
-        </ul>
-      {:else if verified && (view.findings?.length ?? 0) > 0}
-        <ul>
-          {#each view.findings ?? [] as row (row.checkId)}
-            <li>{translate(row.messageKey) ?? row.checkId}</li>
-          {/each}
-        </ul>
-      {:else}
-        <p>{t('score.security.hidden')}</p>
-      {/if}
-      {#if view.access === 'team' && view.briefText}
-        <p class="prose">{view.briefText}</p>
-      {/if}
-      <p class="export-links">
-        <button type="button" class="button button-secondary" onclick={download}>
-          {t('sites.badge')}
-        </button>
-        {#if view.domains.length > 0}
-          <a
-            class="link-action"
-            href={location.pathname}
-            download={markdownFilename(view.url, stamp ?? new Date())}
-            onclick={downloadMarkdown}
-          >{t('export.markdown')}</a>
+  <!-- Retour owner du 11 nov. (P6) : sections du bas au design du rapport
+       (titres .sec-h, cartes, boutons .btn), comme HubView juste au-dessus. -->
+  <div class="wrap public-hub pub-more">
+    <section aria-labelledby="t-protect">
+      <div class="sec-h">
+        <h2 id="t-protect">{t('score.security.title')}</h2>
+      </div>
+      <div class="pub-card">
+        {#if view.access === 'team' && view.securityDetails.length > 0}
+          <ul class="pub-list">
+            {#each view.securityDetails as row (row.checkId)}
+              <li>{translate(row.messageKey) ?? row.checkId}</li>
+            {/each}
+          </ul>
+        {:else if verified && (view.findings?.length ?? 0) > 0}
+          <ul class="pub-list">
+            {#each view.findings ?? [] as row (row.checkId)}
+              <li>{translate(row.messageKey) ?? row.checkId}</li>
+            {/each}
+          </ul>
+        {:else}
+          <p class="pub-lead">{t('score.security.hidden')}</p>
         {/if}
-      </p>
-      <p class="hint">{t('sites.badge.hint')}</p>
-    </div>
-  </section>
-
-  <section class="glass glass-module">
-    <div class="glass-plate">
-      <h2>{t('score.public.optout.title')}</h2>
-      <p class="prose">{t('score.public.optout.lead')}</p>
-      <p>
-        <a class="link-action" href="/connexion">{t('score.public.optout.action')}</a>
-      </p>
-    </div>
-  </section>
-
-  {#if stamp && view.methodVersion && view.auditId}
-    <section class="glass glass-module">
-      <div class="glass-plate">
-        <h2 id="verification">{t('section.verify')}</h2>
-        <PreuveMentions />
-        <ReportFooter
-          url={view.url}
-          at={stamp}
-          methodVersion={view.methodVersion}
-          fingerprint={view.auditId}
-          fingerprintKind="id"
-          verifyHref={`/verifier/${view.auditId}`}
-        />
+        {#if view.access === 'team' && view.briefText}
+          <p class="prose">{view.briefText}</p>
+        {/if}
+        <div class="pub-acts">
+          <button type="button" class="btn btn-main" onclick={download}>
+            <svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg>
+            {t('sites.badge')}
+          </button>
+          {#if view.domains.length > 0}
+            <a
+              class="btn btn-ghost"
+              href={location.pathname}
+              download={markdownFilename(view.url, stamp ?? new Date())}
+              onclick={downloadMarkdown}
+            ><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>{t('export.markdown')}</a>
+          {/if}
+        </div>
+        <p class="pub-note">{t('sites.badge.hint')}</p>
       </div>
     </section>
-  {:else}
+
+    <section aria-labelledby="t-owner">
+      <div class="sec-h">
+        <h2 id="t-owner">{t('score.public.optout.title')}</h2>
+      </div>
+      <div class="pub-card pub-row">
+        <span class="pub-tile" aria-hidden="true"><svg class="ico" width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>
+        <p class="pub-lead">{t('score.public.optout.lead')}</p>
+        <a class="btn btn-ghost" href="/connexion">{t('score.public.optout.action')}</a>
+      </div>
+    </section>
+
+    {#if stamp && view.methodVersion && view.auditId}
+      <section aria-labelledby="verification">
+        <div class="sec-h">
+          <h2 id="verification">{t('section.verify')}</h2>
+        </div>
+        <div class="pub-card pub-proof">
+          <ReportFooter
+            url={view.url}
+            at={stamp}
+            methodVersion={view.methodVersion}
+            fingerprint={view.auditId}
+            fingerprintKind="id"
+            verifyHref={`/verifier/${view.auditId}`}
+          />
+          <PreuveMentions />
+        </div>
+      </section>
+    {/if}
+  </div>
+  {#if !(stamp && view.methodVersion && view.auditId)}
     <EmptyState message={t('score.public.empty')} />
   {/if}
 {/if}
@@ -340,21 +351,12 @@ onMount(() => {
     grid-template-columns: auto minmax(0, 1fr);
     gap: var(--space-6) var(--space-7);
     align-items: center;
-    padding-bottom: var(--space-6);
-    border-bottom: var(--border) solid var(--line);
   }
 
   .detail {
     max-width: var(--line-length);
     margin-bottom: var(--space-3);
     font-size: var(--text-lg);
-  }
-
-  .export-links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
   }
 
   @media (max-width: 768px) {
