@@ -1,0 +1,803 @@
+<!doctype html>
+<!--
+  MAQUETTE — Accueil Audixio v2 (évolution du design actuel). Non branchée au site.
+  SEO prévu :
+    <title>Audit de site web gratuit, noté de A à F — Audixio</title>                (56 car.)
+    <meta name="description" content="Audixio vérifie votre site sur 8 domaines : vitesse, sécurité, accessibilité, SEO… Une note sur 100, des priorités claires, en français simple.">  (≈150 car.)
+  Données structurées : Organization, WebSite, WebApplication (offre 0 €), FAQPage (en bas du <head>).
+  En production, chaque chaîne visible passe par t('clé') (dictionnaire fr).
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit de site web gratuit, noté de A à F — Audixio</title>
+<meta name="description" content="Audixio vérifie votre site sur 8 domaines : vitesse, sécurité, accessibilité, SEO… Une note sur 100, des priorités claires, en français simple.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://audixio.fr/">
+<link rel="alternate" hreflang="fr" href="https://audixio.fr/">
+<link rel="alternate" hreflang="en" href="https://audixio.fr/en/">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FAF7F2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0F20" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="../../../apps/web/public/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+  /* Anti-flash : choix manuel > système. ?theme=dark|light pour les captures. */
+  (function () {
+    var q = new URLSearchParams(location.search).get('theme');
+    var s = q || localStorage.getItem('axn-theme');
+    if (s === 'dark' || s === 'light') document.documentElement.dataset.theme = s;
+  })();
+</script>
+<style>
+@font-face {
+  font-family: "Hanken Grotesk";
+  src: url("../../../apps/web/public/fonts/hanken-grotesk-latin.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
+
+/* ---------- Jetons : clair ---------- */
+:root {
+  color-scheme: light;
+  --paper: #faf7f2;
+  --surface: #ffffff;
+  --sub: #f4f1fa;
+  --lilac: #ede8f5;
+  --ink: #1a2246;
+  --ink-2: #4a5585;
+  --line: #dcd6e8;
+  --line-2: #8697c4;
+  --brand: #3d52a0;
+  --cta: #2b3b85;
+  --cta-hover: #1e2a55;
+  --on-cta: #ffffff;
+  --focus: #c2410c;
+  --warm: #f3c7a6;
+  --warm-soft: #fbeee3;
+  --err: #b42318;
+  --err-bg: #fdecea;
+  --ok: #067647;
+  --tick: rgb(61 82 160 / 0.28);
+  --shadow: 0 1px 0 rgb(26 34 70 / 0.04), 0 12px 32px -12px rgb(26 34 70 / 0.18);
+
+  --gA: #1f7a4d; --gB: #4e8a2a; --gC: #b7860b; --gD: #c9601f; --gE: #b4382a; --gF: #8e2433;
+  --onA: #fff; --onB: #fff; --onC: #1a2246; --onD: #1a2246; --onE: #fff; --onF: #fff;
+
+  --font: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-pill: 999px;
+  --wrap: 72rem;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Jetons : sombre (mêmes valeurs que theme-dark.css) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --is-dark: 1; }
+}
+:root[data-theme="dark"] { --is-dark: 1; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #0b0f20; --surface: #1b2347; --sub: #242e58; --lilac: #2e3a68;
+    --ink: #eeebf8; --ink-2: #b6bfdc; --line: #38467c; --line-2: #5d6da6;
+    --brand: #a9bdf6; --cta: #4760c2; --cta-hover: #5670cf; --on-cta: #ffffff;
+    --focus: #ffb98c; --warm: #ffb98c; --warm-soft: #3a2214;
+    --err: #ffaba1; --err-bg: #3b1a1d; --ok: #86e0b0;
+    --tick: rgb(169 189 246 / 0.22);
+    --shadow: 0 18px 48px -16px rgb(0 0 0 / 0.55);
+    --gA: #86e0b0; --gB: #b5e08a; --gC: #f4cd6f; --gD: #ffb98c; --gE: #ffaba1; --gF: #f59aae;
+    --onA: #0b0f20; --onB: #0b0f20; --onC: #0b0f20; --onD: #0b0f20; --onE: #0b0f20; --onF: #0b0f20;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0b0f20; --surface: #1b2347; --sub: #242e58; --lilac: #2e3a68;
+  --ink: #eeebf8; --ink-2: #b6bfdc; --line: #38467c; --line-2: #5d6da6;
+  --brand: #a9bdf6; --cta: #4760c2; --cta-hover: #5670cf; --on-cta: #ffffff;
+  --focus: #ffb98c; --warm: #ffb98c; --warm-soft: #3a2214;
+  --err: #ffaba1; --err-bg: #3b1a1d; --ok: #86e0b0;
+  --tick: rgb(169 189 246 / 0.22);
+  --shadow: 0 18px 48px -16px rgb(0 0 0 / 0.55);
+  --gA: #86e0b0; --gB: #b5e08a; --gC: #f4cd6f; --gD: #ffb98c; --gE: #ffaba1; --gF: #f59aae;
+  --onA: #0b0f20; --onB: #0b0f20; --onC: #0b0f20; --onD: #0b0f20; --onE: #0b0f20; --onF: #0b0f20;
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 5rem; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 1.0625rem/1.55 var(--font); font-feature-settings: "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--brand); text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { line-height: 1.15; letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+p { margin: 0; text-wrap: pretty; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+.wrap { width: min(100% - 2.5rem, var(--wrap)); margin-inline: auto; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 1rem; top: -4rem; background: var(--cta); color: var(--on-cta); padding: 0.6rem 1rem; border-radius: var(--r-md); z-index: 50; }
+.skip:focus { top: 1rem; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- Signature : graduation ---------- */
+.ticks {
+  height: 14px; color: var(--tick);
+  background:
+    repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 48px) bottom / 100% 14px no-repeat,
+    repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 12px) bottom / 100% 6px no-repeat;
+}
+
+/* ---------- Signature : flèche-note (lettre) ---------- */
+.grade {
+  --g: var(--gC); --on: var(--onC);
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 1.75rem; min-width: 2.4rem; padding: 0 0.9rem 0 0.55rem;
+  background: var(--g); color: var(--on); font-weight: 800; font-size: 1rem;
+  clip-path: polygon(0 0, calc(100% - 0.7rem) 0, 100% 50%, calc(100% - 0.7rem) 100%, 0 100%);
+  border-radius: 3px 0 0 3px;
+}
+.grade[data-g="A"] { --g: var(--gA); --on: var(--onA); }
+.grade[data-g="B"] { --g: var(--gB); --on: var(--onB); }
+.grade[data-g="C"] { --g: var(--gC); --on: var(--onC); }
+.grade[data-g="D"] { --g: var(--gD); --on: var(--onD); }
+.grade[data-g="E"] { --g: var(--gE); --on: var(--onE); }
+.grade[data-g="F"] { --g: var(--gF); --on: var(--onF); }
+.lock {
+  display: inline-flex; align-items: center; gap: 0.35rem; height: 1.75rem; padding: 0 0.6rem;
+  border: 1.5px dashed var(--line-2); border-radius: var(--r-sm); color: var(--ink-2);
+  font-size: 0.8125rem; font-weight: 700;
+}
+.lock svg { width: 14px; height: 14px; }
+
+/* ---------- En-tête canon ---------- */
+.top {
+  position: sticky; top: 0; z-index: 20;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: saturate(1.2) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.top .wrap { display: flex; align-items: center; gap: 0.75rem; height: 4rem; }
+@media (max-width: 24.5rem) { .tools a, .tools button { padding-inline: 0.55rem; } .logo img { height: 30px; } }
+.logo img { height: 34px; width: auto; }
+:root[data-theme="dark"] :is(.logo img, .logo-foot) { filter: brightness(0) invert(1); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.logo img, .logo-foot) { filter: brightness(0) invert(1); } }
+.nav { display: none; gap: 0.25rem; margin-inline: auto; }
+.nav a, .tools a, .tools button {
+  color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.9375rem;
+  padding: 0.5rem 0.8rem; border-radius: var(--r-pill); min-height: 44px; display: inline-flex; align-items: center;
+}
+.nav a[aria-current="page"] { background: var(--lilac); }
+.nav a:hover, .tools a:hover, .tools button:hover { background: var(--sub); }
+.tools { display: flex; align-items: center; gap: 0.25rem; margin-left: auto; }
+.tools button { background: none; border: 0; font: inherit; font-weight: 600; cursor: pointer; color: var(--ink); }
+.tools svg { width: 20px; height: 20px; }
+.tools .login { border: 1.5px solid var(--line-2); }
+.lang { white-space: nowrap; }
+.lang b { color: var(--ink); } .lang span { color: var(--ink-2); font-weight: 500; }
+.ico-moon { display: none; }
+:root[data-theme="dark"] .ico-sun { display: none; }
+:root[data-theme="dark"] .ico-moon { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ico-sun { display: none; }
+  :root:not([data-theme="light"]) .ico-moon { display: block; }
+}
+
+/* Barre basse mobile : 4 destinations canon */
+.bottom {
+  position: sticky; bottom: 0; z-index: 20;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.bottom a {
+  display: grid; justify-items: center; gap: 2px; padding: 0.5rem 0.25rem 0.6rem;
+  font-size: 0.75rem; font-weight: 600; color: var(--ink-2); text-decoration: none; min-height: 56px;
+}
+.bottom a[aria-current="page"] { color: var(--brand); }
+.bottom a[aria-current="page"] svg { background: var(--lilac); border-radius: var(--r-pill); }
+.bottom svg { width: 44px; height: 26px; padding: 3px 12px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Héros ---------- */
+.hero { padding: 2.25rem 0 0; }
+.hero .wrap { display: grid; gap: 2.5rem; }
+.kicker {
+  display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.875rem; font-weight: 700; color: var(--ink-2);
+}
+.kicker .mini { display: inline-grid; grid-auto-flow: column; align-items: end; gap: 2px; }
+.kicker .mini i { width: 5px; background: var(--g); border-radius: 1px; }
+h1 { font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem); font-weight: 800; margin-top: 0.9rem; letter-spacing: -0.025em; }
+h1 { position: relative; isolation: isolate; }
+h1 em { font-style: normal; position: relative; white-space: nowrap; }
+h1 em::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0.06em; height: 0.28em; z-index: -1;
+  background: var(--warm); border-radius: 2px; opacity: 0.85;
+}
+:root[data-theme="dark"] h1 em::after { background: var(--cta); opacity: 0.75; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) h1 em::after { background: var(--cta); opacity: 0.75; } }
+.lead { font-size: 1.1875rem; color: var(--ink-2); margin-top: 1rem; max-width: 34rem; }
+
+/* Champ d'audit */
+.audit { margin-top: 1.75rem; max-width: 36rem; }
+.audit label { display: block; font-weight: 700; margin-bottom: 0.5rem; }
+.field {
+  display: grid; gap: 0.5rem; padding: 0.5rem; background: var(--surface);
+  border: 2px solid var(--line-2); border-radius: var(--r-lg); box-shadow: var(--shadow);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.field:focus-within, .field.is-focus { border-color: var(--brand); box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 22%, transparent), var(--shadow); }
+.field.is-error { border-color: var(--err); }
+.field.is-valid { border-color: var(--ok); }
+.input-wrap { display: flex; align-items: center; gap: 0.5rem; padding-inline: 0.6rem; min-height: 52px; }
+.input-wrap svg { width: 20px; height: 20px; flex: none; color: var(--ink-2); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.input-wrap input {
+  flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink);
+  font: 500 1.0625rem var(--font); padding: 0.75rem 0; outline: none;
+}
+.input-wrap input::placeholder { color: var(--ink-2); opacity: 1; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 52px; padding: 0 1.4rem; border: 0; border-radius: var(--r-md);
+  background: var(--cta); color: var(--on-cta); font: 700 1.0625rem var(--font); cursor: pointer;
+  transition: background-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.btn:hover { background: var(--cta-hover); }
+.btn:active { transform: translateY(1px); }
+.btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.btn[aria-busy="true"] { cursor: progress; opacity: 0.92; }
+.btn[disabled] { background: var(--line); color: var(--ink-2); cursor: not-allowed; }
+.spin { width: 18px; height: 18px; border-radius: 50%; border: 2.5px solid currentColor; border-right-color: transparent; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hint { font-size: 0.9375rem; color: var(--ink-2); margin-top: 0.6rem; }
+.msg { display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.9375rem; font-weight: 600; margin-top: 0.6rem; }
+.msg svg { width: 18px; height: 18px; flex: none; margin-top: 2px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.msg.err { color: var(--err); }
+.msg.ok { color: var(--ok); }
+.promise { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-top: 1.25rem; font-size: 0.9375rem; font-weight: 600; }
+.promise li { display: inline-flex; align-items: center; gap: 0.4rem; }
+.promise svg { width: 18px; height: 18px; color: var(--ok); fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* L'étiquette (signature) */
+.label {
+  position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  box-shadow: var(--shadow); padding: 1.25rem; overflow: hidden;
+}
+.label::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; background: linear-gradient(90deg, var(--gA), var(--gB), var(--gC), var(--gD), var(--gE), var(--gF)); }
+.l-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; align-items: start; padding-top: 0.25rem; }
+.l-site { font-weight: 800; font-size: 1.125rem; }
+.l-meta { font-size: 0.8125rem; color: var(--ink-2); }
+.l-stamp { font-size: 0.75rem; font-weight: 700; color: var(--ink-2); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 0.2rem 0.6rem; white-space: nowrap; }
+.scale { display: grid; gap: 5px; margin: 1.25rem 0 1rem; }
+.step { display: flex; align-items: center; gap: 0.6rem; min-height: 26px; }
+.bar {
+  height: 26px; width: calc(3.5rem + var(--w) * 0.35); flex: none; white-space: nowrap; background: var(--g); color: var(--on);
+  clip-path: polygon(0 0, calc(100% - 13px) 0, 100% 50%, calc(100% - 13px) 100%, 0 100%);
+  display: flex; align-items: center; padding-left: 0.6rem; font-weight: 800; font-size: 0.875rem;
+  border-radius: 3px 0 0 3px;
+}
+.bar span { font-weight: 600; font-size: 0.75rem; margin-left: 0.6rem; opacity: 0.9; }
+.step:not(.is-here) .bar { opacity: 0.5; }
+:root[data-theme="dark"] .step:not(.is-here) .bar { opacity: 0.32; }
+.here { display: inline-flex; align-items: center; gap: 0.5rem; }
+.here .grade { height: 2.5rem; min-width: 3.3rem; font-size: 1.5rem; padding-right: 1.1rem; }
+.here b { font-size: 1.5rem; font-weight: 800; }
+.here small { font-size: 0.875rem; color: var(--ink-2); font-weight: 600; }
+.step:not(.is-here) .here { visibility: hidden; }
+.verdict { padding: 0.9rem 1rem; background: var(--sub); border-radius: var(--r-md); font-weight: 600; }
+.verdict small { display: block; font-weight: 500; color: var(--ink-2); font-size: 0.875rem; margin-top: 0.15rem; }
+.l-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1rem; font-size: 0.875rem; }
+.l-foot p { color: var(--ink-2); }
+.hero .hero-foot { display: block; margin-top: 3rem; }
+
+/* ---------- Sections ---------- */
+section { padding: 4rem 0; }
+.s-head { max-width: 42rem; margin-bottom: 2rem; }
+.eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 700; color: var(--brand); text-transform: none; }
+.eyebrow::before { content: ""; width: 22px; height: 10px; background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 5px); }
+h2 { font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.5rem); font-weight: 800; margin-top: 0.5rem; }
+.s-head p:not(.eyebrow) { color: var(--ink-2); margin-top: 0.75rem; font-size: 1.125rem; }
+.alt { background: var(--sub); }
+
+/* Référentiels */
+.refs { padding: 1.75rem 0; border-bottom: 1px solid var(--line); }
+.refs .wrap { display: grid; gap: 0.9rem; }
+.refs p { font-weight: 700; font-size: 0.9375rem; color: var(--ink-2); }
+.refs ul { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.refs li { padding: 0.35rem 0.75rem; border: 1px solid var(--line); border-radius: var(--r-pill); font-weight: 600; font-size: 0.875rem; background: var(--surface); }
+
+/* Ce que vous recevez */
+.receive { display: grid; gap: 1.5rem; }
+.prio { counter-reset: p; display: grid; gap: 0.75rem; }
+.prio li {
+  counter-increment: p; display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem;
+  padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.prio li::before {
+  content: counter(p); grid-row: span 3; width: 2rem; height: 2rem; border-radius: 50%;
+  display: grid; place-items: center; font-weight: 800; background: var(--lilac); color: var(--brand);
+}
+.prio h3 { font-size: 1.0625rem; }
+.prio p { color: var(--ink-2); font-size: 0.9375rem; }
+.prio .tag { font-size: 0.8125rem; font-weight: 700; color: var(--ink-2); display: inline-flex; gap: 0.5rem; align-items: center; margin-top: 0.25rem; }
+.prio .tag .grade { height: 1.35rem; min-width: 1.9rem; font-size: 0.8125rem; padding-right: 0.7rem; }
+.receive-side { display: grid; gap: 1rem; align-content: start; }
+.extras { display: grid; gap: 0.6rem; }
+.extras li { display: grid; grid-template-columns: 2.25rem 1fr; gap: 0.75rem; align-items: start; }
+.extras svg { width: 2.25rem; height: 2.25rem; padding: 0.45rem; border-radius: var(--r-md); background: var(--warm-soft); color: var(--ink); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.extras b { display: block; }
+.extras span { color: var(--ink-2); font-size: 0.9375rem; }
+
+/* Étapes sur la règle */
+.steps { position: relative; display: grid; gap: 1.5rem; }
+.steps li { position: relative; padding-left: 3.5rem; }
+.steps li::before {
+  content: attr(data-n); position: absolute; left: 0; top: 0; width: 2.5rem; height: 2.5rem;
+  display: grid; place-items: center; font-weight: 800; color: var(--on-cta); background: var(--cta);
+  clip-path: polygon(0 0, 72% 0, 100% 50%, 72% 100%, 0 100%); border-radius: 3px 0 0 3px; padding-right: 0.4rem;
+}
+.steps h3 { font-size: 1.1875rem; }
+.steps p { color: var(--ink-2); margin-top: 0.3rem; }
+
+/* 8 domaines */
+.domains { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.domains li {
+  display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 1rem; align-items: center;
+  padding: 1rem 0.25rem; border-bottom: 1px solid var(--line);
+}
+.domains h3 { font-size: 1.0625rem; }
+.domains p { grid-column: 1; color: var(--ink-2); font-size: 0.9375rem; }
+.domains .right { grid-row: span 2; display: flex; align-items: center; gap: 0.6rem; }
+.domains .meter { display: none; }
+.note-lock { margin-top: 1rem; font-size: 0.9375rem; color: var(--ink-2); display: flex; gap: 0.5rem; align-items: flex-start; }
+.note-lock svg { width: 18px; height: 18px; flex: none; margin-top: 3px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+/* Transparence */
+.dodont { display: grid; gap: 1rem; }
+.dodont > div { padding: 1.25rem; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line); }
+.dodont h3 { font-size: 1.125rem; display: flex; gap: 0.5rem; align-items: center; }
+.dodont h3 svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.dodont ul { margin-top: 0.75rem; display: grid; gap: 0.5rem; }
+.dodont li { padding-left: 1.1rem; position: relative; }
+.dodont li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 6px; height: 6px; border-radius: 50%; background: var(--line-2); }
+.dodont .yes h3 svg { color: var(--ok); }
+.dodont .no { background: var(--warm-soft); border-color: transparent; }
+.dodont .no h3 svg { color: var(--err); }
+
+/* Formules : tableau */
+.plans { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; font-size: 0.9375rem; }
+.plans caption { text-align: left; color: var(--ink-2); padding-bottom: 0.75rem; font-size: 0.9375rem; }
+.plans th, .plans td { padding: 0.8rem 0.9rem; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+.plans thead th { background: var(--sub); font-size: 0.9375rem; }
+.plans thead th small { display: block; font-weight: 500; color: var(--ink-2); font-size: 0.8125rem; }
+.plans tbody th { font-weight: 600; }
+.plans tr:last-child > * { border-bottom: 0; }
+.plans .yes { color: var(--ok); font-weight: 700; }
+.plans .no { color: var(--ink-2); }
+.plans .soon { font-size: 0.75rem; font-weight: 700; border: 1px solid var(--line-2); border-radius: var(--r-pill); padding: 0.1rem 0.5rem; margin-left: 0.25rem; white-space: nowrap; }
+.table-scroll { overflow-x: auto; }
+
+/* FAQ */
+.faq { display: grid; gap: 0.6rem; max-width: 46rem; }
+.faq details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); }
+.faq summary { cursor: pointer; list-style: none; padding: 1rem 3rem 1rem 1.1rem; font-weight: 700; position: relative; min-height: 44px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; position: absolute; right: 1.1rem; top: 1.3rem; width: 10px; height: 10px; border-right: 2px solid var(--ink-2); border-bottom: 2px solid var(--ink-2); transform: rotate(45deg); transition: transform 0.2s var(--ease); }
+.faq details[open] summary::after { transform: rotate(-135deg); top: 1.55rem; }
+.faq details p { padding: 0 1.1rem 1.1rem; color: var(--ink-2); }
+
+/* Rappel */
+.again { text-align: left; }
+.again .box { display: grid; gap: 1rem; padding: 2rem 1.5rem; border-radius: var(--r-lg); background: var(--lilac); }
+.again p { color: var(--ink-2); }
+.again a.go { font-weight: 700; display: inline-flex; gap: 0.4rem; align-items: center; }
+
+/* Pied de page */
+footer { padding: 0 0 2rem; }
+footer .ticks { margin-bottom: 2rem; }
+footer .cols { display: grid; gap: 1.5rem; font-size: 0.9375rem; }
+footer h2 { font-size: 0.9375rem; font-weight: 800; margin-bottom: 0.5rem; }
+footer li { padding: 0.2rem 0; }
+footer a { color: var(--ink-2); text-decoration: none; }
+footer a:hover { color: var(--ink); text-decoration: underline; }
+footer .legal { margin-top: 2rem; color: var(--ink-2); font-size: 0.875rem; }
+
+/* Annexe */
+.annex { border-top: 2px dashed var(--line-2); background: var(--paper); }
+.annex .grid { display: grid; gap: 1.25rem; }
+.annex .field { grid-template-columns: minmax(0, 1fr) !important; }
+.annex .btn { width: 100%; }
+.state { padding: 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); }
+.state > h3 { font-size: 0.9375rem; margin-bottom: 0.75rem; display: flex; gap: 0.5rem; align-items: baseline; }
+.state > h3 code { font-size: 0.75rem; color: var(--ink-2); font-weight: 500; }
+.state .field { box-shadow: none; }
+.state .audit { margin-top: 0; }
+.gate { padding: 1.25rem; border-radius: var(--r-lg); background: var(--surface); border: 1px solid var(--line-2); box-shadow: var(--shadow); }
+.gate h4 { font-size: 1.125rem; margin: 0.25rem 0 0.4rem; }
+.gate p { color: var(--ink-2); font-size: 0.9375rem; }
+.gate .row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.gate .row a { min-height: 44px; display: inline-flex; align-items: center; padding: 0 1rem; border-radius: var(--r-md); font-weight: 700; text-decoration: none; border: 1.5px solid var(--line-2); color: var(--ink); }
+.gate .row a.main { background: var(--cta); color: var(--on-cta); border-color: var(--cta); }
+
+@media (max-width: 39.99rem) {
+  .here .grade { height: 2rem; min-width: 2.6rem; font-size: 1.2rem; padding-right: 0.9rem; }
+  .here b { font-size: 1.25rem; }
+  .here small { font-size: 0.75rem; }
+}
+
+/* ---------- Tablette et + ---------- */
+@media (min-width: 40rem) {
+  .field { grid-template-columns: 1fr auto; }
+  .receive { grid-template-columns: 1.2fr 1fr; align-items: start; }
+  .dodont { grid-template-columns: 1fr 1fr; }
+  .annex .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  footer .cols { grid-template-columns: 2fr 1fr 1fr 1fr; }
+  .domains li { grid-template-columns: 1fr 9rem auto; }
+  .domains .meter { display: block; grid-row: span 2; height: 8px; border-radius: 4px; background: var(--sub); position: relative; overflow: hidden; }
+  .domains .meter i { position: absolute; inset: 0 auto 0 0; width: var(--w); background: var(--g); border-radius: 4px; }
+  .domains .right { grid-column: 3; }
+}
+@media (min-width: 64rem) {
+  .bottom { display: none; }
+  .nav { display: flex; }
+  .tools { margin-left: 0; }
+  .hero { padding-top: 4rem; }
+  .hero .wrap { grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: 4rem; }
+  .label { padding: 1.75rem; }
+  section { padding: 5.5rem 0; }
+  .steps { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .steps::before { content: ""; position: absolute; left: 0; right: 0; top: 1.25rem; height: 14px; transform: translateY(-50%); color: var(--tick);
+    background: repeating-linear-gradient(90deg, currentColor 0 1px, transparent 1px 12px); z-index: -1; }
+  .steps li { padding: 3.75rem 0 0; }
+  .steps li::before { top: 0; }
+  .domains { grid-template-columns: 1fr 1fr; column-gap: 3rem; }
+  .again .box { grid-template-columns: 1fr auto; align-items: center; padding: 2.5rem; }
+  .annex .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Mouvement : entrée douce de l'étiquette, coupée si reduced-motion */
+@media (prefers-reduced-motion: no-preference) {
+  .step.is-here .bar { animation: grow 0.7s var(--ease) both 0.15s; transform-origin: left; }
+  @keyframes grow { from { transform: scaleX(0.3); } to { transform: scaleX(1); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "Organization", "@id": "https://audixio.fr/#org", "name": "Audixio", "url": "https://audixio.fr/", "logo": "https://audixio.fr/marque/logo-pc.svg" },
+    { "@type": "WebSite", "@id": "https://audixio.fr/#site", "name": "Audixio", "url": "https://audixio.fr/", "inLanguage": ["fr-FR", "en"], "publisher": { "@id": "https://audixio.fr/#org" } },
+    { "@type": "WebApplication", "name": "Audixio — audit de site web", "url": "https://audixio.fr/", "applicationCategory": "DeveloperApplication", "operatingSystem": "Tous navigateurs", "inLanguage": "fr-FR",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "description": "Audit gratuit sans compte" }, "publisher": { "@id": "https://audixio.fr/#org" } },
+    { "@type": "FAQPage", "mainEntity": [
+      { "@type": "Question", "name": "L'audit est-il vraiment gratuit ?", "acceptedAnswer": { "@type": "Answer", "text": "Oui. Le diagnostic est gratuit, sans inscription et sans cookies traceurs. Sans compte, vous obtenez un aperçu et les priorités immédiates." } },
+      { "@type": "Question", "name": "Que signifie « passif par défaut » ?", "acceptedAnswer": { "@type": "Answer", "text": "Audixio lit votre site comme un visiteur. Les tests actifs ne partent que sur un site dont vous prouvez la propriété." } },
+      { "@type": "Question", "name": "Quels domaines sont évalués ?", "acceptedAnswer": { "@type": "Answer", "text": "Huit domaines : performance, SEO, sécurité, écologie, accessibilité, qualité technique, vie privée, DNS / e-mail." } },
+      { "@type": "Question", "name": "Sur quels référentiels repose la note ?", "acceptedAnswer": { "@type": "Answer", "text": "MDN Observatory, Lighthouse, EcoIndex, WCAG 2.2 / RGAA 4.1, RGPD / ePrivacy, OSV et NIST NVD. La méthode est publique." } },
+      { "@type": "Question", "name": "Audixio utilise-t-il des traceurs ?", "acceptedAnswer": { "@type": "Answer", "text": "Non. Aucun traceur tiers, des polices hébergées par Audixio, et chaque rapport est horodaté." } }
+    ] }
+  ]
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Audixio, accueil"><img src="../../../apps/web/public/marque/logo-pc.svg" alt="" width="107" height="34"></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="/" aria-current="page">Accueil</a>
+      <a href="/methode">Méthode</a>
+      <a href="/sites">Sites suivis</a>
+      <a href="/documentation">Documentation</a>
+    </nav>
+    <div class="tools">
+      <a class="lang" href="/en/" hreflang="en" aria-label="Langue : français. Passer en anglais"><b>FR</b><span>&nbsp;/ EN</span></a>
+      <button type="button" id="theme" aria-label="Changer de thème (clair ou sombre)">
+        <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="login" href="/connexion">Connexion</a>
+    </div>
+  </div>
+</header>
+
+<main id="contenu">
+
+  <!-- 1. Héros -->
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <div>
+        <p class="kicker">
+          <span class="mini" aria-hidden="true"><i style="--g:var(--gA);height:6px"></i><i style="--g:var(--gB);height:9px"></i><i style="--g:var(--gC);height:12px"></i><i style="--g:var(--gD);height:15px"></i><i style="--g:var(--gE);height:18px"></i></span>
+          Audit de site web, en français simple
+        </p>
+        <h1 id="h1">Votre site, noté <em>de A à F</em>, avec ce qu'il faut corriger en premier.</h1>
+        <p class="lead">Audixio vérifie 8 domaines — vitesse, sécurité, accessibilité, référencement… — et vous rend une note sur 100, expliquée sans jargon.</p>
+
+        <form class="audit" id="audit" action="/audit" method="get" novalidate>
+          <label for="url">Adresse de votre site</label>
+          <div class="field">
+            <div class="input-wrap">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+              <input id="url" name="url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" required maxlength="2048" placeholder="exemple.fr" aria-describedby="url-hint">
+            </div>
+            <button class="btn" type="submit">Lancer l'audit gratuit<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <p class="hint" id="url-hint">Résultat en 1 minute environ. Le « https:// » est ajouté pour vous.</p>
+        </form>
+
+        <ul class="promise" aria-label="Nos garanties">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Gratuit, sans compte</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Passif par défaut</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Aucun traceur</li>
+        </ul>
+      </div>
+
+      <figure class="label" aria-labelledby="ex-cap">
+        <figcaption class="sr-only" id="ex-cap">Exemple de résultat Audixio : monsite-exemple.fr obtient 64 sur 100, note C.</figcaption>
+        <div class="l-head">
+          <div>
+            <p class="l-site">monsite-exemple.fr</p>
+            <p class="l-meta">Boutique et portfolio · exemple indicatif</p>
+          </div>
+          <p class="l-stamp">Horodaté · 11 nov. 2026</p>
+        </div>
+        <div class="scale" aria-hidden="true">
+          <div class="step"><span class="bar" style="--w:40%;--g:var(--gA);--on:var(--onA)">A<span>90–100</span></span><span class="here"></span></div>
+          <div class="step"><span class="bar" style="--w:52%;--g:var(--gB);--on:var(--onB)">B<span>75–89</span></span><span class="here"></span></div>
+          <div class="step is-here"><span class="bar" style="--w:64%;--g:var(--gC);--on:var(--onC)">C<span>60–74</span></span><span class="here"><span class="grade" data-g="C">C</span><b class="num">64</b><small>/100</small></span></div>
+          <div class="step"><span class="bar" style="--w:76%;--g:var(--gD);--on:var(--onD)">D<span>45–59</span></span><span class="here"></span></div>
+          <div class="step"><span class="bar" style="--w:88%;--g:var(--gE);--on:var(--onE)">E<span>30–44</span></span><span class="here"></span></div>
+          <div class="step"><span class="bar" style="--w:100%;--g:var(--gF);--on:var(--onF)">F<span>0–29</span></span><span class="here"></span></div>
+        </div>
+        <p class="verdict">Des bases correctes, 3 priorités à traiter.<small>La première : votre page d'accueil met 4,8 s à s'afficher sur mobile.</small></p>
+        <div class="l-foot">
+          <p>Note partielle · 5 domaines · site non vérifié</p>
+          <a href="/exemple-rapport">Voir le rapport complet</a>
+        </div>
+      </figure>
+    </div>
+    <div class="wrap hero-foot"><div class="ticks" aria-hidden="true"></div></div>
+  </section>
+
+  <!-- 2. Référentiels -->
+  <section class="refs" aria-labelledby="refs-t">
+    <div class="wrap">
+      <h2 class="sr-only" id="refs-t">Référentiels utilisés</h2>
+      <p>La note s'appuie sur des référentiels ouverts, que vous pouvez consulter :</p>
+      <ul>
+        <li>MDN Observatory</li><li>Lighthouse</li><li>EcoIndex</li><li>WCAG 2.2 / RGAA 4.1</li><li>RGPD / ePrivacy</li><li>OSV / NIST NVD</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. Ce que vous recevez -->
+  <section aria-labelledby="recv-t">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="eyebrow">Exemple de résultat</p>
+        <h2 id="recv-t">Pas une liste d'erreurs : un ordre de priorité</h2>
+        <p>Chaque constat dit ce qui se passe, ce que cela change pour vos visiteurs, et quoi faire.</p>
+      </div>
+      <div class="receive">
+        <ol class="prio" aria-label="Trois priorités de l'exemple">
+          <li><h3>Les pages s'affichent lentement sur mobile</h3><p>Une partie des visiteurs repart avant la fin du chargement. Commencez par alléger les images de l'accueil.</p><span class="tag"><span class="grade" data-g="C">C</span>Performance</span></li>
+          <li><h3>Certains textes sont difficiles à lire</h3><p>Le gris clair sur blanc gêne les personnes malvoyantes. Foncez la couleur du texte secondaire.</p><span class="tag"><span class="grade" data-g="D">D</span>Accessibilité</span></li>
+          <li><h3>Google ne trouve pas votre plan du site</h3><p>Vos nouvelles pages mettent plus de temps à apparaître dans les résultats. Ajoutez un fichier sitemap.</p><span class="tag"><span class="grade" data-g="B">B</span>SEO</span></li>
+        </ol>
+        <div class="receive-side">
+          <ul class="extras">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"/></svg><div><b>Un rapport complet</b><span>Détail par domaine, technique repliée pour ceux qui veulent.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7"/></svg><div><b>Un lien à partager</b><span>Avec un compte gratuit, pour montrer le rapport à votre prestataire.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><div><b>Un suivi dans le temps</b><span>Relancez l'audit et comparez avec la fois précédente.</span></div></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><div><b>Un badge pour votre site</b><span>Affichez votre note, datée, en pied de page.</span></div></li>
+          </ul>
+          <p><a href="/exemple-rapport">Parcourir un rapport d'exemple</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Étapes -->
+  <section class="alt" aria-labelledby="how-t">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="eyebrow">En pratique</p>
+        <h2 id="how-t">Trois étapes, aucune inscription</h2>
+      </div>
+      <ol class="steps">
+        <li data-n="1"><h3>Indiquez l'adresse de votre site</h3><p>Par exemple monsite.fr. Aucun compte n'est nécessaire pour un premier audit.</p></li>
+        <li data-n="2"><h3>Audixio examine les 8 domaines</h3><p>Il lit votre site comme un visiteur. Rien n'est forcé, rien n'est envoyé à vos formulaires.</p></li>
+        <li data-n="3"><h3>Lisez la note et les priorités</h3><p>Un aperçu horodaté, puis les corrections à faire en premier, dans l'ordre.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 5. Domaines -->
+  <section aria-labelledby="dom-t" id="domaines">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="eyebrow">Ce qui est mesuré</p>
+        <h2 id="dom-t">8 domaines, une question simple pour chacun</h2>
+        <p>Les notes ci-dessous viennent de l'exemple. Les vôtres s'affichent après l'audit.</p>
+      </div>
+      <ul class="domains">
+        <li><h3>Performance</h3><p>Votre site s'affiche-t-il vite, même sur mobile ?</p><span class="meter" aria-hidden="true" style="--w:62%;--g:var(--gC)"><i></i></span><span class="right"><span class="grade" data-g="C"><span class="sr-only">Note </span>C</span></span></li>
+        <li><h3>SEO</h3><p>Google peut-il trouver et comprendre vos pages ?</p><span class="meter" aria-hidden="true" style="--w:80%;--g:var(--gB)"><i></i></span><span class="right"><span class="grade" data-g="B"><span class="sr-only">Note </span>B</span></span></li>
+        <li><h3>Accessibilité</h3><p>Tout le monde peut-il lire et utiliser votre site ?</p><span class="meter" aria-hidden="true" style="--w:48%;--g:var(--gD)"><i></i></span><span class="right"><span class="grade" data-g="D"><span class="sr-only">Note </span>D</span></span></li>
+        <li><h3>Écologie</h3><p>Vos pages sont-elles légères à charger ?</p><span class="meter" aria-hidden="true" style="--w:66%;--g:var(--gC)"><i></i></span><span class="right"><span class="grade" data-g="C"><span class="sr-only">Note </span>C</span></span></li>
+        <li><h3>Qualité technique</h3><p>Le code est-il propre et à jour ?</p><span class="meter" aria-hidden="true" style="--w:60%;--g:var(--gC)"><i></i></span><span class="right"><span class="grade" data-g="C"><span class="sr-only">Note </span>C</span></span></li>
+        <li><h3>Sécurité</h3><p>Votre site protège-t-il ses visiteurs ?</p><span class="meter" aria-hidden="true"></span><span class="right"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Verrouillé</span></span></li>
+        <li><h3>Vie privée</h3><p>Des traceurs partent-ils avant l'accord du visiteur ?</p><span class="meter" aria-hidden="true"></span><span class="right"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Verrouillé</span></span></li>
+        <li><h3>DNS / e-mail</h3><p>Vos e-mails arrivent-ils sans finir en indésirables ?</p><span class="meter" aria-hidden="true"></span><span class="right"><span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Verrouillé</span></span></li>
+      </ul>
+      <p class="note-lock"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Sécurité, vie privée et DNS restent verrouillés tant que vous n'avez pas prouvé que le site est à vous. Personne d'autre ne peut donc voir ces détails. <a href="/methode#verification">Pourquoi ?</a></p>
+    </div>
+  </section>
+
+  <!-- 6. Transparence -->
+  <section class="alt" aria-labelledby="tr-t">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="eyebrow">Transparence</p>
+        <h2 id="tr-t">Ce qu'Audixio fait, et ce qu'il ne fait jamais</h2>
+        <p>La méthode et le barème sont publics. Chaque rapport porte sa date.</p>
+      </div>
+      <div class="dodont">
+        <div class="yes">
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Ce que nous faisons</h3>
+          <ul>
+            <li>Lire votre site comme un visiteur, passif par défaut.</li>
+            <li>Expliquer chaque note avec le critère et la source.</li>
+            <li>Dater chaque rapport, pour savoir de quand datent les constats.</li>
+            <li>Lancer des tests actifs seulement si la propriété est revérifiée juste avant.</li>
+          </ul>
+        </div>
+        <div class="no">
+          <h3><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>Ce que nous ne faisons jamais</h3>
+          <ul>
+            <li>Forcer un accès, remplir un formulaire, exploiter une faille.</li>
+            <li>Publier vos détails de sécurité sans votre accord.</li>
+            <li>Poser des traceurs ou charger des polices de tiers.</li>
+            <li>Revendre vos données ou vos rapports.</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:1.25rem"><a href="/methode">Lire la méthode et le barème</a></p>
+    </div>
+  </section>
+
+  <!-- 7. Formules -->
+  <section aria-labelledby="pl-t">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="eyebrow">Formules</p>
+        <h2 id="pl-t">Gratuit pour commencer, un compte pour aller plus loin</h2>
+      </div>
+      <div class="table-scroll">
+        <table class="plans">
+          <caption>Ce qui est inclus selon votre situation</caption>
+          <thead>
+            <tr><th scope="col"><span class="sr-only">Fonction</span></th><th scope="col">Sans compte<small>Gratuit</small></th><th scope="col">Compte gratuit<small>2 sites · 1 lien</small></th><th scope="col">Pro <span class="soon">Bientôt</span><small>≈ 9 €/mois · 10 sites</small></th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Note et priorités</th><td class="yes">Oui</td><td class="yes">Oui</td><td class="yes">Oui</td></tr>
+            <tr><th scope="row">Domaines sensibles</th><td class="no">Verrouillés</td><td>Après preuve de propriété</td><td>Après preuve de propriété</td></tr>
+            <tr><th scope="row">Brief pour votre assistant IA</th><td class="no">Non</td><td class="yes">Oui</td><td class="yes">Oui</td></tr>
+            <tr><th scope="row">Lien de partage</th><td class="no">Non</td><td>1 lien actif</td><td>À préciser</td></tr>
+            <tr><th scope="row">Suivi et alertes</th><td class="no">Dernier audit</td><td>Dernier rapport par site</td><td>Historique long, alertes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:1rem"><a href="/pro">Découvrir Audixio Pro</a></p>
+    </div>
+  </section>
+
+  <!-- 8. FAQ -->
+  <section class="alt" aria-labelledby="faq-t">
+    <div class="wrap">
+      <div class="s-head">
+        <p class="eyebrow">Questions fréquentes</p>
+        <h2 id="faq-t">Avant de lancer votre premier audit</h2>
+      </div>
+      <div class="faq">
+        <details open><summary>L'audit est-il vraiment gratuit ?</summary><p>Oui. Le diagnostic est gratuit, sans inscription et sans cookies traceurs. Sans compte, vous obtenez un aperçu et les priorités immédiates.</p></details>
+        <details><summary>Que signifie « passif par défaut » ?</summary><p>Audixio lit votre site comme un visiteur. Les tests actifs ne partent que sur un site dont vous prouvez la propriété.</p></details>
+        <details><summary>Quels domaines sont évalués ?</summary><p>Huit domaines : performance, SEO, sécurité, écologie, accessibilité, qualité technique, vie privée, DNS / e-mail.</p></details>
+        <details><summary>Sur quels référentiels repose la note ?</summary><p>MDN Observatory, Lighthouse, EcoIndex, WCAG 2.2 / RGAA 4.1, RGPD / ePrivacy, OSV et NIST NVD. La méthode est publique.</p></details>
+        <details><summary>Audixio utilise-t-il des traceurs ?</summary><p>Non. Aucun traceur tiers, des polices hébergées par Audixio, et chaque rapport est horodaté.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Rappel (même action, pas un second bouton plein) -->
+  <section class="again" aria-labelledby="ag-t">
+    <div class="wrap">
+      <div class="box">
+        <div>
+          <h2 id="ag-t">Où en est votre site ?</h2>
+          <p>Une minute, gratuit, sans compte.</p>
+        </div>
+        <a class="go" href="#audit" onclick="setTimeout(function(){document.getElementById('url').focus()},350)">Saisir l'adresse de mon site<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="ticks" aria-hidden="true"></div>
+    <div class="cols">
+      <div><img src="../../../apps/web/public/marque/logo-pc.svg" alt="Audixio" width="107" height="34" class="logo-foot"><p style="margin-top:.75rem;color:var(--ink-2);font-size:.9375rem">Audit de site web, passif par défaut. Conçu en France.</p></div>
+      <nav aria-labelledby="f1"><h2 id="f1">Produit</h2><ul><li><a href="/exemple-rapport">Exemple de rapport</a></li><li><a href="/methode">Méthode</a></li><li><a href="/pro">Audixio Pro</a></li></ul></nav>
+      <nav aria-labelledby="f2"><h2 id="f2">Aide</h2><ul><li><a href="/documentation">Documentation</a></li><li><a href="/robot">Le robot Audixio</a></li><li><a href="/contact">Contact</a></li></ul></nav>
+      <nav aria-labelledby="f3"><h2 id="f3">Légal</h2><ul><li><a href="/mentions-legales">Mentions légales</a></li><li><a href="/confidentialite">Confidentialité</a></li><li><a href="/cgu">Conditions</a></li></ul></nav>
+    </div>
+    <p class="legal">© 2026 Audixio · audixio.fr</p>
+  </div>
+</footer>
+
+
+<!-- ANNEXE — états du champ d'audit (hors page de production) -->
+<section class="annex" aria-labelledby="ann-t">
+  <div class="wrap">
+    <div class="s-head">
+      <p class="eyebrow">Annexe maquette</p>
+      <h2 id="ann-t">États du champ d'audit</h2>
+      <p>Messages lus par les lecteurs d'écran (<code>role="alert"</code> pour les erreurs, <code>aria-busy</code> pendant l'envoi).</p>
+    </div>
+    <div class="grid">
+      <div class="state"><h3>1. Repos <code>vide</code></h3>
+        <div class="audit"><div class="field"><div class="input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><input aria-label="Exemple repos" placeholder="exemple.fr" tabindex="-1"></div><button class="btn" type="button" tabindex="-1">Lancer l'audit gratuit</button></div>
+        <p class="hint">Résultat en 1 minute environ.</p></div></div>
+      <div class="state"><h3>2. Focus <code>:focus-within</code></h3>
+        <div class="audit"><div class="field is-focus"><div class="input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><input aria-label="Exemple focus" value="mon" tabindex="-1"></div><button class="btn" type="button" tabindex="-1">Lancer l'audit gratuit</button></div>
+        <p class="hint">Le « https:// » est ajouté pour vous.</p></div></div>
+      <div class="state"><h3>3. Adresse reconnue <code>valide</code></h3>
+        <div class="audit"><div class="field is-valid"><div class="input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><input aria-label="Exemple valide" value="monsite.fr" tabindex="-1"></div><button class="btn" type="button" tabindex="-1">Lancer l'audit gratuit</button></div>
+        <p class="msg ok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Nous analyserons https://monsite.fr</p></div></div>
+      <div class="state"><h3>4. Adresse invalide <code>aria-invalid</code></h3>
+        <div class="audit"><div class="field is-error"><div class="input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><input aria-label="Exemple erreur" aria-invalid="true" value="mon site" tabindex="-1"></div><button class="btn" type="button" tabindex="-1">Lancer l'audit gratuit</button></div>
+        <p class="msg err"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Indiquez une adresse complète, comme exemple.fr (sans espace).</p></div></div>
+      <div class="state"><h3>5. Envoi en cours <code>aria-busy</code></h3>
+        <div class="audit"><div class="field"><div class="input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><input aria-label="Exemple envoi" value="monsite.fr" readonly tabindex="-1"></div><button class="btn" type="button" aria-busy="true" tabindex="-1"><span class="spin" aria-hidden="true"></span>Lancement…</button></div>
+        <p class="hint" role="status">Connexion à monsite.fr. Vous allez suivre l'analyse en direct.</p></div></div>
+      <div class="state"><h3>6. Site injoignable <code>erreur serveur</code></h3>
+        <div class="audit"><div class="field is-error"><div class="input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><input aria-label="Exemple injoignable" value="monsite-introuvable.fr" tabindex="-1"></div><button class="btn" type="button" tabindex="-1">Réessayer</button></div>
+        <p class="msg err"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Ce site ne répond pas. Vérifiez l'orthographe ou réessayez dans quelques minutes.</p></div></div>
+      <div class="state" style="grid-column:1/-1"><h3>7. Limite atteinte sans compte <code>dialog</code></h3>
+        <div class="gate" role="group" aria-labelledby="gate-t">
+          <p class="eyebrow">Audit gratuit déjà utilisé</p>
+          <h4 id="gate-t">Créez un compte gratuit pour continuer</h4>
+          <p>Sans compte, Audixio garde un audit à la fois. Avec un compte gratuit : 2 sites, 1 lien de partage, et le brief pour votre assistant IA.</p>
+          <div class="row"><a class="main" href="/inscription" tabindex="-1">Créer mon compte gratuit</a><a href="/connexion" tabindex="-1">J'ai déjà un compte</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<nav class="bottom" aria-label="Navigation principale (mobile)">
+  <a href="/" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Accueil</a>
+  <a href="/methode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16V9M12 16V5M17 16v-4"/></svg>Méthode</a>
+  <a href="/sites"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8"/></svg>Sites suivis</a>
+  <a href="/documentation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5zM9 12h6M9 16h6"/></svg>Documentation</a>
+</nav>
+
+<script>
+  document.getElementById('theme').addEventListener('click', function () {
+    var r = document.documentElement;
+    var dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    r.dataset.theme = dark ? 'light' : 'dark';
+    localStorage.setItem('axn-theme', r.dataset.theme);
+  });
+</script>
+</body>
+</html>
