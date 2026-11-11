@@ -54,6 +54,14 @@ for (const width of widths) {
         );
         const label = lang === 'en' ? 'Continue' : 'Continuer';
         await expect(page.getByRole('button', { name: label })).toBeVisible();
+        const nav =
+          lang === 'en'
+            ? ['Home', 'Method', 'Tracked sites', 'Pricing']
+            : ['Accueil', 'Méthode', 'Sites suivis', 'Tarifs'];
+        await expect(page.locator('.axn-links a')).toHaveText(nav);
+        await expect(page.locator('.axn-bar .axn-cta')).toHaveText(
+          lang === 'en' ? 'Sign in' : 'Connexion',
+        );
         await expect(page).toHaveScreenshot(
           `fondations-${width}-${theme}-${lang}.png`,
           { fullPage: true, animations: 'disabled', maxDiffPixelRatio: 0.02 },
@@ -115,7 +123,7 @@ for (const lang of langs) {
       });
       expect(wrapped, `${lang} ${width}`).toEqual([]);
       const overflow = await page.evaluate(() => {
-        const bar = document.querySelector('.bar');
+        const bar = document.querySelector('.axn-bar');
         if (!bar) return 0;
         return Math.ceil(bar.scrollWidth - bar.clientWidth);
       });

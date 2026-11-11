@@ -10,6 +10,7 @@ import { applyLocale } from '../i18n/live.js';
 import { packLine } from '../i18n/pack.js';
 import { type SlimKey, t } from '../i18n/slim.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
+import { accountHref, accountKey, NAV_ITEMS } from '../lib/nav-canon.js';
 
 interface Props {
   pathname: string;
@@ -60,12 +61,9 @@ function tr(key: SlimKey): string {
   return t(key);
 }
 
-const items = $derived([
-  { href: '/', label: tr('nav.home') },
-  { href: '/methode', label: tr('nav.method') },
-  { href: '/sites', label: tr('nav.sites.long') },
-  { href: '/pro', label: tr('nav.pricing') },
-]);
+const items = $derived(
+  NAV_ITEMS.map((item) => ({ href: item.href, label: tr(item.key) })),
+);
 
 let menuScroll = 0;
 
@@ -245,7 +243,7 @@ onMount(() => {
     <div class="axn-tools">
       {@render lang()}
       {@render theme()}
-      <a class="axn-cta" href={loggedIn ? '/compte' : '/connexion'}>{@render person()}<span class="axn-cta-txt">{loggedIn ? tr('nav.account') : tr('nav.login')}</span></a>
+      <a class="axn-cta" href={accountHref(loggedIn)}>{@render person()}<span class="axn-cta-txt">{tr(accountKey(loggedIn))}</span></a>
     </div>
     <button class="axn-burger" type="button" aria-expanded={open} aria-controls="axn-menu" aria-label={open ? t('nav.close') : t('nav.open')} bind:this={burger} onclick={() => setMenu(!open, true)}><i aria-hidden="true"><b></b><b></b><b></b></i></button>
   </div>
@@ -264,7 +262,7 @@ onMount(() => {
       {@render lang()}
       {@render theme()}
     </div>
-    <div class="axn-cta-wrap"><a class="axn-cta" style="--i:5" href={loggedIn ? '/compte' : '/connexion'}>{@render person()}<span>{loggedIn ? tr('nav.account') : tr('nav.login')}</span></a></div>
+    <div class="axn-cta-wrap"><a class="axn-cta" style="--i:5" href={accountHref(loggedIn)}>{@render person()}<span>{tr(accountKey(loggedIn))}</span></a></div>
   </div>
 </header>
 <button class="axn-top" data-chrome class:is-on={showTop} type="button" aria-label={tr('nav.backtop')} onclick={toTop}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>

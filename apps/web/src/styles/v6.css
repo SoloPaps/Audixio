@@ -636,6 +636,68 @@
   }
 }
 
+/* Barre actuelle, peinte avec les jetons et Geist. */
+[data-v6] .axn,
+[data-v6] .axn-top {
+  --axn-p: var(--beam);
+  --axn-ph: var(--ink);
+  --axn-ac: var(--beam);
+  --axn-sec: var(--ink-3);
+  --axn-bd: var(--line);
+  --axn-sf: var(--surf-2);
+  --axn-tx: var(--ink);
+  --axn-tx2: var(--ink-2);
+  --axn-font: var(--sans);
+  font-family: var(--sans);
+  color: var(--ink);
+}
+
+[data-v6] .axn-bar,
+[data-v6] .axn-sheet,
+[data-v6] .axn-lang,
+[data-v6] .axn-theme,
+[data-v6] .axn-burger,
+[data-v6] .axn-top {
+  background: var(--surf);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+[data-v6] .axn-bar {
+  background: color-mix(in oklab, var(--surf) 92%, transparent);
+  box-shadow: var(--sh-dock);
+}
+
+[data-v6] .axn.is-scrolled .axn-bar,
+[data-v6] .axn-sheet,
+[data-v6] .axn-top {
+  box-shadow: var(--shadow);
+}
+
+[data-v6] .axn .axn-cta,
+[data-v6] .axn .axn-cta span,
+[data-v6] .axn .axn-cta svg {
+  color: var(--cta-fg);
+  -webkit-text-fill-color: var(--cta-fg);
+  stroke: var(--cta-fg);
+}
+
+[data-v6] .axn .axn-cta {
+  background: var(--cta);
+  box-shadow: none;
+}
+
+[data-v6] .axn .axn-cta:hover {
+  background: var(--cta-h);
+  box-shadow: none;
+}
+
+[data-v6] .axn-links a,
+[data-v6] .axn-cta,
+[data-v6] .axn-sheet ul a {
+  white-space: nowrap;
+}
+
 /* 320–390 : libellés sur une ligne. Au-dessus, le 1440 ne change pas. */
 @media (max-width: 390px) {
   [data-v6] .bar {
