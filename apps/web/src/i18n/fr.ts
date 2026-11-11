@@ -44,7 +44,7 @@ const frCore = {
     'Un score, ce qu’il veut dire, et quoi corriger. Rien n’est publié sans vous.',
   'home.url.example': 'https://exemple.fr',
   'home.url.error': 'Indiquez une adresse complète, comme https://exemple.fr.',
-  'home.guarantees.time': 'Résultats complets en ~1 minute',
+  'home.guarantees.time': 'Résultats complets en quelques minutes',
   'home.guarantees.free': 'Gratuit, sans abonnement',
   'home.guarantees.passive':
     'Tests passifs : nous observons, nous ne forçons rien',

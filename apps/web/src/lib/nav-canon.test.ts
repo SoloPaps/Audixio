@@ -76,3 +76,22 @@ describe('le chrome v6 dit « Tarifs », comme la barre', () => {
     expect(Object.values(v6En).join(' ')).not.toMatch(/\bPlans\b/);
   });
 });
+
+describe('durée annoncée : « en quelques minutes »', () => {
+  it('ni « ~1 minute » ni « une minute » dans les catalogues FR et EN', () => {
+    const fr = readFileSync(
+      new URL('../../public/dictionnaire-fr.json', import.meta.url),
+      'utf8',
+    );
+    const english = JSON.stringify(en);
+    for (const text of [fr, english]) {
+      expect(text).not.toMatch(/~\s?1 minute|une minute|one minute/i);
+    }
+    expect(JSON.parse(fr)['home.guarantees.time']).toBe(
+      'Résultats complets en quelques minutes',
+    );
+    expect(en['home.guarantees.time']).toBe(
+      'Complete results in a few minutes',
+    );
+  });
+});
