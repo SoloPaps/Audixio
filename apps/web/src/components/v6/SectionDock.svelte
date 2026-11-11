@@ -94,7 +94,7 @@ onMount(() => {
       </li>
     {/each}
   </ol>
-  <a class="dock-top" href="#top">
+  <a class="dock-top" href="#axn">
     <svg aria-hidden="true"><use href="#i-up" /></svg>
     <span class="sr">{t('v6.dock.top')}</span>
   </a>
