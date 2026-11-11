@@ -3,6 +3,7 @@ description: Charte de design obligatoire pour toute UI
 globs: apps/web/**/*.astro,apps/web/**/*.svelte,apps/web/**/*.css,apps/web/src/i18n/**
 alwaysApply: false
 ---
+- Chrome neuf (v6) : jetons `[data-v6]` dans `tokens.css`, couleurs sombres seulement dans `theme-dark.css` (`--d-v*`). Police Geist / Geist Mono, auto-hébergées. Pas de palette v2 ni d’Inter sur ce chrome. Référence : `docs/design/v6/INTEGRATION-v6.md`.
 - `docs/DESIGN.md` fait foi pour le clair (fusion PR #66) et la lecture du rapport. Lire seulement la section utile. Sombre gelé : §2.4 + `docs/design-pack-2026-10-26/04-THEME-DARK.md`. Chrome : `01-REGLES-STRICTES.md` prime sur Stitch.
 - Stitch gelé (nav, logo, dark). Ne pas le relancer. Ouvrir les PNG `docs/design-pack-2026-10-26/maquettes/**/screen.png` comme modèles visuels en même temps que le code. Checklists `02-PAGES.md`. Pas un calque 1:1. `01-REGLES-STRICTES.md` gagne. Ignorer les PNG invalides ou ≤ 100 octets.
 - Fonctionnalités et règles produit (2 sites / 1 lien, soft-gate, brief gratuit avec compte, Pro plus tard, vie privée option C) : `docs/FONCTIONNEMENT.md` et `docs/etapes-refonte/`, sur le code existant.

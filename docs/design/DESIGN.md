@@ -48,6 +48,10 @@ L’interface d’Audixio associe l’effet Arc Soft (coquille / marketing) avec
 
 ## 2. Design system et design tokens
 
+### 2.0 Fondations v6 (11/11/2026)
+
+Le chrome neuf prend les jetons de `docs/design/v6/` : encre claire `#0B1220`, faisceau `#1D5FD1`, fond `#F3F5F8`. Le sombre (`#06090D`, faisceau `#7CC4FF`) n’est défini que dans `theme-dark.css`. Police : **Geist** et **Geist Mono**. Le tableau ci-dessous reste l’historique de la palette v2 et d’Inter pour les pages non encore reprises.
+
 ### 2.1 Couleurs et thématiques
 
 | Token | Mode clair | Mode sombre | Usage et contraste |
