@@ -2,6 +2,7 @@
 import { onMount, tick } from 'svelte';
 import { formatFixed } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
+import { copyText } from '../lib/clipboard.js';
 import { constatShowsImageInventory } from '../lib/constat-kind.js';
 import {
   drawRadar,
@@ -171,8 +172,7 @@ async function onShare(): Promise<void> {
       /* copie ensuite */
     }
   }
-  await navigator.clipboard.writeText(url);
-  say(t('constat.shared'));
+  say((await copyText(url)) ? t('constat.shared') : t('copy.failed'));
 }
 
 function onPdf(): void {
@@ -188,8 +188,7 @@ function onPdf(): void {
 }
 
 async function onCopy(): Promise<void> {
-  await navigator.clipboard.writeText(pictureSample);
-  say(t('constat.copied'));
+  say((await copyText(pictureSample)) ? t('constat.copied') : t('copy.failed'));
 }
 
 function onTab(nextTab: 'cms' | 'code'): void {

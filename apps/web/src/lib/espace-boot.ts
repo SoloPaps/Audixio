@@ -25,6 +25,7 @@ import { applyCadenceSummary } from './alerts-cadence.js';
 import { apercuCarte, type MesureDomaine, mesureDomaine } from './apercu.js';
 import { isLinkLimit } from './badge-target.js';
 import { browserClient, currentSession, signOut } from './browser-session.js';
+import { copyText } from './clipboard.js';
 import { DELETE_TOKEN, deleteConfirmed } from './delete-confirm.js';
 import { bindMotion, busy, reduced, say } from './espace-motion.js';
 import { gradeForScore } from './grade.js';
@@ -1417,9 +1418,10 @@ function shareAccessRow(link: ActiveShare): HTMLLIElement {
     const done = (): void => {
       say(copy.dataset.msg || t('mq.ui.copied.long'), true);
     };
-    const clip = navigator.clipboard;
-    if (clip?.writeText) void clip.writeText(text).then(done, done);
-    else done();
+    void copyText(text).then((ok) => {
+      if (ok) done();
+      else say(t('copy.failed'), true);
+    });
   });
   const revoke = document.createElement('button');
   revoke.type = 'button';

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { gradeCopy, gradeForScore } from './grade.js';
+import { installPack } from '../i18n/pack.js';
+import { gradeCopy, gradeForScore, gradeLabel } from './grade.js';
 
 describe('note en lettre', () => {
   it('suit les seuils', () => {
@@ -20,5 +21,24 @@ describe('note en lettre', () => {
     const copy = gradeCopy(86);
     expect(copy?.letter).toBe('Note B');
     expect(copy?.label).toMatch(/\(86\/100\)$/);
+  });
+
+  it('A se lit « Excellent », comme le barème de /methode', () => {
+    expect(gradeLabel('A')).toBe('Excellent');
+    expect(gradeLabel('B')).toBe('Bon');
+    expect(gradeLabel('C')).toBe('À améliorer');
+    expect(gradeLabel('D')).toBe('Problème');
+    expect(gradeCopy(95)?.label).toBe('Excellent (95/100)');
+    expect(gradeCopy(86)?.label).toBe('Bon (86/100)');
+  });
+
+  it('A se lit « Excellent » en anglais aussi', () => {
+    installPack({ 'level.excellent': 'Excellent', 'level.good': 'Good' });
+    try {
+      expect(gradeLabel('A')).toBe('Excellent');
+      expect(gradeLabel('B')).toBe('Good');
+    } finally {
+      installPack(null);
+    }
   });
 });

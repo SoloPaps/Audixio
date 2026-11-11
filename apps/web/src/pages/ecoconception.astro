@@ -14,7 +14,7 @@ const messages = {
 ---
 
 <Canon vue="ecologie" title={t('mq.meta.ecologie.title')} description={t('mq.meta.ecologie.desc')} robots="noindex, nofollow">
-<main id="contenu" tabindex="-1" data-ripple="1" data-copied={t('mq.lg.381')} data-copied-long={t('mq.lg.380')}>
+<main id="contenu" tabindex="-1" data-ripple="1" data-copied={t('mq.lg.381')} data-copied-long={t('mq.lg.380')} data-copy-failed={t('copy.failed')}>
 
 <nav class="crumbs" aria-label={t('mq.lg.001')}><ol><li><a href="/rapport">{t('mq.lg.382')}</a></li><li><span aria-current="page">{t('mq.lg.383')}</span></li></ol></nav>
 <div class="hg"><div><p class="eyebrow"><span class="dot" aria-hidden="true"></span>{t('mq.lg.384')}</p>
@@ -31,7 +31,7 @@ const messages = {
 import { bindMaquetteMotion, bindRipple } from '../lib/motion';
 bindMaquetteMotion();
 const root = document.getElementById('contenu');
-if (root?.dataset.ripple === '1') bindRipple({ copied: root.dataset.copied ?? '', copiedLong: root.dataset.copiedLong ?? '' });
+if (root?.dataset.ripple === '1') bindRipple({ copied: root.dataset.copied ?? '', copiedLong: root.dataset.copiedLong ?? '', failed: root.dataset.copyFailed ?? '' });
 document.dispatchEvent(new Event('audixio-motion'));
 </script>
 <script is:inline>

@@ -7,6 +7,7 @@ import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
+import { copyText } from '../lib/clipboard.js';
 import { domainLede, shownConclusion } from '../lib/domain-conclusion.js';
 import {
   domainPager,
@@ -25,6 +26,7 @@ import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
 import { loginHref } from '../lib/nav.js';
 import { levelForScore } from '../lib/score.js';
+import CopyButton from './CopyButton.svelte';
 import InlineCode from './InlineCode.svelte';
 
 interface Props {
@@ -277,25 +279,22 @@ async function onGenerate(event: SubmitEvent): Promise<void> {
     copied = false;
     return;
   }
-  try {
-    await navigator.clipboard.writeText(file.markdown);
-    copied = true;
-    say(t('domaine.prompt.done'), document.getElementById('live'));
-  } catch {
-    copied = false;
-    say(t('api.error.internal'), document.getElementById('live'));
-  }
+  copied = await copyText(file.markdown);
+  say(
+    copied ? t('domaine.prompt.done') : t('copy.failed'),
+    document.getElementById('live'),
+  );
 }
 
-async function onCopyBrief(): Promise<void> {
+async function onCopyBrief(): Promise<boolean> {
   const file = await serverFile();
-  if (!file) return;
-  try {
-    await navigator.clipboard.writeText(file.markdown);
-    say(t('domaine.prompt.done'), document.getElementById('live'));
-  } catch {
-    say(t('api.error.internal'), document.getElementById('live'));
-  }
+  if (!file) return false;
+  const ok = await copyText(file.markdown);
+  say(
+    ok ? t('domaine.prompt.done') : t('copy.failed'),
+    document.getElementById('live'),
+  );
+  return ok;
 }
 
 async function onExport(): Promise<void> {
@@ -500,7 +499,7 @@ function seeLabel(n: number): string {
         <p class="sec-lede">{t('domaine.export.lead')}</p>
         <div class="acts">
           {#if signedIn}
-            <button type="button" class="btn btn-ghost" onclick={onCopyBrief}>{t('domaine.export.copy')}</button>
+            <CopyButton class="btn btn-ghost" label={t('domaine.export.copy')} run={onCopyBrief} />
             <a class="btn btn-ghost" href={`mailto:?subject=${encodeURIComponent(name)}`} onclick={onMail}>{t('domaine.export.mail')}</a>
             <button type="button" class="btn btn-ghost" onclick={onExport}>{t('domaine.export.file')}</button>
           {:else}

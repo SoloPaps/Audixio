@@ -1,5 +1,6 @@
 import { formatFixed } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
+import { copyText } from './clipboard.js';
 
 export function reduced(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -121,7 +122,9 @@ export function bindMotion(root: ParentNode): () => void {
     const size = Math.max(box.width, box.height);
     const ink = document.createElement('span');
     ink.className = 'rip';
-    ink.style.cssText = `width:${size}px;height:${size}px;left:${event.clientX - box.left - size / 2}px;top:${event.clientY - box.top - size / 2}px`;
+    // Hors flux même sans la règle .rip de la page : sinon l’onde, carrée,
+    // agrandit le bouton (flex) le temps de l’animation.
+    ink.style.cssText = `position:absolute;pointer-events:none;width:${size}px;height:${size}px;left:${event.clientX - box.left - size / 2}px;top:${event.clientY - box.top - size / 2}px`;
     button.appendChild(ink);
     window.setTimeout(() => ink.remove(), 700);
   };
@@ -176,9 +179,11 @@ export function bindMotion(root: ParentNode): () => void {
           button.classList.remove('ok');
         }, 1800);
       };
-      const clip = navigator.clipboard;
-      if (clip?.writeText) void clip.writeText(text).then(done, done);
-      else done();
+      // Jamais de « Copié » si rien n'a été copié.
+      void copyText(text).then((ok) => {
+        if (ok) done();
+        else say(t('copy.failed'), true);
+      });
     };
     button.addEventListener('click', onCopy);
     off.push(() => button.removeEventListener('click', onCopy));

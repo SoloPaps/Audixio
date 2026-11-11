@@ -19,6 +19,7 @@ import {
   briefFilename,
   downloadTextFile,
 } from '../lib/brief-file.js';
+import { copyText } from '../lib/clipboard.js';
 import {
   type Finding,
   groupFindings,
@@ -191,12 +192,9 @@ async function allFails(mode: TerminalMode = 'rien'): Promise<void> {
 
 async function copyBrief(): Promise<void> {
   if (!briefText) return;
-  try {
-    await navigator.clipboard.writeText(briefText);
-    toast = briefT('brief.copied');
-  } catch {
-    toast = briefT('brief.copyFail');
-  }
+  toast = (await copyText(briefText))
+    ? briefT('brief.copied')
+    : briefT('brief.copyFail');
 }
 
 function saveBrief(): void {
@@ -240,12 +238,7 @@ function statusKey(finding: Finding): string {
 
 async function copyCode(finding: Finding): Promise<void> {
   if (!finding.code) return;
-  try {
-    await navigator.clipboard.writeText(finding.code);
-    copiedId = finding.id;
-  } catch {
-    copiedId = null;
-  }
+  copiedId = (await copyText(finding.code)) ? finding.id : null;
 }
 </script>
 

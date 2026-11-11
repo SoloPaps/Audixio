@@ -372,6 +372,8 @@ const frCore = {
   'verify.copy': 'Copier le code',
   'verify.copied': 'Le code est copié.',
   'verify.copy_failed': 'Sélectionnez le code et copiez-le à la main.',
+  'copy.failed':
+    'Copie impossible ici. Sélectionnez le texte et copiez-le à la main.',
   'verify.status.pending':
     'Le code n’est pas encore visible. Placez-le, puis réessayez.',
   'verify.verified': 'Le site est vérifié. Les tests approfondis sont ouverts.',
@@ -628,6 +630,7 @@ const frCore = {
   'footer.terms': 'Conditions d’utilisation',
   'footer.a11y': 'Accessibilité',
   'footer.method.nav': 'Méthode',
+  'level.excellent': 'Excellent',
   'level.good': 'Bon',
   'level.improve': 'À améliorer',
   'level.problem': 'Problème',

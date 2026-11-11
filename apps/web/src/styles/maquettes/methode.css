@@ -889,7 +889,7 @@ h2.sec {
   text-align: center;
 }
 .frac span:first-child {
-  border-bottom: 2px solid var(--d-ln, rgba(255, 255, 255, 0.6));
+  border-bottom: 2px solid var(--d-mu, rgba(255, 255, 255, 0.6));
   padding-bottom: 6px;
   margin-bottom: 6px;
 }

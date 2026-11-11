@@ -802,4 +802,5 @@ export const mqLegalFr = {
   'mq.lg.647': 'Avec le code d’erreur, on vous répond vite.',
   'mq.lg.648': 'Relance en cours…',
   'mq.lg.649': 'ajustement…',
+  'mq.lg.650': 'Fermer et revenir à la page précédente',
 };

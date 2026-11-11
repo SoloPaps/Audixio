@@ -9,7 +9,7 @@ import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import type { MesureDomaine } from '../lib/apercu.js';
 import { bootEspace, type LiveSite } from '../lib/espace-boot.js';
-import { gradeForScore } from '../lib/grade.js';
+import { type Grade, gradeForScore, gradeLabel } from '../lib/grade.js';
 import { quotaFillDash, quotaRatio } from '../lib/quota-ring.js';
 import { levelForScore, levelLabel } from '../lib/score.js';
 import ReputationPanel from './ReputationPanel.svelte';
@@ -48,8 +48,8 @@ onMount(() => {
   return () => stop();
 });
 
-function letterOf(note: string | null, score: number | null): string | null {
-  if (note && /^[A-F]$/.test(note)) return note;
+function letterOf(note: string | null, score: number | null): Grade | null {
+  if (note && /^[A-F]$/.test(note)) return note as Grade;
   return gradeForScore(score);
 }
 
@@ -163,7 +163,7 @@ function levelOf(metric: MesureDomaine): string {
 {#if site.when}<div class="stamp"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{t('mq.sl.030')} <time>{site.when}</time></span></div>{/if}
 </div>
 {#if mark && site.score !== null}
-<div class="score {tone(mark)}"><span class="glass" aria-hidden="true">{mark}</span><div><p class="k">{t('mq.sl.036')}</p><strong><span class="sr-only">{t('mq.sl.037')} </span>{t('mq.sl.live.grade', { grade: mark, label: levelLabel(levelForScore(site.score)) })} {t('mq.sl.live.score', { score: Math.round(site.score) })}</strong><div class="gbar" aria-hidden="true"><i style="--v:{site.score / 100}"></i></div></div></div>
+<div class="score {tone(mark)}"><span class="glass" aria-hidden="true">{mark}</span><div><p class="k">{t('mq.sl.036')}</p><strong><span class="sr-only">{t('mq.sl.037')} </span>{t('mq.sl.live.grade', { grade: mark, label: gradeLabel(mark) })} {t('mq.sl.live.score', { score: Math.round(site.score) })}</strong><div class="gbar" aria-hidden="true"><i style="--v:{site.score / 100}"></i></div></div></div>
 {:else}
 <div class="score g-d"><span class="glass" aria-hidden="true">–</span><div><p class="k">{t('mq.sl.036')}</p><strong>{t('mq.sl.live.none')}</strong></div></div>
 {/if}

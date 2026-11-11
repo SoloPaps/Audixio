@@ -8,6 +8,7 @@ import { briefScreen } from '../lib/brief-screen.js';
 import { briefCount } from '../lib/brief-stats.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
+import { copyText } from '../lib/clipboard.js';
 import { REPORT_DOMAINS } from '../lib/domains.js';
 import { briefSelectionRow, savedChoices } from '../lib/finding-choice.js';
 import { gradeForScore } from '../lib/grade.js';
@@ -15,6 +16,7 @@ import { calm, say } from '../lib/motion.js';
 import { detailAllowed } from '../lib/plan-board.js';
 import type { ReportRow } from '../lib/report-model.js';
 import { roleColor } from '../lib/theme-role.js';
+import CopyButton from './CopyButton.svelte';
 
 interface Props {
   auditId: string;
@@ -182,15 +184,12 @@ async function serverFile(): Promise<{
   return file;
 }
 
-async function copyPrompt(): Promise<void> {
+async function copyPrompt(): Promise<boolean> {
   const file = await serverFile();
-  if (!file) return;
-  try {
-    await navigator.clipboard.writeText(file.markdown);
-    say(t('brief.copied'));
-  } catch {
-    say(t('api.error.internal'));
-  }
+  if (!file) return false;
+  const ok = await copyText(file.markdown);
+  say(ok ? t('brief.copied') : t('copy.failed'));
+  return ok;
 }
 
 async function download(): Promise<void> {
@@ -576,7 +575,7 @@ $effect(() => {
     </div>
     <div class="mdbody" id="md" tabindex="0" role="region" aria-label={t('brief.md')}>{@html previewHtml}</div>
     <div class="md-actions">
-      <button class="btn btn-primary" type="button" onclick={copyPrompt}>{t('brief.copy')}</button>
+      <CopyButton class="btn btn-primary" label={t('brief.copy')} run={copyPrompt} />
       <button class="btn btn-ghost" type="button" onclick={download}>{t('brief.dl')}</button>
       <button class="btn btn-ghost" type="button" onclick={() => window.print()}>{t('brief.pdf')}</button>
       <a class="btn btn-ghost" href={`/plan?id=${encodeURIComponent(auditId)}`}>{t('brief.plan')}</a>
@@ -587,7 +586,7 @@ $effect(() => {
 
 <div class="dock" class:show={dockOn} role="region" aria-label={t('brief.dock')}>
   <span class="dock-t">{t('brief.dock.line', { fix: stats.fix, check: stats.check })}</span>
-  <button class="btn btn-primary" type="button" onclick={copyPrompt}>{t('brief.dock.copy')}</button>
+  <CopyButton class="btn btn-primary" label={t('brief.dock.copy')} run={copyPrompt} />
 </div>
 <p class="sr-only" id="live" role="status" aria-live="polite"></p>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>

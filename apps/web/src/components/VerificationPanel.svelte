@@ -2,6 +2,7 @@
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
+import { copyText } from '../lib/clipboard.js';
 import {
   checkVerification,
   createVerification,
@@ -226,13 +227,12 @@ async function onCheck(): Promise<void> {
 
 async function onCopy(value: string): Promise<void> {
   error = '';
-  try {
-    await navigator.clipboard.writeText(value);
+  if (await copyText(value)) {
     notice = t('verify.copied');
-  } catch {
-    notice = '';
-    error = t('verify.copy_failed');
+    return;
   }
+  notice = '';
+  error = t('verify.copy_failed');
 }
 </script>
 

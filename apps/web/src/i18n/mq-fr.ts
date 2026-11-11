@@ -249,7 +249,7 @@ export const mqFr = {
   'mq.m.028':
     'Chaque domaine reçoit une note sur 100, traduite en lettre. Référentiels : ISO/IEC 25010 et RGAA 4.1.',
   'mq.m.029': 'A',
-  'mq.m.030': 'Bon',
+  'mq.m.030': 'Excellent',
   'mq.m.031': '90 à 100',
   'mq.m.032':
     'Excellente conformité aux référentiels techniques et éthiques. Bonnes pratiques appliquées de bout en bout.',
@@ -257,6 +257,7 @@ export const mqFr = {
   'mq.m.034': 'Maintien passif',
   'mq.m.035': 'B',
   'mq.m.036': '80 à 89',
+  'mq.m.036b': 'Bon',
   'mq.m.037':
     'Bonne base : quelques optimisations restent possibles sans urgence.',
   'mq.m.038': 'C',

@@ -158,6 +158,175 @@ html[data-vue="partage"] main {
   color: var(--d-tx, #1e2a55);
 }
 
+/* Sections du bas du lien public (P6) : design du rapport (HubView).
+   Jetons de .public-hub : --surface, --line, --shadow, --text, --muted. */
+.score-page .pub-more .sec-h {
+  margin: 3.5rem 0 1.25rem;
+}
+.score-page .pub-more .pub-card {
+  padding: 1.5rem 1.6rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+.score-page .pub-more .pub-lead {
+  margin: 0;
+  color: var(--text);
+}
+.score-page .pub-more .pub-note {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.score-page .pub-more .pub-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0 0 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+.score-page .pub-more .pub-list li {
+  position: relative;
+  padding: 0.7rem 1rem 0.7rem 2.6rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--solid);
+  color: var(--text);
+}
+.score-page .pub-more .pub-list li::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  width: 0.4rem;
+  height: 0.75rem;
+  border-right: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+  transform: translateY(-65%) rotate(45deg);
+}
+.score-page .pub-more .pub-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.score-page .pub-more .pub-lead + .pub-acts,
+.score-page .pub-more .prose + .pub-acts {
+  margin-top: 1.25rem;
+}
+.score-page .pub-more .btn-main {
+  background: var(--d-cta, #3d52a0);
+  border-color: var(--d-cta, #3d52a0);
+  color: #fff;
+}
+.score-page .pub-more .btn-main:hover {
+  background: var(--primary-hover);
+}
+.score-page .pub-more .pub-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.3rem;
+}
+.score-page .pub-more .pub-tile {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 17px;
+  background: var(--d-sf2, #ede8f5);
+  color: var(--primary);
+}
+.score-page .pub-more .report-footer {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+}
+.score-page .pub-more .report-footer p {
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--solid);
+  color: var(--text);
+  font-size: 0.82rem;
+}
+.score-page .pub-more .report-footer .fingerprint {
+  grid-column: 1 / -1;
+}
+.score-page .pub-more .report-footer p:last-child {
+  grid-column: 1 / -1;
+  padding: 0.35rem 0 0;
+  border: 0;
+  background: none;
+}
+.score-page .pub-more .report-footer .button {
+  min-height: 46px;
+  border-radius: 14px;
+  background: var(--d-cta, #3d52a0);
+  border-color: var(--d-cta, #3d52a0);
+  color: #fff;
+  font-weight: 700;
+}
+.score-page .pub-more .preuve-mentions {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--solid);
+}
+.score-page .pub-more .preuve-mentions summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 44px;
+  padding: 0.75rem 1.1rem;
+  color: var(--text);
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+.score-page .pub-more .preuve-mentions summary::-webkit-details-marker {
+  display: none;
+}
+.score-page .pub-more .preuve-mentions summary::after {
+  content: "";
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-25%) rotate(45deg);
+}
+.score-page .pub-more .preuve-mentions[open] summary::after {
+  transform: translateY(25%) rotate(-135deg);
+}
+.score-page .pub-more .preuve-mentions .prose {
+  margin: 0 1.1rem 0.8rem;
+  font-size: 0.92rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .score-page .pub-more .preuve-mentions summary::after {
+    transition: transform 0.2s;
+  }
+}
+@media (max-width: 640px) {
+  .score-page .pub-more .pub-card {
+    padding: 1.1rem;
+  }
+  .score-page .pub-more .pub-row {
+    grid-template-columns: auto 1fr;
+  }
+  .score-page .pub-more .pub-row .btn {
+    grid-column: 1 / -1;
+  }
+  .score-page .pub-more .report-footer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 330px) {
   html[data-vue="score"] main,
   html[data-vue="partage"] main {

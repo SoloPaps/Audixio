@@ -8,6 +8,7 @@ import {
   shareTokenOf,
 } from '../lib/badge-target.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
+import { copyText } from '../lib/clipboard.js';
 import { gradeForScore } from '../lib/grade.js';
 import { say } from '../lib/motion.js';
 import { loginHref, signupHref } from '../lib/nav.js';
@@ -120,7 +121,10 @@ async function createLink(): Promise<void> {
 async function copy(kind: 'code' | 'link'): Promise<void> {
   const value = kind === 'code' ? snippet : link;
   if (!value) return;
-  await navigator.clipboard.writeText(value);
+  if (!(await copyText(value))) {
+    say(t('copy.failed'));
+    return;
+  }
   copied = kind;
   say(kind === 'code' ? t('badge.copied') : t('badge.copied.link'));
   window.setTimeout(() => {

@@ -3,9 +3,11 @@ import { type Level, levelLabel } from '../lib/score.js';
 
 interface Props {
   level: Level;
+  /** Libellé de la lettre (barème de /methode), sinon celui du niveau. */
+  label?: string;
 }
 
-let { level }: Props = $props();
+let { level, label }: Props = $props();
 const color = $derived(
   level === 'good'
     ? 'var(--score-good)'
@@ -41,7 +43,7 @@ const color = $derived(
       <circle cx="12" cy="12" r="10" stroke-dasharray="3.2 3.2" />
     {/if}
   </svg>
-  <span>{levelLabel(level)}</span>
+  <span>{label ?? levelLabel(level)}</span>
 </span>
 
 <style>

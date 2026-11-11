@@ -1,5 +1,6 @@
 <script lang="ts">
 import { t } from '../i18n/index.js';
+import { copyText } from '../lib/clipboard.js';
 import { fixesFor, hostingOf } from '../lib/fix-catalog.js';
 import { type Priority } from '../lib/priorities.js';
 import { relaunchHref } from '../lib/relaunch.js';
@@ -60,12 +61,7 @@ function closeGuide(): void {
 }
 
 async function copyCode(code: string): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(code);
-    copied = true;
-  } catch {
-    copied = false;
-  }
+  copied = await copyText(code);
 }
 
 function addToBrief(item: Priority): void {
