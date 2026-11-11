@@ -26,6 +26,7 @@ import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
 import { loginHref } from '../lib/nav.js';
 import { levelForScore } from '../lib/score.js';
+import CopyButton from './CopyButton.svelte';
 import InlineCode from './InlineCode.svelte';
 
 interface Props {
@@ -498,7 +499,7 @@ function seeLabel(n: number): string {
         <p class="sec-lede">{t('domaine.export.lead')}</p>
         <div class="acts">
           {#if signedIn}
-            <button type="button" class="btn btn-ghost" onclick={onCopyBrief}>{t('domaine.export.copy')}</button>
+            <CopyButton class="btn btn-ghost" label={t('domaine.export.copy')} run={onCopyBrief} />
             <a class="btn btn-ghost" href={`mailto:?subject=${encodeURIComponent(name)}`} onclick={onMail}>{t('domaine.export.mail')}</a>
             <button type="button" class="btn btn-ghost" onclick={onExport}>{t('domaine.export.file')}</button>
           {:else}
