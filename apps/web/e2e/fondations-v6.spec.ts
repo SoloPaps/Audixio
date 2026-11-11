@@ -192,6 +192,67 @@ for (const lang of langs) {
   });
 }
 
+for (const lang of langs) {
+  test(`nav v6 = nav actuelle, hauteur fixe au défilement (${lang})`, async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      ({ askedLang, english, french }) => {
+        if (askedLang === 'en') {
+          localStorage.setItem('audigy-locale', 'en');
+          localStorage.setItem('audigy-en', english);
+          localStorage.setItem('audigy-fr', french);
+        }
+      },
+      { askedLang: lang, english: en, french: fr },
+    );
+    const items =
+      lang === 'en'
+        ? ['Home', 'Method', 'Tracked sites', 'Pricing']
+        : ['Accueil', 'Méthode', 'Sites suivis', 'Tarifs'];
+    for (const [width, height, total] of [
+      [1440, 900, 92],
+      [390, 844, 78],
+    ] as const) {
+      await page.setViewportSize({ width, height });
+      await page.goto('/dev/fondations?theme=dark', {
+        waitUntil: 'networkidle',
+      });
+      await expect(page.locator('html')).toHaveAttribute('lang', lang);
+      const header = page.locator('header.axn');
+      const before = await header.evaluate(
+        (node) => (node as unknown as { offsetHeight: number }).offsetHeight,
+      );
+      expect(before, `${width}`).toBe(total);
+      await page.mouse.wheel(0, 600);
+      await expect(header).toHaveClass(/is-scrolled/);
+      const after = await header.evaluate(
+        (node) => (node as unknown as { offsetHeight: number }).offsetHeight,
+      );
+      expect(after, `${width} après défilement`).toBe(before);
+      if (width === 1440) {
+        await expect(page.locator('.axn-links a')).toHaveText(items);
+        continue;
+      }
+      await page.locator('.axn-burger').click();
+      await expect(page.locator('.axn-burger')).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
+      await expect(page.locator('.axn-sheet ul a')).toHaveText(items);
+      await expect(page.locator('.axn-sheet .axn-cta')).toHaveText(
+        lang === 'en' ? 'Sign in' : 'Connexion',
+      );
+      await page.keyboard.press('Escape');
+      await expect(page.locator('.axn-burger')).toHaveAttribute(
+        'aria-expanded',
+        'false',
+      );
+      await expect(page.locator('.axn-burger')).toBeFocused();
+    }
+  });
+}
+
 test('le bouton désactivé et le focus restent visibles', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/dev/fondations?theme=light', { waitUntil: 'networkidle' });
