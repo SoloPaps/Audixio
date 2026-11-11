@@ -240,14 +240,14 @@ onMount(() => {
     <nav aria-label={t('nav.bottom')}>
       <ul class="axn-links">
         {#each items as item (item.href)}
-          <li><a href={item.href} aria-current={current(item.href)}>{item.label}</a></li>
+          <li><a class="link-nav" href={item.href} aria-current={current(item.href)}>{item.label}</a></li>
         {/each}
       </ul>
     </nav>
     <div class="axn-tools">
       {@render lang()}
       {@render theme()}
-      <a class="axn-cta" href={accountHref(loggedIn)}>{@render person()}<span class="axn-cta-txt">{tr(accountKey(loggedIn))}</span></a>
+      <a class="axn-cta link-nav" href={accountHref(loggedIn)}>{@render person()}<span class="axn-cta-txt">{tr(accountKey(loggedIn))}</span></a>
     </div>
     <button class="axn-burger" type="button" aria-expanded={open} aria-controls="axn-menu" aria-label={open ? t('nav.close') : t('nav.open')} bind:this={burger} onclick={() => setMenu(!open, true)}><i aria-hidden="true"><b></b><b></b><b></b></i></button>
   </div>
