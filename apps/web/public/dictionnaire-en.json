@@ -4585,6 +4585,7 @@
   "mq.lg.647": "With the error code, we reply quickly.",
   "mq.lg.648": "Retry in progress…",
   "mq.lg.649": "adjusting…",
+  "mq.lg.650": "Close and go back to the previous page",
   "api.error.ip_limit": "Too many audits from this network. Try again later.",
   "api.error.guest_limit": "Three audits were already started today from this network.",
   "guest.gate.kicker": "Without an account",
