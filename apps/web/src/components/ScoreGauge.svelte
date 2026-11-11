@@ -5,6 +5,7 @@ let gauges = 0;
 
 <script lang="ts">
 import { GRADE_THRESHOLDS, gradeForScore } from '@audigy/db';
+import { gradeLabel } from '../lib/grade.js';
 import { t } from '../i18n/index.js';
 import '../styles/maquettes/gauge.css';
 import {
@@ -103,7 +104,7 @@ const frame = $derived(
   </div>
   <div class="gauge-status" aria-hidden="true">
     {#if grade}<i class="gauge-grade">{grade}</i>{/if}
-    <StatusMark {level} />
+    <StatusMark {level} label={grade ? gradeLabel(grade) : undefined} />
   </div>
 </div>
 

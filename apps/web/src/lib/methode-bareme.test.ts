@@ -35,3 +35,15 @@ describe('M3 — barème de /methode identique à GRADE_THRESHOLDS', () => {
     }
   });
 });
+
+describe('barème de /methode : A est « Excellent »', () => {
+  it('la carte A ne dit plus « Bon », en FR et en EN', () => {
+    expect(mqFr['mq.m.030']).toBe('Excellent');
+    expect(frJson['mq.m.030']).toBe('Excellent');
+    expect(en['mq.m.030']).toBe('Excellent');
+    expect(mqFr['mq.m.036b']).toBe('Bon');
+    expect(en['mq.m.036b']).toBe('Good');
+    expect(frJson['level.excellent']).toBe('Excellent');
+    expect(en['level.excellent']).toBe('Excellent');
+  });
+});

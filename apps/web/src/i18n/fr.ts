@@ -628,6 +628,7 @@ const frCore = {
   'footer.terms': 'Conditions d’utilisation',
   'footer.a11y': 'Accessibilité',
   'footer.method.nav': 'Méthode',
+  'level.excellent': 'Excellent',
   'level.good': 'Bon',
   'level.improve': 'À améliorer',
   'level.problem': 'Problème',
