@@ -1,12 +1,12 @@
 <script lang="ts">
-  interface Props {
-    href: string;
-    heading: string;
-    sub: string;
-    disabled?: boolean;
-  }
+interface Props {
+  href: string;
+  heading: string;
+  sub: string;
+  disabled?: boolean;
+}
 
-  let { href, heading, sub, disabled = false }: Props = $props();
+let { href, heading, sub, disabled = false }: Props = $props();
 </script>
 
 <a

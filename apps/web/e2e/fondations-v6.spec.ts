@@ -126,7 +126,9 @@ for (const lang of langs) {
             ) => {
               nextNode: () => {
                 textContent: string | null;
-                parentElement: { closest: (selector: string) => unknown } | null;
+                parentElement: {
+                  closest: (selector: string) => unknown;
+                } | null;
               } | null;
             };
           };
@@ -136,7 +138,9 @@ for (const lang of langs) {
           };
           NodeFilter: { SHOW_TEXT: number };
         };
-        const nodes = [...host.document.querySelectorAll('button, nav a, a.login')];
+        const nodes = [
+          ...host.document.querySelectorAll('button, nav a, a.login'),
+        ];
         const hits: string[] = [];
         for (const el of nodes) {
           const view = host.getComputedStyle(el);
@@ -161,10 +165,10 @@ for (const lang of langs) {
             node = walker.nextNode();
           }
           if (tops.size > 1)
-            hits.push((valueOf(el) ?? '').replace(/\s+/g, ' ').trim());
+            hits.push((labelOf(el) ?? '').replace(/\s+/g, ' ').trim());
         }
         return hits;
-        function valueOf(node: unknown): string | null {
+        function labelOf(node: unknown): string | null {
           return (node as { textContent?: string | null }).textContent ?? null;
         }
       });
