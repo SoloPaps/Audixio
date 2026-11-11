@@ -18,7 +18,7 @@ const sections = [
 ];
 ---
 
-<V6Shell title={t('v6.demo.title')} description={t('v6.demo.description')}>
+<V6Shell title={t('v6.meta.title')} description={t('v6.demo.description')}>
   <a class="skip" href="#boutons">{t('v6.skip')}</a>
   <SiteHeader pathname={Astro.url.pathname} client:load />
   <main>
@@ -70,9 +70,9 @@ const sections = [
     </section>
     <section class="bench" id="cartes">
       <h2>{t('v6.dock.cards')}</h2>
-      <CardLink href="/exemple-rapport" title={t('v6.cardLink.title')} sub={t('v6.cardLink.sub')} />
-      <Card title={t('v6.card.title')} body={t('v6.card.body')} />
-      <Card title={t('v6.demo.disabled')} body={t('v6.card.body')} disabled />
+      <CardLink href="/exemple-rapport" heading={t('v6.cardLink.title')} sub={t('v6.cardLink.sub')} />
+      <Card heading={t('v6.card.title')} body={t('v6.card.body')} />
+      <Card heading={t('v6.demo.disabled')} body={t('v6.card.body')} disabled />
     </section>
     <section class="bench" id="fin" data-dock-hide>
       <p>{t('v6.footer.note')}</p>

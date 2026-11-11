@@ -41,7 +41,14 @@ for (const width of widths) {
           waitUntil: 'networkidle',
         });
         expect(response?.ok()).toBeTruthy();
-        await page.evaluate(() => document.fonts.ready);
+        await page.evaluate(
+          () =>
+            (
+              globalThis as unknown as {
+                document: { fonts: { ready: Promise<unknown> } };
+              }
+            ).document.fonts.ready,
+        );
         await page.addStyleTag({
           content:
             '[data-v6] .dock{position:relative;left:auto;right:auto;bottom:auto;translate:none;margin:2rem auto;max-width:100%}',
@@ -89,25 +96,62 @@ for (const lang of langs) {
     await page.goto('/dev/fondations?theme=light', {
       waitUntil: 'networkidle',
     });
-    await page.evaluate(() => document.fonts.ready);
+    await page.evaluate(
+      () =>
+        (
+          globalThis as unknown as {
+            document: { fonts: { ready: Promise<unknown> } };
+          }
+        ).document.fonts.ready,
+    );
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
 
     for (let width = 320; width <= 390; width += 1) {
       await page.setViewportSize({ width, height: 844 });
       const wrapped = await page.evaluate(() => {
-        const nodes = [...document.querySelectorAll('button, nav a, a.login')];
-        const hits = [];
+        const host = globalThis as unknown as {
+          document: {
+            querySelectorAll: (selector: string) => Iterable<unknown>;
+            createRange: () => {
+              selectNodeContents: (node: unknown) => void;
+              getClientRects: () => Iterable<{
+                width: number;
+                height: number;
+                top: number;
+              }>;
+            };
+            createTreeWalker: (
+              root: unknown,
+              what: number,
+            ) => {
+              nextNode: () => {
+                textContent: string | null;
+                parentElement: { closest: (selector: string) => unknown } | null;
+              } | null;
+            };
+          };
+          getComputedStyle: (node: unknown) => {
+            display: string;
+            visibility: string;
+          };
+          NodeFilter: { SHOW_TEXT: number };
+        };
+        const nodes = [...host.document.querySelectorAll('button, nav a, a.login')];
+        const hits: string[] = [];
         for (const el of nodes) {
-          const view = getComputedStyle(el);
+          const view = host.getComputedStyle(el);
           if (view.display === 'none' || view.visibility === 'hidden') continue;
-          const range = document.createRange();
-          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+          const range = host.document.createRange();
+          const walker = host.document.createTreeWalker(
+            el,
+            host.NodeFilter.SHOW_TEXT,
+          );
           let node = walker.nextNode();
-          const tops = new Set();
+          const tops = new Set<number>();
           while (node) {
             const value = node.textContent ?? '';
             const parent = node.parentElement;
-            if (value.trim() && !(parent && parent.closest('svg'))) {
+            if (value.trim() && !parent?.closest('svg')) {
               range.selectNodeContents(node);
               for (const rect of range.getClientRects()) {
                 if (rect.width > 0 && rect.height > 0)
@@ -117,13 +161,24 @@ for (const lang of langs) {
             node = walker.nextNode();
           }
           if (tops.size > 1)
-            hits.push((el.textContent ?? '').replace(/\s+/g, ' ').trim());
+            hits.push((valueOf(el) ?? '').replace(/\s+/g, ' ').trim());
         }
         return hits;
+        function valueOf(node: unknown): string | null {
+          return (node as { textContent?: string | null }).textContent ?? null;
+        }
       });
       expect(wrapped, `${lang} ${width}`).toEqual([]);
       const overflow = await page.evaluate(() => {
-        const bar = document.querySelector('.axn-bar');
+        const bar = (
+          globalThis as unknown as {
+            document: {
+              querySelector: (
+                selector: string,
+              ) => { scrollWidth: number; clientWidth: number } | null;
+            };
+          }
+        ).document.querySelector('.axn-bar');
         if (!bar) return 0;
         return Math.ceil(bar.scrollWidth - bar.clientWidth);
       });
@@ -142,7 +197,14 @@ test('le bouton désactivé et le focus restent visibles', async ({ page }) => {
     .locator('#boutons .btn')
     .first()
     .evaluate((node) => {
-      const view = getComputedStyle(node);
+      const view = (
+        globalThis as unknown as {
+          getComputedStyle: (target: unknown) => {
+            outlineStyle: string;
+            outlineWidth: string;
+          };
+        }
+      ).getComputedStyle(node);
       return { style: view.outlineStyle, width: view.outlineWidth };
     });
   expect(outline.style).not.toBe('none');

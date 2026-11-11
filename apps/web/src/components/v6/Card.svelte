@@ -1,14 +1,14 @@
 <script lang="ts">
-interface Props {
-  title: string;
-  body: string;
-  disabled?: boolean;
-}
+  interface Props {
+    heading: string;
+    body: string;
+    disabled?: boolean;
+  }
 
-let { title, body, disabled = false }: Props = $props();
+  let { heading, body, disabled = false }: Props = $props();
 </script>
 
 <article class="card" aria-disabled={disabled ? 'true' : undefined} tabindex="0">
-  <h2>{title}</h2>
+  <h2>{heading}</h2>
   <p>{body}</p>
 </article>

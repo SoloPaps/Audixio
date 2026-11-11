@@ -52,7 +52,7 @@ export const v6En: { [K in keyof typeof v6Fr]: string } = {
   'v6.dock.links': 'Links',
   'v6.dock.fields': 'Fields',
   'v6.dock.cards': 'Cards',
-  'v6.demo.title': 'Components',
+  'v6.meta.title': 'Components — Audixio',
   'v6.demo.description': 'Component bench, absent from the published site.',
   'v6.demo.lead': 'Shared components of the v6 theme.',
   'v6.demo.disabled': 'Disabled',

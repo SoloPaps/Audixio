@@ -50,7 +50,7 @@ export const v6Fr = {
   'v6.dock.links': 'Liens',
   'v6.dock.fields': 'Champs',
   'v6.dock.cards': 'Cartes',
-  'v6.demo.title': 'Composants',
+  'v6.meta.title': 'Composants — Audixio',
   'v6.demo.description': 'Banc des composants, absent du site publié.',
   'v6.demo.lead': 'Composants partagés du thème v6.',
   'v6.demo.disabled': 'Désactivé',
