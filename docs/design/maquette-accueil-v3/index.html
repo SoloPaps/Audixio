@@ -1,0 +1,695 @@
+<!doctype html>
+<!--
+  MAQUETTE — Accueil Audixio v3 · méthode « Copie corrigée ». Non branchée au site.
+  SEO prévu :
+    <title>Audit de site web gratuit, noté de A à F — Audixio</title>
+    <meta name="description" content="Audixio corrige votre site comme une copie : 8 domaines vérifiés, une note de A à F, les priorités, un prompt prêt pour votre assistant IA. Gratuit, sans compte.">
+  Données structurées : Organization, WebSite, WebApplication (offre 0 €), FAQPage.
+  En production, chaque chaîne visible passe par t('clé').
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audit de site web gratuit, noté de A à F — Audixio</title>
+<meta name="description" content="Audixio corrige votre site comme une copie : 8 domaines vérifiés, une note de A à F, les priorités, un prompt prêt pour votre assistant IA. Gratuit, sans compte.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://audixio.fr/">
+<link rel="alternate" hreflang="fr" href="https://audixio.fr/">
+<link rel="alternate" hreflang="en" href="https://audixio.fr/en/">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#FBFAF5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#16211D" media="(prefers-color-scheme: dark)">
+<link rel="preload" href="../../../apps/web/public/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/caveat-latin.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var s = q.get('theme') || localStorage.getItem('axn-theme');
+    if (s === 'dark' || s === 'light') document.documentElement.dataset.theme = s;
+    document.documentElement.classList.add('js');
+  })();
+</script>
+<style>
+@font-face { font-family: "Hanken Grotesk"; src: url("../../../apps/web/public/fonts/hanken-grotesk-latin.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Caveat"; src: url("fonts/caveat-latin.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+@property --s1 { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --s2 { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --s3 { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --s4 { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --s5 { syntax: "<number>"; inherits: true; initial-value: 0; }
+@property --draw { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+/* ================= Jetons ================= */
+:root {
+  color-scheme: light;
+  --paper: #fbfaf5; --surface: #ffffff; --sub: #f3f0e6;
+  --seyes: rgb(64 120 200 / 0.14); --seyes-2: rgb(64 120 200 / 0.3); --margin: #e7a3a3;
+  --ink: #1a2140; --ink-2: #4c5470; --line: #d9d4c4;
+  --pen: #d2231b; --on-pen: #ffffff; --pen-hover: #a91a13;
+  --blue: #2445b5;
+  --focus: #2445b5;
+  --gA: #0f7a55; --gB: #3f7f14; --gC: #9a6b00; --gD: #b9520f; --gE: #b3261e; --gF: #8a1538;
+  --sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --hh: 60px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #16211d; --surface: #1d2b26; --sub: #22332d;
+  --seyes: rgb(237 234 223 / 0.045); --seyes-2: rgb(237 234 223 / 0.09); --margin: rgb(255 138 122 / 0.35);
+  --ink: #eeeadf; --ink-2: #b4beb5; --line: #33473f;
+  --pen: #ff8a7a; --on-pen: #16211d; --pen-hover: #ffaa9d; --blue: #9cc2ff; --focus: #ffd27a;
+  --gA: #6ee0ae; --gB: #a9dc6c; --gC: #f2c14e; --gD: #ffa36b; --gE: #ff9c92; --gF: #ff8fb4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #16211d; --surface: #1d2b26; --sub: #22332d;
+    --seyes: rgb(237 234 223 / 0.045); --seyes-2: rgb(237 234 223 / 0.09); --margin: rgb(255 138 122 / 0.35);
+    --ink: #eeeadf; --ink-2: #b4beb5; --line: #33473f;
+    --pen: #ff8a7a; --on-pen: #16211d; --pen-hover: #ffaa9d; --blue: #9cc2ff; --focus: #ffd27a;
+    --gA: #6ee0ae; --gB: #a9dc6c; --gC: #f2c14e; --gD: #ffa36b; --gE: #ff9c92; --gF: #ff8fb4;
+  }
+}
+
+/* ================= Base : la copie Seyès ================= */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--hh) + 1rem); }
+body {
+  margin: 0; color: var(--ink); font: 450 1.0625rem/1.6 var(--sans); -webkit-font-smoothing: antialiased;
+  background:
+    linear-gradient(90deg, transparent calc(var(--mx) - 1px), var(--margin) calc(var(--mx) - 1px) var(--mx), transparent var(--mx)) fixed,
+    repeating-linear-gradient(transparent 0 31px, var(--seyes-2) 31px 32px) fixed,
+    repeating-linear-gradient(transparent 0 7px, var(--seyes) 7px 8px) fixed,
+    var(--paper);
+  --mx: 24px;
+  timeline-scope: --hero, --t1, --vir, --t2, --suite;
+}
+img, svg { display: block; max-width: 100%; }
+a { color: var(--blue); text-underline-offset: 0.2em; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 3px; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; letter-spacing: -0.025em; line-height: 1.05; }
+p { text-wrap: pretty; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 1rem; top: -4rem; z-index: 99; background: var(--pen); color: var(--on-pen); padding: .6rem 1rem; }
+.skip:focus { top: 1rem; }
+.wrap { width: min(100% - 2.5rem, 76rem); margin-inline: auto; padding-left: calc(var(--mx) + 0px); }
+.hand { font-family: var(--hand); font-weight: 600; color: var(--pen); line-height: 1.05; }
+.kick { font: 600 .8125rem/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Signature : le cercle au stylo rouge */
+.circled { position: relative; display: inline-block; isolation: isolate; }
+.circled > svg { position: absolute; inset: -22% -14%; width: 128%; height: 144%; overflow: visible; pointer-events: none; z-index: -1; }
+.pen-path { fill: none; stroke: var(--pen); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
+
+/* Lettre-note */
+.g { --g: var(--gC); color: var(--g); font-weight: 900; }
+.g[data-g="A"] { --g: var(--gA); } .g[data-g="B"] { --g: var(--gB); } .g[data-g="C"] { --g: var(--gC); }
+.g[data-g="D"] { --g: var(--gD); } .g[data-g="E"] { --g: var(--gE); } .g[data-g="F"] { --g: var(--gF); }
+
+/* ================= En-tête canon ================= */
+.top { position: sticky; top: 0; z-index: 50; height: var(--hh); background: color-mix(in oklch, var(--paper) 94%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.top .bar { display: flex; align-items: center; gap: .5rem; height: 100%; width: min(100% - 2rem, 80rem); margin-inline: auto; }
+.logo img { height: 30px; width: auto; }
+:root[data-theme="dark"] :is(.logo img, .logo-foot) { filter: brightness(0) invert(.92); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) :is(.logo img, .logo-foot) { filter: brightness(0) invert(.92); } }
+.nav { display: none; gap: 1.5rem; margin-left: 2rem; }
+.nav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: .9375rem; position: relative; padding: .4rem 0; }
+.nav a[aria-current="page"]::after { content: ""; position: absolute; left: -2px; right: -2px; bottom: 0; height: 6px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 6' preserveAspectRatio='none'%3E%3Cpath d='M1 4 C 25 1, 50 5, 99 2' fill='none' stroke='%23d2231b' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat; }
+.tools { margin-left: auto; display: flex; align-items: center; gap: .15rem; }
+.tools a, .tools button { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 .55rem; background: none; border: 0; color: var(--ink); font: 600 .9375rem var(--sans); text-decoration: none; cursor: pointer; }
+.tools .lang { font: 600 .8125rem var(--mono); white-space: nowrap; } .tools .lang span { color: var(--ink-2); }
+.tools .login { border: 1.5px solid var(--ink); border-radius: 999px; padding: 0 1rem; }
+.tools svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.ico-moon { display: none; }
+:root[data-theme="dark"] .ico-sun { display: none; } :root[data-theme="dark"] .ico-moon { display: block; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .ico-sun { display: none; } :root:not([data-theme="light"]) .ico-moon { display: block; } }
+
+/* ================= Héros ================= */
+.hero { padding: 2.5rem 0 4rem; view-timeline: --hero block; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+.copyhead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1.5rem; border-bottom: 1.5px solid var(--ink); padding-bottom: .6rem; }
+.copyhead .pending { font: 600 1.6rem/1 var(--hand); color: var(--pen); }
+h1 { font: 850 clamp(2.6rem, 1.2rem + 6vw, 6.25rem)/0.95 var(--sans); letter-spacing: -0.045em; margin-top: 1.25rem; }
+h1 .hand { font-size: 1.12em; font-weight: 700; letter-spacing: 0; display: inline-block; rotate: -4deg; padding: 0 .12em; }
+.hero-lead { order: 3; }
+.lead { font-size: 1.1875rem; color: var(--ink-2); max-width: 36rem; }
+
+.audit { max-width: 40rem; }
+.audit label { display: block; font-weight: 700; margin-bottom: .5rem; }
+.field { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; padding: .5rem; background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 4px 5px 0 var(--ink); }
+.field:focus-within { box-shadow: 4px 5px 0 var(--pen); border-color: var(--pen); }
+.inp { display: flex; align-items: center; gap: .4rem; padding: 0 .6rem; min-height: 54px; }
+.inp span { font: 500 1.0625rem var(--mono); color: var(--ink-2); }
+.inp input { flex: 1; min-width: 0; width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font: 600 1.25rem var(--sans); padding: .6rem 0; }
+.inp input::placeholder { color: var(--ink-2); opacity: .8; font-weight: 400; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: .6rem; min-height: 54px; padding: 0 1.4rem; border: 0; border-radius: 10px; background: var(--pen); color: var(--on-pen); font: 750 1.0625rem var(--sans); cursor: pointer; white-space: nowrap; transition: background-color .15s, translate .15s var(--ease); }
+.btn:hover { background: var(--pen-hover); } .btn:active { translate: 0 2px; }
+.btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+.hint { margin-top: .6rem; color: var(--ink-2); font-size: .9375rem; }
+.promise { display: flex; flex-wrap: wrap; gap: .4rem 1.25rem; margin-top: 1.25rem; font-weight: 650; font-size: .9375rem; }
+.promise li::before { content: "✓"; color: var(--pen); font: 700 1.25rem/1 var(--hand); margin-right: .35rem; }
+.scrollcue { display: inline-flex; align-items: center; gap: .6rem; margin-top: 2rem; font: 600 1.5rem var(--hand); color: var(--pen); text-decoration: none; }
+.scrollcue svg { width: 28px; height: 40px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+
+/* ================= Parcours : chapitres ================= */
+.chap-h { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.chap-h h2 { font: 850 clamp(1.75rem, 1.2rem + 2vw, 2.5rem)/1 var(--sans); }
+.chap-h .dir { font: 600 1.5rem var(--hand); color: var(--pen); }
+.track { position: relative; padding: 3rem 0; }
+.stage { display: grid; gap: 2rem; }
+.stage > .wrap { width: min(100% - 2.5rem, 76rem); }
+.rail { display: grid; gap: 3rem; }
+.panel { width: min(100% - 2.5rem, 76rem); margin-inline: auto; padding-left: var(--mx); display: grid; gap: 1.5rem; align-content: center; }
+.panel .txt { display: grid; gap: .75rem; max-width: 30rem; }
+.panel .step { font: 600 .8125rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.panel h3 { font: 850 clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem)/1 var(--sans); }
+.panel .txt p { color: var(--ink-2); font-size: 1.0625rem; }
+.panel .note { font: 600 1.5rem/1.1 var(--hand); color: var(--pen); }
+.demo { background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 6px 7px 0 var(--ink); padding: 1.25rem; position: relative; }
+.demo .kick { margin-bottom: .75rem; display: flex; justify-content: space-between; gap: 1rem; }
+.piste { display: none; }
+
+/* 01 · adresse */
+.typed { display: flex; align-items: center; gap: .4rem; border: 2px solid var(--ink); border-radius: 12px; padding: .9rem 1rem; font: 650 clamp(1.25rem, 1rem + 1.4vw, 2rem) var(--sans); background: var(--paper); }
+.typed span { font: 500 .7em var(--mono); color: var(--ink-2); }
+.typed i { width: 2px; height: 1.1em; background: var(--pen); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.ann { position: relative; display: flex; align-items: center; gap: .5rem; margin-top: .9rem; }
+.ann svg { width: 54px; height: 34px; fill: none; stroke: var(--pen); stroke-width: 2.2; stroke-linecap: round; flex: none; }
+
+/* 02 · audit qui tourne */
+.doms { display: grid; gap: .5rem; }
+.doms li { display: grid; grid-template-columns: 9.5rem 1fr 6rem; gap: .75rem; align-items: center; font-weight: 650; font-size: .9375rem; }
+.doms .bar { height: 10px; border-radius: 6px; background: var(--sub); overflow: hidden; border: 1px solid var(--line); }
+.doms .bar b { display: block; height: 100%; width: var(--w); background: var(--ink); border-radius: 6px; transform-origin: left; }
+.doms .st { white-space: nowrap; font: 600 .75rem var(--mono); color: var(--ink-2); text-align: right; }
+.doms li.lock .bar { background: repeating-linear-gradient(45deg, var(--sub) 0 6px, transparent 6px 12px); }
+.doms li.lock .st { color: var(--ink); }
+
+/* 03 · faux site annoté */
+.fake { --pen: #d2231b; border: 2px solid var(--ink); border-radius: 12px; overflow: hidden; background: #fff; color: #333; position: relative; }
+.fake .chrome { display: flex; gap: .4rem; align-items: center; padding: .45rem .7rem; background: #ece8dc; border-bottom: 2px solid var(--ink); font: 500 .75rem var(--mono); color: #4c5470; }
+.fake .chrome i { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid #1a2140; }
+.fake .site { padding: 1rem; display: grid; gap: .6rem; }
+.fake .s-nav { display: flex; justify-content: space-between; font: 700 .9rem Georgia, serif; color: #6b3e1f; }
+.fake .s-nav span { display: flex; gap: .8rem; font: 400 .75rem system-ui; color: #999; }
+.fake .s-img { height: 110px; border-radius: 6px; background: linear-gradient(135deg, #e9c79a, #b77a43 60%, #7b4a24); position: relative; }
+.fake .s-img::after { content: "boulangerie-hero.png · 2,4 Mo"; position: absolute; left: .5rem; bottom: .4rem; font: 500 .6875rem var(--mono); color: #fff8; }
+.fake .s-title { font: 700 1.15rem Georgia, serif; color: #3b2414; }
+.fake .s-txt { font-size: .8125rem; color: #bbb; line-height: 1.4; }
+.fake .s-form { display: flex; gap: .4rem; }
+.fake .s-form span { flex: 1; height: 28px; border: 1px solid #ddd; border-radius: 4px; }
+.fake .s-form b { width: 34px; height: 28px; border-radius: 4px; background: #6b3e1f; }
+.spot { position: absolute; left: var(--x); top: var(--y); width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; border: 2px dashed var(--pen); background: color-mix(in oklch, var(--pen) 12%, transparent); color: var(--pen); font: 700 1.1rem/1 var(--hand); cursor: pointer; display: grid; place-items: center; }
+.spot:hover { background: color-mix(in oklch, var(--pen) 25%, transparent); }
+.spot .lab { position: absolute; left: calc(100% + 6px); top: 50%; translate: 0 -50%; width: max-content; max-width: 11rem; text-align: left; font: 700 1.2rem/1 var(--hand); color: var(--pen); background: color-mix(in oklch, #fff 88%, transparent); padding: .1rem .3rem; border-radius: 4px; opacity: 0; scale: .9; transition: opacity .2s, scale .2s var(--ease); pointer-events: none; }
+@media (max-width: 47.99rem) { .spot .lab { font-size: 1rem; max-width: 8.5rem; } .panel { grid-template-columns: minmax(0, 1fr); } }
+.spot.left .lab { left: auto; right: calc(100% + 6px); text-align: right; }
+.spot[aria-pressed="true"] { border-style: solid; background: transparent; }
+.spot[aria-pressed="true"] .lab { opacity: 1; scale: 1; }
+html:not(.js) .spot .lab { opacity: 1; scale: 1; }
+.game { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: .9rem; font-weight: 650; }
+.game button { font: 650 .9375rem var(--sans); color: var(--blue); background: none; border: 0; text-decoration: underline; cursor: pointer; min-height: 44px; }
+
+/* 04 · la note */
+.grade-big { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+.grade-big .letter { font: 900 clamp(6rem, 4rem + 8vw, 10rem)/.9 var(--sans); letter-spacing: -0.06em; padding: 0 .2em; }
+.grade-big .score { font: 850 2.5rem/1 var(--sans); }
+.grade-big .score small { font-size: 1rem; color: var(--ink-2); font-weight: 600; }
+.grade-big .com { font: 600 1.75rem/1.05 var(--hand); color: var(--pen); rotate: -3deg; margin-top: .5rem; max-width: 14rem; }
+.scale { display: flex; margin-top: 1.25rem; border: 2px solid var(--ink); border-radius: 10px; overflow: hidden; }
+.scale li { flex: var(--w) 0 0; padding: .45rem .5rem; border-right: 2px solid var(--ink); display: grid; gap: .1rem; background: color-mix(in oklch, var(--g) 12%, var(--surface)); }
+.scale li:last-child { border-right: 0; }
+.scale li b { font: 900 1.1rem var(--sans); color: var(--g); }
+.scale li span { font: 650 .75rem var(--sans); font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.scale li.here { outline: 3px solid var(--pen); outline-offset: -3px; }
+
+/* Virage */
+.virage { padding: 4rem 0; view-timeline: --vir block; }
+.virage .wrap { display: grid; gap: 1.5rem; }
+.virage h2 { font: 850 clamp(2rem, 1.2rem + 3.4vw, 4rem)/1 var(--sans); max-width: 20ch; }
+.virage p { color: var(--ink-2); font-size: 1.125rem; max-width: 34rem; }
+.turn { width: min(100%, 520px); height: auto; }
+.turn path { fill: none; stroke: var(--pen); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 05 · priorités */
+.prio { display: grid; gap: 1rem; }
+.prio li { display: grid; grid-template-columns: 3rem 1fr; gap: .2rem 1rem; }
+.prio li > span:first-child { grid-row: span 2; font: 700 2.25rem/1 var(--hand); color: var(--pen); text-align: center; }
+.prio h4 { font: 750 1.125rem/1.25 var(--sans); }
+.prio p { color: var(--ink-2); font-size: .9375rem; }
+.prio .margin { grid-column: 2; font: 600 1.25rem/1 var(--hand); color: var(--pen); }
+
+/* 06 · prompt */
+.prompt { font: 500 .875rem/1.55 var(--mono); background: var(--sub); border: 1.5px dashed var(--ink-2); border-radius: 10px; padding: 1rem; white-space: pre-wrap; color: var(--ink); max-height: 15rem; overflow: auto; }
+.copy { margin-top: .9rem; display: inline-flex; align-items: center; gap: .5rem; min-height: 46px; padding: 0 1.1rem; border: 2px solid var(--ink); border-radius: 10px; background: var(--surface); color: var(--ink); font: 700 1rem var(--sans); cursor: pointer; }
+.copy:hover { background: var(--ink); color: var(--paper); }
+.copy svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; }
+
+/* 07 · suivi */
+.chart { width: 100%; height: auto; }
+.chart .axis { stroke: var(--line); stroke-width: 1; }
+.chart .ln { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.chart .pt { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.chart .pt.drop { stroke: var(--pen); fill: var(--pen); }
+.chart text { font: 650 13px var(--sans); fill: var(--ink-2); }
+.chart .h { font: 700 22px var(--hand); fill: var(--pen); }
+.mail { margin-top: .9rem; border: 1.5px solid var(--ink); border-radius: 10px; padding: .75rem 1rem; font-size: .9375rem; background: var(--paper); }
+.mail b { display: block; }
+.mail span { color: var(--ink-2); }
+.chip { font: 700 .6875rem var(--mono); letter-spacing: .06em; text-transform: uppercase; border: 1.5px solid currentColor; border-radius: 999px; padding: .05rem .5rem; color: var(--ink-2); white-space: nowrap; align-self: start; }
+
+/* 08 · lien et badge */
+.share { display: flex; align-items: center; gap: .5rem; border: 2px solid var(--ink); border-radius: 10px; padding: .7rem .9rem; font: 600 1rem var(--mono); background: var(--paper); overflow: hidden; }
+.share svg { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; }
+.badge { margin-top: 1.25rem; display: inline-flex; align-items: center; gap: .75rem; padding: .5rem .9rem .5rem .5rem; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); }
+.badge .circled { font: 900 1.5rem/1 var(--sans); width: 2.5rem; text-align: center; }
+.badge small { display: block; font: 600 .75rem var(--mono); color: var(--ink-2); }
+.badge b { font-size: .9375rem; }
+.embed { margin-top: .9rem; font: 500 .75rem var(--mono); color: var(--ink-2); }
+
+/* ================= Après le parcours ================= */
+.suite { view-timeline: --suite block; }
+.sec { padding: 4.5rem 0; }
+.sec-h { display: grid; gap: .6rem; margin-bottom: 2rem; }
+.sec-h h2 { font: 850 clamp(2rem, 1.2rem + 3vw, 3.5rem)/1 var(--sans); }
+.sec-h p { color: var(--ink-2); font-size: 1.125rem; max-width: 36rem; }
+.offers { display: grid; gap: 1.25rem; }
+.offer { background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; padding: 1.25rem; display: grid; gap: .75rem; align-content: start; }
+.offer.pro { box-shadow: 6px 7px 0 var(--ink); }
+.offer h3 { font: 850 1.5rem var(--sans); display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+.offer .price { font: 850 2rem/1 var(--sans); } .offer .price small { font-size: .9375rem; color: var(--ink-2); font-weight: 600; }
+.offer li { padding: .35rem 0 .35rem 1.5rem; border-top: 1px dashed var(--line); position: relative; font-size: .9375rem; }
+.offer li::before { content: "✓"; position: absolute; left: 0; top: .15rem; font: 700 1.25rem/1 var(--hand); color: var(--pen); }
+.offer li.no { color: var(--ink-2); } .offer li.no::before { content: "–"; color: var(--ink-2); }
+.offer .cta { font-weight: 700; }
+.faq { max-width: 48rem; }
+.faq details { border-top: 1.5px solid var(--ink); }
+.faq details:last-child { border-bottom: 1.5px solid var(--ink); }
+.faq summary { list-style: none; cursor: pointer; padding: 1rem 0; font: 750 1.125rem/1.3 var(--sans); display: flex; justify-content: space-between; gap: 1rem; min-height: 44px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font: 700 1.75rem/1 var(--hand); color: var(--pen); }
+.faq details[open] summary::after { content: "–"; }
+.faq details p { padding-bottom: 1.1rem; color: var(--ink-2); }
+.final { border: 2px dashed var(--ink); border-radius: 16px; padding: 2rem 1.5rem; background: var(--surface); display: grid; gap: .75rem; }
+.final h2 { font: 850 clamp(1.75rem, 1.2rem + 2.4vw, 3rem)/1 var(--sans); }
+.final a { font: 700 1.125rem var(--sans); }
+footer { padding: 3rem 0 2rem; border-top: 1.5px solid var(--ink); }
+footer .cols { display: grid; gap: 1.5rem; }
+footer h2 { font: 600 .75rem var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); margin-bottom: .5rem; }
+footer li { padding: .2rem 0; } footer a { color: var(--ink); text-decoration: none; font-weight: 600; } footer a:hover { text-decoration: underline; }
+footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
+
+/* Barre basse mobile canon */
+.bottom { position: sticky; bottom: 0; z-index: 50; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--paper); border-top: 1.5px solid var(--ink); padding-bottom: env(safe-area-inset-bottom); }
+.bottom a { display: grid; justify-items: center; gap: 2px; padding: .5rem .2rem .6rem; min-height: 58px; font-size: .75rem; font-weight: 650; color: var(--ink-2); text-decoration: none; }
+.bottom a[aria-current="page"] { color: var(--pen); }
+.bottom svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Indicateur de parcours (boussole) */
+.route { display: none; }
+
+/* ================= ≥ 48rem ================= */
+@media (min-width: 48rem) {
+  body { --mx: 48px; }
+  .field { grid-template-columns: minmax(0, 1fr) auto; }
+  .offers { grid-template-columns: repeat(3, 1fr); }
+  footer .cols { grid-template-columns: 2fr 1fr 1fr 1fr; }
+  .final { grid-template-columns: 1fr auto; align-items: center; padding: 2.5rem; }
+}
+@media (min-width: 64rem) {
+  body { --mx: 72px; }
+  .bottom { display: none; }
+  .nav { display: flex; }
+  .hero { padding: 4rem 0 5rem; min-height: calc(100vh - var(--hh)); }
+  .hero .wrap { grid-template-columns: 1.15fr .85fr; align-items: end; column-gap: 4rem; }
+  .copyhead, .hero h1 { grid-column: 1 / -1; }
+  .hero-lead { order: 0; }
+  .panel { grid-template-columns: .85fr 1.15fr; gap: 4rem; align-items: center; }
+  .track[data-dir="left"] .panel { grid-template-columns: 1.15fr .85fr; }
+  .track[data-dir="left"] .panel .txt { order: 2; }
+}
+
+/* ================= Le parcours guidé (desktop, mouvement autorisé) ================= */
+@media (min-width: 64rem) and (min-height: 38rem) and (prefers-reduced-motion: no-preference) {
+  .track { padding: 0; height: calc(var(--n) * 100vh); container-type: inline-size; }
+  .track[data-tl="1"] { view-timeline: --t1 block; }
+  .track[data-tl="2"] { view-timeline: --t2 block; }
+  .stage { position: sticky; top: var(--hh); height: calc(100vh - var(--hh)); overflow: clip; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; gap: 0; padding: 1.5rem 0 1rem; }
+  .rail { display: flex; gap: 0; width: calc(var(--n) * 100cqw); height: 100%; }
+  .track[data-dir="left"] .rail { flex-direction: row-reverse; translate: calc(-100% + 100cqw) 0; }
+  .panel { flex: none; width: 100cqw; padding-inline: max(var(--mx), calc((100cqw - 76rem) / 2 + var(--mx))) max(2rem, calc((100cqw - 76rem) / 2)); margin: 0; }
+  /* Piste : où l'on va */
+  .piste { display: flex; align-items: center; gap: 1rem; width: min(100% - 2.5rem, 76rem); margin-inline: auto; padding-left: var(--mx); }
+  .piste .line { position: relative; flex: 1; height: 3px; background: var(--line); border-radius: 2px; }
+  .piste .line b { position: absolute; inset: 0; background: var(--pen); border-radius: 2px; transform-origin: left; scale: var(--p, 0) 1; }
+  .piste .line::after { content: ""; position: absolute; right: -2px; top: 50%; translate: 0 -50%; border: 8px solid transparent; border-left: 12px solid var(--pen); border-right: 0; }
+  .track[data-dir="left"] .piste .line b { transform-origin: right; }
+  .track[data-dir="left"] .piste .line::after { right: auto; left: -2px; border-left: 0; border-right: 12px solid var(--pen); border-width: 8px 12px 8px 0; }
+  .piste ol { display: flex; gap: .75rem; font: 600 .8125rem var(--mono); color: var(--ink-2); }
+  .piste .lab { font: 600 1.5rem var(--hand); color: var(--pen); white-space: nowrap; }
+
+  @supports (animation-timeline: view()) {
+    .track[data-tl="1"] .rail { animation: go-right linear both; animation-timeline: --t1; animation-range: contain 0% contain 100%; }
+    .track[data-tl="2"] .rail { animation: go-left linear both; animation-timeline: --t2; animation-range: contain 0% contain 100%; }
+    .track[data-tl="1"] .piste .line b { animation: fill linear both; animation-timeline: --t1; animation-range: contain 0% contain 100%; }
+    .track[data-tl="2"] .piste .line b { animation: fill linear both; animation-timeline: --t2; animation-range: contain 0% contain 100%; }
+    /* Les barres de mesure se remplissent pendant le panneau 02 */
+    .doms .bar b { animation: measure linear both; animation-timeline: --t1; animation-range: contain 8% contain 40%; }
+    /* Le cercle de la note se trace pendant le panneau 04 */
+    .grade-big .pen-path { animation: draw linear both; animation-timeline: --t1; animation-range: contain 78% contain 96%; }
+    .turn path { animation: draw linear both; animation-timeline: --vir; animation-range: entry 40% cover 60%; }
+    .route { animation: s1 linear both, s2 linear both, s3 linear both, s4 linear both, s5 linear both;
+      animation-timeline: --hero, --t1, --vir, --t2, --suite;
+      animation-range: exit 0% exit 100%, contain 0% contain 100%, entry 0% exit 100%, contain 0% contain 100%, entry 0% contain 100%; }
+  }
+  @keyframes go-right { 0%, 5% { translate: 0 0; } 95%, 100% { translate: calc(-100% + 100cqw) 0; } }
+  @keyframes go-left { 0%, 5% { translate: calc(-100% + 100cqw) 0; } 95%, 100% { translate: 0 0; } }
+  @keyframes fill { from { scale: 0 1; } to { scale: 1 1; } }
+  @keyframes measure { from { scale: 0 1; } to { scale: 1 1; } }
+  @keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes s1 { to { --s1: 1; } } @keyframes s2 { to { --s2: 1; } } @keyframes s3 { to { --s3: 1; } } @keyframes s4 { to { --s4: 1; } } @keyframes s5 { to { --s5: 1; } }
+
+  /* Boussole : le tracé du parcours, la flèche suit (offset-path) */
+  .route { display: block; position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 40; width: 172px; padding: .6rem .7rem .5rem; background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; box-shadow: 4px 5px 0 var(--ink);
+    --done: calc(var(--s1) * 22 + var(--s2) * 108 + var(--s3) * 22 + var(--s4) * 108 + var(--s5) * 48); }
+  .route .kick { font-size: .6875rem; display: flex; justify-content: space-between; }
+  .route .map { position: relative; width: 140px; height: 110px; margin: .3rem auto 0; }
+  .route svg { position: absolute; inset: 0; overflow: visible; }
+  .route .base { fill: none; stroke: var(--line); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 6; }
+  .route .trace { fill: none; stroke: var(--pen); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 308; stroke-dashoffset: calc(308 - var(--done)); }
+  .route text { font: 600 9px var(--mono); fill: var(--ink-2); }
+  .route .arrow { position: absolute; left: 0; top: 0; width: 0; height: 0; border: 7px solid transparent; border-left: 12px solid var(--pen); border-right: 0;
+    offset-path: path("M16 8 V30 H124 V52 H16 V100"); offset-rotate: auto; offset-anchor: 4px 7px; offset-distance: calc(var(--done) / 308 * 100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://audixio.fr/#org","name":"Audixio","url":"https://audixio.fr/","logo":"https://audixio.fr/marque/logo-pc.svg"},
+ {"@type":"WebSite","@id":"https://audixio.fr/#site","name":"Audixio","url":"https://audixio.fr/","inLanguage":["fr-FR","en"],"publisher":{"@id":"https://audixio.fr/#org"}},
+ {"@type":"WebApplication","name":"Audixio — audit de site web","url":"https://audixio.fr/","applicationCategory":"DeveloperApplication","operatingSystem":"Tous navigateurs","inLanguage":"fr-FR","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","description":"Audit gratuit sans compte"},"publisher":{"@id":"https://audixio.fr/#org"}},
+ {"@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"L'audit est-il vraiment gratuit ?","acceptedAnswer":{"@type":"Answer","text":"Oui, sans compte et sans traceur. Vous obtenez la note et les priorités. Un compte gratuit ouvre le détail, le lien de partage et le prompt pour votre assistant IA."}},
+  {"@type":"Question","name":"Le rapport est-il écrit par une IA ?","acceptedAnswer":{"@type":"Answer","text":"Non. Les mesures et le rapport sont calculés par Audixio. Nous vous donnons seulement un prompt prêt à coller dans l'assistant IA de votre choix."}},
+  {"@type":"Question","name":"Comment la note est-elle calculée ?","acceptedAnswer":{"@type":"Answer","text":"Chaque domaine est noté sur 100 : A à partir de 90, B à partir de 80, C à partir de 65, D à partir de 50, E à partir de 35, F en dessous."}},
+  {"@type":"Question","name":"Audixio peut-il abîmer mon site ?","acceptedAnswer":{"@type":"Answer","text":"Non. L'analyse est passive par défaut : Audixio lit votre site comme un visiteur. Les tests actifs exigent une preuve de propriété revérifiée juste avant."}}
+ ]}
+]}
+</script>
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="/" aria-label="Audixio, accueil"><img src="../../../apps/web/public/marque/logo-pc.svg" alt="" width="95" height="30"></a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a href="/" aria-current="page">Accueil</a><a href="/methode">Méthode</a><a href="/sites">Sites suivis</a><a href="/documentation">Documentation</a>
+    </nav>
+    <div class="tools">
+      <a class="lang" href="/en/" hreflang="en" aria-label="Langue : français. Passer en anglais">FR<span>/EN</span></a>
+      <button type="button" id="theme" aria-label="Changer de thème (clair ou sombre)">
+        <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <a class="login" href="/connexion">Connexion</a>
+    </div>
+  </div>
+</header>
+
+<main id="contenu">
+
+  <!-- ↓ Héros -->
+  <section class="hero" aria-labelledby="h1">
+    <div class="wrap">
+      <p class="copyhead"><span class="kick">Audit de site web gratuit · 8 domaines · note de A à F</span><span class="kick">Note : <span class="pending" aria-hidden="true">… / 100</span><span class="sr-only">en attente</span></span></p>
+      <h1 id="h1">Votre site, <span class="hand circled">corrigé<svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path class="pen-path" pathLength="1" d="M8 30 C6 12, 60 4, 90 14 C102 20, 96 40, 60 45 C28 49, 4 40, 10 22 C14 12, 34 6, 52 7"/></svg></span> comme une&nbsp;copie.</h1>
+      <div class="hero-lead">
+        <p class="lead">Audixio vérifie 8 domaines de votre site, met une note de A à F, et vous dit quoi corriger d'abord. En français simple, avec les annotations dans la marge.</p>
+        <a class="scrollcue" href="#parcours"><svg viewBox="0 0 28 40" aria-hidden="true"><path d="M14 3 C10 14, 18 22, 14 36 M6 28 L14 37 L22 28"/></svg>Suivez la correction</a>
+      </div>
+      <div>
+        <form class="audit" id="audit" action="/audit" method="get" novalidate>
+          <label for="url">Adresse de votre site</label>
+          <div class="field">
+            <div class="inp"><span aria-hidden="true">https://</span><input id="url" name="url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" required maxlength="2048" placeholder="monsite.fr" aria-describedby="url-hint"></div>
+            <button class="btn" type="submit">Lancer l'audit gratuit<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+          </div>
+          <p class="hint" id="url-hint">Environ une minute. Aucun compte demandé.</p>
+        </form>
+        <ul class="promise" aria-label="Garanties"><li>Gratuit, sans compte</li><li>Passif par défaut</li><li>Aucun traceur</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- → Chapitre 1 : le contrôle -->
+  <section class="track" id="parcours" data-tl="1" data-dir="right" style="--n:4" aria-labelledby="c1">
+    <div class="stage">
+      <div class="wrap chap-h"><span class="kick">Chapitre 1</span><h2 id="c1">La correction, pas à pas</h2><span class="dir" aria-hidden="true">on avance vers la droite →</span></div>
+      <div class="rail">
+        <article class="panel" aria-labelledby="p1">
+          <div class="txt"><p class="step">01 · L'adresse</p><h3 id="p1">Vous donnez l'adresse. C'est tout.</h3><p>Pas de compte, pas de carte, pas de code à installer sur votre site.</p></div>
+          <div class="demo" aria-hidden="true">
+            <p class="kick"><span>Champ unique</span><span>audixio.fr</span></p>
+            <div class="typed"><span>https://</span>monsite-exemple.fr<i></i></div>
+            <p class="ann"><svg viewBox="0 0 54 34"><path d="M50 4 C34 6, 18 14, 8 28 M8 28 L9 18 M8 28 L18 25"/></svg><span class="hand" style="font-size:1.6rem">c'est tout ce qu'il nous faut !</span></p>
+          </div>
+        </article>
+        <article class="panel" aria-labelledby="p2">
+          <div class="txt"><p class="step">02 · L'audit tourne</p><h3 id="p2">8 domaines mesurés, en une minute.</h3><p>Audixio lit votre site comme un visiteur : passif par défaut. Sécurité, vie privée et DNS restent sous scellé tant que vous n'avez pas prouvé que le site est à vous.</p></div>
+          <div class="demo">
+            <p class="kick"><span>Audit en cours · monsite-exemple.fr</span><span class="num">00:41</span></p>
+            <ul class="doms">
+              <li><span>Performance</span><span class="bar"><b style="--w:61%"></b></span><span class="st">mesuré</span></li>
+              <li><span>SEO</span><span class="bar"><b style="--w:84%"></b></span><span class="st">mesuré</span></li>
+              <li><span>Accessibilité</span><span class="bar"><b style="--w:52%"></b></span><span class="st">mesuré</span></li>
+              <li><span>Écologie</span><span class="bar"><b style="--w:70%"></b></span><span class="st">mesuré</span></li>
+              <li><span>Qualité technique</span><span class="bar"><b style="--w:68%"></b></span><span class="st">mesuré</span></li>
+              <li class="lock"><span>Sécurité</span><span class="bar"></span><span class="st">sous scellé</span></li>
+              <li class="lock"><span>Vie privée</span><span class="bar"></span><span class="st">sous scellé</span></li>
+              <li class="lock"><span>DNS / e-mail</span><span class="bar"></span><span class="st">sous scellé</span></li>
+            </ul>
+          </div>
+        </article>
+        <article class="panel" aria-labelledby="p3">
+          <div class="txt"><p class="step">03 · Les annotations</p><h3 id="p3">Trouvez les problèmes avant nous.</h3><p>Voici une boulangerie imaginaire. Cliquez sur les zones entourées : Audixio écrit dans la marge ce qu'il a vu, et pourquoi cela gêne vos visiteurs.</p></div>
+          <div class="demo">
+            <div class="fake" id="fake">
+              <div class="chrome" aria-hidden="true"><i></i><i></i><i></i>&nbsp;boulangerie-martin.fr</div>
+              <div class="site" aria-hidden="true">
+                <div class="s-nav">Boulangerie Martin<span>Accueil · Pains · Contact</span></div>
+                <div class="s-img"></div>
+                <div class="s-title">Du bon pain, tous les matins</div>
+                <div class="s-txt">Ouvert du mardi au dimanche, de 7 h à 19 h. Commandez vos viennoiseries la veille.</div>
+                <div class="s-form"><span></span><b></b></div>
+              </div>
+              <button type="button" class="spot left" style="--x:82%;--y:34%" aria-pressed="false">?<span class="lab">image de 2,4 Mo : trop lourde</span><span class="sr-only">Zone 1</span></button>
+              <button type="button" class="spot left" style="--x:62%;--y:62%" aria-pressed="false">?<span class="lab">ce titre n'est pas un vrai titre (h1)</span><span class="sr-only">Zone 2</span></button>
+              <button type="button" class="spot left" style="--x:70%;--y:76%" aria-pressed="false">?<span class="lab">gris trop clair, illisible</span><span class="sr-only">Zone 3</span></button>
+              <button type="button" class="spot left" style="--x:88%;--y:89%" aria-pressed="false">?<span class="lab">bouton sans nom pour les lecteurs d'écran</span><span class="sr-only">Zone 4</span></button>
+            </div>
+            <p class="game"><span role="status" id="found">Trouvés : 0 sur 4</span><button type="button" id="reveal">Tout montrer</button></p>
+          </div>
+        </article>
+        <article class="panel" aria-labelledby="p4">
+          <div class="txt"><p class="step">04 · La note</p><h3 id="p4">Une lettre, un chiffre, un commentaire.</h3><p>Chaque domaine est noté sur 100 ; la note globale est la moyenne des domaines mesurés. Le barème est public.</p></div>
+          <div class="demo">
+            <div class="grade-big">
+              <span class="circled letter g" data-g="C">C<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="pen-path" pathLength="1" d="M20 30 C30 6, 82 4, 92 40 C100 74, 60 98, 32 88 C6 78, 2 46, 18 28 C28 16, 46 10, 62 12"/></svg></span>
+              <div><p class="score num">67<small> / 100</small></p><p class="com">Des bases correctes. Peut mieux faire : 3 priorités.</p></div>
+            </div>
+            <ol class="scale" aria-label="Barème">
+              <li style="--w:35;--g:var(--gF)"><b>F</b><span>&lt; 35</span></li>
+              <li style="--w:15;--g:var(--gE)"><b>E</b><span>≥ 35</span></li>
+              <li style="--w:15;--g:var(--gD)"><b>D</b><span>≥ 50</span></li>
+              <li class="here" style="--w:15;--g:var(--gC)"><b>C</b><span>≥ 65</span></li>
+              <li style="--w:10;--g:var(--gB)"><b>B</b><span>≥ 80</span></li>
+              <li style="--w:10;--g:var(--gA)"><b>A</b><span>≥ 90</span></li>
+            </ol>
+          </div>
+        </article>
+      </div>
+      <div class="piste" aria-hidden="true"><span class="lab">→ à droite</span><span class="line"><b></b></span><ol><li>01</li><li>02</li><li>03</li><li>04</li></ol></div>
+    </div>
+  </section>
+
+  <!-- ↓ Virage -->
+  <section class="virage" aria-labelledby="vir">
+    <div class="wrap">
+      <span class="kick">Virage</span>
+      <h2 id="vir">La copie est corrigée. Maintenant, on repart dans l'autre sens.</h2>
+      <p>Une note ne sert à rien seule. La suite du parcours montre ce que vous en faites : corriger, demander de l'aide, suivre, partager.</p>
+      <svg class="turn" viewBox="0 0 520 150" aria-hidden="true"><path pathLength="1" style="stroke-dasharray:1" d="M20 20 C200 10, 470 10, 490 70 C505 120, 380 132, 60 128 M60 128 L84 112 M60 128 L86 142"/></svg>
+    </div>
+  </section>
+
+  <!-- ← Chapitre 2 : après la correction -->
+  <section class="track" data-tl="2" data-dir="left" style="--n:4" aria-labelledby="c2">
+    <div class="stage">
+      <div class="wrap chap-h"><span class="kick">Chapitre 2</span><h2 id="c2">Ce que vous faites de la note</h2><span class="dir" aria-hidden="true">← on revient vers la gauche</span></div>
+      <div class="rail">
+        <article class="panel" aria-labelledby="p5">
+          <div class="txt"><p class="step">05 · Les priorités</p><h3 id="p5">Dans l'ordre où les faire.</h3><p>Chaque constat dit ce qui se passe, ce que cela change pour vos visiteurs, et quoi faire.</p></div>
+          <div class="demo">
+            <ol class="prio">
+              <li><span aria-hidden="true">1</span><h4>Vos pages s'affichent lentement sur mobile</h4><p>Allégez les images de l'accueil.</p><p class="margin">à faire cette semaine</p></li>
+              <li><span aria-hidden="true">2</span><h4>Certains textes sont difficiles à lire</h4><p>Foncez la couleur du texte secondaire.</p><p class="margin">10 minutes de travail</p></li>
+              <li><span aria-hidden="true">3</span><h4>Google ne trouve pas votre plan du site</h4><p>Ajoutez un fichier sitemap.</p></li>
+            </ol>
+          </div>
+        </article>
+        <article class="panel" aria-labelledby="p6">
+          <div class="txt"><p class="step">06 · Le prompt à copier</p><h3 id="p6">Pas d'IA dans le rapport. Un prompt prêt pour la vôtre.</h3><p>Le rapport est calculé par Audixio, sans IA. Avec un compte gratuit, vous copiez un prompt complet et vous le collez dans l'assistant de votre choix.</p></div>
+          <div class="demo">
+            <p class="kick"><span>Prompt pour votre assistant IA</span><span class="chip">Compte gratuit</span></p>
+<pre class="prompt" id="prompt">Tu es développeur web. Voici l'audit Audixio de monsite-exemple.fr (11/11/2026, note C, 67/100).
+Corrige dans cet ordre :
+1. Performance : l'image d'accueil fait 2,4 Mo. Propose une version WebP de moins de 200 Ko.
+2. Accessibilité : contraste du texte secondaire insuffisant (#BBBBBB sur blanc). Propose une couleur conforme AA.
+3. SEO : sitemap absent. Génère un sitemap.xml.
+Explique chaque changement simplement.</pre>
+            <button type="button" class="copy" id="copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span>Copier le prompt</span></button>
+          </div>
+        </article>
+        <article class="panel" aria-labelledby="p7">
+          <div class="txt"><p class="step">07 · Le suivi</p><h3 id="p7">Si la note baisse, vous le savez.</h3><p>Relancez l'audit et comparez. Avec Pro, Audixio surveille vos sites et vous écrit dès qu'une note baisse.</p></div>
+          <div class="demo">
+            <p class="kick"><span>monsite-exemple.fr · 6 audits</span><span class="chip">Alertes : Pro</span></p>
+            <svg class="chart" viewBox="0 0 420 190" role="img" aria-label="Évolution de la note : 58, 61, 67, 71, puis baisse à 59, puis 70.">
+              <path class="axis" d="M30 20 H410 M30 80 H410 M30 140 H410"/>
+              <text x="0" y="24">90</text><text x="0" y="84">65</text><text x="0" y="144">35</text>
+              <path class="ln" d="M40 108 L110 100 L180 86 L250 76 L320 105 L390 79"/>
+              <circle class="pt" cx="40" cy="108" r="5"/><circle class="pt" cx="110" cy="100" r="5"/><circle class="pt" cx="180" cy="86" r="5"/><circle class="pt" cx="250" cy="76" r="5"/><circle class="pt drop" cx="320" cy="105" r="6"/><circle class="pt" cx="390" cy="79" r="5"/>
+              <text class="h" x="262" y="150">−12 : alerte envoyée</text>
+              <text x="36" y="182">juin</text><text x="176" y="182">août</text><text x="316" y="182">oct.</text>
+            </svg>
+            <p class="mail"><b>Votre note a baissé : 71 → 59</b><span>monsite-exemple.fr · la performance a perdu 18 points depuis la mise en ligne de mardi.</span></p>
+          </div>
+        </article>
+        <article class="panel" aria-labelledby="p8">
+          <div class="txt"><p class="step">08 · Le lien et le badge</p><h3 id="p8">Montrez la copie à qui vous voulez.</h3><p>Un lien public pour votre prestataire (sans les détails sensibles, non indexé), et un badge daté pour votre pied de page.</p></div>
+          <div class="demo">
+            <p class="kick"><span>Lien public</span><span class="chip">1 lien gratuit · illimités en Pro</span></p>
+            <p class="share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>audixio.fr/r/monsite-exemple-k7Qm</p>
+            <p class="badge"><span class="circled g" data-g="C">C<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="pen-path" pathLength="1" d="M20 30 C30 6, 82 4, 92 40 C100 74, 60 98, 32 88 C6 78, 2 46, 18 28 C28 16, 46 10, 62 12"/></svg></span><span><b>Audité par Audixio · 67/100</b><small>11/11/2026 · monsite-exemple.fr</small></span></p>
+            <p class="embed">&lt;a href="https://audixio.fr/r/monsite-exemple-k7Qm"&gt;&lt;img src="…/badge.svg" alt="Note Audixio : C"&gt;&lt;/a&gt;</p>
+          </div>
+        </article>
+      </div>
+      <div class="piste" aria-hidden="true"><ol><li>08</li><li>07</li><li>06</li><li>05</li></ol><span class="line"><b></b></span><span class="lab">← à gauche</span></div>
+    </div>
+  </section>
+
+  <!-- ↓ La suite -->
+  <div class="suite">
+    <section class="sec" aria-labelledby="off">
+      <div class="wrap">
+        <div class="sec-h"><span class="kick">On reprend vers le bas ↓</span><h2 id="off">Gratuit pour commencer.</h2><p>Sans compte, vous avez la note. Un compte gratuit ouvre le détail. Pro arrive pour les agences et les équipes.</p></div>
+        <div class="offers">
+          <article class="offer"><h3>Sans compte</h3><p class="price">0 €</p><ul><li>Note et priorités</li><li>Dernier audit gardé dans le navigateur</li><li class="no">Sécurité, vie privée, DNS sous scellé</li><li class="no">Pas de lien ni de prompt</li></ul></article>
+          <article class="offer"><h3>Compte gratuit</h3><p class="price">0 €</p><ul><li>2 sites, dernier rapport par site</li><li>Prompt pour votre assistant IA</li><li>1 lien de partage actif</li><li>Domaines sensibles après preuve de propriété</li></ul><a class="cta" href="/inscription">Créer un compte</a></article>
+          <article class="offer pro"><h3>Pro <span class="chip">Bientôt</span></h3><p class="price">≈ 9 €<small> / mois</small></p><ul><li>10 sites, historique long</li><li>Alertes de baisse</li><li>Liens de partage illimités</li><li>Exports Excel / CSV, rapport client soigné</li></ul><a class="cta" href="/pro">Découvrir Pro</a></article>
+        </div>
+      </div>
+    </section>
+    <section class="sec" aria-labelledby="faq" style="padding-top:0">
+      <div class="wrap">
+        <div class="sec-h"><h2 id="faq">Questions fréquentes</h2></div>
+        <div class="faq">
+          <details open><summary>L'audit est-il vraiment gratuit&nbsp;?</summary><p>Oui, sans compte et sans traceur. Vous obtenez la note et les priorités. Un compte gratuit ouvre le détail, le lien de partage et le prompt pour votre assistant IA.</p></details>
+          <details><summary>Le rapport est-il écrit par une IA&nbsp;?</summary><p>Non. Les mesures et le rapport sont calculés par Audixio. Nous vous donnons seulement un prompt prêt à coller dans l'assistant IA de votre choix.</p></details>
+          <details><summary>Comment la note est-elle calculée&nbsp;?</summary><p>Chaque domaine est noté sur 100 : A à partir de 90, B à partir de 80, C à partir de 65, D à partir de 50, E à partir de 35, F en dessous.</p></details>
+          <details><summary>Audixio peut-il abîmer mon site&nbsp;?</summary><p>Non. L'analyse est passive par défaut : Audixio lit votre site comme un visiteur. Les tests actifs exigent une preuve de propriété revérifiée juste avant.</p></details>
+        </div>
+      </div>
+    </section>
+    <section class="sec" aria-labelledby="fin" style="padding-top:0">
+      <div class="wrap">
+        <div class="final"><div><h2 id="fin">À vous de rendre la copie.</h2><p style="color:var(--ink-2);margin-top:.5rem">Une minute, gratuit, sans compte.</p></div><a href="#url">Saisir l'adresse de mon site ↑</a></div>
+      </div>
+    </section>
+    <footer>
+      <div class="wrap">
+        <div class="cols">
+          <div><img class="logo-foot" src="../../../apps/web/public/marque/logo-pc.svg" alt="Audixio" width="95" height="30"><p style="margin-top:.6rem;color:var(--ink-2)">Votre site, corrigé comme une copie. Passif par défaut, conçu en France.</p></div>
+          <nav aria-labelledby="f1"><h2 id="f1">Produit</h2><ul><li><a href="/exemple-rapport">Exemple de rapport</a></li><li><a href="/methode">Méthode et barème</a></li><li><a href="/pro">Audixio Pro</a></li></ul></nav>
+          <nav aria-labelledby="f2"><h2 id="f2">Aide</h2><ul><li><a href="/documentation">Documentation</a></li><li><a href="/robot">Le robot Audixio</a></li><li><a href="/contact">Contact</a></li></ul></nav>
+          <nav aria-labelledby="f3"><h2 id="f3">Légal</h2><ul><li><a href="/mentions-legales">Mentions légales</a></li><li><a href="/confidentialite">Confidentialité</a></li><li><a href="/cgu">Conditions</a></li></ul></nav>
+        </div>
+        <p class="legal">© 2026 Audixio · audixio.fr</p>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<aside class="route" aria-hidden="true">
+  <p class="kick"><span>Parcours</span><span>↓ → ↓ ← ↓</span></p>
+  <div class="map">
+    <svg viewBox="0 0 140 110" width="140" height="110"><path class="base" d="M16 8 V30 H124 V52 H16 V100"/><path class="trace" d="M16 8 V30 H124 V52 H16 V100"/>
+      <text x="22" y="16">départ</text><text x="60" y="25">chapitre 1 →</text><text x="40" y="66">← chapitre 2</text><text x="22" y="96">offres</text></svg>
+    <span class="arrow"></span>
+  </div>
+</aside>
+
+<nav class="bottom" aria-label="Navigation principale (mobile)">
+  <a href="/" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v10h-6v-6H9v6H3z"/></svg>Accueil</a>
+  <a href="/methode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 16V9M12 16V5M17 16v-4"/></svg>Méthode</a>
+  <a href="/sites"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M8 21h8"/></svg>Sites suivis</a>
+  <a href="/documentation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h10l4 4v14H5zM9 12h6M9 16h6"/></svg>Documentation</a>
+</nav>
+
+<script>
+(function () {
+  var d = document, r = d.documentElement;
+  d.getElementById('theme').addEventListener('click', function () {
+    var dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    var go = function () { r.dataset.theme = dark ? 'light' : 'dark'; localStorage.setItem('axn-theme', r.dataset.theme); };
+    d.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches ? d.startViewTransition(go) : go();
+  });
+
+  var spots = d.querySelectorAll('.spot'), found = d.getElementById('found');
+  function count() { found.textContent = 'Trouvés : ' + d.querySelectorAll('.spot[aria-pressed="true"]').length + ' sur ' + spots.length; }
+  spots.forEach(function (b) { b.addEventListener('click', function () { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); count(); }); });
+  d.getElementById('reveal').addEventListener('click', function () { spots.forEach(function (b) { b.setAttribute('aria-pressed', 'true'); }); count(); });
+  if (new URLSearchParams(location.search).has('reveal')) d.getElementById('reveal').click();
+
+  d.getElementById('copy').addEventListener('click', function () {
+    var lab = this.querySelector('span');
+    (navigator.clipboard ? navigator.clipboard.writeText(d.getElementById('prompt').textContent) : Promise.reject()).then(function () { lab.textContent = 'Copié !'; }, function () { lab.textContent = 'Sélectionnez le texte'; });
+  });
+
+  /* Repli sans animation-timeline : même parcours, piloté par le défilement. */
+  if (window.CSS && CSS.supports('animation-timeline: view()')) return;
+  var mq = matchMedia('(min-width: 64rem) and (min-height: 38rem) and (prefers-reduced-motion: no-preference)');
+  var tracks = d.querySelectorAll('.track'), route = d.querySelector('.route');
+  function clamp(v) { return Math.max(0, Math.min(1, v)); }
+  function tick() {
+    if (!mq.matches) return;
+    var vh = innerHeight, ps = [];
+    tracks.forEach(function (t) {
+      var b = t.getBoundingClientRect(), p = clamp(-b.top / (b.height - vh)), rail = t.querySelector('.rail'), max = rail.scrollWidth - t.clientWidth;
+      var e = clamp((p - .05) / .9); ps.push(p);
+      rail.style.translate = (t.dataset.dir === 'left' ? -(1 - e) * max : -e * max) + 'px 0';
+      t.querySelector('.piste .line b').style.scale = p + ' 1';
+    });
+    var h = d.querySelector('.hero').getBoundingClientRect(), v = d.querySelector('.virage').getBoundingClientRect(), s = d.querySelector('.suite').getBoundingClientRect();
+    route.style.setProperty('--s1', clamp(-h.top / h.height)); route.style.setProperty('--s2', ps[0]);
+    route.style.setProperty('--s3', clamp((vh - v.top) / (v.height + vh))); route.style.setProperty('--s4', ps[1]);
+    route.style.setProperty('--s5', clamp((vh - s.top) / s.height));
+  }
+  addEventListener('scroll', tick, { passive: true }); addEventListener('resize', tick); tick();
+})();
+</script>
+</body>
+</html>
