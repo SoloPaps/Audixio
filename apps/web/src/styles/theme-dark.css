@@ -1,828 +1,135 @@
-/* Thème sombre : fonds, textes, bordures, ombres et logo. Pas de mise en page. */
-
-html[data-theme="dark"][data-vue],
-html[data-theme="dark"][data-board] {
-  color-scheme: dark;
-  --paper: #12162a;
-  --white: #1c2340;
-  --surface: #1c2340;
-  --solid: #1c2340;
-  --plate: #1c2340;
-  --glass: #1c2340;
-  --ink: #f0f2f5;
-  --ink-2: #c9d0e4;
-  --text: #f0f2f5;
-  --muted: #c5d0ea;
-  --lilac: #1a2144;
-  --navy: #17204a;
-  --navy-2: #0e1535;
-  --line: rgba(173, 187, 218, 0.28);
-  --line-strong: rgba(173, 187, 218, 0.45);
-  --tint: rgba(112, 145, 230, 0.16);
-  --bg: #12162a;
-  --bg1: #12162a;
-  --bg2: #243056;
-  --pill: rgba(169, 187, 243, 0.16);
-  --soft: rgba(169, 187, 243, 0.22);
-  --axn-tx: #f0f2f5;
-  --axn-tx2: #c9d0e4;
-  --axn-sf: #243056;
-  --axn-bd: #3d4d7a;
-  --accent: #d6e2ff;
-  --blue: #a9bbf3;
-  --teal: #a9bbf3;
-  --lav: #c5d0ea;
-  --slate: #c5d0ea;
-  --mist: #b7c3e0;
-  --focus: #d6e2ff;
-  --on-primary: #ffffff;
-  --on-accent: #0b1021;
-  --ok: #8ee4b0;
-  --ok-bg: #123226;
-  --ok-bd: #1f6b45;
-  --warn: #f6c56b;
-  --warn-bg: #3a2a10;
-  --live: #3ddc84;
-  --err: #ffb4ab;
-  --crit: #ffb4ab;
-  --crit-bg: #3a1816;
-  --crit-bd: #8a3a34;
-  --fix: #f6c56b;
-  --fix-bg: #3a2810;
-  --fix-bd: #8a6230;
-  --chk: #ffe08a;
-  --chk-bg: #3a3210;
-  --chk-bd: #8a7430;
-  --minor: #c5d0ea;
-  --own: #9be7f5;
-  --own-bg: #102e36;
-  --own-bd: #2a7a88;
-  --nt: #c5d0ea;
-  --nt-bg: #243056;
-  --nt-bd: #3d4d7a;
-  --score-good: #9ec0ff;
-  --score-good-bg: #1c314c;
-  --score-improve: #f6c56b;
-  --score-improve-bg: #3a2c14;
-  --score-problem: #ffb4ab;
-  --score-problem-bg: #3a2220;
-  --score-untested: #c5d0ea;
-  --score-untested-bg: #243056;
-  --peach-fill: #243056;
-  --on-peach: #f0f2f5;
-  --peach-border: #8ea0c8;
-  --sk: #3a466e;
-}
-
-html[data-theme="dark"][data-vue]
-  :is(
-    body,
-    main,
-    section,
-    article,
-    aside,
-    header,
-    footer,
-    nav,
-    form,
-    table,
-    thead,
-    tbody,
-    tr,
-    blockquote,
-    address,
-    fieldset,
-    figure,
-    div
-  ),
-html[data-theme="dark"][data-board]
-  :is(
-    body,
-    main,
-    section,
-    article,
-    aside,
-    header,
-    footer,
-    nav,
-    form,
-    table,
-    thead,
-    tbody,
-    tr,
-    blockquote,
-    address,
-    fieldset,
-    figure,
-    div
-  ) {
-  background-color: #1c2340;
-  background-image: none;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] :is(body, main, section),
-html[data-theme="dark"][data-board] :is(body, main, section) {
-  background-color: #12162a;
-}
-
-html[data-theme="dark"][data-vue]
-  :is(
-    p,
-    span,
-    a,
-    b,
-    strong,
-    em,
-    small,
-    li,
-    h1,
-    h2,
-    h3,
-    h4,
-    dt,
-    dd,
-    label,
-    cite,
-    legend,
-    figcaption,
-    summary,
-    output
-  ),
-html[data-theme="dark"][data-board]
-  :is(
-    p,
-    span,
-    a,
-    b,
-    strong,
-    em,
-    small,
-    li,
-    h1,
-    h2,
-    h3,
-    h4,
-    dt,
-    dd,
-    label,
-    cite,
-    legend,
-    figcaption,
-    summary,
-    output
-  ) {
-  background-color: transparent;
-  background-image: none;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue]
-  :is(th, td, code, input, textarea, select, button),
-html[data-theme="dark"][data-board]
-  :is(th, td, code, input, textarea, select, button) {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] ::placeholder,
-html[data-theme="dark"][data-board] ::placeholder {
-  color: #c5d0ea;
-  opacity: 1;
-}
-
-html[data-theme="dark"][data-vue] body::before,
-html[data-theme="dark"][data-board] body::before {
-  background-image:
-    radial-gradient(
-      42% 48% at 16% 0%,
-      rgba(112, 145, 230, 0.22),
-      transparent 70%
-    ),
-    radial-gradient(36% 42% at 92% 6%, rgba(61, 82, 160, 0.38), transparent 68%);
-}
-
-html[data-theme="dark"][data-vue] .hero,
-html[data-theme="dark"][data-board] .hero,
-html[data-theme="dark"][data-board="vide"] .hero {
-  background-color: #12162a;
-  background-image:
-    radial-gradient(
-      900px 520px at 12% -8%,
-      rgba(112, 145, 230, 0.32),
-      transparent 62%
-    ),
-    radial-gradient(
-      820px 520px at 92% 2%,
-      rgba(61, 82, 160, 0.45),
-      transparent 60%
-    ),
-    linear-gradient(180deg, #12162a 0%, #1a2144 58%, #12162a 100%);
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .hero :is(.wrap, .hero-copy, .stage),
-html[data-theme="dark"][data-board] .hero :is(.wrap, .hero-copy, .stage) {
-  background-color: transparent;
-  background-image: none;
-}
-
-html[data-theme="dark"][data-vue] .hero::before,
-html[data-theme="dark"][data-board] .hero::before {
-  background-image: radial-gradient(
-    circle at 1px 1px,
-    rgba(173, 187, 218, 0.22) 1px,
-    transparent 0
-  );
-}
-
-html[data-theme="dark"][data-vue] .hero h1,
-html[data-theme="dark"][data-vue] .hero .lead,
-html[data-theme="dark"][data-board] .hero h1,
-html[data-theme="dark"][data-board] .hero .lead {
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] :is(h1 .grad, h1 .u, .grad-txt),
-html[data-theme="dark"][data-board] :is(h1 .grad, h1 .u, .grad-txt) {
-  background-image: linear-gradient(
-    100deg,
-    #d6e2ff 8%,
-    #8eabf5 50%,
-    #d6e2ff 92%
-  );
-  background-color: transparent;
-  color: transparent;
-}
-
-html[data-theme="dark"][data-vue]
-  :is(.pill, .badge-soon, .stp-f, .chip, .tag, .lk-pill),
-html[data-theme="dark"][data-board]
-  :is(.pill, .badge-soon, .stp-f, .chip, .tag, .lk-pill) {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .eyebrow,
-html[data-theme="dark"][data-board] .eyebrow {
-  color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-vue] .eyebrow::before,
-html[data-theme="dark"][data-board] .eyebrow::before {
-  background-color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-vue]
-  :is(.btn-primary, a.btn-primary, .axn-cta, .b-main),
-html[data-theme="dark"][data-board]
-  :is(.btn-primary, a.btn-primary, .axn-cta, .b-main) {
-  background-color: #3d52a0;
-  background-image: none;
-  color: #fff;
-  -webkit-text-fill-color: #fff;
-  border-color: #3d52a0;
-}
-
-html[data-theme="dark"][data-vue] .axn .axn-cta span,
-html[data-theme="dark"][data-board] .axn .axn-cta span {
-  color: #fff;
-  -webkit-text-fill-color: #fff;
-}
-
-html[data-theme="dark"][data-vue]
-  :is(.btn-ghost, .btn-light, a.btn-ghost, a.btn-light),
-html[data-theme="dark"][data-board]
-  :is(.btn-ghost, .btn-light, a.btn-ghost, a.btn-light) {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  -webkit-text-fill-color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] :is(.g-a, .grade.g-a),
-html[data-theme="dark"][data-board] :is(.g-a, .grade.g-a) {
-  background-color: #123226;
-  color: #8ee4b0;
-}
-
-html[data-theme="dark"][data-vue] :is(.g-b, .grade.g-b),
-html[data-theme="dark"][data-board] :is(.g-b, .grade.g-b) {
-  background-color: #243056;
-  color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-vue] :is(.g-c, .grade.g-c),
-html[data-theme="dark"][data-board] :is(.g-c, .grade.g-c) {
-  background-color: #3a2a10;
-  color: #f6c56b;
-}
-
-html[data-theme="dark"][data-vue] :is(.g-d, .grade.g-d),
-html[data-theme="dark"][data-board] :is(.g-d, .grade.g-d) {
-  background-color: #3a2014;
-  color: #ffc2a8;
-}
-
-html[data-theme="dark"][data-vue] :is(.g-e, .grade.g-e),
-html[data-theme="dark"][data-board] :is(.g-e, .grade.g-e) {
-  background-color: #3a1816;
-  color: #ffb4ab;
-}
-
-html[data-theme="dark"][data-vue] .g-track,
-html[data-theme="dark"][data-board] .g-track {
-  stroke: rgba(173, 187, 218, 0.4);
-}
-
-html[data-theme="dark"][data-vue]
-  :is(
-    .dom,
-    .dcard,
-    .window,
-    .gpanel,
-    .card,
-    .panel,
-    .chap,
-    .tile,
-    .plan,
-    .rcard,
-    .pr
-  ),
-html[data-theme="dark"][data-board]
-  :is(
-    .dom,
-    .dcard,
-    .window,
-    .gpanel,
-    .card,
-    .panel,
-    .chap,
-    .tile,
-    .plan,
-    .rcard,
-    .pr
-  ) {
-  background-color: #1c2340;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .di,
-html[data-theme="dark"][data-board] .di {
-  background-color: #243056;
-  color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-vue] .link-action,
-html[data-theme="dark"][data-vue] .link-action:visited,
-html[data-theme="dark"][data-board] .link-action,
-html[data-theme="dark"][data-board] .link-action:visited {
-  color: #d6e2ff;
-  border-color: #8ea0c8;
-  background-color: transparent;
-}
-
-html[data-theme="dark"][data-vue] .axn-logo img,
-html[data-theme="dark"][data-vue] .axf-logo img,
-html[data-theme="dark"][data-board] .axn-logo img,
-html[data-theme="dark"][data-board] .axf-logo img {
-  filter: brightness(0) invert(1);
-}
-
-html[data-theme="dark"][data-vue] .axn-bar,
-html[data-theme="dark"][data-vue] .axn-sheet,
-html[data-theme="dark"][data-vue] .axn-top,
-html[data-theme="dark"][data-board] .axn-bar,
-html[data-theme="dark"][data-board] .axn-sheet,
-html[data-theme="dark"][data-board] .axn-top {
-  background-color: #1c2340;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .axn-links a,
-html[data-theme="dark"][data-vue] .axn-lang a,
-html[data-theme="dark"][data-vue] .axn-lang span,
-html[data-theme="dark"][data-board] .axn-links a,
-html[data-theme="dark"][data-board] .axn-lang a,
-html[data-theme="dark"][data-board] .axn-lang span {
-  color: #c9d0e4;
-}
-
-html[data-theme="dark"][data-vue] .axn-links a[aria-current="page"],
-html[data-theme="dark"][data-vue] .axn-lang [aria-current],
-html[data-theme="dark"][data-board] .axn-links a[aria-current="page"],
-html[data-theme="dark"][data-board] .axn-lang [aria-current] {
-  background-color: #243056;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .axn-sheet ul a:hover,
-html[data-theme="dark"][data-board] .axn-sheet ul a:hover {
-  background-color: #243056;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .axf,
-html[data-theme="dark"][data-board] .axf {
-  color: #c9d0e4;
-}
-
-html[data-theme="dark"][data-vue] .axf-in,
-html[data-theme="dark"][data-board] .axf-in {
-  background-color: #1c2340;
-  background-image: none;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .axf-top,
-html[data-theme="dark"][data-board] .axf-top {
-  border-bottom-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .axf-v,
-html[data-theme="dark"][data-board] .axf-v {
-  background-color: #243056;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue]
-  :is(.axf-about, .axf-bot, .axf-links a, .axf-links a.axf-pro, .footer-note),
-html[data-theme="dark"][data-board]
-  :is(.axf-about, .axf-bot, .axf-links a, .axf-links a.axf-pro, .footer-note) {
-  color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-vue] .stp a[aria-current="step"] .sl b,
-html[data-theme="dark"][data-board] .stp a[aria-current="step"] .sl b,
-html[data-theme="dark"][data-vue] .fict b,
-html[data-theme="dark"][data-board] .fict b {
-  color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-vue] .fict b,
-html[data-theme="dark"][data-board] .fict b {
-  background-color: #243056;
-  border-color: #8ea0c8;
-}
-
-html[data-theme="dark"][data-vue] .cap .st,
-html[data-theme="dark"][data-board] .cap .st {
-  background-color: #243056;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .cap[data-state="wait"],
-html[data-theme="dark"][data-vue] .cap[data-state="off"],
-html[data-theme="dark"][data-board] .cap[data-state="wait"],
-html[data-theme="dark"][data-board] .cap[data-state="off"] {
-  opacity: 1;
-  background-color: #1c2340;
-  background-image: none;
-}
-
-html[data-theme="dark"] body.auth-gate {
-  --bg: #12162a;
-  --card: #1c2340;
-  --input: #243056;
-  --line: #3d4d7a;
-  --text: #f0f2f5;
-  --muted: #c5d0ea;
-  --primary: #d6e2ff;
-  --accent: #d6e2ff;
-  --lav: #c5d0ea;
-  color: #f0f2f5;
-  background-color: #12162a;
-  background-image: none;
-}
-
-html[data-theme="dark"] body.auth-gate :is(button, .btn, [type="submit"]) {
-  background-color: #3d52a0;
-  color: #fff;
-  -webkit-text-fill-color: #fff;
-}
-
-html:root[data-theme="dark"] {
-  color-scheme: dark;
-  --paper: #12162a;
-  --surface: #1c2340;
-  --ink: #f0f2f5;
-  --ink-2: #c5d0ea;
-  --glass: #1c2340;
-  --glass-border: #3d4d7a;
-  --plate: #1c2340;
-  --line: #3d4d7a;
-}
-
-html[data-theme="dark"] .site-bar .glass,
-html[data-theme="dark"] .site-bar .bar-plate,
-html[data-theme="dark"] .axn-lang,
-html[data-theme="dark"] .axn-theme {
-  background-color: #1c2340;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"] button.link-nav,
-html[data-theme="dark"] a.link-nav,
-html[data-theme="dark"] a.link-nav:visited {
-  color: #f0f2f5;
-  background-color: transparent;
-  background-image: none;
-}
-
-html[data-theme="dark"] .axn-logo img,
-html[data-theme="dark"] .axf-logo img,
-html[data-theme="dark"] .auth-card .brand img {
-  filter: brightness(0) invert(1);
-}
-
-/* Conteneurs sans fond propre : pas de rectangle derrière le texte. */
-html[data-theme="dark"][data-vue] :is(div, nav, form, header, figure),
-html[data-theme="dark"][data-board] :is(div, nav, form, header, figure) {
-  background-color: transparent;
-}
-
-html[data-theme="dark"] body.auth-gate .auth-card {
-  background-color: #1c2340;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"] .auth-card .tabs,
-html[data-theme="dark"] .auth-card .sbtn {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"] .auth-card .sbtn svg[fill] {
-  fill: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .mock,
-html[data-theme="dark"][data-board] .mock,
-html[data-theme="dark"][data-vue] .dlg,
-html[data-theme="dark"][data-board] .dlg {
-  background-color: #1c2340;
-  background-image: none;
-  border-color: #3d4d7a;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] :is(.mock-bar, .url, .track),
-html[data-theme="dark"][data-board] :is(.mock-bar, .url, .track) {
-  background-color: #3d4d7a;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #8ea0c8;
-}
-
-html[data-theme="dark"][data-vue] .sk,
-html[data-theme="dark"][data-board] .sk,
-html[data-theme="dark"][data-vue] .mock .logo,
-html[data-theme="dark"][data-board] .mock .logo {
-  background-color: #5c6d9a;
-  background-image: none;
-}
-
-html[data-theme="dark"][data-vue] .fill,
-html[data-theme="dark"][data-board] .fill {
-  background-color: #7091e6;
-  background-image: linear-gradient(90deg, #3d52a0, #7091e6 55%, #d6e2ff);
-}
-
-html[data-theme="dark"][data-vue] .chip,
-html[data-theme="dark"][data-board] .chip,
-html[data-theme="dark"][data-vue] .cap .st,
-html[data-theme="dark"][data-board] .cap .st {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .score-page .reading .share-banner {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .score-page .reading .glass,
-html[data-theme="dark"][data-vue] .verifier-page .vcard,
-html[data-theme="dark"][data-vue] .verifier-page .stamp {
-  background-color: #1c2340;
-  background-image: none;
-  border-color: #3d4d7a;
-  box-shadow: none;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue]
-  .score-page
-  .reading
-  :is(h1, h2, p, li, .kicker, .domain-plain, .domain-num),
-html[data-theme="dark"][data-vue] .verifier-page :is(h1, h2, p, .lead, dt, dd) {
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .score-page .reading .kicker {
-  background-color: #243056;
-  background-image: none;
-}
-
-html[data-theme="dark"][data-vue] .score-page .reading .button,
-html[data-theme="dark"][data-vue] .score-page .reading .link-action {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .verifier-page .crumbs a {
-  background-color: transparent;
-  background-image: none;
-  color: #d6e2ff;
-}
-
-html[data-theme="dark"][data-vue] .score-page .reading .button-secondary,
-html[data-theme="dark"][data-vue] .verifier-page .vcard button {
-  background-color: #3d52a0;
-  background-image: none;
-  color: #fff;
-  border-color: #3d52a0;
-}
-
-html[data-theme="dark"][data-vue] .session-wall,
-html[data-theme="dark"][data-vue] .session-wall.report-message {
-  background-color: #1c2340;
-  background-image: none;
-  border-color: #3d4d7a;
-  box-shadow: none;
-}
-
-@media (max-width: 390px) {
-  html[data-theme="dark"][data-vue] .session-wall,
-  html[data-theme="dark"][data-vue] .session-wall.report-message {
-    background-color: #1c2340;
+/*
+ * Thème sombre : seul fichier qui en définit les couleurs.
+ * Décisions : docs/design/theme-sombre-decisions.md.
+ * Les feuilles claires écrivent var(--d-rôle, couleur claire) : sans ce
+ * fichier, la couleur claire s'applique telle quelle. Ici, chaque rôle reçoit
+ * sa valeur sombre. Couleurs seulement, écran seulement (l'impression reste claire).
+ */
+
+/* Icône soleil masquée par chrome.css quand il est chargé (pas sur les écrans de connexion). */
+html[data-theme="dark"] {
+  --axn-sun-display: none;
+}
+
+@media screen {
+  html[data-theme="dark"] {
+    color-scheme: dark;
+    background-color: var(--d-bg);
+
+    /* Plans, du plus profond au plus haut. */
+    --d-bg: #0b0f20;
+    --d-sf: #1b2347;
+    --d-sf2: #242e58;
+    --d-sf3: #2e3a68;
+    --d-inv: #26306a;
+    --d-gl: rgb(27 35 71 / 0.95);
+
+    /* Traits. */
+    --d-ln: #38467c;
+    --d-ln2: #5d6da6;
+
+    /* Texte et accents. */
+    --d-tx: #eeebf8;
+    --d-mu: #b6bfdc;
+    --d-ac: #a9bdf6;
+    --d-ic: #8fa9f1;
+    --d-lv: #c9c0f2;
+    --d-cta: #4760c2;
+    --d-cta2: #5670cf;
+    --d-t1: rgb(143 169 241 / 0.1);
+    --d-t2: rgb(143 169 241 / 0.18);
+    --d-hl: rgb(255 255 255 / 0.06);
+
+    /* Statuts : texte, fond, bordure. */
+    --d-ok: #86e0b0;
+    --d-okb: #11301f;
+    --d-okd: #2b7a52;
+    --d-er: #ffaba1;
+    --d-erb: #3b1a1d;
+    --d-erd: #8f3a3a;
+    --d-or: #ffb98c;
+    --d-orb: #3a2214;
+    --d-ord: #9a5a2e;
+    --d-wa: #f4cd6f;
+    --d-wab: #342a10;
+    --d-wad: #8a6a24;
+    --d-in: #8fdcef;
+    --d-inb: #0f2c37;
+    --d-ind: #2d7487;
+
+    /* tokens.css garde ses valeurs claires en dur : on les relaie ici. */
+    --paper: var(--d-bg);
+    --surface: var(--d-sf);
+    --ink: var(--d-tx);
+    --ink-2: var(--d-mu);
+    --line: var(--d-ln);
+    --accent: var(--d-ac);
+    --on-accent: var(--d-bg);
+    --score-good: var(--d-ac);
+    --score-good-bg: var(--d-sf3);
+    --score-improve: var(--d-wa);
+    --score-improve-bg: var(--d-wab);
+    --score-problem: var(--d-er);
+    --score-problem-bg: var(--d-erb);
+    --score-untested: var(--d-mu);
+    --score-untested-bg: var(--d-sf2);
+    --wash-top: var(--d-bg);
+    --wash-bottom: var(--d-bg);
+    --glass: var(--d-gl);
+    --glass-border: rgb(255 255 255 / 0.18);
+    --shadow-float: 0 18px 48px rgb(0 0 0 / 0.35);
+    --plate: var(--d-sf);
+    --blob-opacity-petrol: 0.18;
+    --blob-opacity-peach: 0.18;
+    --blob-opacity-lilac: 0.18;
+  }
+
+  /* Logos : tracé marine du clair, passé en blanc. */
+  html[data-theme="dark"] :is(.axn-logo, .axf-logo, .auth-card .brand) img,
+  html[data-theme="dark"][data-vue="pdf"] .cov-top img {
+    filter: brightness(0) invert(1);
+  }
+
+  /* Textes indicatifs des champs : pleine opacité, sinon trop pâles sur fond sombre. */
+  html[data-theme="dark"][data-vue] ::placeholder,
+  html[data-theme="dark"][data-board] ::placeholder {
+    color: var(--d-mu);
+    opacity: 1;
+  }
+
+  /* Étapes en attente ou coupées : même lisibilité que les autres, fond opaque. */
+  html[data-theme="dark"]:is([data-vue], [data-board])
+    .cap:is([data-state="wait"], [data-state="off"]) {
+    opacity: 1;
+    background-color: var(--d-sf);
     background-image: none;
   }
-}
 
-html[data-theme="dark"][data-vue] .session-wall :is(h1, p, .lede) {
-  color: #f0f2f5;
-}
+  /* Surtitres de section : second ton, lavande. */
+  html[data-theme="dark"] :is(.kicker, .fin2-k, .s-head .eyebrow) {
+    color: var(--d-lv);
+  }
 
-/* B1 : fonds de la fenêtre visiteur, spécificité > filet :is(div).
-   Le détail (textes, boutons) est dans theme-dark-qa.css, hors graphe d’accueil. */
-html[data-theme="dark"][data-vue] .gg-root .gg-veil,
-html[data-theme="dark"][data-board] .gg-root .gg-veil {
-  background-color: rgba(18, 22, 42, 0.8);
-  background-image: none;
-}
+  /* Aperçu du badge : il s'affichera sur un site clair, la scène reste claire. */
+  html[data-theme="dark"][data-vue="badge"] .stage {
+    background-color: #fff;
+    background-image: repeating-linear-gradient(
+      45deg,
+      #f7f5fc 0 12px,
+      #fff 12px 24px
+    );
+    border-color: #8ea0c8;
+  }
+  html[data-theme="dark"][data-vue="badge"] .stage a > span {
+    color: inherit;
+  }
 
-html[data-theme="dark"][data-vue] .gg-root .gg,
-html[data-theme="dark"][data-board] .gg-root .gg {
-  background-color: #1c2340;
-  background-image: none;
-  border-color: #3d4d7a;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .cap,
-html[data-theme="dark"][data-board] .cap {
-  background-color: #1c2340;
-  background-image: none;
-  border-color: #3d4d7a;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .cap[data-state="active"],
-html[data-theme="dark"][data-board] .cap[data-state="active"] {
-  background-color: #243056;
-  background-image: none;
-  border-color: #7091e6;
-}
-
-html[data-theme="dark"][data-vue] .btn-ghost,
-html[data-theme="dark"][data-board] .btn-ghost {
-  background-color: transparent;
-  background-image: none;
-  color: #d6e2ff;
-  border-color: #8ea0c8;
-}
-
-/* Les maquettes forcent un dégradé clair sur le hero, après ce fichier. */
-html[data-theme="dark"][data-vue] :is(.khero, .bv-hero, .head),
-html[data-theme="dark"][data-board] :is(.khero, .head) {
-  background-color: #12162a !important;
-  background-image:
-    radial-gradient(
-      40% 70% at 0% 0%,
-      rgba(112, 145, 230, 0.28),
-      transparent 70%
-    ),
-    radial-gradient(
-      34% 60% at 100% 100%,
-      rgba(61, 82, 160, 0.42),
-      transparent 72%
-    ),
-    linear-gradient(180deg, #1a2144, #12162a) !important;
-  border-color: #3d4d7a !important;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] :is(.aurora, .blobs),
-html[data-theme="dark"][data-board] :is(.aurora, .blobs) {
-  background-color: transparent !important;
-  background-image:
-    radial-gradient(
-      42% 60% at 0% 0%,
-      rgba(112, 145, 230, 0.22),
-      transparent 70%
-    ),
-    radial-gradient(
-      36% 55% at 100% 100%,
-      rgba(61, 82, 160, 0.28),
-      transparent 72%
-    ),
-    linear-gradient(180deg, rgba(18, 22, 42, 0.2), rgba(18, 22, 42, 0)) !important;
-}
-
-html[data-theme="dark"][data-vue] .gpanel,
-html[data-theme="dark"][data-board] .gpanel {
-  background-color: #1c2340;
-  background-image: linear-gradient(
-    160deg,
-    rgba(36, 48, 86, 0.94),
-    rgba(28, 35, 64, 0.88)
-  );
-  border-color: #3d4d7a;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .khero .eyebrow,
-html[data-theme="dark"][data-board] .khero .eyebrow,
-html[data-theme="dark"][data-vue] .bv-hero .eyebrow {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .qnav a,
-html[data-theme="dark"][data-board] .qnav a {
-  background-color: #243056;
-  background-image: none;
-  color: #f0f2f5;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .av span,
-html[data-theme="dark"][data-board] .av span {
-  background-color: #243056;
-  background-image: none;
-  color: #d6e2ff;
-  border-color: #3d4d7a;
-}
-
-html[data-theme="dark"][data-vue] .step,
-html[data-theme="dark"][data-board] .step {
-  background-color: #1c2340 !important;
-  background-image: linear-gradient(180deg, #243056, #1c2340) !important;
-  border-color: #3d4d7a !important;
-  color: #f0f2f5;
-}
-
-html[data-theme="dark"][data-vue] .kicker,
-html[data-theme="dark"][data-vue] .card a:not(.axn-cta),
-html[data-theme="dark"][data-vue] .chap a:not(.axn-cta),
-html[data-theme="dark"][data-vue] .eco-line,
-html[data-theme="dark"][data-vue] .eco-line a,
-html[data-theme="dark"][data-board] .kicker,
-html[data-theme="dark"][data-board] .card a:not(.axn-cta),
-html[data-theme="dark"][data-board] .chap a:not(.axn-cta),
-html[data-theme="dark"][data-board] .eco-line,
-html[data-theme="dark"][data-board] .eco-line a {
-  color: #d6e2ff;
-}
-
-/* QA visuels : barres du menu, présentes sur chaque page. */
-html[data-theme="dark"] .axn-burger i b {
-  background-color: currentColor;
-}
-html[data-theme="dark"][data-vue="brief"] .mdbody :is(.l-b, .l-d) {
-  color: var(--pv-text);
+  /* Écran étroit : l'encart hors session devient opaque, le texte reste lisible. */
+  @media (max-width: 390px) {
+    html[data-theme="dark"][data-vue] .session-wall,
+    html[data-theme="dark"][data-vue] .session-wall.report-message {
+      background-color: var(--d-sf);
+      background-image: none;
+    }
+  }
 }

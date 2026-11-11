@@ -50,22 +50,25 @@ const PETAL: Record<string, string> = {
   E: '#E1763F',
   F: '#D64545',
 };
+const d = (role: string, light: string): string => `var(--d-${role}, ${light})`;
 const INK: Record<string, string> = {
-  A: '#065F3A',
-  B: '#2B3B85',
-  C: '#8A4B08',
-  D: '#A23B0A',
-  E: '#A23B0A',
-  F: '#9B1C1C',
+  A: d('ok', '#065F3A'),
+  B: d('ac', '#2B3B85'),
+  C: d('wa', '#8A4B08'),
+  D: d('or', '#A23B0A'),
+  E: d('or', '#A23B0A'),
+  F: d('er', '#9B1C1C'),
 };
 const TINT: Record<string, string> = {
-  A: '#D6F2E3',
-  B: '#DDE4F8',
-  C: '#FBE8C8',
-  D: '#fadbc9',
-  E: '#fadbc9',
-  F: '#F8D4D4',
+  A: d('okb', '#D6F2E3'),
+  B: d('sf3', '#DDE4F8'),
+  C: d('wab', '#FBE8C8'),
+  D: d('orb', '#fadbc9'),
+  E: d('orb', '#fadbc9'),
+  F: d('erb', '#F8D4D4'),
 };
+/* Un attribut de présentation SVG ignore var() : la couleur de rôle passe par style. */
+const PAINT = new Set(['fill', 'stroke', 'stop-color', 'flood-color']);
 
 function clamp(v: number, a: number, b: number): number {
   return Math.max(a, Math.min(b, v));
@@ -94,9 +97,17 @@ function el(
   parent?: Element,
 ): SVGElement {
   const node = document.createElementNS(NS, name);
+  let paint = '';
   for (const [key, value] of Object.entries(attrs)) {
-    node.setAttribute(key, String(value));
+    const text = String(value);
+    const role = PAINT.has(key)
+      ? /^var\(--d-[a-z0-9]+, (.+)\)$/.exec(text)
+      : null;
+    node.setAttribute(key, role?.[1] ?? text);
+    if (role) paint += `${key}:${text};`;
   }
+  if (paint)
+    node.setAttribute('style', paint + (node.getAttribute('style') ?? ''));
   parent?.appendChild(node);
   return node;
 }
@@ -129,8 +140,8 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     { id: 'gLetter', x1: '0', y1: '0', x2: '1', y2: '1' },
     defs,
   );
-  el('stop', { offset: '0', 'stop-color': '#2B3B85' }, lg);
-  el('stop', { offset: '1', 'stop-color': '#7091E6' }, lg);
+  el('stop', { offset: '0', 'stop-color': d('ac', '#2B3B85') }, lg);
+  el('stop', { offset: '1', 'stop-color': d('ic', '#7091E6') }, lg);
   for (const key of Object.keys(GRGB)) {
     const q = el(
       'linearGradient',
@@ -149,11 +160,19 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     { id: 'gDisc', cx: '.5', cy: '.4', r: '.7' },
     defs,
   );
-  el('stop', { offset: '0', 'stop-color': '#fff', 'stop-opacity': '.95' }, rg);
-  el('stop', { offset: '.7', 'stop-color': '#fff', 'stop-opacity': '.75' }, rg);
   el(
     'stop',
-    { offset: '1', 'stop-color': '#EDE8F5', 'stop-opacity': '.85' },
+    { offset: '0', 'stop-color': d('sf2', '#fff'), 'stop-opacity': '.95' },
+    rg,
+  );
+  el(
+    'stop',
+    { offset: '.7', 'stop-color': d('sf2', '#fff'), 'stop-opacity': '.75' },
+    rg,
+  );
+  el(
+    'stop',
+    { offset: '1', 'stop-color': d('sf', '#EDE8F5'), 'stop-opacity': '.85' },
     rg,
   );
   const fl = el(
@@ -167,7 +186,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       dx: 0,
       dy: 6,
       stdDeviation: 9,
-      'flood-color': '#3D52A0',
+      'flood-color': d('bg', '#3D52A0'),
       'flood-opacity': '.24',
     },
     fl,
@@ -185,7 +204,10 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
           cy: C,
           r,
           fill: 'none',
-          stroke: `rgba(61,82,160,${v === 100 ? 0.3 : 0.16})`,
+          stroke:
+            v === 100
+              ? d('ln2', 'rgba(61,82,160,0.3)')
+              : d('ln', 'rgba(61,82,160,0.16)'),
           'stroke-width': 1,
           'stroke-dasharray': v === 100 ? 'none' : '3 5',
         },
@@ -214,7 +236,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       cy: C,
       r: RMAX + 9,
       fill: 'none',
-      stroke: 'rgba(61,82,160,.32)',
+      stroke: d('ln2', 'rgba(61,82,160,.32)'),
       'stroke-width': 1.2,
       'stroke-dasharray': '2 9',
       'stroke-linecap': 'round',
@@ -283,7 +305,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
           'circle',
           {
             r: 4.6,
-            fill: '#fff',
+            fill: d('sf', '#fff'),
             stroke: PETAL[grd] ?? '#7091E6',
             'stroke-width': 2.4,
           },
@@ -301,7 +323,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
         'font-family': 'JetBrains Mono, monospace',
         'font-weight': 700,
         'font-size': 20,
-        fill: grd ? (INK[grd] ?? '#4A5585') : '#4A5585',
+        fill: (grd && INK[grd]) || d('mu', '#4A5585'),
       },
       gr,
     );
@@ -353,7 +375,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       y1: C,
       x2: C + RMAX + 14,
       y2: C,
-      stroke: '#3D52A0',
+      stroke: d('ic', '#3D52A0'),
       'stroke-width': 2,
       'stroke-linecap': 'round',
     },
@@ -369,7 +391,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       r: RIN - 6,
       fill: 'url(#gDisc)',
       filter: 'url(#fSh)',
-      stroke: 'rgba(255,255,255,.95)',
+      stroke: d('ln', 'rgba(255,255,255,.95)'),
       'stroke-width': 2,
     },
     disc,
@@ -381,7 +403,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       cy: C,
       r: RIN - 4.5,
       fill: 'none',
-      stroke: 'rgba(61,82,160,.14)',
+      stroke: d('ln', 'rgba(61,82,160,.14)'),
       'stroke-width': 1,
     },
     disc,
@@ -393,7 +415,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
       cy: C,
       r: RIN - 15,
       fill: 'none',
-      stroke: 'rgba(61,82,160,.18)',
+      stroke: d('ln', 'rgba(61,82,160,.18)'),
       'stroke-dasharray': '2 5',
     },
     disc,
@@ -475,9 +497,9 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     if (!card || card.score !== null) {
       const gr = card ? (card.grade ?? '–') : G;
       cGrade.textContent = gr;
-      cGrade.setAttribute(
+      cGrade.style.setProperty(
         'fill',
-        card ? (INK[gr] ?? '#4A5585') : 'url(#gLetter)',
+        card ? (INK[gr] ?? d('mu', '#4A5585')) : 'url(#gLetter)',
       );
       cScore.textContent =
         card?.score != null
@@ -487,7 +509,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
             : text.untested;
     } else {
       cGrade.textContent = '—';
-      cGrade.setAttribute('fill', '#8697C4');
+      cGrade.style.setProperty('fill', '#8697C4');
       cScore.textContent = text.untested;
     }
     pop(cGrade);
@@ -515,7 +537,7 @@ export function rose(host: HTMLElement, input: RoseInput): { destroy(): void } {
     prog = prog.map(() => 1);
     sweepO = 0;
     done = true;
-    cGrade.setAttribute('fill', 'url(#gLetter)');
+    cGrade.style.setProperty('fill', 'url(#gLetter)');
     cGrade.textContent = G;
     cScore.textContent = scored ? `${g}/100` : text.untested;
     cLabel.textContent = LABEL;

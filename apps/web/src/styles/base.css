@@ -30,7 +30,7 @@ body {
   inset-block-start: var(--space-4);
   transform: translateY(calc(-100% - var(--space-6)));
   z-index: 2;
-  background: var(--accent);
+  background: var(--d-cta2, var(--accent));
   color: var(--on-accent);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-md);
@@ -294,7 +294,7 @@ a:visited {
 }
 
 .button-primary {
-  background: var(--accent);
+  background: var(--d-cta2, var(--accent));
   color: var(--on-accent);
 }
 

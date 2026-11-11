@@ -1,5 +1,5 @@
 ---
-import '../styles/maquettes/theme-dark-extra.css';
+import '../styles/maquettes/liens.css';
 import '../styles/maquettes/robot.css';
 import { t } from '../i18n/index.js';
 import Canon from '../layouts/Canon.astro';
@@ -24,7 +24,7 @@ const messages = {
 <h1 class="rv">{t('mq.lg.097')}</h1>
 <p class="lede rv">{t('mq.lg.420')}</p>
 <div class="meta rv"><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>{t('mq.lg.007')}<time datetime="2026-10-30">{t('mq.lg.421')}</time>{t('mq.lg.009')}</span></span><span class="badge b-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.lg.422')}</span></div></div>
-<div class="emblem" aria-hidden="true"><svg viewBox="0 0 300 300"><defs><radialGradient id="halo"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#DDE4F8" stop-opacity=".15"/></radialGradient></defs>
+<div class="emblem" aria-hidden="true"><svg viewBox="0 0 300 300"><defs><radialGradient id="halo"><stop offset="0" stop-color="#fff" style="stop-color:var(--d-sf2, #fff)" stop-opacity=".95"/><stop offset="1" stop-color="#DDE4F8" style="stop-color:var(--d-sf, #DDE4F8)" stop-opacity=".15"/></radialGradient></defs>
 <circle class="halo" cx="150" cy="150" r="128"/><circle class="ring" cx="150" cy="150" r="128"/><circle class="ring" cx="150" cy="150" r="96" stroke-dasharray="3 7"/>
 <g class="orb"><circle cx="150" cy="22" r="6"/><circle cx="278" cy="150" r="4" opacity=".6"/></g><g class="floaty"><path class="draw" d="M150 66v168M98 234h104M86 100h128"/><path class="draw b" d="M108 100l-28 58a28 28 0 0 0 56 0zM192 100l-28 58a28 28 0 0 0 56 0z"/></g></svg></div></div>
 <section aria-labelledby="recap"><h2 id="recap" class="sr-only">{t('mq.lg.011')}</h2><div class="grid2 recap" data-stagger>

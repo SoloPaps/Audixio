@@ -1,5 +1,5 @@
 ---
-import '../styles/maquettes/theme-dark-extra.css';
+import '../styles/maquettes/liens.css';
 import '../styles/maquettes/confidentialite.css';
 import { t } from '../i18n/index.js';
 import Canon from '../layouts/Canon.astro';
@@ -14,7 +14,7 @@ import Canon from '../layouts/Canon.astro';
 <h1 class="rv">{t('mq.lg.110')}</h1>
 <p class="lede rv">{t('mq.lg.175')}</p>
 <div class="meta rv"><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16M6 20h12M5 8h14M7 8l-3 6a3 3 0 0 0 6 0zM17 8l-3 6a3 3 0 0 0 6 0z"/></svg>{t('mq.lg.176')}</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>{t('mq.lg.115')}<time datetime="2026-10-27">{t('mq.lg.177')}</time></span></span><span class="badge b-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('mq.lg.178')}</span></div></div>
-<div class="emblem" aria-hidden="true"><svg viewBox="0 0 300 300"><defs><radialGradient id="halo"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#DDE4F8" stop-opacity=".15"/></radialGradient></defs>
+<div class="emblem" aria-hidden="true"><svg viewBox="0 0 300 300"><defs><radialGradient id="halo"><stop offset="0" stop-color="#fff" style="stop-color:var(--d-sf2, #fff)" stop-opacity=".95"/><stop offset="1" stop-color="#DDE4F8" style="stop-color:var(--d-sf, #DDE4F8)" stop-opacity=".15"/></radialGradient></defs>
 <circle class="halo" cx="150" cy="150" r="128"/><circle class="ring" cx="150" cy="150" r="128"/><circle class="ring" cx="150" cy="150" r="96" stroke-dasharray="3 7"/>
 <g class="orb"><circle cx="150" cy="22" r="6"/><circle cx="278" cy="150" r="4" opacity=".6"/></g><g class="floaty"><path class="draw" d="M150 70l62 24v46c0 36-26 66-62 74-36-8-62-38-62-74V94z"/><path class="draw b" d="M124 146l18 18 36-38"/></g></svg></div></div>
 <div class="stats" data-stagger aria-label={t('mq.lg.179')}>

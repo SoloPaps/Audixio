@@ -10,8 +10,9 @@ type View = {
   getComputedStyle: (node: unknown) => Record<string, string>;
 };
 
-const CARD = 'rgb(28, 35, 64)';
-const LINE = 'rgb(61, 77, 122)';
+const CARD = 'rgb(27, 35, 71)';
+const LINE = 'rgb(56, 70, 124)';
+const RAISED = 'rgb(46, 58, 104)';
 
 async function css(locator: Locator, prop: string): Promise<string> {
   await locator.scrollIntoViewIfNeeded();
@@ -40,26 +41,26 @@ test('accueil sombre : cartes, étapes, constats et panneau Confiance', async ({
   expect(await css(card, 'borderTopColor')).toBe(LINE);
   expect(
     await css(page.locator('.lcards .ic').first(), 'backgroundColor'),
-  ).toBe('rgb(35, 44, 80)');
+  ).toBe(RAISED);
   // Étapes « En pratique » : ouvertes comme en clair, pas de bloc collé au texte.
   const step = page.locator('.steps .step').first();
   expect(await css(step, 'backgroundColor')).toBe('rgba(0, 0, 0, 0)');
   expect(await css(step, 'backgroundImage')).toBe('none');
   // Panneau Confiance : un plan au-dessus du fond de page.
   const panel = page.locator('.section.dark').first();
-  expect(await css(panel, 'backgroundColor')).toBe('rgb(23, 29, 56)');
+  expect(await css(panel, 'backgroundColor')).toBe('rgb(38, 48, 106)');
   const body = await css(page.locator('body'), 'backgroundColor');
   expect(await css(panel, 'backgroundColor')).not.toBe(body);
   // Constats de l’aperçu : vert et ambre, pas de texte nu.
   expect(await css(page.locator('.find.ok'), 'backgroundColor')).toBe(
-    'rgb(18, 50, 38)',
+    'rgb(17, 48, 31)',
   );
   expect(await css(page.locator('.find.warn'), 'backgroundColor')).toBe(
-    'rgb(58, 42, 16)',
+    'rgb(52, 42, 16)',
   );
   // Plus d’un seul bleu : les libellés de section passent en lilas.
   expect(await css(page.locator('.s-head .eyebrow').first(), 'color')).toBe(
-    'rgb(199, 184, 255)',
+    'rgb(201, 192, 242)',
   );
 });
 
@@ -87,7 +88,7 @@ test('sombre : méthode, exemple et demande d’accès suivent le modèle de car
 
   await open(page, '/exemple-rapport?theme=dark');
   expect(await css(page.locator('.cst .seg').first(), 'backgroundColor')).toBe(
-    'rgb(35, 44, 80)',
+    RAISED,
   );
   expect(await css(page.locator('.fin2-viz'), 'backgroundColor')).toBe(CARD);
   expect(await css(page.locator('.fin2'), 'borderTopColor')).toBe(LINE);

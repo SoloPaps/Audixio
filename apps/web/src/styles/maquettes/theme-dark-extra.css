@@ -1,8 +1,0 @@
-/*
- * Palette, liens et règles sombres des vues hors accueil.
- * Non importé par l’accueil : le graphe de poids (parcours.spec, 500 Ko)
- * reste sous la limite. L’accueil a ses couleurs dans accueil.css.
- */
-@import "./theme-dark-pages.css";
-@import "./theme-dark-palette.css";
-@import "./liens.css";

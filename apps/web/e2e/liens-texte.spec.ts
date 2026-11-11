@@ -46,7 +46,7 @@ for (const theme of ['light', 'dark'] as const) {
       expect(rest.thickness).toBe('1px');
       expect(rest.offset).not.toBe('auto');
       expect(rest.tint).not.toBe(rest.color);
-      if (theme === 'dark') expect(rest.color).toBe('rgb(169, 193, 255)');
+      if (theme === 'dark') expect(rest.color).toBe('rgb(169, 189, 246)');
       await link.hover();
       await expect.poll(async () => (await style(link)).thickness).toBe('2px');
     });
@@ -64,6 +64,6 @@ test('inscription sombre : les liens CGU se distinguent du texte', async ({
     return (globalThis as unknown as View).getComputedStyle(parent).color ?? '';
   });
   const rest = await style(link);
-  expect(rest.color).toBe('rgb(169, 193, 255)');
+  expect(rest.color).toBe('rgb(169, 189, 246)');
   expect(rest.color).not.toBe(text);
 });

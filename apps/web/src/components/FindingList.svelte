@@ -717,7 +717,7 @@ async function copyCode(finding: Finding): Promise<void> {
   }
 
   .brief-choice input:checked + .mark-box {
-    background: var(--accent);
+    background: var(--d-cta2, var(--accent));
     border-color: var(--accent);
   }
 
@@ -736,7 +736,7 @@ async function copyCode(finding: Finding): Promise<void> {
     width: 0.625rem;
     height: 0.625rem;
     border-radius: var(--radius-pill);
-    background: var(--accent);
+    background: var(--d-cta2, var(--accent));
   }
 
   .brief-choice input:focus-visible + .mark {
