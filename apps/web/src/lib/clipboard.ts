@@ -4,8 +4,33 @@
  * une adresse locale du réseau, refus du navigateur, API absente) un repli
  * par zone de texte et `execCommand('copy')`, encore accepté pendant le clic.
  */
+/** Types minimaux : le typage racine n'inclut pas le DOM. */
+interface Focusable {
+  focus?: (options?: { preventScroll?: boolean }) => void;
+}
+interface Area extends Focusable {
+  value: string;
+  style: { cssText: string };
+  setAttribute: (name: string, value: string) => void;
+  select: () => void;
+  setSelectionRange: (start: number, end: number) => void;
+  remove: () => void;
+}
+interface Doc {
+  body?: { append: (node: Area) => void } | null;
+  activeElement?: Focusable | null;
+  createElement: (tag: 'textarea') => Area;
+  execCommand: (command: 'copy') => boolean;
+}
+interface Host {
+  navigator?: { clipboard?: { writeText?: (text: string) => Promise<void> } };
+  document?: Doc;
+}
+
+const host = (): Host => globalThis as unknown as Host;
+
 export async function copyText(text: string): Promise<boolean> {
-  const clip = globalThis.navigator?.clipboard;
+  const clip = host().navigator?.clipboard;
   if (clip?.writeText) {
     try {
       await clip.writeText(text);
@@ -19,20 +44,21 @@ export async function copyText(text: string): Promise<boolean> {
 
 /** Repli sans API : zone de texte invisible, sélection, copie, nettoyage. */
 export function legacyCopy(text: string): boolean {
-  if (typeof document === 'undefined' || !document.body) return false;
-  const active = document.activeElement as HTMLElement | null;
-  const area = document.createElement('textarea');
+  const doc = host().document;
+  if (!doc?.body) return false;
+  const active = doc.activeElement ?? null;
+  const area = doc.createElement('textarea');
   area.value = text;
   area.setAttribute('readonly', '');
   area.setAttribute('aria-hidden', 'true');
   area.style.cssText =
     'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;pointer-events:none';
-  document.body.append(area);
+  doc.body.append(area);
   area.select();
   area.setSelectionRange(0, text.length);
   let ok = false;
   try {
-    ok = document.execCommand('copy');
+    ok = doc.execCommand('copy');
   } catch {
     ok = false;
   }
