@@ -95,13 +95,11 @@ test('la barre étroite ne coupe pas la marque, le menu ni le thème', async ({
 
 test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => {
   await page.goto('/methode');
-  const bar = page.getByRole('navigation', { name: 'Pages' });
+  const bar = page.getByRole('navigation', { name: 'Navigation principale' });
   const method = bar.getByRole('link', { name: 'Méthode' });
-  await expect(method).toHaveClass(/link-nav/);
   await expect(method).toHaveAttribute('aria-current', 'page');
-  await expect(method).toHaveCSS('text-decoration-line', /underline/);
-  const login = bar.getByRole('link', { name: 'Connexion' });
-  await expect(login).toHaveClass(/link-nav/);
+  await expect(method).toHaveCSS('text-decoration-line', 'none');
+  const login = page.locator('.axn-bar .axn-cta');
   await expect(login).toHaveCSS('text-decoration-line', 'none');
 
   const footer = page
