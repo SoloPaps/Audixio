@@ -98,6 +98,43 @@ function translate(original: string, dict: Map<string, string>): string {
   return hit ? `${match[1]}${hit}${match[3]}` : original;
 }
 
+function storedAttr(el: Element, attr: string, current: string): string {
+  const store = `data-ax-${attr}`;
+  const done = `data-ax-done-${attr}`;
+  if (
+    !el.hasAttribute(store) ||
+    (el.hasAttribute(done) && current !== el.getAttribute(done))
+  ) {
+    if (el.getAttribute(store) !== current) el.setAttribute(store, current);
+  }
+  return el.getAttribute(store) ?? '';
+}
+
+function paintMeta(
+  selector: string,
+  attr: string,
+  locale: 'fr' | 'en',
+  dict: Map<string, string> | null,
+): void {
+  if (typeof document.querySelector !== 'function') return;
+  const el = document.querySelector(selector);
+  if (!el) return;
+  const current = el.getAttribute(attr) ?? '';
+  const original = storedAttr(el, attr, current);
+  const next = locale === 'en' && dict ? translate(original, dict) : original;
+  if (el.getAttribute(attr) !== next) el.setAttribute(attr, next);
+  const done = `data-ax-done-${attr}`;
+  if (el.getAttribute(done) !== next) el.setAttribute(done, next);
+}
+
+function paintLocale(locale: 'fr' | 'en'): void {
+  if (typeof document.querySelector !== 'function') return;
+  const og = document.querySelector('meta[property="og:locale"]');
+  if (!og) return;
+  const next = locale === 'en' ? 'en_US' : 'fr_FR';
+  if (og.getAttribute('content') !== next) og.setAttribute('content', next);
+}
+
 function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
   const root = document.body;
   if (!root) return;
@@ -162,6 +199,9 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
   if (document.title !== title) document.title = title;
   titleDone = title;
   document.documentElement.lang = locale;
+  paintMeta('meta[name="description"]', 'content', locale, dict);
+  paintMeta('meta[property="og:description"]', 'content', locale, dict);
+  paintLocale(locale);
   painting = false;
   // Le saut natif vers #ancre se fait avant la traduction : on le refait une fois.
   if (locale === 'en' && !anchored) {

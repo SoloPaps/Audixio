@@ -67,8 +67,14 @@ const canonical = Astro.url.pathname || '/';
     <meta name="description" content={description} />
     {robots ? <meta name="robots" content={robots} /> : null}
     <meta name="referrer" content="no-referrer" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#EDE8F5" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#F3F5F8"
+      data-light="#F3F5F8"
+      data-dark="#06090D"
+    />
+    <meta property="og:locale" content="fr_FR" />
     <link rel="canonical" href={canonical} />
     <script is:inline src="/theme-init.js"></script>
     <script is:inline>
