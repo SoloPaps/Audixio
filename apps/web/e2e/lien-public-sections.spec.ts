@@ -153,11 +153,16 @@ test('lien public EN : les sections suivent le catalogue anglais', async ({
 test('lien public 390 px : cartes sans débordement', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/score/exemple-score-verifie?theme=dark');
-  const overflow = await page.evaluate(
-    () =>
-      document.documentElement.scrollWidth -
-      document.documentElement.clientWidth,
-  );
+  const overflow = await page.evaluate(() => {
+    const root = (
+      globalThis as unknown as {
+        document: {
+          documentElement: { scrollWidth: number; clientWidth: number };
+        };
+      }
+    ).document.documentElement;
+    return root.scrollWidth - root.clientWidth;
+  });
   expect(overflow).toBeLessThanOrEqual(0);
   for (const card of await page.locator('.pub-more .pub-card').all()) {
     const box = await card.boundingBox();

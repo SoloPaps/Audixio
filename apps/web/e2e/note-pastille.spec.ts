@@ -23,14 +23,21 @@ function luminance([r, g, b]: Rgb): number {
 }
 
 function contrast(a: string, b: string): number {
-  const [hi, lo] = [luminance(rgb(a)), luminance(rgb(b))].sort((x, y) => y - x);
+  const one = luminance(rgb(a));
+  const two = luminance(rgb(b));
+  const hi = Math.max(one, two);
+  const lo = Math.min(one, two);
   return (hi + 0.05) / (lo + 0.05);
 }
 
 async function paint(locator: Locator) {
   return locator.evaluate((node) => {
     const view = globalThis as unknown as {
-      getComputedStyle: (n: unknown) => Record<string, string>;
+      getComputedStyle: (n: unknown) => {
+        color: string;
+        backgroundColor: string;
+        stroke: string;
+      };
     };
     const style = view.getComputedStyle(node);
     const rect = (
