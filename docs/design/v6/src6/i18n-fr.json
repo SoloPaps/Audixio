@@ -1,0 +1,1 @@
+{"theme": {"toLight": "Passer en thème clair", "toDark": "Passer en thème sombre"}, "scan": {"running": "Analyse en cours…", "done": "Analyse terminée"}, "domains": {"hud": "{n} / {t}"}, "game": {"count": "{n} / 4 trouvés", "all": "4 / 4 : bravo, comme le scanner"}, "dock": {"open": "Afficher les sections", "close": "Masquer les sections", "pos": "{n} / {t}"}}

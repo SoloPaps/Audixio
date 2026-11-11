@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audixio : audit de site web gratuit, noté de A à F</title>
+<meta name="description" content="Audixio passe votre site au scanner : 8 domaines vérifiés, une note de A à F et les priorités à corriger d'abord. Gratuit, sans compte.">
+<meta name="color-scheme" content="dark light">
+<!-- Maquette v6. Base : radiographie-v3 (jusqu'à « À vous de jouer » + pied de page), sections suivantes refaites. ?theme=light|dark -->
+<script>/* Thème + garde polices (repris de la v5) : la page s'affiche une fois Geist prête, sans relayout ni tâche longue */
+(function(){var r=document.documentElement,d=document,t=new URLSearchParams(location.search).get('theme');r.dataset.theme=t==='light'?'light':'dark';r.classList.add('js','fl');
+var done=false;function show(){if(!done){done=true;r.classList.remove('fl')}}
+function warm(){var seen={},keys=[];d.querySelectorAll('.hero *,.top *').forEach(function(e){if(!e.firstChild||e.firstChild.nodeType!==3)return;var c=getComputedStyle(e),k=c.fontFamily+'|'+c.fontWeight+'|'+c.fontSize+'|'+c.textTransform;if(!seen[k]){seen[k]=1;keys.push(c)}});
+ var i=0;(function step(){var n=0;while(i<keys.length&&n<3){var c=keys[i++],s=d.createElement('span');s.textContent='Aa';s.style.cssText='position:absolute;visibility:hidden;font:'+c.fontWeight+' '+c.fontSize+' '+c.fontFamily;r.appendChild(s);void s.offsetWidth;s.remove();n++}if(i<keys.length)setTimeout(step,0);else show()})()}
+var f=d.fonts;setTimeout(show,1500);
+if(f&&f.load){Promise.all([f.load('600 1em Geist'),f.load('500 1em "Geist Mono"')]).then(function(){if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',warm);else warm()},show)}else show()})()</script>
+<script type="application/json" id="i18n-fr">{{INC:i18n-fr.json}}</script>
+<style>
+@font-face{font-family:"Geist";src:url("{{FONT:geist}}") format("woff2");font-weight:300 800;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url("{{FONT:geist-mono}}") format("woff2");font-weight:400 600;font-display:swap}
+{{INC:tokens.css}}{{INC:kept.css}}{{INC:s6.css}}
+</style>
+</head>
+<body>
+{{INC:icons.html}}
+{{INC:b-top.html}}
+{{INC:b-new.html}}
+<script>{{INC:app6.js}}</script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+{
+ "fakeSite": {
+  "pos": {
+   "logo": [
+    4,
+    6,
+    12,
+    4
+   ],
+   "nav": [
+    62,
+    6,
+    34,
+    4
+   ],
+   "title": [
+    5,
+    22,
+    44,
+    16
+   ],
+   "txt": [
+    5,
+    42,
+    42,
+    13
+   ],
+   "form": [
+    5,
+    60,
+    40,
+    9
+   ],
+   "img": [
+    54,
+    17,
+    41,
+    70
+   ]
+  },
+  "render": {
+   "logo": "",
+   "nav": "<i></i><i></i><i></i><i></i>",
+   "title": "Des solutions simples pour votre entreprise",
+   "txt": "Nous accompagnons les artisans et les commerces de la région depuis plusieurs années.",
+   "form": "<span></span><b></b>",
+   "img": ""
+  },
+  "layers": {
+   "x": {
+    "logo": [
+     "okb",
+     "Logo",
+     "nommé"
+    ],
+    "nav": [
+     "okb",
+     "Menu",
+     "4 liens nommés"
+    ],
+    "title": [
+     "ko",
+     "Pas un vrai titre",
+     "titre principal absent"
+    ],
+    "txt": [
+     "ko",
+     "Texte pâle",
+     "contraste trop faible"
+    ],
+    "form": [
+     "ko",
+     "Bouton",
+     "sans nom"
+    ],
+    "img": [
+     "ko",
+     "Image",
+     "<strong>2,4 Mo</strong>"
+    ]
+   },
+   "s": {
+    "logo": [
+     "okb",
+     "Logo",
+     ""
+    ],
+    "nav": [
+     "okb",
+     "Menu",
+     ""
+    ],
+    "title": [
+     "ko",
+     "Titre ?",
+     "aucun titre principal"
+    ],
+    "txt": [
+     "",
+     "Paragraphe",
+     ""
+    ],
+    "form": [
+     "",
+     "Formulaire",
+     ""
+    ],
+    "img": [
+     "",
+     "Image",
+     ""
+    ]
+   },
+   "a": {
+    "logo": [
+     "okb",
+     "Logo",
+     "nommé"
+    ],
+    "nav": [
+     "okb",
+     "Menu",
+     "lisible au clavier"
+    ],
+    "title": [
+     "",
+     "Texte",
+     ""
+    ],
+    "txt": [
+     "ko",
+     "Contraste",
+     "trop faible"
+    ],
+    "form": [
+     "ko",
+     "Bouton",
+     "muet"
+    ],
+    "img": [
+     "okb",
+     "Image",
+     "décrite"
+    ]
+   },
+   "n": {
+    "logo": [
+     "",
+     "2 Ko",
+     ""
+    ],
+    "nav": [
+     "",
+     "1 Ko",
+     ""
+    ],
+    "title": [
+     "",
+     "1 Ko",
+     ""
+    ],
+    "txt": [
+     "",
+     "3 Ko",
+     ""
+    ],
+    "form": [
+     "",
+     "14 Ko",
+     ""
+    ],
+    "img": [
+     "ko",
+     "Image",
+     "<strong>2,4 Mo</strong>"
+    ]
+   }
+  }
+ },
+ "zones": {
+  "url": [
+   0,
+   0,
+   100,
+   8,
+   "Barre d’adresse · monsite-exemple.fr"
+  ],
+  "head": [
+   2,
+   11,
+   96,
+   8,
+   "Coulisses : balises, en-têtes, scripts"
+  ],
+  "page": [
+   1,
+   21,
+   98,
+   63,
+   ""
+  ],
+  "logo": [
+   4,
+   24,
+   12,
+   5,
+   "Logo"
+  ],
+  "nav": [
+   60,
+   24,
+   36,
+   5,
+   "Menu"
+  ],
+  "title": [
+   4,
+   32,
+   46,
+   11,
+   "Titre"
+  ],
+  "txt": [
+   4,
+   46,
+   42,
+   9,
+   "Texte"
+  ],
+  "form": [
+   4,
+   58,
+   40,
+   8,
+   "Formulaire"
+  ],
+  "img": [
+   54,
+   32,
+   42,
+   34,
+   "Image d’accueil"
+  ],
+  "cookie": [
+   4,
+   70,
+   40,
+   11,
+   "Bandeau cookies"
+  ],
+  "foot": [
+   2,
+   88,
+   96,
+   12,
+   "Pied de page · liens · contact"
+  ]
+ },
+ "domains": [
+  {
+   "k": "perf",
+   "n": "Performance",
+   "q": "Votre page s’affiche-t-elle vite ?",
+   "z": [
+    "img",
+    "txt"
+   ],
+   "c": [
+    "Le temps d’affichage du contenu principal",
+    "Le poids des images et des scripts",
+    "La stabilité de la page pendant le chargement"
+   ],
+   "w": "Une page lente fait partir des visiteurs avant même qu’ils l’aient vue.",
+   "ex": "Image d’accueil de 2,4 Mo"
+  },
+  {
+   "k": "seo",
+   "n": "SEO",
+   "q": "Google comprend-il votre page ?",
+   "z": [
+    "title",
+    "head"
+   ],
+   "c": [
+    "Le titre et la description de la page",
+    "Le sitemap et le fichier robots.txt",
+    "La langue et l’adresse de référence"
+   ],
+   "w": "C’est ce qui décide si l’on vous trouve dans une recherche.",
+   "ex": "Aucun titre principal"
+  },
+  {
+   "k": "a11y",
+   "n": "Accessibilité",
+   "q": "Tout le monde peut-il lire et cliquer ?",
+   "z": [
+    "txt",
+    "form",
+    "img"
+   ],
+   "c": [
+    "Le contraste entre le texte et le fond",
+    "Les boutons et les images nommés",
+    "La navigation au clavier"
+   ],
+   "w": "Malvoyants, daltoniens, clavier seul : chacun doit pouvoir utiliser le site. Critères inspirés du RGAA.",
+   "ex": "Bouton d’envoi sans nom"
+  },
+  {
+   "k": "eco",
+   "n": "Écologie",
+   "q": "Votre page est-elle sobre ?",
+   "z": [
+    "page"
+   ],
+   "c": [
+    "Le volume de données transférées",
+    "Le nombre de requêtes",
+    "La complexité de la page"
+   ],
+   "w": "Moins de données, c’est moins de forfait et de batterie consommés.",
+   "ex": "Images non compressées"
+  },
+  {
+   "k": "tech",
+   "n": "Qualité technique",
+   "q": "Le code est-il sain et à jour ?",
+   "z": [
+    "foot",
+    "head"
+   ],
+   "c": [
+    "Les liens cassés",
+    "Les bibliothèques JavaScript obsolètes",
+    "Les failles connues déclarées publiquement"
+   ],
+   "w": "Un site qui marche partout, sans clic qui mène nulle part.",
+   "ex": "Lien cassé dans le pied de page"
+  },
+  {
+   "k": "sec",
+   "n": "Sécurité",
+   "q": "Vos visiteurs sont-ils protégés ?",
+   "z": [
+    "url",
+    "head"
+   ],
+   "c": [
+    "Le HTTPS et le certificat",
+    "Les en-têtes de protection du serveur",
+    "Les informations techniques exposées"
+   ],
+   "w": "Leurs données et leurs paiements restent à l’abri.",
+   "ex": "En-tête de protection manquant",
+   "lock": 1
+  },
+  {
+   "k": "priv",
+   "n": "Vie privée",
+   "q": "Vos visiteurs sont-ils suivis sans accord ?",
+   "z": [
+    "cookie",
+    "head"
+   ],
+   "c": [
+    "Les cookies déposés avant le choix",
+    "Les traceurs tiers connus",
+    "Les données envoyées hors de l’UE"
+   ],
+   "w": "Personne ne doit être suivi sans avoir dit oui (RGPD).",
+   "ex": "Cookie déposé avant le choix",
+   "lock": 1
+  },
+  {
+   "k": "dns",
+   "n": "DNS / e-mail",
+   "q": "Vos e-mails sont-ils fiables ?",
+   "z": [
+    "url",
+    "foot"
+   ],
+   "c": [
+    "SPF, DKIM et DMARC : les réglages qui prouvent qu’un e-mail vient bien de vous",
+    "Les serveurs de messagerie déclarés",
+    "La signature DNS du domaine"
+   ],
+   "w": "Vos e-mails arrivent en boîte de réception, et personne ne les imite.",
+   "ex": "DMARC absent",
+   "lock": 1
+  }
+ ],
+ "domainUi": {
+  "look": "Ce qu’on regarde",
+  "why": "Pourquoi c’est important",
+  "free": "Inclus sans compte",
+  "after": "Après vérification",
+  "example": "Exemple de constat",
+  "locked": "Résultat protégé",
+  "lockNote": "<b>Visible après vérification que le site est à vous.</b> Ces résultats peuvent révéler des failles : Audixio ne les montre qu’au propriétaire.",
+  "exNote": "<b>Exemple de constat :</b> "
+ }
+}
