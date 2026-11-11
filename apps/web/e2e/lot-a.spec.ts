@@ -164,7 +164,7 @@ test('la pastille de note ne chevauche pas le texte', async ({ page }) => {
     const slotNode = view.document.querySelector('.score-slot');
     const note = view.document.querySelector('.gauge-wrap strong');
     const warn = view.document.querySelector('.find.warn');
-    const status = view.document.querySelector('.score-slot .status');
+    const status = view.document.querySelector('.score-slot .gauge-pill');
     if (!slotNode || !note || !warn || !status) return null;
     const rect = (node: Painted) => {
       const box = node.getBoundingClientRect();

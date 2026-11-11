@@ -15,12 +15,13 @@ import {
   gaugeLabel,
   gaugeRing,
   levelForScore,
+  levelLabel,
 } from '../lib/score.js';
-import StatusMark from './StatusMark.svelte';
 
 /**
  * Cadran du score (refonte, décision owner du 6 nov.) : anneau complet,
- * nombre au centre, lettre du barème officiel à côté du statut, et bandes
+ * nombre au centre, pastille « lettre + libellé » sous l'anneau (retour
+ * owner du 11 nov. : plus d'icône de statut), et bandes
  * A–F autour de l’anneau pour situer le score. Mêmes couleurs de lettre que
  * les pastilles du rapport, en clair et en sombre.
  */
@@ -103,8 +104,10 @@ const frame = $derived(
     </p>
   </div>
   <div class="gauge-status" aria-hidden="true">
-    {#if grade}<i class="gauge-grade">{grade}</i>{/if}
-    <StatusMark {level} label={grade ? gradeLabel(grade) : undefined} />
+    <span class="gauge-pill">
+      {#if grade}<i class="gauge-grade">{grade}</i>{/if}
+      <span class="gauge-word">{grade ? gradeLabel(grade) : levelLabel('untested')}</span>
+    </span>
   </div>
 </div>
 

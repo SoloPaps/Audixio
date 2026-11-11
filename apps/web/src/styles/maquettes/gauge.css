@@ -116,20 +116,37 @@
   transform: translateX(-50%);
   white-space: nowrap;
 }
-/* <i> : hors de la remise à zéro des fonds du thème sombre. */
-.gauge-grade {
-  display: inline-grid;
-  place-items: center;
-  min-width: 1.9em;
-  height: 1.9em;
-  padding: 0 0.35em;
-  border-radius: 0.5rem;
+/* Pastille unique sous l'anneau : lettre + libellé du barème, teinte de la
+   lettre (même encre que le trait). Plus d'icône de statut. */
+.gauge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.25em 0.8em 0.25em 0.25em;
+  border-radius: 999px;
   background: var(--g-bg);
   color: var(--g-ink);
   font-size: var(--text-sm, 0.875rem);
+  font-weight: 700;
+  line-height: 1;
+}
+/* Non testé : contour pointillé, sans aplat (rien à noter). */
+.gauge[data-grade="none"] .gauge-pill {
+  padding-left: 0.8em;
+  border: 1px dashed var(--g-ink);
+  background: transparent;
+  color: var(--ink-2);
+}
+.gauge-grade {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.75em;
+  height: 1.75em;
+  border-radius: 999px;
+  background: var(--d-sf, #fff);
+  color: var(--g-ink);
   font-style: normal;
   font-weight: 800;
-  line-height: 1;
 }
 .gauge[data-size="mini"] .gauge-status {
   display: none;
