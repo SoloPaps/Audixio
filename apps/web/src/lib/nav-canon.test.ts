@@ -1,6 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { slim } from '../i18n/slim.js';
+import { v6En } from '../i18n/v6-en.js';
+import { v6Fr } from '../i18n/v6-fr.js';
 import { accountHref, accountKey, NAV_ITEMS } from './nav-canon.js';
 
 const en = JSON.parse(
@@ -59,5 +61,18 @@ describe('nav v6 identique à la barre actuelle', () => {
     expect(canon).toContain('accountKey');
     expect(header).toContain('CanonBar');
     expect(header).toContain('shell="v6"');
+  });
+});
+
+describe('le chrome v6 dit « Tarifs », comme la barre', () => {
+  it('le pied de page reprend le libellé de la nav, en français et en anglais', () => {
+    expect(v6Fr['v6.footer.offers']).toBe(slim['nav.pricing']);
+    expect(v6En['v6.footer.offers']).toBe(en['nav.pricing']);
+    expect(en['v6.footer.offers']).toBe(en['nav.pricing']);
+  });
+
+  it('n’emploie plus « Offres » ni « Plans »', () => {
+    expect(Object.values(v6Fr).join(' ')).not.toMatch(/\bOffres\b/);
+    expect(Object.values(v6En).join(' ')).not.toMatch(/\bPlans\b/);
   });
 });
