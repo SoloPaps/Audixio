@@ -62,9 +62,6 @@ async function onclick(): Promise<void> {
   .copy-btn[data-copied] .done {
     visibility: visible;
   }
-  .copy-btn[data-copied] {
-    box-shadow: 0 0 0 3px var(--d-okd, rgba(6, 118, 71, 0.3));
-  }
   .tick {
     width: 1.15em;
     height: 1.15em;
