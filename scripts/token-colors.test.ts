@@ -11,6 +11,7 @@ const MAQUETTE_PORT = [
   'apps/web/src/styles/maquettes/',
   'apps/web/src/styles/canon.css',
   'apps/web/src/styles/chrome.css',
+  'apps/web/src/styles/nav6.css',
   'apps/web/src/styles/theme-dark.css',
   'apps/web/src/components/ShareSheet.svelte',
   'apps/web/src/components/AccountBoard.svelte',

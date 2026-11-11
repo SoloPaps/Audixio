@@ -9,4 +9,4 @@ let { pathname }: Props = $props();
 </script>
 
 <!-- Même barre que le site actuel. Les jetons et Geist viennent du gabarit v6. -->
-<CanonBar {pathname} />
+<CanonBar {pathname} shell="v6" />

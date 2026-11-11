@@ -35,7 +35,7 @@ export const v6En: { [K in keyof typeof v6Fr]: string } = {
   'v6.footer.legal': 'Legal information',
   'v6.footer.note': '© 2026 Audixio. No certification is issued.',
   'v6.footer.example': 'Sample report',
-  'v6.footer.offers': 'Plans',
+  'v6.footer.offers': 'Pricing',
   'v6.footer.eco': 'Ecodesign',
   'v6.footer.method': 'Method and scale',
   'v6.footer.share': 'Sharing',

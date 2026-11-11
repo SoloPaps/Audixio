@@ -15,9 +15,11 @@ import { accountHref, accountKey, NAV_ITEMS } from '../lib/nav-canon.js';
 interface Props {
   pathname: string;
   initial?: 'system' | 'light' | 'dark';
+  /** v6 : verrou sur html seulement, ancre axn (le héros garde #top). */
+  shell?: 'canon' | 'v6';
 }
 
-let { pathname }: Props = $props();
+let { pathname, shell = 'canon' }: Props = $props();
 let loggedIn = $state(false);
 let open = $state(false);
 let scrolled = $state(false);
@@ -73,16 +75,18 @@ function setMenu(next: boolean, back: boolean): void {
   const root = document.documentElement;
   if (next) {
     root.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
+    if (shell !== 'v6') document.body.style.overflow = 'hidden';
     setTimeout(() => {
       sheet?.querySelector<HTMLElement>('a,button')?.focus();
     }, 50);
   } else {
     root.style.overflow = '';
-    document.body.style.overflow = '';
-    // Certaines pages repartent en haut pendant le verrou : on rend la position.
-    if (window.scrollY !== menuScroll)
-      window.scrollTo({ top: menuScroll, behavior: 'instant' });
+    if (shell !== 'v6') {
+      document.body.style.overflow = '';
+      // Certaines pages repartent en haut pendant le verrou : on rend la position.
+      if (window.scrollY !== menuScroll)
+        window.scrollTo({ top: menuScroll, behavior: 'instant' });
+    }
     if (back) burger?.focus({ preventScroll: true });
   }
 }
@@ -230,7 +234,7 @@ onMount(() => {
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
 {/snippet}
 
-<header class="axn site-bar" data-chrome class:is-open={open} class:is-scrolled={scrolled} id="top" bind:this={header}>
+<header class="axn site-bar" data-chrome class:is-open={open} class:is-scrolled={scrolled} id={shell === 'v6' ? 'axn' : 'top'} bind:this={header}>
   <div class="axn-bar">
     <a class="axn-logo" href="/" aria-label={t('footer.home')}><img class="axn-logo-d" src="/marque/logo-pc.svg" alt="" width="107" height="34" decoding="async"><img class="axn-logo-m" src="/marque/logo-mobile.svg" alt="" width="36" height="36" decoding="async"></a>
     <nav aria-label={t('nav.bottom')}>

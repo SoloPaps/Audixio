@@ -69,6 +69,7 @@ for (const width of widths) {
         await expect(page.locator('.axn-bar .axn-cta')).toHaveText(
           lang === 'en' ? 'Sign in' : 'Connexion',
         );
+        await expect(page.locator('header.axn')).toHaveAttribute('id', 'axn');
         await expect(page).toHaveScreenshot(
           `fondations-${width}-${theme}-${lang}.png`,
           { fullPage: true, animations: 'disabled', maxDiffPixelRatio: 0.02 },

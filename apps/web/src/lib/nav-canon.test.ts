@@ -58,5 +58,6 @@ describe('nav v6 identique à la barre actuelle', () => {
     expect(canon).toContain('accountHref');
     expect(canon).toContain('accountKey');
     expect(header).toContain('CanonBar');
+    expect(header).toContain('shell="v6"');
   });
 });

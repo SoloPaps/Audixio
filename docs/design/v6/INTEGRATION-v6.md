@@ -339,3 +339,19 @@ Il n'y a qu'une source, `src6/tokens.css` (149 jetons, dont 29 surchargés en cl
 - La position des bulles des 8 domaines, calculée au build à partir des zones (formule dans `build6.py`). À porter en TS.
 - `kept.css` garde des tailles littérales héritées de la v3 (voir § 4).
 - La barre de sections : synchroniser la section active avec le routeur Astro si les ancres changent, et ne pas la doubler avec la nav du header sur mobile.
+
+## 9. Révision du 11/11/2026 : en-tête global = barre actuelle de main
+
+Décision de l'owner : garder la barre du site actuel (`apps/web/src/components/CanonBar.svelte` + `styles/chrome.css`), habillée v6. L'ancien en-tête `.top` de la maquette (5 liens, ligne de progression) est retiré.
+
+Source unique : `src6/nav6.py` (balisage), `src6/nav6.css` (styles, jetons v6), `src6/nav6.js` (comportement). Le même en-tête sert à l'accueil et à `/methode`.
+
+- Entrées, dans l'ordre : Accueil `/`, Méthode `/methode`, Sites suivis `/sites`, Tarifs `/pro`. Lien actif : `aria-current="page"` (même règle `current()` que CanonBar, `/rapport…` → `/sites`).
+- Outils : segment FR | EN (la langue courante est un `<span aria-current>`), bouton thème (soleil en clair, lune en sombre, `aria-pressed`), bouton Connexion → `/connexion` ou Compte → `/compte` si session (maquette : `?session=1`).
+- Pas de menu déroulant (il n'y en a pas sur main).
+- Défilement : `is-scrolled` au-delà de 8 px (barre resserrée, ombre). Écart volontaire : la hauteur de l'en-tête reste fixe (`--hh` 92 px, 78 px ≤ 900 px) et le resserrement passe par `transform`, pour garder CLS 0.
+- Mobile ≤ 900 px : burger → panneau `role="dialog"` + voile, `inert` fermé, verrou de défilement, focus sur le 1er lien, piège Tab, Échap et clic sur le voile ferment, retour au burger, fermeture au passage en large, entrées décalées (`--i`). Sous 330 px : logo réduit au symbole.
+- Bouton « Remonter en haut » (`.axn-top`, mobile) : gardé, mais masqué quand la barre de sections v6 est visible (son bouton ↑ fait la même chose).
+- Écart volontaire : le verrou ne pose `overflow:hidden` que sur `<html>` (pas sur `<body>`), ce qui évite le saut en haut de page que CanonBar doit corriger à la fermeture.
+- Doublons à retirer à l'intégration : la nav cachée `.legacy-pages` de `Canon.astro` (Méthode, Connexion) ; l'`id="top"` de l'en-tête (le héros porte déjà `id="top"`, utilisé par la barre de sections) → l'en-tête prend `id="axn"`.
+- Libellés EN : ceux de `dictionnaire-en.json` lus (Method, Tracked sites, Sign in, Account, Menu, Close menu, Language, Theme) ; Home, Pricing, Open menu, Back to top, Main navigation sont proposés (clés non trouvées dans l'extrait lu).
