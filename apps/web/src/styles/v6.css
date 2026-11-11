@@ -759,3 +759,9 @@
     transform: none;
   }
 }
+
+/* Doublon : la barre de sections a déjà son bouton « revenir en haut ». */
+[data-v6]:has(.dock.on) .axn-top {
+  opacity: 0;
+  visibility: hidden;
+}
