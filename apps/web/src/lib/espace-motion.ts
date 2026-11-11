@@ -121,7 +121,9 @@ export function bindMotion(root: ParentNode): () => void {
     const size = Math.max(box.width, box.height);
     const ink = document.createElement('span');
     ink.className = 'rip';
-    ink.style.cssText = `width:${size}px;height:${size}px;left:${event.clientX - box.left - size / 2}px;top:${event.clientY - box.top - size / 2}px`;
+    // Hors flux même sans la règle .rip de la page : sinon l’onde, carrée,
+    // agrandit le bouton (flex) le temps de l’animation.
+    ink.style.cssText = `position:absolute;pointer-events:none;width:${size}px;height:${size}px;left:${event.clientX - box.left - size / 2}px;top:${event.clientY - box.top - size / 2}px`;
     button.appendChild(ink);
     window.setTimeout(() => ink.remove(), 700);
   };

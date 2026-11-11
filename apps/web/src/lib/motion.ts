@@ -364,7 +364,9 @@ export function bindRipple(labels: {
     const size = Math.max(rect.width, rect.height);
     const ink = document.createElement('span');
     ink.className = 'rip';
-    ink.style.cssText = `width:${size}px;height:${size}px;left:${event.clientX - rect.left - size / 2}px;top:${event.clientY - rect.top - size / 2}px`;
+    // Hors flux même sans la règle .rip de la page : sinon l’onde, carrée,
+    // agrandit le bouton (flex) le temps de l’animation.
+    ink.style.cssText = `position:absolute;pointer-events:none;width:${size}px;height:${size}px;left:${event.clientX - rect.left - size / 2}px;top:${event.clientY - rect.top - size / 2}px`;
     button.appendChild(ink);
     window.setTimeout(() => ink.remove(), 700);
   });
