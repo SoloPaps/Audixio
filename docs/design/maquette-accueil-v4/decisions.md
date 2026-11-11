@@ -40,3 +40,20 @@ Notes A→F : clair `#0F7A55 #3F7F14 #9A6B00 #B9520F #B3261E #8A1538` (C en `#8F
 | Secondaire : liens, focus, états (piste, boussole, puces actives, nav) | `#2445B5` | `#8FB8FF` |
 
 Les notes A–F sont celles de B. Contrastes du texte et du bouton : AA ou mieux.
+
+## Rééquilibrage du rythme (B2)
+
+Échelle unique : `--sp1…--sp6` = 0,5 / 1 / 1,5 / 2 / 3 / 4 rem ; section `--sec` = `clamp(3.5rem, 2.25rem + 3.5vw, 5.5rem)` ; textes courants ≤ 32–34 rem (≈ 60–75 caractères).
+
+| Section | Avant | Après |
+|---|---|---|
+| Hero | 100vh, gros vide sous le formulaire, accroche flottante | hauteur au contenu, grille 1,1fr / 0,9fr alignée en haut, accroche raccourcie |
+| Preuves | 7 items en 4 colonnes, dernière ligne à moitié vide ; 663 px en mobile | titre + 7 items = 2 lignes pleines (4 col.), 2 col. en tablette ; textes courts ; RGAA / CWV toujours [à valider] |
+| Chapitres 1 et 2 (empilés) | vides verticaux autour de petits panneaux | marge `--sec`, gouttière `--sp6`, textes ≤ 32 rem |
+| Chapitres 1 et 2 (épinglés) | panneaux à moitié visibles en cours de défilement | temps d'arrêt centré sur chaque panneau, traits dessinés pendant l'arrêt, panneaux agrandis à 112 % sur grand écran |
+| Virage | moitié droite vide, flèche surdimensionnée | 2 colonnes texte / flèche |
+| Avant / après | flèche lourde, gouttière serrée | flèche 64 × 40, sous-titre et corrections raccourcis |
+| Offres | ligne prix / « bientôt » décalée sur Pro | lignes de grille communes, intro raccourcie |
+| FAQ | 40 % de la largeur vide à 1440 | 2 colonnes : titre + intro / questions |
+| Rythme général | marges incohérentes (`padding-top:0` en ligne) | une seule marge de section, demi-marge entre sections voisines |
+| Mobile | preuves très longues | titre sur une ligne, items plus compacts ; résumé collant inchangé |

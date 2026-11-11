@@ -125,6 +125,8 @@
   --sans: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --hh: 60px; --toc: 0px;
+  --sp1: .5rem; --sp2: 1rem; --sp3: 1.5rem; --sp4: 2rem; --sp5: 3rem; --sp6: 4rem;
+  --sec: clamp(3.5rem, 2.25rem + 3.5vw, 5.5rem);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -209,14 +211,14 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .toc a[aria-current="true"]::before { background: var(--state, var(--cta-bg)); color: var(--state-fg, var(--cta-fg)); border-color: var(--state, var(--cta-bd)); }
 
 /* ================= Héros ================= */
-.hero { padding: 2.5rem 0 3.5rem; view-timeline: --hero block; }
-.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+.hero { padding: var(--sp5) 0 var(--sec); view-timeline: --hero block; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp4); }
 .copyhead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .4rem 1.5rem; border-bottom: 1.5px solid var(--ink); padding-bottom: .5rem; }
 .copyhead .anno { color: var(--ink-2); }
 h1 { font: 850 clamp(2.6rem, 1.2rem + 6vw, 6.25rem)/0.98 var(--sans); letter-spacing: -0.045em; margin-top: 1.25rem; }
 h1 .circ { padding: 0 .08em; }
 .hero-lead { order: 3; }
-.lead { font-size: 1.1875rem; color: var(--ink-2); max-width: 36rem; }
+.lead { font-size: 1.1875rem; line-height: 1.55; color: var(--ink-2); max-width: 34rem; }
 .audit { max-width: 40rem; }
 .audit label { display: block; font-weight: 700; margin-bottom: .5rem; }
 .field { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; padding: .5rem; background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; box-shadow: 4px 5px 0 var(--shadow); }
@@ -236,10 +238,11 @@ h1 .circ { padding: 0 .08em; }
 .scrollcue svg { width: 26px; height: 40px; }
 
 /* ================= Bande de preuves ================= */
-.proofs { border-block: 1.5px solid var(--ink); background: color-mix(in oklch, var(--surface) 70%, transparent); padding: 1.75rem 0; }
-.proofs h2 { font: 800 1.125rem var(--sans); margin-bottom: 1rem; }
-.proofs ul { display: grid; gap: .9rem 2rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
-.proofs li { display: grid; grid-template-columns: 22px 1fr; gap: .6rem; font-size: .9375rem; color: var(--ink-2); }
+.proofs { border-block: 1.5px solid var(--ink); background: color-mix(in oklch, var(--surface) 70%, transparent); padding: var(--sp5) 0; }
+.proofs .grid { display: grid; gap: var(--sp3) var(--sp4); grid-template-columns: minmax(0, 1fr); }
+.proofs h2 { font: 850 1.375rem/1.15 var(--sans); max-width: 14ch; }
+.proofs ul { display: contents; }
+.proofs li { display: grid; grid-template-columns: 22px 1fr; gap: .6rem; font-size: .9375rem; line-height: 1.5; color: var(--ink-2); }
 .proofs li b { color: var(--ink); display: block; font-weight: 750; }
 .proofs svg { width: 22px; height: 22px; fill: none; stroke: var(--check, var(--mark)); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; margin-top: .1rem; }
 
@@ -248,13 +251,13 @@ h1 .circ { padding: 0 .08em; }
 .chap-h h2 { font: 850 clamp(1.75rem, 1.2rem + 2vw, 2.5rem)/1 var(--sans); }
 .chap-h .dir { color: var(--ink-2); }
 .preview { display: inline-flex; align-items: center; gap: .4rem; font: 700 .8125rem var(--sans); border: 1.5px solid var(--fix); color: var(--fix); border-radius: 999px; padding: .1rem .6rem; }
-.track { position: relative; padding: 3rem 0; }
+.track { position: relative; padding: var(--sec) 0; }
 .stage { display: grid; gap: 2rem; }
-.rail { display: grid; gap: 3rem; }
+.rail { display: grid; gap: var(--sp6); }
 .panel { width: min(100% - 2.5rem, 76rem); margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-content: center; }
-.panel .txt { display: grid; gap: .75rem; max-width: 30rem; }
+.panel .txt { display: grid; gap: var(--sp2); max-width: 32rem; }
 .panel h3 { font: 850 clamp(1.75rem, 1.1rem + 2.6vw, 3.25rem)/1 var(--sans); }
-.panel .txt p { color: var(--ink-2); }
+.panel .txt p { color: var(--ink-2); font-size: 1.0625rem; line-height: 1.55; }
 .demo { background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; box-shadow: 6px 7px 0 var(--shadow); padding: 1.25rem; position: relative; }
 .demo > .kick { margin-bottom: .75rem; display: flex; justify-content: space-between; gap: 1rem; }
 .piste { display: none; }
@@ -313,8 +316,9 @@ html:not(.js) .spot .lab { opacity: 1; scale: 1; }
 .scale li.here { outline: 3px solid var(--mark); outline-offset: -3px; }
 
 /* Virage */
-.virage { padding: 4rem 0; view-timeline: --vir block; }
-.virage .wrap { display: grid; gap: 1.5rem; }
+.virage { padding: var(--sec) 0; view-timeline: --vir block; }
+.virage .wrap { display: grid; gap: var(--sp3); align-items: center; }
+.virage .txt { display: grid; gap: var(--sp3); }
 .virage h2 { font: 850 clamp(2rem, 1.2rem + 3.4vw, 4rem)/1 var(--sans); max-width: 20ch; }
 .virage p { color: var(--ink-2); font-size: 1.125rem; max-width: 34rem; }
 .turn { width: min(100%, 520px); height: auto; }
@@ -348,13 +352,15 @@ html:not(.js) .spot .lab { opacity: 1; scale: 1; }
 
 /* ================= Après le parcours ================= */
 .suite { view-timeline: --suite block; }
-.sec { padding: 4.5rem 0; }
-.sec-h { display: grid; gap: .6rem; margin-bottom: 2rem; }
+.sec { padding: calc(var(--sec) / 2) 0; }
+.suite > .sec:first-child { padding-top: var(--sec); }
+.suite > .sec:last-of-type { padding-bottom: var(--sec); }
+.sec-h { display: grid; gap: var(--sp2); margin-bottom: var(--sp4); }
 .sec-h h2 { font: 850 clamp(2rem, 1.2rem + 3vw, 3.5rem)/1 var(--sans); }
-.sec-h p { color: var(--ink-2); font-size: 1.125rem; max-width: 38rem; }
+.sec-h p { color: var(--ink-2); font-size: 1.125rem; line-height: 1.55; max-width: 38rem; }
 
 /* Avant / après */
-.ba { display: grid; gap: 1.25rem; align-items: stretch; }
+.ba { display: grid; gap: var(--sp3); align-items: stretch; }
 .ba-card { background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; padding: 1.25rem; display: grid; gap: 1rem; align-content: start; }
 .ba-card.after { box-shadow: 6px 7px 0 var(--shadow); }
 .ba-top { display: flex; align-items: center; gap: 1.25rem; }
@@ -364,23 +370,25 @@ html:not(.js) .spot .lab { opacity: 1; scale: 1; }
 .ba-doms li { display: flex; justify-content: space-between; border-top: 1px dashed var(--line); padding-top: .3rem; }
 .ba-doms .up { font-weight: 800; }
 .ba-arrow { display: grid; place-items: center; }
-.ba-arrow svg { width: 90px; height: 48px; }
+.ba-arrow svg { width: 64px; height: 40px; }
 .fixes { margin-top: 1.75rem; display: grid; gap: .75rem; counter-reset: f; }
 .fixes li { counter-increment: f; display: grid; grid-template-columns: 2rem 1fr; gap: .75rem; align-items: baseline; }
 .fixes li::before { content: counter(f); display: grid; place-items: center; width: 1.75rem; height: 1.75rem; border-radius: 50%; border: 2px solid var(--check, var(--mark)); font: 800 .875rem var(--sans); }
 .fixes b { font-weight: 750; } .fixes span { color: var(--ink-2); }
 
 .offers { display: grid; gap: 1.25rem; }
-.offer { background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; padding: 1.25rem; display: grid; gap: .75rem; align-content: start; }
+.offer { background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; padding: var(--sp3); display: grid; gap: var(--sp2); grid-template-rows: auto 2.25rem 1fr auto; }
 .offer.pro { box-shadow: 6px 7px 0 var(--shadow); }
 .offer h3 { font: 850 1.5rem var(--sans); }
 .offer .price { font: 850 2rem/1 var(--sans); }
-.offer .soon { font-size: 1.0625rem; color: var(--ink-2); font-weight: 650; }
+.offer .soon { font-size: 1.0625rem; color: var(--ink-2); font-weight: 650; align-self: center; }
 .offer li { padding: .35rem 0 .35rem 1.6rem; border-top: 1px dashed var(--line); position: relative; font-size: .9375rem; }
 .offer li::before { content: ""; position: absolute; left: .1rem; top: .75rem; width: .8rem; height: .45rem; border-left: 2.5px solid var(--check, var(--mark)); border-bottom: 2.5px solid var(--check, var(--mark)); rotate: -45deg; }
 .offer li.no { color: var(--ink-2); } .offer li.no::before { width: .7rem; height: 0; border-left: 0; rotate: 0deg; top: .95rem; border-color: var(--ink-2); }
 .offer .cta { font-weight: 700; }
-.faq { max-width: 48rem; }
+.faq-grid { display: grid; gap: var(--sp4); }
+.faq-grid .sec-h { margin-bottom: 0; align-content: start; }
+.faq { max-width: 46rem; }
 .faq details { border-top: 1.5px solid var(--ink); }
 .faq details:last-child { border-bottom: 1.5px solid var(--ink); }
 .faq summary { list-style: none; cursor: pointer; padding: 1rem 0; font: 750 1.125rem/1.3 var(--sans); display: flex; justify-content: space-between; gap: 1rem; min-height: 44px; }
@@ -408,9 +416,11 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
   :root { --toc: 54px; }
   .m-skip { display: none !important; }
   .turn { display: none; }
-  .virage { padding: 2.5rem 0; }
-  .track { padding: 2rem 0; }
-  .rail { gap: 2.25rem; }
+  .rail { gap: var(--sp5); }
+  .proofs { padding: var(--sp4) 0; }
+  .proofs .grid { row-gap: var(--sp2); }
+  .proofs h2 { max-width: none; }
+  .proofs li { font-size: .875rem; line-height: 1.45; }
   .prompt { max-height: 9rem; }
   .spot .lab { font-size: .875rem; max-width: 9rem; }
   .ba-arrow svg { rotate: 90deg; }
@@ -420,7 +430,8 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
 @media (min-width: 48rem) {
   .field { grid-template-columns: minmax(0, 1fr) auto; }
   .offers { grid-template-columns: repeat(3, 1fr); }
-  .ba { grid-template-columns: 1fr auto 1fr; }
+  .ba { grid-template-columns: 1fr auto 1fr; gap: var(--sp2); }
+  .proofs .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .fixes { grid-template-columns: repeat(3, 1fr); }
   footer .cols { grid-template-columns: 2fr 1fr 1fr 1fr; }
   .final { grid-template-columns: 1fr auto; align-items: center; padding: 2.5rem; }
@@ -428,8 +439,11 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
 @media (min-width: 64rem) {
   .toc, .bottom { display: none; }
   .nav { display: flex; }
-  .hero { padding: 3.5rem 0 4.5rem; min-height: calc(100vh - var(--hh) - 34px); }
-  .hero .wrap { grid-template-columns: 1.15fr .85fr; align-items: end; column-gap: 4rem; }
+  .hero { padding: var(--sp6) 0 var(--sec); }
+  .hero .wrap { grid-template-columns: 1.1fr .9fr; align-items: start; column-gap: var(--sp6); row-gap: var(--sp5); }
+  .proofs .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--sp5); }
+  .virage .wrap { grid-template-columns: 1.2fr .8fr; column-gap: var(--sp6); }
+  .faq-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); column-gap: var(--sp6); }
   .copyhead, .hero h1 { grid-column: 1 / -1; }
   .hero-lead { order: 0; }
   .panel { grid-template-columns: .85fr 1.15fr; gap: 4rem; align-items: center; }
@@ -442,12 +456,13 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
   .track { padding: 0; height: calc(var(--n) * 100vh); container-type: inline-size; }
   .track[data-tl="1"] { view-timeline: --t1 block; --tl: --t1; }
   .track[data-tl="2"] { view-timeline: --t2 block; --tl: --t2; }
-  .stage { position: sticky; top: var(--hh); height: calc(100vh - var(--hh)); overflow: clip; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; gap: 0; padding: 1.5rem 0 1rem; }
+  .stage { position: sticky; top: var(--hh); height: calc(100vh - var(--hh)); overflow: clip; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; gap: 0; padding: var(--sp3) 0 var(--sp2); }
+  .track .rail { gap: 0; }
   .rail { display: flex; gap: 0; width: calc(var(--n) * 100cqw); height: 100%; }
   .track[data-dir="left"] .rail { flex-direction: row-reverse; translate: calc(-100% + 100cqw) 0; }
   .panel { flex: none; width: 100cqw; padding-inline: max(1.25rem, calc((100cqw - 76rem) / 2)); margin: 0; }
-  .panel:nth-child(1) { --r: entry 60% contain 4%; } .panel:nth-child(2) { --r: contain 22% contain 36%; }
-  .panel:nth-child(3) { --r: contain 52% contain 66%; } .panel:nth-child(4) { --r: contain 82% contain 95%; }
+  .panel:nth-child(1) { --r: entry 60% contain 6%; } .panel:nth-child(2) { --r: contain 18% contain 30%; }
+  .panel:nth-child(3) { --r: contain 51% contain 63%; } .panel:nth-child(4) { --r: contain 84% contain 96%; }
   .piste { display: flex; align-items: center; gap: 1rem; width: min(100% - 2.5rem, 76rem); margin-inline: auto; }
   .piste .line { position: relative; flex: 1; height: 3px; background: var(--line); border-radius: 2px; }
   .piste .line b { position: absolute; inset: 0; background: var(--state, var(--mark)); border-radius: 2px; transform-origin: left; scale: var(--p, 0) 1; }
@@ -460,14 +475,15 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
     .track[data-tl="1"] .rail { animation: go-right linear both; animation-timeline: --t1; animation-range: contain 0% contain 100%; }
     .track[data-tl="2"] .rail { animation: go-left linear both; animation-timeline: --t2; animation-range: contain 0% contain 100%; }
     .track .piste .line b { animation: fill linear both; animation-timeline: var(--tl); animation-range: contain 0% contain 100%; }
-    .doms .bar b { animation: fill linear both; animation-timeline: --t1; animation-range: contain 8% contain 36%; }
+    .doms .bar b { animation: fill linear both; animation-timeline: --t1; animation-range: contain 12% contain 30%; }
     .track .draw { animation-timeline: var(--tl); animation-range: var(--r); }
     .route { animation: s1 linear both, s2 linear both, s3 linear both, s4 linear both, s5 linear both;
       animation-timeline: --hero, --t1, --vir, --t2, --suite;
       animation-range: exit 0% exit 100%, contain 0% contain 100%, entry 0% exit 100%, contain 0% contain 100%, entry 0% contain 100%; }
   }
-  @keyframes go-right { 0%, 5% { translate: 0 0; } 95%, 100% { translate: calc(-100% + 100cqw) 0; } }
-  @keyframes go-left { 0%, 5% { translate: calc(-100% + 100cqw) 0; } 95%, 100% { translate: 0 0; } }
+  /* Chaque panneau marque une pause centrée : pas de demi-panneau quand on s'arrête. */
+  @keyframes go-right { 0%, 8% { translate: 0 0; } 25%, 42% { translate: calc((-100% + 100cqw) / 3) 0; } 58%, 75% { translate: calc((-100% + 100cqw) * 2 / 3) 0; } 92%, 100% { translate: calc(-100% + 100cqw) 0; } }
+  @keyframes go-left { 0%, 8% { translate: calc(-100% + 100cqw) 0; } 25%, 42% { translate: calc((-100% + 100cqw) * 2 / 3) 0; } 58%, 75% { translate: calc((-100% + 100cqw) / 3) 0; } 92%, 100% { translate: 0 0; } }
   @keyframes s1 { to { --s1: 1; } } @keyframes s2 { to { --s2: 1; } } @keyframes s3 { to { --s3: 1; } } @keyframes s4 { to { --s4: 1; } } @keyframes s5 { to { --s5: 1; } }
 
   .route { display: block; position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 40; width: 172px; padding: .5rem .7rem; background: var(--surface); border: 2px solid var(--ink); border-radius: 10px; box-shadow: 4px 5px 0 var(--shadow);
@@ -488,6 +504,9 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
     .draw { animation: draw linear both; animation-timeline: view(); animation-range: entry 30% cover 45%; }
   }
   .hero .draw { animation: draw 1s .35s var(--ease) both; animation-timeline: auto; animation-range: normal; }
+}
+@media (min-width: 80rem) and (min-height: 50rem) and (prefers-reduced-motion: no-preference) {
+  .track .panel > * { zoom: 1.12; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
@@ -548,7 +567,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
       <p class="copyhead"><span class="kick">Audit de site web gratuit · 8 domaines · note de A à F</span><span class="anno">Note : en attente</span></p>
       <h1 id="h1">Votre site, <span class="mk circ">corrigé<svg viewBox="0 0 100 50" preserveAspectRatio="none" aria-hidden="true"><path class="draw" pathLength="1" d="M8 30 C6 12, 60 4, 90 14 C102 20, 96 40, 60 45 C28 49, 4 40, 10 22 C14 12, 34 6, 52 7"/></svg></span> comme une&nbsp;copie.</h1>
       <div class="hero-lead">
-        <p class="lead">Audixio vérifie 8 domaines de votre site, met une note de A à F et vous dit <span class="mk sw">quoi corriger d'abord<svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path class="draw" pathLength="1" d="M1 12 C30 9, 70 13, 99 10"/></svg></span>. En français simple.</p>
+        <p class="lead">8 domaines vérifiés, une note de A à F, et <span class="mk sw">ce qu'il faut corriger d'abord<svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path class="draw" pathLength="1" d="M1 12 C30 9, 70 13, 99 10"/></svg></span>, en français simple.</p>
         <a class="scrollcue" href="#parcours"><svg class="arrow-svg" viewBox="0 0 26 40" aria-hidden="true"><path class="draw" pathLength="1" d="M13 3 C9 14, 17 22, 13 36 M5 28 L13 37 L21 28"/></svg><span class="anno" style="color:var(--ink)">Voir l'aperçu sur votre adresse</span></a>
       </div>
       <div>
@@ -558,7 +577,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
             <div class="inp"><span aria-hidden="true">https://</span><input id="url" name="url" type="text" inputmode="url" autocomplete="url" autocapitalize="off" spellcheck="false" required maxlength="2048" placeholder="monsite.fr" aria-describedby="url-hint"></div>
             <button class="btn" type="submit">Lancer l'audit gratuit<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
           </div>
-          <p class="hint" id="url-hint">Environ une minute. Aucun compte demandé. Dans cette maquette, l'adresse alimente l'aperçu du chapitre 1.</p>
+          <p class="hint" id="url-hint">Environ une minute, sans compte. Ici, l'adresse alimente l'aperçu.</p>
         </form>
         <ul class="promise" aria-label="Garanties">
           <li><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M3 9.5l4 4 8-9"/></svg>Gratuit, sans compte</li>
@@ -571,16 +590,16 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
 
   <!-- Bande de preuves -->
   <section class="proofs" aria-labelledby="pr">
-    <div class="wrap">
+    <div class="wrap grid">
       <h2 id="pr">Ce qu'Audixio vérifie, et comment</h2>
       <ul>
-        <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Accessibilité</b>Mesure automatique et partielle, repères RGAA <span class="tbc">[à valider]</span></span></li>
-        <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>RGPD et cookies</b>Tests partiels : cookies posés au premier chargement, bandeau de consentement</span></li>
-        <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Core Web Vitals</b>Vitesse d'affichage (LCP) et stabilité (CLS), mesurées en laboratoire <span class="tbc">[à valider]</span></span></li>
-        <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Sécurité HTTP</b>En-têtes de sécurité et HTTPS, détail après preuve de propriété</span></li>
-        <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>SEO technique</b>Titres, balises, sitemap, liens et indexation</span></li>
-        <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Méthode publique</b>Le barème est affiché ; la note est la moyenne des domaines notés, à poids égaux</span></li>
-        <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Passif par défaut</b>Audixio lit votre site comme un visiteur ; rien n'est soumis ni forcé</span></li>
+          <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Accessibilité</b>Mesure automatique et partielle, repères RGAA <span class="tbc">[à valider]</span></span></li>
+          <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>RGPD et cookies</b>Cookies au premier chargement, bandeau de consentement</span></li>
+          <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Core Web Vitals</b>LCP et CLS, mesurés en laboratoire <span class="tbc">[à valider]</span></span></li>
+          <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Sécurité HTTP</b>En-têtes et HTTPS, détail après preuve de propriété</span></li>
+          <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>SEO technique</b>Titres, balises, sitemap, indexation</span></li>
+          <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Méthode publique</b>Barème affiché, moyenne à poids égaux</span></li>
+          <li><svg viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11.5l4.5 4.5L18 6"/></svg><span><b>Passif par défaut</b>Lu comme par un visiteur, rien n'est soumis</span></li>
       </ul>
     </div>
   </section>
@@ -591,7 +610,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
       <div class="wrap chap-h"><span class="kick">Chapitre 1</span><h2 id="c1">La correction de <span class="dom" data-domain>monsite-exemple.fr</span></h2><span class="preview">Aperçu simulé, pas un vrai audit</span></div>
       <div class="rail">
         <article class="panel m-skip" aria-labelledby="p1">
-          <div class="txt"><p class="kick">01 · L'adresse</p><h3 id="p1">Vous donnez l'adresse. C'est tout.</h3><p>Pas de compte, pas de carte, pas de code à installer sur votre site.</p></div>
+          <div class="txt"><p class="kick">01 · L'adresse</p><h3 id="p1">Vous donnez l'adresse. C'est tout.</h3><p>Pas de compte, pas de carte, rien à installer.</p></div>
           <div class="demo" aria-hidden="true">
             <p class="kick"><span>Champ unique</span><span>audixio.fr</span></p>
             <div class="typed"><span>https://</span><span data-domain>monsite-exemple.fr</span><i></i></div>
@@ -599,7 +618,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
           </div>
         </article>
         <article class="panel" aria-labelledby="p2">
-          <div class="txt"><p class="kick">02 · L'audit tourne</p><h3 id="p2">8 domaines mesurés, en une minute.</h3><p>Audixio lit le site comme un visiteur : passif par défaut. Sécurité, vie privée et DNS restent sous scellé tant que la propriété n'est pas prouvée.</p></div>
+          <div class="txt"><p class="kick">02 · L'audit tourne</p><h3 id="p2">8 domaines mesurés, en une minute.</h3><p>Lecture passive, comme un visiteur. Sécurité, vie privée et DNS restent sous scellé sans preuve de propriété.</p></div>
           <div class="demo">
             <p class="kick"><span>Aperçu · <span class="dom" data-domain>monsite-exemple.fr</span></span><span class="num">00:41</span></p>
             <ul class="doms">
@@ -616,7 +635,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
           </div>
         </article>
         <article class="panel" aria-labelledby="p3">
-          <div class="txt"><p class="kick">03 · Les annotations</p><h3 id="p3">Trouvez les problèmes avant nous.</h3><p>Une page d'exemple, volontairement neutre. Cliquez sur les zones marquées : Audixio note dans la marge ce qu'il a vu, et pourquoi cela gêne vos visiteurs.</p></div>
+          <div class="txt"><p class="kick">03 · Les annotations</p><h3 id="p3">Trouvez les problèmes avant nous.</h3><p>Une page d'exemple neutre. Cliquez sur les zones : Audixio annote ce qu'il voit.</p></div>
           <div class="demo">
             <div class="fake">
               <div class="chrome" aria-hidden="true"><i></i><i></i><i></i>&nbsp;page-exemple.test</div>
@@ -636,7 +655,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
           </div>
         </article>
         <article class="panel" aria-labelledby="p4">
-          <div class="txt"><p class="kick">04 · La note</p><h3 id="p4">Une lettre, un chiffre, un commentaire.</h3><p>Chaque domaine est noté sur 100 ; la note globale est la moyenne des domaines notés, à poids égaux. Le barème est public.</p></div>
+          <div class="txt"><p class="kick">04 · La note</p><h3 id="p4">Une lettre, un chiffre, un commentaire.</h3><p>Chaque domaine sur 100, moyenne à poids égaux. Barème public.</p></div>
           <div class="demo">
             <p class="kick"><span>Aperçu · <span class="dom" data-domain>monsite-exemple.fr</span></span><span class="preview">Exemple</span></p>
             <div class="grade-big">
@@ -661,9 +680,9 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
   <!-- ↓ Virage -->
   <section class="virage" aria-labelledby="vir">
     <div class="wrap">
-      <span class="kick">Virage</span>
+      <div class="txt"><span class="kick">Virage</span>
       <h2 id="vir">La copie est corrigée. On repart dans l'autre sens.</h2>
-      <p>Une note ne sert à rien seule. La suite montre ce que vous en faites : corriger, demander de l'aide, suivre, partager.</p>
+      <p>Une note seule ne suffit pas. La suite : corriger, demander de l'aide, suivre, partager.</p></div>
       <svg class="turn arrow-svg" viewBox="0 0 520 150" aria-hidden="true"><path class="draw" pathLength="1" d="M20 20 C200 10, 470 10, 490 70 C505 120, 380 132, 60 128 M60 128 L84 112 M60 128 L86 142"/></svg>
     </div>
   </section>
@@ -674,7 +693,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
       <div class="wrap chap-h"><span class="kick">Chapitre 2</span><h2 id="c2">Ce que vous faites de la note</h2><span class="kick dir">← on revient vers la gauche</span></div>
       <div class="rail">
         <article class="panel" aria-labelledby="p5">
-          <div class="txt"><p class="kick">05 · Les priorités</p><h3 id="p5">Dans l'ordre où les faire.</h3><p>Chaque constat dit ce qui se passe, ce que cela change pour vos visiteurs, et quoi faire.</p></div>
+          <div class="txt"><p class="kick">05 · Les priorités</p><h3 id="p5">Dans l'ordre où les faire.</h3><p>Ce qui se passe, ce que ça change, quoi faire.</p></div>
           <div class="demo">
             <ol class="prio">
               <li><span class="n mk circ">1<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="draw" pathLength="1" d="M20 30 C30 6, 82 4, 92 40 C100 74, 60 98, 32 88 C6 78, 2 46, 18 28 C28 16, 46 10, 62 12"/></svg></span><h4>Vos pages s'affichent lentement sur mobile</h4><p>Allégez les images de l'accueil.</p><p class="anno">à faire cette semaine</p></li>
@@ -684,7 +703,7 @@ footer .legal { margin-top: 2rem; font-size: .875rem; color: var(--ink-2); }
           </div>
         </article>
         <article class="panel" aria-labelledby="p6">
-          <div class="txt"><p class="kick">06 · Le prompt à copier</p><h3 id="p6">Pas d'IA dans le rapport. Un prompt prêt pour la vôtre.</h3><p>Le rapport est calculé par Audixio, sans IA. Avec un compte gratuit, vous copiez un prompt complet et le collez dans l'assistant de votre choix.</p></div>
+          <div class="txt"><p class="kick">06 · Le prompt à copier</p><h3 id="p6">Pas d'IA dans le rapport. Un prompt prêt pour la vôtre.</h3><p>Rapport calculé sans IA. Avec un compte gratuit, copiez le prompt dans votre assistant.</p></div>
           <div class="demo">
             <p class="kick"><span>Prompt pour votre assistant IA</span><span class="chip">Compte gratuit</span></p>
 <pre class="prompt" id="prompt">Tu es développeur web. Voici l'audit Audixio de monsite-exemple.fr (note C, 67/100).
@@ -697,7 +716,7 @@ Explique chaque changement simplement.</pre>
           </div>
         </article>
         <article class="panel m-skip" aria-labelledby="p7">
-          <div class="txt"><p class="kick">07 · Le suivi</p><h3 id="p7">Si la note baisse, vous le savez.</h3><p>Relancez l'audit et comparez. Avec Pro, Audixio surveille vos sites et vous écrit dès qu'une note baisse.</p></div>
+          <div class="txt"><p class="kick">07 · Le suivi</p><h3 id="p7">Si la note baisse, vous le savez.</h3><p>Relancez et comparez. Avec Pro, une alerte dès que la note baisse.</p></div>
           <div class="demo">
             <p class="kick"><span>monsite-exemple.fr · 6 audits</span><span class="chip">Alertes : Pro</span></p>
             <svg class="chart" viewBox="0 0 420 190" role="img" aria-label="Évolution de la note : 58, 61, 67, 71, puis baisse à 59, puis 70.">
@@ -712,7 +731,7 @@ Explique chaque changement simplement.</pre>
           </div>
         </article>
         <article class="panel" aria-labelledby="p8">
-          <div class="txt"><p class="kick">08 · Le lien et le badge</p><h3 id="p8">Montrez la copie à qui vous voulez.</h3><p>Un lien public pour votre prestataire (sans les détails sensibles, non indexé) et un badge daté pour votre pied de page.</p></div>
+          <div class="txt"><p class="kick">08 · Le lien et le badge</p><h3 id="p8">Montrez la copie à qui vous voulez.</h3><p>Un lien public sans détails sensibles, non indexé, et un badge daté.</p></div>
           <div class="demo">
             <p class="kick"><span>Lien public</span><span class="chip">1 gratuit · illimités en Pro</span></p>
             <p class="share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>audixio.fr/r/monsite-exemple-k7Qm</p>
@@ -728,7 +747,7 @@ Explique chaque changement simplement.</pre>
   <div class="suite">
     <section class="sec" id="avap" aria-labelledby="ba">
       <div class="wrap">
-        <div class="sec-h"><span class="kick">On reprend vers le bas ↓ · Exemple</span><h2 id="ba">Avant, après : de <span class="g" data-g="C">C</span> à <span class="mk sw g" data-g="B">B<svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path class="draw" pathLength="1" d="M1 12 C30 9, 70 13, 99 10"/></svg></span> en trois corrections.</h2><p>Le même site d'exemple, audité deux fois. Les chiffres sont illustratifs.</p></div>
+        <div class="sec-h"><span class="kick">On reprend vers le bas ↓ · Exemple</span><h2 id="ba">Avant, après : de <span class="g" data-g="C">C</span> à <span class="mk sw g" data-g="B">B<svg viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true"><path class="draw" pathLength="1" d="M1 12 C30 9, 70 13, 99 10"/></svg></span> en trois corrections.</h2><p>Le même site d'exemple, audité deux fois. Chiffres illustratifs.</p></div>
         <div class="ba">
           <article class="ba-card" aria-labelledby="ba1">
             <h3 id="ba1" class="kick">Avant</h3>
@@ -743,15 +762,15 @@ Explique chaque changement simplement.</pre>
           </article>
         </div>
         <ol class="fixes">
-          <li><span><b>Images allégées.</b> <span>L'image d'accueil passe de 2,4 Mo à 180 Ko : performance et écoconception montent.</span></span></li>
-          <li><span><b>Texte lisible, bouton nommé.</b> <span>Contraste conforme AA et libellé sur le bouton d'envoi : l'accessibilité gagne 32 points.</span></span></li>
-          <li><span><b>Sitemap et vrai titre.</b> <span>Un sitemap.xml et une balise h1 : Google comprend mieux la page.</span></span></li>
+          <li><span><b>Images allégées.</b> <span>2,4 Mo → 180 Ko : performance et écoconception montent.</span></span></li>
+          <li><span><b>Texte lisible, bouton nommé.</b> <span>Contraste AA et bouton nommé : +32 en accessibilité.</span></span></li>
+          <li><span><b>Sitemap et vrai titre.</b> <span>sitemap.xml et balise h1 : +11 en SEO.</span></span></li>
         </ol>
       </div>
     </section>
-    <section class="sec" id="off" aria-labelledby="offh" style="padding-top:0">
+    <section class="sec" id="off" aria-labelledby="offh">
       <div class="wrap">
-        <div class="sec-h"><h2 id="offh">Gratuit pour commencer.</h2><p>Sans compte, vous avez la note. Un compte gratuit ouvre le détail. Pro arrivera ensuite pour les agences et les équipes.</p></div>
+        <div class="sec-h"><h2 id="offh">Gratuit pour commencer.</h2><p>Sans compte, la note. Avec un compte gratuit, le détail. Pro viendra ensuite.</p></div>
         <div class="offers">
           <article class="offer"><h3>Sans compte</h3><p class="price">0 €</p><ul><li>Note et priorités</li><li>Dernier audit gardé dans le navigateur</li><li class="no">Sécurité, vie privée, DNS sous scellé</li><li class="no">Pas de lien ni de prompt</li></ul></article>
           <article class="offer"><h3>Compte gratuit</h3><p class="price">0 €</p><ul><li>2 sites, dernier rapport par site</li><li>Prompt pour votre assistant IA</li><li>1 lien de partage actif</li><li>Domaines sensibles après preuve de propriété</li></ul><a class="cta" href="/inscription">Créer un compte</a></article>
@@ -759,9 +778,9 @@ Explique chaque changement simplement.</pre>
         </div>
       </div>
     </section>
-    <section class="sec" aria-labelledby="faq" style="padding-top:0">
-      <div class="wrap">
-        <div class="sec-h"><h2 id="faq">Questions fréquentes</h2></div>
+    <section class="sec" aria-labelledby="faq">
+      <div class="wrap faq-grid">
+        <div class="sec-h"><h2 id="faq">Questions fréquentes</h2><p>Gratuité, IA, calcul de la note, sécurité de votre site.</p></div>
         <div class="faq">
           <details open><summary>L'audit est-il vraiment gratuit&nbsp;?</summary><p>Oui, sans compte. Vous obtenez la note et les priorités. Un compte gratuit ouvre le détail, le lien de partage et le prompt pour votre assistant IA.</p></details>
           <details><summary>Le rapport est-il écrit par une IA&nbsp;?</summary><p>Non. Les mesures et le rapport sont calculés par Audixio. Nous vous donnons seulement un prompt prêt à coller dans l'assistant IA de votre choix.</p></details>
@@ -770,7 +789,7 @@ Explique chaque changement simplement.</pre>
         </div>
       </div>
     </section>
-    <section class="sec" aria-labelledby="fin" style="padding-top:0">
+    <section class="sec" aria-labelledby="fin">
       <div class="wrap">
         <div class="final"><div><h2 id="fin">À vous de rendre la copie.</h2><p style="color:var(--ink-2);margin-top:.5rem">Une minute, gratuit, sans compte.</p></div><a href="#url">Saisir l'adresse de mon site ↑</a></div>
       </div>
@@ -865,12 +884,14 @@ Explique chaque changement simplement.</pre>
   var mq = matchMedia('(min-width: 64rem) and (min-height: 38rem) and (prefers-reduced-motion: no-preference)');
   var tracks = d.querySelectorAll('.track'), route = d.querySelector('.route');
   function clamp(v) { return Math.max(0, Math.min(1, v)); }
+  var stops = [[0, 0], [.08, 0], [.25, 1 / 3], [.42, 1 / 3], [.58, 2 / 3], [.75, 2 / 3], [.92, 1], [1, 1]];
+  function dwell(p) { for (var i = 1; i < stops.length; i++) if (p <= stops[i][0]) { var a = stops[i - 1], b = stops[i]; return b[0] === a[0] ? b[1] : a[1] + (b[1] - a[1]) * (p - a[0]) / (b[0] - a[0]); } return 1; }
   function tick() {
     if (!mq.matches) return;
     var vh = innerHeight, ps = [];
     tracks.forEach(function (t) {
       var b = t.getBoundingClientRect(), p = clamp(-b.top / (b.height - vh)), rail = t.querySelector('.rail'), max = rail.scrollWidth - t.clientWidth;
-      var e = clamp((p - .05) / .9); ps.push(p);
+      var e = dwell(p); ps.push(p);
       rail.style.translate = (t.dataset.dir === 'left' ? -(1 - e) * max : -e * max) + 'px 0';
       t.querySelector('.piste .line b').style.scale = p + ' 1';
     });
