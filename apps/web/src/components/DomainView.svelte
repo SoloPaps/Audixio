@@ -7,6 +7,7 @@ import type { BriefChoice } from '../lib/brief-fetch.js';
 import { requestBriefExport, saveBriefExport } from '../lib/brief-fetch.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
+import { copyText } from '../lib/clipboard.js';
 import { domainLede, shownConclusion } from '../lib/domain-conclusion.js';
 import {
   domainPager,
@@ -277,25 +278,22 @@ async function onGenerate(event: SubmitEvent): Promise<void> {
     copied = false;
     return;
   }
-  try {
-    await navigator.clipboard.writeText(file.markdown);
-    copied = true;
-    say(t('domaine.prompt.done'), document.getElementById('live'));
-  } catch {
-    copied = false;
-    say(t('api.error.internal'), document.getElementById('live'));
-  }
+  copied = await copyText(file.markdown);
+  say(
+    copied ? t('domaine.prompt.done') : t('copy.failed'),
+    document.getElementById('live'),
+  );
 }
 
-async function onCopyBrief(): Promise<void> {
+async function onCopyBrief(): Promise<boolean> {
   const file = await serverFile();
-  if (!file) return;
-  try {
-    await navigator.clipboard.writeText(file.markdown);
-    say(t('domaine.prompt.done'), document.getElementById('live'));
-  } catch {
-    say(t('api.error.internal'), document.getElementById('live'));
-  }
+  if (!file) return false;
+  const ok = await copyText(file.markdown);
+  say(
+    ok ? t('domaine.prompt.done') : t('copy.failed'),
+    document.getElementById('live'),
+  );
+  return ok;
 }
 
 async function onExport(): Promise<void> {

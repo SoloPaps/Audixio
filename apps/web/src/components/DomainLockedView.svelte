@@ -2,6 +2,7 @@
 import { onMount, tick } from 'svelte';
 import { t } from '../i18n/index.js';
 import type { CategoryItem } from '../lib/categories.js';
+import { copyText } from '../lib/clipboard.js';
 import { domainPager, domainShort, REPORT_DOMAINS } from '../lib/domains.js';
 import { domainLetter, verifyHref } from '../lib/hub-view.js';
 import { revealAll } from '../lib/motion.js';
@@ -76,7 +77,7 @@ function proofText(): string {
 }
 
 function onCopy(): void {
-  void navigator.clipboard.writeText(proofText());
+  void copyText(proofText());
 }
 
 onMount(() => {

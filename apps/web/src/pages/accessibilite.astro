@@ -6,7 +6,7 @@ import Canon from '../layouts/Canon.astro';
 ---
 
 <Canon vue="accessibilite" title={t('mq.meta.accessibilite.title')} description={t('mq.meta.accessibilite.desc')} robots="index, follow">
-<main id="contenu" tabindex="-1" data-reading="1" data-ripple="1" data-copied={t('mq.lg.381')} data-copied-long={t('mq.lg.380')}>
+<main id="contenu" tabindex="-1" data-reading="1" data-ripple="1" data-copied={t('mq.lg.381')} data-copied-long={t('mq.lg.380')} data-copy-failed={t('copy.failed')}>
 <div class="progress" aria-hidden="true"></div>
 <div class="hero l-hero"><div data-stagger>
 <nav aria-label={t('mq.lg.001')} class="rv"><ol class="crumbs"><li><a href="/">{t('mq.lg.002')}</a></li><li><span>{t('mq.lg.003')}</span></li><li><span aria-current="page">{t('mq.lg.306')}</span></li></ol></nav>
@@ -49,7 +49,7 @@ import { bindMaquetteMotion, bindReadingAids, bindRipple } from '../lib/motion';
 bindMaquetteMotion();
 const root = document.getElementById('contenu');
 if (root?.dataset.reading === '1') bindReadingAids(root.dataset.copyPrefix ?? '');
-if (root?.dataset.ripple === '1') bindRipple({ copied: root.dataset.copied ?? '', copiedLong: root.dataset.copiedLong ?? '' });
+if (root?.dataset.ripple === '1') bindRipple({ copied: root.dataset.copied ?? '', copiedLong: root.dataset.copiedLong ?? '', failed: root.dataset.copyFailed ?? '' });
 document.dispatchEvent(new Event('audixio-motion'));
 </script>
 </Canon>

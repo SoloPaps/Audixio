@@ -6,7 +6,7 @@ import Canon from '../layouts/Canon.astro';
 ---
 
 <Canon vue="pro" title={t('mq.pro.meta.title')} description={t('mq.pro.meta.desc')} robots="index, follow">
-<p hidden id="mq.pr.err.bad">{t('mq.pr.err.bad')}</p><p hidden id="mq.pr.err.empty">{t('mq.pr.err.empty')}</p><p hidden id="mq.ax.copied">{t('mq.ax.copied')}</p><p hidden id="mq.ax.copied.long">{t('mq.ax.copied.long')}</p>
+<p hidden id="mq.pr.err.bad">{t('mq.pr.err.bad')}</p><p hidden id="mq.pr.err.empty">{t('mq.pr.err.empty')}</p><p hidden id="mq.ax.copied">{t('mq.ax.copied')}</p><p hidden id="mq.ax.copied.long">{t('mq.ax.copied.long')}</p><p hidden id="copy.failed">{t('copy.failed')}</p>
 
 
 
@@ -105,9 +105,12 @@ d.addEventListener('pointerdown',function(e){var b=e.target.closest('.btn');if(!
 if(!R&&matchMedia('(hover:hover) and (min-width:900px)').matches){var mx=0,my=0,sy=0,raf;function ap(){d.querySelectorAll('[data-depth]').forEach(function(l){var k=+l.dataset.depth;l.style.transform='translate3d('+(mx*k*18)+'px,'+(my*k*14-sy*k*.12)+'px,0)'});raf=0}
  function q(){if(!raf)raf=requestAnimationFrame(ap)}
  addEventListener('pointermove',function(e){mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;q()},{passive:true});addEventListener('scroll',function(){sy=Math.min(scrollY,700);q()},{passive:true})}
-/* copy helper */
+/* copy helper : API, sinon zone de texte ; jamais de faux « Copié » */
+function cp(t,ok,ko){function lg(){var a=d.createElement('textarea'),r=false;a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;opacity:0';d.body.appendChild(a);a.select();try{r=d.execCommand('copy')}catch(e){}a.remove();r?ok():ko()}
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,lg);else lg()}
+AX.cp=cp;
 AX.copy=function(btn,txt,msg){function done(){btn.classList.add('ok');var l=btn.querySelector('.bl'),o=l.textContent;l.textContent=tr('mq.ax.copied');AX.say(msg||tr('mq.ax.copied.long'),true);setTimeout(function(){l.textContent=o;btn.classList.remove('ok')},1800)}
- if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).then(done,done);else done()};
+ cp(txt,done,function(){AX.say(tr('copy.failed'),true)})};
 d.querySelectorAll('[data-copy]').forEach(function(b){b.addEventListener('click',function(){AX.copy(b,b.dataset.copy,b.dataset.msg)})});
 AX.busy=function(b,ms,cb){b.setAttribute('aria-busy','true');setTimeout(function(){b.removeAttribute('aria-busy');cb&&cb()},R?150:ms)};
 /* skeletons resolve */

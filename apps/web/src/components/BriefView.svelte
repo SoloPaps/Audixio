@@ -8,6 +8,7 @@ import { briefScreen } from '../lib/brief-screen.js';
 import { briefCount } from '../lib/brief-stats.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import type { CategoryItem } from '../lib/categories.js';
+import { copyText } from '../lib/clipboard.js';
 import { REPORT_DOMAINS } from '../lib/domains.js';
 import { briefSelectionRow, savedChoices } from '../lib/finding-choice.js';
 import { gradeForScore } from '../lib/grade.js';
@@ -182,15 +183,12 @@ async function serverFile(): Promise<{
   return file;
 }
 
-async function copyPrompt(): Promise<void> {
+async function copyPrompt(): Promise<boolean> {
   const file = await serverFile();
-  if (!file) return;
-  try {
-    await navigator.clipboard.writeText(file.markdown);
-    say(t('brief.copied'));
-  } catch {
-    say(t('api.error.internal'));
-  }
+  if (!file) return false;
+  const ok = await copyText(file.markdown);
+  say(ok ? t('brief.copied') : t('copy.failed'));
+  return ok;
 }
 
 async function download(): Promise<void> {

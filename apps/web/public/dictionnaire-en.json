@@ -320,6 +320,7 @@
   "verify.copy": "Copy the code",
   "verify.copied": "The code is copied.",
   "verify.copy_failed": "Select the code and copy it yourself.",
+  "copy.failed": "Could not copy here. Select the text and copy it yourself.",
   "verify.status.pending": "The code is not visible yet. Place it, then try again.",
   "verify.verified": "The site is verified. Deeper tests are open.",
   "verify.failed": "The proof was not found.",

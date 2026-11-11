@@ -1,5 +1,6 @@
 import { formatFixed } from '../i18n/format.js';
 import { t } from '../i18n/index.js';
+import { copyText } from './clipboard.js';
 
 export function reduced(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -178,9 +179,11 @@ export function bindMotion(root: ParentNode): () => void {
           button.classList.remove('ok');
         }, 1800);
       };
-      const clip = navigator.clipboard;
-      if (clip?.writeText) void clip.writeText(text).then(done, done);
-      else done();
+      // Jamais de « Copié » si rien n'a été copié.
+      void copyText(text).then((ok) => {
+        if (ok) done();
+        else say(t('copy.failed'), true);
+      });
     };
     button.addEventListener('click', onCopy);
     off.push(() => button.removeEventListener('click', onCopy));

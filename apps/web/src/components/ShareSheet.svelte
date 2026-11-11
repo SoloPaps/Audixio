@@ -2,6 +2,7 @@
 import { t } from '../i18n/index.js';
 import { linkErrorKey } from '../lib/badge-target.js';
 import { currentSession } from '../lib/browser-session.js';
+import { copyText } from '../lib/clipboard.js';
 import { badgeHref } from '../lib/hub-view.js';
 import { loginHref, signupHref } from '../lib/nav.js';
 
@@ -146,10 +147,8 @@ async function revoke(): Promise<void> {
 }
 
 async function copy(): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(link);
-  } catch {
-    error = t('verify.copy_failed');
+  if (!(await copyText(link))) {
+    error = t('copy.failed');
     return;
   }
   copied = true;

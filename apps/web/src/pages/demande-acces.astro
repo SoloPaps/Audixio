@@ -6,7 +6,7 @@ import Canon from '../layouts/Canon.astro';
 ---
 
 <Canon vue="demande" title={t('mq.demande.meta.title')} description={t('mq.demande.meta.desc')} robots="noindex, nofollow">
-<p hidden id="mq.dm.copied">{t('mq.dm.copied')}</p><p hidden id="mq.dm.copied.long">{t('mq.dm.copied.long')}</p><p hidden id="mq.dm.refresh">{t('mq.dm.refresh')}</p><p hidden id="mq.dm.need">{t('mq.dm.need')}</p><p hidden id="mq.dm.sent">{t('mq.dm.sent')}</p><p hidden id="mq.dm.limited">{t('mq.dm.limited')}</p><p hidden id="mq.dm.error">{t('mq.dm.error')}</p>
+<p hidden id="mq.dm.copied">{t('mq.dm.copied')}</p><p hidden id="mq.dm.copied.long">{t('mq.dm.copied.long')}</p><p hidden id="copy.failed">{t('copy.failed')}</p><p hidden id="mq.dm.refresh">{t('mq.dm.refresh')}</p><p hidden id="mq.dm.need">{t('mq.dm.need')}</p><p hidden id="mq.dm.sent">{t('mq.dm.sent')}</p><p hidden id="mq.dm.limited">{t('mq.dm.limited')}</p><p hidden id="mq.dm.error">{t('mq.dm.error')}</p>
 
 
 <div class="scroll-progress" aria-hidden="true"></div>
@@ -319,7 +319,9 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
         say(tr('mq.dm.copied.long'),true);
         setTimeout(function(){txt.textContent=orig;copyBtn.classList.remove('ok')},1800);
       };
-      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(shareInput.value).then(done,done);else done();
+      var fail=function(){shareInput.select();say(tr('copy.failed'),true)};
+      var legacy=function(){var ok=false;shareInput.select();try{ok=d.execCommand('copy')}catch(e){}ok?done():fail()};
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(shareInput.value).then(done,legacy);else legacy();
     });
   }
 

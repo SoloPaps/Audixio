@@ -1,6 +1,7 @@
 /** Mouvements communs des vues portées des maquettes finales. */
 
 import { formatFixed } from '../i18n/format.js';
+import { copyText } from './clipboard.js';
 
 export function calm(): boolean {
   return (
@@ -336,9 +337,11 @@ export function bindReadingAids(copyPrefix: string): void {
         api?.say(`${english ?? copyPrefix}${value}`, true);
         window.setTimeout(() => button.classList.remove('done'), 2400);
       };
-      if (navigator.clipboard) {
-        void navigator.clipboard.writeText(value).then(done, done);
-      } else done();
+      // Sans copie possible, on lit l'adresse au lieu d'annoncer « copiée ».
+      void copyText(value).then((ok) => {
+        if (ok) done();
+        else api?.say(value, true);
+      });
     });
   }
   for (const path of document.querySelectorAll<SVGGeometryElement>(
@@ -352,6 +355,7 @@ export function bindReadingAids(copyPrefix: string): void {
 export function bindRipple(labels: {
   copied: string;
   copiedLong: string;
+  failed?: string;
 }): void {
   const api = axWindow().AX;
   const reduce = Boolean(api?.reduce);
@@ -421,9 +425,10 @@ export function bindRipple(labels: {
           btn.classList.remove('ok');
         }, 1800);
       };
-      if (navigator.clipboard?.writeText) {
-        void navigator.clipboard.writeText(text).then(done, done);
-      } else done();
+      void copyText(text).then((ok) => {
+        if (ok) done();
+        else if (labels.failed) api.say(labels.failed, true);
+      });
     };
     api.busy = (btn, ms, done) => {
       btn.setAttribute('aria-busy', 'true');
