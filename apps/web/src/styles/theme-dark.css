@@ -134,7 +134,7 @@ html[data-theme="dark"] {
   }
 
   /* Sombre v6 : seules ces --d-v* portent les couleurs. Les rôles sémantiques les relaient. */
-  html[data-theme="dark"] [data-v6] {
+  html[data-theme="dark"][data-v6] {
     color-scheme: dark;
     --d-vbg: #06090d;
     --d-vbg2: #080c12;
@@ -196,7 +196,7 @@ html[data-theme="dark"] {
     --bar: var(--d-vbg);
   }
 
-  html[data-theme="dark"] [data-v6] .v6-logo img {
+  html[data-theme="dark"][data-v6] .v6-logo img {
     filter: brightness(0) invert(1);
   }
 }

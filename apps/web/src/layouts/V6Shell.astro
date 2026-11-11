@@ -1,0 +1,44 @@
+---
+import Icons from '../components/v6/Icons.astro';
+import '../styles/geist.css';
+import '../styles/tokens.css';
+import '../styles/theme-dark.css';
+import '../styles/v6.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const theme = Astro.url.searchParams.get('theme');
+const initial = theme === 'dark' ? 'dark' : 'light';
+---
+
+<!doctype html>
+<html lang="fr" data-theme={initial} data-v6>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#F3F5F8"
+      data-light="#F3F5F8"
+      data-dark="#06090D"
+    />
+    <meta property="og:locale" content="fr_FR" />
+    <script is:inline src="/theme-init.js"></script>
+  </head>
+  <body>
+    <Icons />
+    <slot />
+    <script>
+      import { bootLocale } from '../i18n/live';
+      bootLocale();
+    </script>
+  </body>
+</html>

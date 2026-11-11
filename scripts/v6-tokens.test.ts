@@ -26,7 +26,7 @@ describe('jetons v6', () => {
   });
 
   it('relaye le sombre uniquement par des --d-v* dans theme-dark.css', () => {
-    expect(dark).toContain('html[data-theme="dark"] [data-v6]');
+    expect(dark).toContain('html[data-theme="dark"][data-v6]');
     expect(dark).toContain('--d-vbg: #06090d');
     expect(dark).toContain('--d-vtx: #e8eef6');
     expect(dark).toContain('--d-vbeam: #7cc4ff');
