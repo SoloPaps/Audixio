@@ -163,6 +163,7 @@
   --dock-space: calc(var(--dock-h) + var(--dock-gap) * 2);
   --w-dock: 17rem;
   --logo-h: 28px;
+  --logo-sm: 20px;
   --v6-blur: 14px;
   --nudge: 1px;
   --press: 0.99;

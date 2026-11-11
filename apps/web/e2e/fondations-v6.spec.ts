@@ -63,6 +63,67 @@ for (const width of widths) {
   }
 }
 
+for (const lang of langs) {
+  test(`aucun contrôle d’en-tête ne passe à la ligne de 320 à 390 (${lang})`, async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      ({ askedLang, english, french }) => {
+        if (askedLang === 'en') {
+          localStorage.setItem('audigy-locale', 'en');
+          localStorage.setItem('audigy-en', english);
+          localStorage.setItem('audigy-fr', french);
+        }
+      },
+      { askedLang: lang, english: en, french: fr },
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/dev/fondations?theme=light', {
+      waitUntil: 'networkidle',
+    });
+    await page.evaluate(() => document.fonts.ready);
+    await expect(page.locator('html')).toHaveAttribute('lang', lang);
+
+    for (let width = 320; width <= 390; width += 1) {
+      await page.setViewportSize({ width, height: 844 });
+      const wrapped = await page.evaluate(() => {
+        const nodes = [...document.querySelectorAll('button, nav a, a.login')];
+        const hits = [];
+        for (const el of nodes) {
+          const view = getComputedStyle(el);
+          if (view.display === 'none' || view.visibility === 'hidden') continue;
+          const range = document.createRange();
+          const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+          let node = walker.nextNode();
+          const tops = new Set();
+          while (node) {
+            const value = node.textContent ?? '';
+            const parent = node.parentElement;
+            if (value.trim() && !(parent && parent.closest('svg'))) {
+              range.selectNodeContents(node);
+              for (const rect of range.getClientRects()) {
+                if (rect.width > 0 && rect.height > 0)
+                  tops.add(Math.round(rect.top));
+              }
+            }
+            node = walker.nextNode();
+          }
+          if (tops.size > 1)
+            hits.push((el.textContent ?? '').replace(/\s+/g, ' ').trim());
+        }
+        return hits;
+      });
+      expect(wrapped, `${lang} ${width}`).toEqual([]);
+      const overflow = await page.evaluate(() => {
+        const bar = document.querySelector('.bar');
+        if (!bar) return 0;
+        return Math.ceil(bar.scrollWidth - bar.clientWidth);
+      });
+      expect(overflow, `${lang} ${width} déborde`).toBeLessThanOrEqual(1);
+    }
+  });
+}
+
 test('le bouton désactivé et le focus restent visibles', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/dev/fondations?theme=light', { waitUntil: 'networkidle' });

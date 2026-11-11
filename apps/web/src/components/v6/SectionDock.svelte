@@ -78,7 +78,7 @@ onMount(() => {
     onclick={() => (open = !open)}
   >
     <span class="num">{index} / {count}</span>
-    <span>{sections[active]?.label}</span>
+    <span class="dock-t">{sections[active]?.label}</span>
     <svg aria-hidden="true"><use href="#i-chev" /></svg>
   </button>
   <ol class="dock-l" id="dock-l">

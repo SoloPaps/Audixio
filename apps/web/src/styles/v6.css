@@ -636,6 +636,37 @@
   }
 }
 
+/* 320–390 : libellés sur une ligne. Au-dessus, le 1440 ne change pas. */
+@media (max-width: 390px) {
+  [data-v6] .bar {
+    width: min(100% - var(--s-4), 82rem);
+  }
+
+  [data-v6] .v6-logo img {
+    height: var(--logo-sm);
+  }
+
+  [data-v6] .login {
+    white-space: nowrap;
+    padding: 0 var(--s-2);
+    flex-shrink: 0;
+  }
+
+  [data-v6] .login svg {
+    display: none;
+  }
+
+  [data-v6] :is(.switch, .nav a, .btn, .btn-s, .dock button, .dock a) {
+    white-space: nowrap;
+  }
+
+  [data-v6] .dock-t {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-v6] .btn,
   [data-v6] .btn-s,
