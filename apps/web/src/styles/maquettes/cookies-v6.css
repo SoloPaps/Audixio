@@ -353,21 +353,13 @@
   text-underline-offset: 0.15em;
   cursor: pointer;
 }
-/* Dans le gabarit v6, le choix des cookies est le contenu de la page :
- * carte posée entre la barre et le pied, sans voile ni position fixe. */
+/* Dans le gabarit v6, /cookies reste une boîte de dialogue posée sur un voile
+ * (retour owner du 11 nov.) : la page ne défile pas et le pied reste hors champ. */
+html[data-page="cookies"],
+html[data-page="cookies"] body {
+  height: 100%;
+  overflow: hidden;
+}
 .cks {
-  display: grid;
-  place-items: center;
-  min-height: max(30rem, calc(100svh - 9rem));
-  padding: 7.5rem 1rem 3rem;
-}
-.cks .backdrop,
-.cks .veil {
-  display: none;
-}
-.cks .wrap {
-  position: relative;
-  inset: auto;
-  z-index: auto;
-  width: 100%;
+  min-height: 100svh;
 }

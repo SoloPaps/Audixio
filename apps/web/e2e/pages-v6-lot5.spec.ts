@@ -15,7 +15,6 @@ const PAGES = [
   { path: '/cgu', vue: 'cgu', sc: 'lgc' },
   { path: '/confidentialite', vue: 'confidentialite', sc: 'lgp' },
   { path: '/mentions-legales', vue: 'mentions', sc: 'lgm' },
-  { path: '/cookies', vue: 'cookies', sc: 'cks' },
   { path: '/404', vue: 'e404', sc: 'er4' },
   { path: '/500', vue: 'e500', sc: 'er5' },
   { path: '/maintenance', vue: 'maintenance', sc: 'mnt' },
@@ -148,20 +147,20 @@ test.describe('pages connectées (compte simulé)', () => {
   }
 });
 
-test('/cookies : la carte de choix est le contenu de la page, sans voile', async ({
+test('/cookies en v6 : boîte de dialogue sur un voile, page immobile, pied hors champ', async ({
   page,
 }) => {
-  await page.goto('/cookies');
-  const card = page.locator('.cks .bn');
-  await expect(card).toBeVisible();
-  await expect(card.getByRole('button').first()).toBeVisible();
-  await expect(page.locator('.cks .wrap')).toHaveCSS('position', 'relative');
-  // Le pied de page vient après la carte, pas sous un voile.
-  const cardBottom = await card.evaluate(
-    (el) => el.getBoundingClientRect().bottom,
-  );
-  const footTop = await page
-    .locator('footer[data-dock-hide]')
-    .evaluate((el) => el.getBoundingClientRect().top);
-  expect(footTop).toBeGreaterThan(cardBottom);
+  for (const theme of ['light', 'dark'] as const) {
+    await page.goto(`/cookies?theme=${theme}`);
+    const html = page.locator('html');
+    await expect(html).toHaveAttribute('data-v6', '');
+    await expect(html).toHaveAttribute('data-page', 'cookies');
+    const dialog = page.getByRole('dialog', {
+      name: 'Vos choix sur les cookies',
+    });
+    await expect(dialog).toBeInViewport({ ratio: 1 });
+    await expect(page.locator('.cks[data-port] main#contenu')).toBeAttached();
+    await expect(page.locator('footer[data-dock-hide]')).not.toBeInViewport();
+    await expect(page.locator('#ct')).toHaveCSS('font-family', /^"?Geist/);
+  }
 });
