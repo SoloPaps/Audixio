@@ -238,6 +238,9 @@ describe('CSP du build', () => {
         'verifier/00000000-0000-4000-8000-000000000019/index.html',
         'preuve()',
       );
+      await page('sites/index.html', 'sites()');
+      await page('sites/fiche/index.html', 'fiche()');
+      await page('sites/id/index.html', 'resoudre()');
       await publish(dir);
       const text = await readFile(path.join(dir, '_headers'), 'utf8');
       const rules = parseHeaderFile(text);
@@ -260,6 +263,9 @@ describe('CSP du build', () => {
         ['/score/exemple', 'score()'],
         ['/verifier/abc', 'preuve()'],
         ['/verifier/', 'verifier()'],
+        ['/sites/exemple.fr', 'fiche()'],
+        ['/sites/id/abc', 'resoudre()'],
+        ['/sites', 'sites()'],
       ];
       for (const [urlPath, code] of cases) {
         const policy = csp(urlPath);
@@ -272,7 +278,13 @@ describe('CSP du build', () => {
       const paths = rules
         .filter((rule) => rule.headers['Content-Security-Policy'])
         .map((rule) => rule.path);
-      for (const family of ['/rapport', '/partage', '/score', '/verifier']) {
+      for (const family of [
+        '/rapport',
+        '/partage',
+        '/score',
+        '/verifier',
+        '/sites',
+      ]) {
         expect(paths.filter((item) => item.startsWith(family))).toEqual([
           family,
           `${family}/*`,
