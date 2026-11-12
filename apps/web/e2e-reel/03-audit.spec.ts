@@ -48,6 +48,20 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   await expect(voir).toContainText('Voir le rapport');
   await voir.click();
   await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}/);
+  // DIAG temporaire (lot 5) : état réel de l’en-tête du hub.
+  await page.waitForTimeout(3000);
+  console.log(
+    'DIAG',
+    JSON.stringify(
+      await page.evaluate(() => ({
+        lang: document.documentElement.lang,
+        ttl: document.querySelector('.ttl')?.textContent ?? null,
+        h1: document.querySelector('h1')?.textContent ?? null,
+        main: (document.querySelector('main')?.textContent ?? '').slice(0, 600),
+        ls: Object.keys(localStorage),
+      })),
+    ),
+  );
   await expect(
     page.getByText(/partielle · \d+ domaines · site non vérifié/),
   ).toBeVisible();
