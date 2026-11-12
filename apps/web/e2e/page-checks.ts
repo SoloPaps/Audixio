@@ -196,13 +196,14 @@ function allowed(text: string): boolean {
   return ALLOW.some((re) => re.test(line));
 }
 
+/* 4 = filtre « texte » de createTreeWalker (constante du DOM). */
 const VISIBLE_BITS = `(() => {
   const skip = 'script,style,noscript,code,pre,[data-i18n-skip]';
   const attrs = ['aria-label', 'title', 'alt', 'placeholder'];
   const out = [];
   const walker = document.createTreeWalker(
     document.body,
-    NodeFilter.SHOW_TEXT,
+    4,
   );
   let node = walker.nextNode();
   while (node) {

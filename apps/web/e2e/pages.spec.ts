@@ -59,7 +59,8 @@ const PAGES: Row[] = [
 for (const row of PAGES) {
   test(`page ${row.path}`, async ({ browser, baseURL }) => {
     test.setTimeout(120_000);
-    const fresh = async () => (await browser.newContext({ baseURL })).newPage();
+    const fresh = async () =>
+      (await browser.newContext(baseURL ? { baseURL } : {})).newPage();
     if (row.contrast) {
       for (const theme of ['light', 'dark'] as const) {
         await test.step(`contraste ${theme}`, async () => {
