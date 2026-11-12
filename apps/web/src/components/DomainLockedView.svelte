@@ -132,7 +132,7 @@ onMount(() => {
           <p class="hero-p rv">{t('restreint.sub')}</p>
           <div class="hero-cta rv">
             <a class="btn btn-primary" href="#debloquer"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="m9 12 2 2 4-4"/></svg>{t('restreint.cta')}<svg class="ico down" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
-            <p hidden><a href="/demande-acces">{t('mq.demande.032')}</a> <a href="/passer-pro">{t('mq.passer.015')}</a></p>
+            <p hidden><a href="/demande-acces">{t('mq.demande.032')}</a> <a href="/pro">{t('mq.passer.015')}</a></p>
           </div>
         </div>
         <div class="scene-wrap rv from-right">
