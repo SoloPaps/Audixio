@@ -31,4 +31,19 @@ describe('pruneUnreferenced', () => {
     await access(path.join(root, 'preuves', 'preuve.json'));
     await expect(access(path.join(root, 'orphelin.txt'))).rejects.toThrow();
   });
+
+  it('garde _redirects écrit au build (bug : supprimé comme orphelin)', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'audigy-prune-'));
+    dirs.push(root);
+    await writeFile(path.join(root, 'index.html'), '<html></html>');
+    await writeFile(
+      path.join(root, '_redirects'),
+      '/plan /rapport/plan 301!\n',
+    );
+
+    const removed = await pruneUnreferenced(root);
+
+    expect(removed).toEqual([]);
+    await access(path.join(root, '_redirects'));
+  });
 });

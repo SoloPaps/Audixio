@@ -6,6 +6,8 @@ const KEEP_ROOT = new Set([
   'robots.txt',
   'dictionnaire-en.json',
   'dictionnaire-fr.json',
+  // Règles Netlify écrites au build (apps/web/src/lib/redirects.ts).
+  '_redirects',
 ]);
 
 async function walk(dir) {
