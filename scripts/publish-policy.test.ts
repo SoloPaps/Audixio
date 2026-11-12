@@ -1,8 +1,9 @@
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import type { SafeResponse } from '@audigy/net';
 import { describe, expect, it } from 'vitest';
+import { REWRITES } from '../apps/web/src/lib/redirects.js';
 import { judgeCsp } from '../packages/engine/checks/securite/csp.js';
 import { judgeFrames } from '../packages/engine/checks/securite/frames.js';
 import { judgeHsts } from '../packages/engine/checks/securite/hsts.js';
@@ -202,6 +203,97 @@ describe('CSP du build', () => {
         'a.css',
         'f.woff2',
       ]);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('CSP des adresses réécrites : /rapport/:id/…, imprimer, /partage/:jeton (bug)', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-policy-rw-'));
+    const page = async (rel: string, code: string): Promise<void> => {
+      await mkdir(path.dirname(path.join(dir, rel)), { recursive: true });
+      await writeFile(
+        path.join(dir, rel),
+        `<!doctype html><script>${code}</script>`,
+        'utf8',
+      );
+    };
+    try {
+      await page('index.html', 'accueil()');
+      await page('rapport/index.html', 'resume()');
+      for (const tab of [
+        'domaines',
+        'constats',
+        'plan',
+        'brief',
+        'badge',
+        'imprimer',
+      ]) {
+        await page(`rapport/${tab}/index.html`, `${tab}()`);
+      }
+      await page('partage/index.html', 'partage()');
+      await page('score/index.html', 'score()');
+      await page('verifier/index.html', 'verifier()');
+      await page(
+        'verifier/00000000-0000-4000-8000-000000000019/index.html',
+        'preuve()',
+      );
+      await publish(dir);
+      const text = await readFile(path.join(dir, '_headers'), 'utf8');
+      const rules = parseHeaderFile(text);
+      const csp = (urlPath: string): string =>
+        headersFor(rules, urlPath)['Content-Security-Policy'] ?? '';
+      const ID = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10';
+      const cases: [string, string][] = [
+        [`/rapport/${ID}`, 'resume()'],
+        [`/rapport/${ID}/domaines/seo`, 'domaines()'],
+        [`/rapport/${ID}/constats`, 'constats()'],
+        [`/rapport/${ID}/plan`, 'plan()'],
+        [`/rapport/${ID}/brief`, 'brief()'],
+        [`/rapport/${ID}/badge`, 'badge()'],
+        [`/rapport/${ID}/imprimer`, 'imprimer()'],
+        ['/rapport/', 'resume()'],
+        ['/rapport', 'resume()'],
+        ['/rapport/domaines/', 'domaines()'],
+        ['/partage/jeton-abc', 'partage()'],
+        ['/partage/', 'partage()'],
+        ['/score/exemple', 'score()'],
+        ['/verifier/abc', 'preuve()'],
+        ['/verifier/', 'verifier()'],
+      ];
+      for (const [urlPath, code] of cases) {
+        const policy = csp(urlPath);
+        expect(policy, urlPath).toContain(cspHash(code));
+        expect(scriptPolicyIsStrict(policy), urlPath).toBe(true);
+      }
+      expect(csp('/')).toContain(cspHash('accueil()'));
+      expect(csp('/')).not.toContain(cspHash('resume()'));
+      // Une seule politique par famille : aucune règle par page en double.
+      const paths = rules
+        .filter((rule) => rule.headers['Content-Security-Policy'])
+        .map((rule) => rule.path);
+      for (const family of ['/rapport', '/partage', '/score', '/verifier']) {
+        expect(paths.filter((item) => item.startsWith(family))).toEqual([
+          family,
+          `${family}/*`,
+        ]);
+      }
+      // Chaque réécriture 200 (table du rapport et netlify.toml) a sa CSP.
+      const toml = await readFile(
+        path.join(import.meta.dirname, '..', 'netlify.toml'),
+        'utf8',
+      );
+      const sources = [
+        ...REWRITES.map((rule) => rule.from),
+        ...[
+          ...toml.matchAll(/from = "([^"]+)"\s+to = "[^"]+"\s+status = 200/g),
+        ].map((match) => match[1] ?? ''),
+      ];
+      expect(sources.length).toBeGreaterThan(REWRITES.length);
+      for (const from of sources) {
+        const sample = from.replace(':id', ID).replace('*', 'x');
+        expect(csp(sample), from).toContain("script-src 'self' 'sha256-");
+      }
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
