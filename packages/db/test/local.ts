@@ -69,8 +69,20 @@ function runSupabase(args: string[]): void {
   }
 }
 
-export async function ensureLocalSupabase(): Promise<void> {
-  if (await portOpen(54321)) return;
+/** Message quand la base locale manque : clair, tout de suite, sans timeout. */
+export const SUPABASE_ABSENT =
+  'Supabase local n’est pas lancé (127.0.0.1:54321 fermé). Lancez « supabase start » à la racine du dépôt (Docker requis), puis relancez les tests. Pour le démarrer automatiquement : AUDIGY_SUPABASE_AUTOSTART=1.';
+
+/**
+ * Base locale prête, ou échec immédiat et explicite. Le démarrage automatique
+ * (lent, Docker) n’a lieu que sur demande : la CI lance `supabase start` avant.
+ */
+export async function ensureLocalSupabase(
+  env: NodeJS.ProcessEnv = process.env,
+  probe: (port: number) => Promise<boolean> = portOpen,
+): Promise<void> {
+  if (await probe(54321)) return;
+  if (env.AUDIGY_SUPABASE_AUTOSTART !== '1') throw new Error(SUPABASE_ABSENT);
   runSupabase([
     'start',
     '--yes',
