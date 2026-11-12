@@ -40,7 +40,8 @@ const mesurer = `(() => {
     });
     return 0.2126 * r + 0.7152 * g + 0.0722 * b;
   };
-  const opaque = (c) => c && !/rgba\\(0, 0, 0, 0\\)|transparent/.test(c) && !/,\\s*0?\\.\\d+\\)$|,\\s*0\\)$/.test(c);
+  // Fond plein en rgb() seulement : voiles rgba(…, 0.x) et color-mix translucides (oklab … / 0.88) sont traversés.
+  const opaque = (c) => /^rgba?\\(/.test(c || '') && !/rgba\\(0, 0, 0, 0\\)/.test(c) && !/,\\s*0?\\.\\d+\\)$|,\\s*0\\)$/.test(c);
   const fond = (el) => {
     for (let e = el; e; e = e.parentElement) {
       const s = getComputedStyle(e);

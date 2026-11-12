@@ -67,8 +67,9 @@ test('une adresse locale valide ne passe pas au rouge', async ({ page }) => {
     0,
   );
   await expect(page.getByRole('link', { name: 'Privacy' })).toHaveCount(0);
+  // La carte a son lien ; le pied v6 a le sien (gabarit v6 depuis le lot 5).
   await expect(
-    page.getByRole('link', { name: 'Confidentialité' }),
+    page.locator('main').getByRole('link', { name: 'Confidentialité' }),
   ).toBeVisible();
   const email = page.getByLabel('Adresse e-mail');
   await email.fill('gratuit@localhost');
@@ -85,6 +86,8 @@ test('une adresse locale valide ne passe pas au rouge', async ({ page }) => {
     return view.getComputedStyle(node).borderTopColor;
   });
   expect(border).not.toBe('rgb(180, 35, 24)');
+  // Rouge des erreurs v6 (--find) non plus.
+  expect(border).not.toBe('rgb(194, 52, 31)');
 });
 
 test('la carte de connexion reprend le survol et le focus de la maquette', async ({
@@ -108,5 +111,6 @@ test('la carte de connexion reprend le survol et le focus de la maquette', async
   expect(after).not.toBe(before);
   const email = page.getByLabel('Adresse e-mail');
   await email.focus();
-  await expect(email).toHaveCSS('border-top-color', 'rgb(61, 82, 160)');
+  // Focus sur le bleu v6 (--beam), plus le bleu v2 #3d52a0.
+  await expect(email).toHaveCSS('border-top-color', 'rgb(29, 95, 209)');
 });
