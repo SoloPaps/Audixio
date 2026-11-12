@@ -850,3 +850,104 @@ html[data-vue] .session-wall a.btn-ghost {
     border-radius: 22px;
   }
 }
+
+/* Liens de texte v6 (repris de liens.css, owner 6 nov.) : trait fin décalé
+ * d’une teinte adoucie, épaissi au survol ; couleur --beam dans les deux thèmes. */
+[data-v6]
+  :is(main, #contenu)
+  :is(p, li, dd, small, figcaption, td)
+  > a:not([class]),
+[data-v6] a.link-inline {
+  color: var(--beam);
+  font-weight: 600;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 0.22em;
+  transition:
+    text-decoration-color 0.2s,
+    color 0.2s;
+}
+
+[data-v6]
+  :is(main, #contenu)
+  :is(p, li, dd, small, figcaption, td)
+  > a:not([class]):is(:hover, :focus-visible),
+[data-v6] a.link-inline:is(:hover, :focus-visible) {
+  text-decoration-thickness: 2px;
+  text-decoration-color: currentColor;
+}
+
+/* Encart hors session (SessionWall) sur les pages v6 : carte v6, mêmes
+ * mesures que l’encart v2 (28 px, 48 px), boutons --cta / --cta-fg. */
+[data-v6] .session-wall {
+  box-sizing: border-box;
+  width: min(640px, 100%);
+  margin: 8px auto 32px;
+  padding: 48px;
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: 0 30px 60px -36px color-mix(in oklab, var(--ink) 30%, transparent);
+}
+
+[data-v6] .session-wall h1 {
+  margin: 0 0 16px;
+  max-width: 18ch;
+  color: var(--ink);
+  font-size: clamp(32px, 5vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+[data-v6] .session-wall p {
+  margin: 0 0 12px;
+  max-width: 52ch;
+  color: var(--ink-2);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+[data-v6] .session-wall .session-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 28px 0 0;
+  padding: 0;
+}
+
+[data-v6] .session-wall a.btn {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 24px;
+  border: 1.5px solid transparent;
+  border-radius: 99px;
+  font: 600 15px / 1.2 var(--sans);
+  text-decoration: none;
+}
+
+[data-v6] .session-wall a.btn-primary {
+  background: var(--cta);
+  color: var(--cta-fg);
+}
+
+[data-v6] .session-wall a.btn-primary:hover {
+  background: var(--cta-h);
+}
+
+[data-v6] .session-wall a.btn-ghost {
+  background: var(--surf);
+  color: var(--ink);
+  border-color: var(--line-2);
+}
+
+@media (max-width: 600px) {
+  [data-v6] .session-wall {
+    padding: 24px;
+    border-radius: 22px;
+  }
+}

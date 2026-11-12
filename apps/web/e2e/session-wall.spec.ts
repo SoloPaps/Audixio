@@ -62,8 +62,25 @@ test.describe('mur hors session', () => {
         'href',
         `/connexion?next=${wall.next}`,
       );
-      await expect(login).toHaveCSS('color', 'rgb(255, 255, 255)');
-      await expect(login).toHaveCSS('background-color', 'rgb(61, 82, 160)');
+      // Pages v6 : bouton sur les jetons --cta / --cta-fg ; v2 : bleu #3d52a0.
+      const v6 = (await page.locator('html[data-v6]').count()) > 0;
+      if (v6) {
+        const tok = await page.evaluate<{ cta: string; fg: string }>(`(() => {
+          const t = document.createElement('i');
+          t.style.background = 'var(--cta)';
+          t.style.color = 'var(--cta-fg)';
+          document.body.appendChild(t);
+          const s = getComputedStyle(t);
+          const r = { cta: s.backgroundColor, fg: s.color };
+          t.remove();
+          return r;
+        })()`);
+        await expect(login).toHaveCSS('color', tok.fg);
+        await expect(login).toHaveCSS('background-color', tok.cta);
+      } else {
+        await expect(login).toHaveCSS('color', 'rgb(255, 255, 255)');
+        await expect(login).toHaveCSS('background-color', 'rgb(61, 82, 160)');
+      }
       await expect(
         card.getByRole('link', { name: 'Inscription' }),
       ).toHaveAttribute('href', `/inscription?next=${wall.next}`);
@@ -84,13 +101,17 @@ test.describe('mur hors session', () => {
       );
       await expect(page.locator('.axn-bar .axn-acct')).toHaveText('Connexion');
 
-      const foot = page.locator('.axf-in');
+      const foot = page.locator(
+        v6 ? 'footer[data-dock-hide] .cols' : '.axf-in',
+      );
       const box = await foot.boundingBox();
       expect(box).not.toBeNull();
       if (!box) return;
-      expect(box.x).toBeGreaterThan(16);
+      // Pied v6 : colonnes à 16 px du bord, comme sur les autres pages v6.
+      expect(box.x).toBeGreaterThan(v6 ? 15 : 16);
       expect(Math.abs(1280 - box.width - box.x * 2)).toBeLessThan(4);
-      await expect(foot).not.toHaveCSS('padding-left', '0px');
+      // v2 : marge intérieure du pied ; v6 : la position (> 15 px) suffit.
+      if (!v6) await expect(foot).not.toHaveCSS('padding-left', '0px');
 
       await page.setViewportSize({ width: 330, height: 700 });
       await expect(
