@@ -17,7 +17,7 @@ test('parcours clés en 330 px puis suppression du compte', async ({
     narrow.getByRole('button', { name: 'Scanner mon site, gratuit' }),
   ).toBeVisible();
 
-  await narrow.goto(`/rapport?id=${encodeURIComponent(auditId)}`);
+  await narrow.goto(`/rapport/${encodeURIComponent(auditId)}`);
   await expect(narrow.locator('#shareBtn')).toBeVisible();
   await narrow.locator('#shareBtn').click();
   await expect(narrow.getByRole('dialog')).toBeVisible();

@@ -20,7 +20,7 @@ test('visiteur non connecté voit le hub et la fenêtre de compte', async ({
   await expect(page).not.toHaveURL(/\/audit-echoue/);
   await expect(page.getByText('0/100')).toHaveCount(0);
   await page.locator('#reportBtn').click();
-  await expect(page).toHaveURL(/\/rapport\?id=/);
+  await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}/);
   await expect(
     page.getByText(/partielle · \d+ domaines · site non vérifié/),
   ).toBeVisible();
@@ -47,25 +47,25 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   await expect(voir).toBeVisible({ timeout: 120_000 });
   await expect(voir).toContainText('Voir le rapport');
   await voir.click();
-  await expect(page).toHaveURL(/\/rapport\?id=/);
+  await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}/);
   await expect(
     page.getByText(/partielle · \d+ domaines · site non vérifié/),
   ).toBeVisible();
 
   await page.locator('#domaine-seo').click();
-  await expect(page).toHaveURL(/domaine=seo/);
+  await expect(page).toHaveURL(/\/domaines\/seo/);
   await expect(page.getByText('Verrouillé', { exact: true })).toHaveCount(0);
   await page.getByRole('button', { name: 'Détails' }).first().click();
   await expect(page.getByText('Actions recommandées').first()).toBeVisible();
 
-  await page.goto(`/rapport?id=${encodeURIComponent(auditId)}`);
+  await page.goto(`/rapport/${encodeURIComponent(auditId)}`);
   await page.locator('#domaine-securite').click();
-  await expect(page).toHaveURL(/domaine=securite/);
+  await expect(page).toHaveURL(/\/domaines\/securite/);
   await expect(page.getByText('Verrouillé', { exact: true })).toBeVisible();
 
-  await page.goto(`/rapport?id=${encodeURIComponent(auditId)}`);
+  await page.goto(`/rapport/${encodeURIComponent(auditId)}`);
   await page.getByRole('link', { name: 'Ouvrir le brief IA' }).click();
-  await expect(page).toHaveURL(/\/brief\?id=/);
+  await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}\/brief/);
   await expect(page.locator('#md')).toContainText(/pas de titre/);
   await expect(
     page.getByText('Verrouillé', { exact: true }).first(),
@@ -81,9 +81,9 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
   expect(file.status()).toBe(200);
   expect(await file.text()).toContain('PARTIEL');
   await page.getByRole('link', { name: /plan d.action/ }).click();
-  await expect(page).toHaveURL(/\/plan\?id=/);
+  await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}\/plan/);
   await page.getByRole('link', { name: 'Voir le détail' }).first().click();
-  await expect(page).toHaveURL(/\/constat\?/);
+  await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}\/constats\//);
 
   await page.addInitScript(
     "window.print = () => { document.documentElement.dataset.imprime = 'oui'; };",
