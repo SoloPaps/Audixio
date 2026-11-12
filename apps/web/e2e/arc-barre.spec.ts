@@ -29,7 +29,7 @@ test('la barre flottante indique la page et le menu se ferme avec Échap', async
     exact: true,
   });
   await expect(
-    bar.getByRole('link', { name: 'Méthode', exact: true }),
+    bar.getByRole('link', { name: 'Comment ça marche', exact: true }),
   ).toHaveAttribute('aria-current', 'page');
   await expect(
     page.locator('.axn-bar').getByRole('link', { name: 'Connexion' }),
@@ -63,8 +63,8 @@ test('le pied nomme les conditions et reste sur une navigation', async ({
   await expect(
     footer.getByRole('link', { name: 'Conditions d’utilisation' }),
   ).toHaveAttribute('href', '/cgu');
-  await expect(footer.getByRole('link', { name: 'Méthode' })).toHaveAttribute(
-    'href',
-    '/methode',
-  );
+  await expect(
+    footer.getByRole('link', { name: 'Comment ça marche' }),
+  ).toHaveAttribute('href', '/methode');
+  await expect(footer.getByRole('navigation')).toHaveCount(3);
 });

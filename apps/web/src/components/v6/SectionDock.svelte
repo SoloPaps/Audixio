@@ -1,6 +1,6 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import { t } from '../../i18n/index.js';
+import { t } from '../../i18n/slim.js';
 import { dockState } from '../../lib/v6-dock.js';
 
 interface Section {

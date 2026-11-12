@@ -136,6 +136,7 @@ html[data-theme="dark"] {
   /* Sombre v6 : seules ces --d-v* portent les couleurs. Les rôles sémantiques les relaient. */
   html[data-theme="dark"][data-v6] {
     color-scheme: dark;
+    background-color: var(--d-vbg);
     --d-vbg: #06090d;
     --d-vbg2: #080c12;
     --d-vsf: #0c121a;
@@ -164,6 +165,8 @@ html[data-theme="dark"] {
     --d-vge: #ff8f86;
     --d-vgf: #ff8fb4;
     --d-vksh: rgb(0 0 0 / 0.7);
+    --d-vonfind: #1a0805;
+    --d-vonok: #03140d;
     --bg: var(--d-vbg);
     --bg-2: var(--d-vbg2);
     --surf: var(--d-vsf);
@@ -192,8 +195,40 @@ html[data-theme="dark"] {
     --gE: var(--d-vge);
     --gF: var(--d-vgf);
     --k-shadow: var(--d-vksh);
+    --on-find: var(--d-vonfind);
+    --on-ok: var(--d-vonok);
     --shadow: 0 30px 60px -30px var(--d-vksh);
     --bar: var(--d-vbg);
+  }
+
+  /* Faux site de l’accueil : une page sombre, pas une grande surface claire. */
+  html[data-theme="dark"][data-v6] .ac {
+    --d-vfsbg: #131a23;
+    --d-vfsblock: #2b3543;
+    --d-vfsblock2: #1e2731;
+    --d-vfsbtn: #8d9aae;
+    --d-vfsfield: #2e3947;
+    --d-vfsimga: #26313f;
+    --d-vfsimgb: #3f4d61;
+    --d-vfsimgc: #334052;
+    --d-vfsimgd: #4b5b71;
+    --d-vfsink: #dde3ec;
+    --d-vfspale: #36404d;
+    --d-vfspale2: #3b4553;
+    --d-vgcw: #f2c14e;
+    --gC-w: var(--d-vgcw);
+    --fs-bg: var(--d-vfsbg);
+    --fs-block: var(--d-vfsblock);
+    --fs-block-2: var(--d-vfsblock2);
+    --fs-btn: var(--d-vfsbtn);
+    --fs-field: var(--d-vfsfield);
+    --fs-img-a: var(--d-vfsimga);
+    --fs-img-b: var(--d-vfsimgb);
+    --fs-img-c: var(--d-vfsimgc);
+    --fs-img-d: var(--d-vfsimgd);
+    --fs-ink: var(--d-vfsink);
+    --fs-pale: var(--d-vfspale);
+    --fs-pale-2: var(--d-vfspale2);
   }
 
   html[data-theme="dark"][data-v6] .v6-logo img {

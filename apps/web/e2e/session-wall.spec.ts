@@ -71,7 +71,7 @@ test.describe('mur hors session', () => {
       const nav = page.getByRole('navigation', {
         name: 'Navigation principale',
       });
-      const home = nav.getByRole('link', { name: 'Accueil' });
+      const home = nav.getByRole('link', { name: 'Comment ça marche' });
       await expect(home).toHaveCSS('padding-top', '9px');
       await expect(home).toHaveCSS('padding-left', '16px');
       await expect(home).toHaveCSS('border-top-left-radius', '999px');
@@ -79,7 +79,10 @@ test.describe('mur hors session', () => {
         'color',
         'rgb(255, 255, 255)',
       );
-      await expect(page.locator('.axn-bar .axn-cta')).toHaveText('Connexion');
+      await expect(page.locator('.axn-bar .axn-cta')).toHaveText(
+        /Scanner mon site/,
+      );
+      await expect(page.locator('.axn-bar .axn-acct')).toHaveText('Connexion');
 
       const foot = page.locator('.axf-in');
       const box = await foot.boundingBox();

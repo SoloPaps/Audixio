@@ -1,0 +1,28 @@
+---
+import { t } from '../../../i18n/index.js';
+---
+
+<section class="sec wrap" id="jeu" aria-labelledby="h-game">
+ <div class="sh" data-rv><p class="eyebrow">{t('ac.190')}</p><h2 id="h-game">{t('ac.191')}</h2><p>{t('ac.192')}</p></div>
+ <div class="game">
+  <figure>
+   <div class="gv" data-game>
+    <div class="vp">
+     <div class="render"><div class="fs r" data-fs="r"><div class="e-logo" style="--l:4%;--t:6%;--w:12%;--h:4%"></div><div class="e-nav" style="--l:62%;--t:6%;--w:34%;--h:4%"><i></i><i></i><i></i><i></i></div><div class="e-title" style="--l:5%;--t:22%;--w:44%;--h:16%">{t('ac.013')}</div><div class="e-txt" style="--l:5%;--t:42%;--w:42%;--h:13%"><i></i><i></i><i></i></div><div class="e-form" style="--l:5%;--t:60%;--w:40%;--h:9%"><span></span><b></b></div><div class="e-img" style="--l:54%;--t:17%;--w:41%;--h:70%"></div></div></div>
+     <div class="xray"><div class="fs x" data-fs="x"><div class="e-logo okb" style="--l:4%;--t:6%;--w:12%;--h:4%"><span class="k">{t('ac.015')}</span><span>{t('ac.016')}</span></div><div class="e-nav okb" style="--l:62%;--t:6%;--w:34%;--h:4%"><span class="k">{t('ac.017')}</span><span>{t('ac.018')}</span></div><div class="e-title ko" style="--l:5%;--t:22%;--w:44%;--h:16%"><span class="k">{t('ac.019')}</span><span>{t('ac.020')}</span></div><div class="e-txt ko" style="--l:5%;--t:42%;--w:42%;--h:13%"><span class="k">{t('ac.021')}</span><span>{t('ac.022')}</span></div><div class="e-form ko" style="--l:5%;--t:60%;--w:40%;--h:9%"><span class="k">{t('ac.023')}</span><span>{t('ac.024')}</span></div><div class="e-img ko" style="--l:54%;--t:17%;--w:41%;--h:70%"><span class="k">{t('ac.025')}</span><span><strong>{t('ac.026')}</strong></span></div></div></div>
+     <button class="spot" type="button" style="--x:4%;--y:24%" aria-pressed="false" data-s="0" aria-label={t('ac.193')}>1</button>
+     <button class="spot" type="button" style="--x:4%;--y:46%" aria-pressed="false" data-s="1" aria-label={t('ac.194')}>2</button>
+     <button class="spot" type="button" style="--x:44%;--y:68%" aria-pressed="false" data-s="2" aria-label={t('ac.195')}>3</button>
+     <button class="spot" type="button" style="--x:88%;--y:24%" aria-pressed="false" data-s="3" aria-label={t('ac.196')}>4</button>
+    </div>
+   </div>
+   <figcaption class="g-bar"><button class="switch" type="button" aria-pressed="false" data-xr><i aria-hidden="true"></i>{t('ac.197')}</button><span class="cap" data-gc aria-live="polite"><span data-gcount><span class="num" data-gn data-i18n-skip>0</span> / 4 <span>{t('ac.293')}</span></span><span data-gall hidden>{t('ac.294')}</span></span><button class="btn-s" type="button" data-all><svg aria-hidden="true"><use href="#i-eye"/></svg>{t('ac.199')}</button></figcaption>
+  </figure>
+  <ol class="found" data-found aria-live="polite">
+   <li><span class="n">1</span><span><b>{t('ac.200')}</b><span>{t('ac.201')}</span></span></li>
+   <li><span class="n">2</span><span><b>{t('ac.033')}</b><span>{t('ac.202')}</span></span></li>
+   <li><span class="n">3</span><span><b>{t('ac.203')}</b><span>{t('ac.204')}</span></span></li>
+   <li><span class="n">4</span><span><b>{t('ac.037')}</b><span>{t('ac.205')}</span></span></li>
+  </ol>
+ </div>
+</section>

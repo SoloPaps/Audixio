@@ -5,6 +5,8 @@ const SKIP =
 // Les attributs (placeholder…) d'un textarea restent traduisibles.
 const ATTR_SKIP = SKIP.replace(',textarea', '');
 
+const TEXT_ATTRS = ['aria-label', 'title', 'placeholder', 'alt'] as const;
+
 type Marked = Text & { [ORIG]?: string; [DONE]?: string };
 
 let dictionary: Map<string, string> | null = null;
@@ -157,7 +159,7 @@ function paint(locale: 'fr' | 'en', dict: Map<string, string> | null): void {
     text[DONE] = next;
     node = walker.nextNode();
   }
-  const attrs = ['aria-label', 'title', 'placeholder', 'alt'];
+  const attrs = TEXT_ATTRS;
   for (const el of root.querySelectorAll<HTMLElement>(
     attrs.map((attr) => `[${attr}]`).join(),
   )) {
@@ -220,17 +222,28 @@ function storedLocale(): 'fr' | 'en' {
   }
 }
 
+function insideSkip(record: MutationRecord): boolean {
+  const node = record.target;
+  const el = node instanceof Element ? node : node.parentElement;
+  return el?.closest('[data-i18n-skip]') != null;
+}
+
 function watchLocale(): void {
   const root = document.body;
   if (watching || !root) return;
   watching = true;
-  new MutationObserver(() => {
-    if (!painting && storedLocale() === 'en') applyLocale('en');
+  new MutationObserver((records) => {
+    if (painting || storedLocale() !== 'en') return;
+    // Un compteur animé (marqué data-i18n-skip) ne relance pas la traduction.
+    if (records.every(insideSkip)) return;
+    applyLocale('en');
   }).observe(root, {
     subtree: true,
     childList: true,
     characterData: true,
     attributes: true,
+    // Classes et styles changent à chaque image d’une animation : seuls les textes comptent.
+    attributeFilter: [...TEXT_ATTRS],
   });
 }
 

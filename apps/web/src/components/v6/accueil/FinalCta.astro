@@ -1,0 +1,15 @@
+---
+import { t } from '../../../i18n/index.js';
+import HomeAuditForm from '../../HomeAuditForm.svelte';
+import TrustLine from './TrustLine.astro';
+---
+
+<section class="sec wrap" id="fin" data-dock-hide aria-labelledby="h-fin">
+ <div class="final" data-final>
+  <div class="final-t"><p class="eyebrow">{t('ac.285')}</p><h2 id="h-fin">{t('ac.286')}</h2><p>{t('ac.287')}</p></div>
+  <div>
+   <HomeAuditForm primary={false} label={t('ac.006')} submit={t('ac.265')} hint={t('ac.291')} client:idle />
+   <TrustLine items={[t('ac.009'), t('ac.288'), t('ac.289')]} left />
+  </div>
+ </div>
+</section>

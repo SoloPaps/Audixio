@@ -1,0 +1,51 @@
+---
+import { t } from '../../../i18n/index.js';
+---
+
+<section class="sec wrap" id="rapport" aria-labelledby="h-rp">
+ <div class="sh" data-rv><p class="eyebrow">{t('ac.206')}</p><h2 id="h-rp">{t('ac.207')}</h2><p>{t('ac.208')}</p></div>
+ <div class="rp" data-rp>
+  <ol class="rp-keys" data-rv>
+   <li><button type="button" class="rp-k" aria-pressed="true" data-hl="1"><span class="rp-n">1</span><span><b>{t('ac.209')}</b><small>{t('ac.210')}</small></span></button></li>
+   <li><button type="button" class="rp-k" aria-pressed="false" data-hl="2"><span class="rp-n">2</span><span><b>{t('ac.211')}</b><small>{t('ac.212')}</small></span></button></li>
+   <li><button type="button" class="rp-k" aria-pressed="false" data-hl="3"><span class="rp-n">3</span><span><b>{t('ac.213')}</b><small>{t('ac.214')}</small></span></button></li>
+   <li class="rp-cta"><a class="card-l" href="/exemple-rapport"><span class="ib"><svg aria-hidden="true"><use href="#i-doc"/></svg></span><span><b>{t('ac.215')}</b><small>{t('ac.216')}</small></span><svg class="arr" aria-hidden="true"><use href="#i-arrow"/></svg></a></li>
+  </ol>
+  <figure class="rp-doc" data-rv aria-label={t('ac.217')}>
+   <div class="rp-bar" aria-hidden="true"><i></i><i></i><i></i><span>audixio.fr/rapport/monsite-exemple</span><span class="sim">{t('ac.044')}</span></div>
+   <div class="rp-body" data-hl-on="1">
+    <div class="rp-a rp-score" data-a="1">
+     <span class="rp-pin" aria-hidden="true">1</span>
+     <p class="rp-l">{t('ac.218')}</p>
+     <div class="rp-big"><span class="g g-C">C</span><span class="num"><b>67</b> / 100</span></div>
+     <p class="rp-m">{t('ac.219')}</p>
+     <ul class="rp-doms">
+      <li><span>{t('ac.071')}</span><span class="bar"><i style="--v:.61"></i></span><span class="g g-D">D</span></li>
+      <li><span>{t('ac.073')}</span><span class="bar"><i style="--v:.84"></i></span><span class="g g-B">B</span></li>
+      <li><span>{t('ac.075')}</span><span class="bar"><i style="--v:.52"></i></span><span class="g g-D">D</span></li>
+      <li><span>{t('ac.077')}</span><span class="bar"><i style="--v:.70"></i></span><span class="g g-C">C</span></li>
+      <li><span>{t('ac.079')}</span><span class="bar"><i style="--v:.68"></i></span><span class="g g-C">C</span></li>
+      <li class="lock"><span>{t('ac.220')}</span><span class="lockt"><svg aria-hidden="true"><use href="#ic-lock"/></svg>{t('ac.221')}</span></li>
+     </ul>
+    </div>
+    <div class="rp-side">
+     <div class="rp-a rp-prio" data-a="2">
+      <span class="rp-pin" aria-hidden="true">2</span>
+      <p class="rp-l">{t('ac.222')}</p>
+      <ol>
+       <li><span class="num">1</span><b>{t('ac.056')}</b><span class="fx">{t('ac.223')}</span></li>
+       <li><span class="num">2</span><b>{t('ac.224')}</b><span class="fx">{t('ac.223')}</span></li>
+       <li><span class="num">3</span><b>{t('ac.225')}</b><span class="fx fx-m">{t('ac.226')}</span></li>
+      </ol>
+     </div>
+     <div class="rp-a rp-fix" data-a="3">
+      <span class="rp-pin" aria-hidden="true">3</span>
+      <p class="rp-l">{t('ac.227')}</p>
+      <p class="rp-ft"><b>{t('ac.228')}</b></p>
+      <dl><div><dt>{t('ac.229')}</dt><dd>{t('ac.230')}</dd></div><div><dt>{t('ac.231')}</dt><dd>{t('ac.232')}</dd></div><div><dt>{t('ac.233')}</dt><dd>{t('ac.234')}</dd></div></dl>
+     </div>
+    </div>
+   </div>
+  </figure>
+ </div>
+</section>

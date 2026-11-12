@@ -123,8 +123,8 @@
   --c-hover: color-mix(in oklab, var(--beam) 8%, var(--surf));
   --c-active: color-mix(in oklab, var(--beam) 14%, var(--surf));
   --c-ring: var(--focus);
-  --sans: "Geist", system-ui, sans-serif;
-  --mono: "Geist Mono", ui-monospace, monospace;
+  --sans: "Geist", "Geist Repli", "Geist Repli DV", system-ui, sans-serif;
+  --mono: "Geist Mono", "Geist Mono Repli", ui-monospace, monospace;
   --hh: 64px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --s-1: 0.25rem;
@@ -172,6 +172,9 @@
   --lift-y: -2px;
   --mark: 2px;
   --bar: #f3f5f8;
+  /* Texte posé sur --find et --ok (pastilles pleines). */
+  --on-find: #ffffff;
+  --on-ok: #ffffff;
 }
 
 @media print {

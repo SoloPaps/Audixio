@@ -4,53 +4,52 @@ import { expect, test } from '@playwright/test';
 test('l’accueil montre l’exemple avant de demander l’adresse', async ({
   page,
 }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Vérifiez la santé de votre site, gratuitement.',
+      name: 'Ce que votre site cache, révélé en quelques minutes.',
     }),
   ).toBeVisible();
   await expect(
     page.getByText(
-      'Un score, ce qu’il veut dire, et quoi corriger. Rien n’est publié sans vous.',
+      'Audixio passe votre site au scanner. Vous obtenez une note de A à F et la liste de ce qu’il faut corriger d’abord, en français simple.',
     ),
   ).toBeVisible();
-  await expect(page.getByLabel('Adresse du site')).toHaveAttribute(
-    'type',
-    'text',
-  );
-  await expect(page.getByLabel('Adresse du site')).toHaveAttribute(
-    'inputmode',
-    'url',
-  );
+  const address = page.getByLabel('Adresse du site à scanner');
+  await expect(address).toHaveAttribute('type', 'text');
+  await expect(address).toHaveAttribute('inputmode', 'url');
   await expect(
-    page.getByRole('button', { name: "Lancer l'audit" }),
+    page.getByRole('button', { name: 'Scanner mon site, gratuit' }),
   ).toBeVisible();
+  // L’exemple simulé est nommé comme tel, avec sa note.
+  const scan = page.locator('#top .scanner');
+  await expect(scan.getByText('Simulé', { exact: true })).toBeVisible();
+  await expect(scan.locator('[data-ringl]')).toHaveText('C');
+  await expect(scan.locator('[data-ringn2]')).toHaveText('67');
   await expect(
-    page.getByRole('link', { name: 'Comment le score est calculé' }),
-  ).toHaveAttribute('href', '/methode');
-  await expect(page.getByText('Exemple', { exact: true })).toBeVisible();
-  await expect(
-    page.getByRole('img', {
-      name: /Score global : 66 sur 100, note C, à améliorer/,
+    page.getByRole('heading', {
+      level: 2,
+      name: 'Trois étapes, quelques minutes.',
     }),
   ).toBeVisible();
-  const preview = page.getByRole('complementary');
-  await expect(preview.getByText('Visibilité sur Google')).toBeVisible();
-  await expect(preview.getByText('Connexion chiffrée')).toBeVisible();
   await expect(
-    page.getByRole('heading', { level: 2, name: 'Ce que vous obtenez' }),
+    page.getByRole('heading', {
+      level: 2,
+      name: '8 contrôles sur votre site.',
+    }),
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', { level: 3, name: 'Sans compte' }),
+    page.getByRole('heading', { level: 2, name: 'Commencez sans compte.' }),
   ).toBeVisible();
   await expect(
-    page.getByRole('heading', { level: 3, name: 'Avec un compte gratuit' }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { level: 2, name: 'Les 8 domaines Audixio' }),
-  ).toBeVisible();
+    page
+      .getByRole('navigation', { name: 'Navigation principale' })
+      .getByRole('link', {
+        name: 'Comment ça marche',
+      }),
+  ).toHaveAttribute('href', '/methode');
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 });
@@ -71,8 +70,8 @@ test('une adresse incomplète reste sur l’accueil', async ({ page }) => {
       islands.every((island) => !island.hasAttribute('ssr'))
     );
   });
-  await page.getByLabel('Adresse du site').fill('not a url');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByLabel('Adresse du site à scanner').fill('not a url');
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL('/');
   await expect(page.getByText(/Indiquez une adresse complète/)).toBeVisible();
 });

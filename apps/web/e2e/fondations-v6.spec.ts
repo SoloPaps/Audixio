@@ -63,11 +63,14 @@ for (const width of widths) {
         await expect(page.getByRole('button', { name: label })).toBeVisible();
         const nav =
           lang === 'en'
-            ? ['Home', 'Method', 'Tracked sites', 'Pricing']
-            : ['Accueil', 'Méthode', 'Sites suivis', 'Tarifs'];
+            ? ['How it works', 'Sample report', 'Pricing']
+            : ['Comment ça marche', 'Exemple de rapport', 'Tarifs'];
         await expect(page.locator('.axn-links a')).toHaveText(nav);
-        await expect(page.locator('.axn-bar .axn-cta')).toHaveText(
+        await expect(page.locator('.axn-bar .axn-acct')).toHaveText(
           lang === 'en' ? 'Sign in' : 'Connexion',
+        );
+        await expect(page.locator('.axn-bar .axn-cta')).toHaveText(
+          lang === 'en' ? 'Scan my site' : 'Scanner mon site',
         );
         await expect(page.locator('header.axn')).toHaveAttribute('id', 'axn');
         await expect(page).toHaveScreenshot(
@@ -208,8 +211,8 @@ for (const lang of langs) {
     );
     const items =
       lang === 'en'
-        ? ['Home', 'Method', 'Tracked sites', 'Pricing']
-        : ['Accueil', 'Méthode', 'Sites suivis', 'Tarifs'];
+        ? ['How it works', 'Sample report', 'Pricing']
+        : ['Comment ça marche', 'Exemple de rapport', 'Tarifs'];
     for (const [width, height, total] of [
       [1440, 900, 92],
       [390, 844, 78],
@@ -240,8 +243,11 @@ for (const lang of langs) {
         'true',
       );
       await expect(page.locator('.axn-sheet ul a')).toHaveText(items);
-      await expect(page.locator('.axn-sheet .axn-cta')).toHaveText(
+      await expect(page.locator('.axn-sheet .axn-acct')).toHaveText(
         lang === 'en' ? 'Sign in' : 'Connexion',
+      );
+      await expect(page.locator('.axn-sheet .axn-cta')).toHaveText(
+        lang === 'en' ? 'Scan my site' : 'Scanner mon site',
       );
       await page.keyboard.press('Escape');
       await expect(page.locator('.axn-burger')).toHaveAttribute(

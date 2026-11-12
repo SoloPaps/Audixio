@@ -81,7 +81,7 @@ async function launch(page: Page, url = REACHABLE): Promise<void> {
   await page.goto('/');
   await waitForIslands(page);
   await page.getByLabel('Adresse du site').fill(url);
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
 }
 
 async function watchGuest(

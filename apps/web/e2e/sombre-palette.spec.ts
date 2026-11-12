@@ -32,50 +32,59 @@ async function open(page: Page, url: string): Promise<void> {
   );
 }
 
-test('accueil sombre : cartes, étapes, constats et panneau Confiance', async ({
+// Accueil v6 : jetons v6 (tokens.css, et theme-dark.css pour le sombre).
+test('accueil v6 sombre : fond, cartes un cran au-dessus, constats colorés', async ({
   page,
 }) => {
   await open(page, '/?theme=dark');
-  const card = page.locator('.lcards a').first();
-  expect(await css(card, 'backgroundColor')).toBe(CARD);
-  expect(await css(card, 'borderTopColor')).toBe(LINE);
+  const paper = await css(page.locator('html'), 'backgroundColor');
+  expect(paper).toBe('rgb(6, 9, 13)');
+  const plan = page.locator('#tarifs .plan').first();
+  expect(await css(plan, 'backgroundColor')).toBe('rgb(12, 18, 26)');
+  expect(await css(plan, 'borderTopColor')).toBe('rgb(27, 38, 51)');
   expect(
-    await css(page.locator('.lcards .ic').first(), 'backgroundColor'),
-  ).toBe(RAISED);
-  // Étapes « En pratique » : ouvertes comme en clair, pas de bloc collé au texte.
-  const step = page.locator('.steps .step').first();
-  expect(await css(step, 'backgroundColor')).toBe('rgba(0, 0, 0, 0)');
-  expect(await css(step, 'backgroundImage')).toBe('none');
-  // Panneau Confiance : un plan au-dessus du fond de page.
-  const panel = page.locator('.section.dark').first();
-  expect(await css(panel, 'backgroundColor')).toBe('rgb(38, 48, 106)');
-  const body = await css(page.locator('body'), 'backgroundColor');
-  expect(await css(panel, 'backgroundColor')).not.toBe(body);
-  // Constats de l’aperçu : vert et ambre, pas de texte nu.
-  expect(await css(page.locator('.find.ok'), 'backgroundColor')).toBe(
-    'rgb(17, 48, 31)',
-  );
-  expect(await css(page.locator('.find.warn'), 'backgroundColor')).toBe(
-    'rgb(52, 42, 16)',
-  );
-  // Plus d’un seul bleu : les libellés de section passent en lilas.
-  expect(await css(page.locator('.s-head .eyebrow').first(), 'color')).toBe(
-    'rgb(201, 192, 242)',
-  );
+    await css(page.locator('#faq details').first(), 'backgroundColor'),
+  ).not.toBe(paper);
+  expect(
+    await css(page.locator('#couches .lyr li').first(), 'backgroundColor'),
+  ).toBe('rgb(17, 25, 36)');
+  // Constats du scan : rouge et vert éclaircis pour le fond sombre.
+  expect(
+    await css(
+      page.locator('#top .journal li.bad .d').first(),
+      'backgroundColor',
+    ),
+  ).toBe('rgb(255, 122, 107)');
+  expect(
+    await css(
+      page.locator('#top .journal li.good .d').first(),
+      'backgroundColor',
+    ),
+  ).toBe('rgb(94, 224, 176)');
 });
 
-test('accueil clair : inchangé (cartes en dégradé, domaines de l’exemple en liste)', async ({
+test('accueil v6 clair : fond gris clair, cartes blanches, constats francs', async ({
   page,
 }) => {
   await open(page, '/?theme=light');
-  const row = page.locator('#legacy-rows li').first();
-  await expect(row).toBeVisible();
-  // Décision owner : pas de pastilles ajoutées en clair.
-  expect(await css(row, 'backgroundColor')).toBe('rgba(0, 0, 0, 0)');
-  expect(await css(row, 'borderTopLeftRadius')).toBe('0px');
+  expect(await css(page.locator('html'), 'backgroundColor')).toBe(
+    'rgb(243, 245, 248)',
+  );
   expect(
-    await css(page.locator('.lcards a').first(), 'backgroundImage'),
-  ).toContain('linear-gradient');
+    await css(page.locator('#tarifs .plan').first(), 'backgroundColor'),
+  ).toBe('rgb(255, 255, 255)');
+  expect(
+    await css(
+      page.locator('#top .journal li.bad .d').first(),
+      'backgroundColor',
+    ),
+  ).toBe('rgb(194, 52, 31)');
+  expect(
+    await css(
+      page.locator('#top .journal li.good .d').first(),
+      'backgroundColor',
+    ),
+  ).toBe('rgb(15, 122, 85)');
 });
 
 test('sombre : méthode, exemple et demande d’accès suivent le modèle de carte', async ({

@@ -19,7 +19,7 @@ test('C10 : le titre d’onglet passe en anglais et revient en français', async
   await expect(page).toHaveTitle(/^Méthode — Audi(?:xio|gy)$/);
 });
 
-test('C10 : accueil EN, titre, jauge et lecture passive en anglais', async ({
+test('C10 : accueil EN, titre, note et scan animé en anglais', async ({
   page,
 }) => {
   await page.goto('/?theme=light');
@@ -27,18 +27,16 @@ test('C10 : accueil EN, titre, jauge et lecture passive en anglais', async ({
   await expect(page).toHaveTitle(
     'Check your site’s health, for free — Audixio',
   );
-  await expect(page.locator('.score-slot [role="img"]')).toHaveAttribute(
-    'aria-label',
-    'Overall score: 66 out of 100, grade C, needs work',
-  );
+  await page.reload();
+  const status = page.locator('#top [data-scanst]');
+  const journal = page.locator('#top .journal');
   const seen = new Set<string>();
-  const sub = page.locator('#win-sub');
-  await page.locator('#window').scrollIntoViewIfNeeded();
-  for (let i = 0; i < 40; i++) {
-    seen.add((await sub.textContent()) ?? '');
+  for (let i = 0; i < 50; i++) {
+    seen.add((await status.textContent()) ?? '');
+    seen.add((await journal.innerText()) ?? '');
     await page.waitForTimeout(100);
   }
-  const passive = [...seen].filter((line) => line.startsWith('Passive read'));
-  expect(passive.length).toBeGreaterThan(0);
-  for (const line of passive) expect(line).not.toMatch(/[éèàç]|Qualité/);
+  for (const line of seen) expect(line).not.toMatch(/[éèàç]|Analyse|Note /);
+  await expect(status).toHaveText('Scan complete', { timeout: 15_000 });
+  await expect(page.locator('#top [data-ringl]')).toHaveText('C');
 });

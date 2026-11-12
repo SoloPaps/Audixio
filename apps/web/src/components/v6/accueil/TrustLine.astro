@@ -1,0 +1,15 @@
+---
+interface Props {
+  items: string[];
+  /** Variante alignée à gauche (bloc final). */
+  left?: boolean;
+}
+
+const { items, left = false } = Astro.props;
+---
+
+<ul class:list={['trust', { 'trust--l': left }]}>
+  {items.map((item) => (
+    <li><svg aria-hidden="true"><use href="#i-check" /></svg>{item}</li>
+  ))}
+</ul>

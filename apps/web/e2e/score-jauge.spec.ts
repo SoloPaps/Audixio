@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
 /** Vue du navigateur, sans le DOM de TypeScript. */
@@ -110,13 +108,13 @@ function angleGap(a: number, b: number): number {
 }
 
 for (const theme of THEMES) {
-  test(`cadran : nombre et lettre sur l’accueil (${theme})`, async ({
+  test(`cadran : nombre et lettre, note moyenne (${theme})`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(`/?theme=${theme}`);
+    await page.goto(`/dev/composants?theme=${theme}`);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-    const gauge = page.locator('.score-slot .gauge');
+    const gauge = page.locator('.gauge-mid .gauge');
     await expect(gauge).toHaveAttribute('role', 'img');
     await expect(gauge).toHaveAttribute('aria-label', /66 sur 100, note C/);
     await checkGauge(page, gauge, '66', 'C');
@@ -158,8 +156,8 @@ test('cadran : l’arc de 66 et de 100 suit le score, sans point parasite', asyn
 }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto('/?theme=light');
-  const home = page.locator('.score-slot .gauge');
+  await page.goto('/dev/composants?theme=light');
+  const home = page.locator('.gauge-mid .gauge');
   await expect(home).toHaveAttribute('data-score', '66');
   await expect(home.locator('.gauge-fill')).toHaveAttribute(
     'stroke-dasharray',
@@ -187,30 +185,41 @@ test('cadran : l’arc de 66 et de 100 suit le score, sans point parasite', asyn
 test('cadran : la lettre change de teinte entre clair et sombre', async ({
   page,
 }) => {
-  await page.goto('/?theme=light');
-  const chip = page.locator('.score-slot .gauge-grade');
+  await page.goto('/dev/composants?theme=light');
+  const chip = page.locator('.gauge-mid .gauge-grade');
   const light = await opaque(chip);
-  await page.goto('/?theme=dark');
+  await page.goto('/dev/composants?theme=dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  const dark = await opaque(page.locator('.score-slot .gauge-grade'));
+  const dark = await opaque(page.locator('.gauge-mid .gauge-grade'));
   expect(dark).not.toBe(light);
 });
 
 /**
- * Poids de l’accueil (parcours.spec : < 500 Ko) : les six bandes reprennent un
+ * Poids des pages : les six bandes reprennent un
  * seul tracé (<use>), sans classes de portée répétées, et restent dessinées.
  */
 for (const theme of THEMES) {
-  test(`accueil : cadran léger, bandes depuis un seul tracé (${theme})`, async ({
+  test(`cadran léger, bandes depuis un seul tracé (${theme})`, async ({
     page,
   }) => {
-    await page.goto(`/?theme=${theme}`);
-    const gauge = page.locator('.score-slot .gauge');
+    await page.goto(`/dev/composants?theme=${theme}`);
+    const gauge = page.locator('.gauge-mid .gauge');
     await expect(gauge.locator('defs path')).toHaveCount(1);
     await expect(gauge.locator('use.gauge-band')).toHaveCount(6);
-    // HTML construit (même source que builtHomeBytes de parcours.spec).
-    const built = readFileSync(path.resolve('dist/index.html'), 'utf8');
-    const from = built.indexOf('<div class="gauge ');
+    // HTML rendu par le serveur : un cadran pèse moins de 2 000 octets.
+    // Le banc /dev n’est pas publié (dropDevPages) : on lit la réponse
+    // d’astro dev, ramenée au HTML construit (sans attributs de source ni
+    // classes de portée Svelte, que seul le mode dev ajoute).
+    const res = await page.request.get('/dev/composants');
+    expect(res.ok()).toBe(true);
+    const built = (await res.text())
+      .replace(/ data-astro-source-(?:file|loc)="[^"]*"/g, '')
+      .replace(/ class="svelte-[a-z0-9]+"/g, '')
+      .replace(/ svelte-[a-z0-9]+(?=[\s"])/g, '');
+    const from = built.indexOf(
+      '<div class="gauge',
+      built.indexOf('class="gauge-mid"') + 17,
+    );
     const to = built.indexOf('<div class="gauge-status', from);
     expect(from).toBeGreaterThan(-1);
     expect(to - from).toBeLessThan(2000);

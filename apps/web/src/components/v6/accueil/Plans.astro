@@ -1,0 +1,26 @@
+---
+import { t } from '../../../i18n/index.js';
+import { SCAN_HREF } from '../../../lib/nav-canon.js';
+---
+
+<section class="sec wrap" id="tarifs" aria-labelledby="h-off">
+ <div class="sh" data-rv><p class="eyebrow">{t('ac.257')}</p><h2 id="h-off">{t('ac.258')}</h2><p>{t('ac.259')}</p></div>
+ <ul class="plans" data-snap aria-label={t('ac.260')}>
+  <li class="plan" data-rv style="--i:0">
+   <p class="plan-k">{t('ac.009')}</p><p class="plan-p">{t('ac.261')}</p>
+   <ul class="plan-f"><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.262')}</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.263')}</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.264')}</li></ul>
+   <a class="btn" href={SCAN_HREF}>{t('ac.265')}<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </li>
+  <li class="plan plan--mid" data-rv style="--i:1">
+   <p class="plan-k">{t('ac.241')}</p><p class="plan-p">{t('ac.261')}</p>
+   <ul class="plan-f"><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.266')}</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.267')}</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.268')}</li></ul>
+   <a class="btn btn--ghost" href="/inscription">{t('ac.269')}<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </li>
+  <li class="plan plan--soon" data-rv style="--i:2">
+   <p class="plan-k">{t('ac.270')}</p><p class="plan-p"><span class="tag tag-soon">{t('ac.271')}</span></p>
+   <ul class="plan-f"><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.253')}</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.272')}</li></ul>
+   <a class="btn btn--ghost" href="/pro">{t('ac.255')}<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+  </li>
+ </ul>
+ <p class="more-row more-row--c" data-rv><a class="lnk" href="/pro"><span class="lnk-i"><svg aria-hidden="true"><use href="#i-chart"/></svg></span>{t('ac.273')}<svg class="lnk-a" aria-hidden="true"><use href="#i-arrow"/></svg></a></p>
+</section>

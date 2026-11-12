@@ -3,7 +3,14 @@
 [data-v6] {
   background: var(--bg);
   color: var(--ink);
+  scroll-padding-top: var(--scroll-pad);
+}
+
+/* Sur body et non sur html : 1rem reste 16 px, comme dans la maquette. */
+[data-v6] body {
+  margin: 0;
   font: 400 var(--t-base) / 1.55 var(--sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 [data-v6] .sprite {
@@ -326,14 +333,6 @@
   background: var(--bg);
   border-bottom: var(--bw) solid var(--line);
   backdrop-filter: blur(var(--v6-blur));
-}
-
-[data-v6] .bar {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  width: min(100% - var(--s-7), 82rem);
-  margin-inline: auto;
 }
 
 [data-v6] .v6-logo img {

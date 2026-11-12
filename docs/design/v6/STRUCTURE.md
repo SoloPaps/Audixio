@@ -11,7 +11,7 @@ Ce fichier est la référence pour les lots 2 à 4. Une ancienne adresse n'est r
 | Tarifs | `/pro` |
 | FR \| EN, thème | (outils) |
 | Connexion | `/connexion` |
-| **Scanner mon site** (bouton principal) | `/#scan` (formulaire du héros de l'accueil) |
+| **Scanner mon site** (bouton principal) | `/#audit-form` (formulaire du héros de l'accueil, ancre déjà utilisée par les e-mails et la progression) |
 
 | Connecté | Adresse |
 |---|---|
@@ -28,7 +28,7 @@ Le logo mène à `/`. Il n'y a plus d'entrée « Accueil ». Menu mobile : même
 | Comment ça marche `/methode` | Robot d'audit `/robot` | Mentions légales `/mentions-legales` |
 | Exemple de rapport `/exemple-rapport` | Écoconception `/ecoconception` | CGU `/cgu` |
 | Tarifs `/pro` | Accessibilité `/accessibilite` | Confidentialité `/confidentialite` |
-| Scanner mon site `/#scan` | | Cookies `/cookies` |
+| Scanner mon site `/#audit-form` | | Cookies `/cookies` |
 
 ## 3. Rapport : une adresse par audit, avec onglets
 
@@ -79,7 +79,7 @@ Les paramètres non repris sont conservés tels quels. L'ancre est gardée par l
 | R11 | `/historique?site=:site` | `/sites/id/:site#historique` → `/sites/:host#historique` | liens internes |
 | R12 | `/verifier?site=:site` | `/sites/id/:site#verification` → `/sites/:host#verification` | liens internes |
 | R13 | `/badge?id=:id` | `/rapport/:id?partager=badge` (ouvre la feuille Partager) | liens internes |
-| R14 | `/passer-pro` (et `?…`) | `/pro` (requête gardée) | boutons Pro |
+| R14 | `/passer-pro` (et `?…`) | `/pro` (requête gardée) ; un compte Pro va sur `/compte` (#38). Renvoi côté page, pas en 301, pour garder cette règle. Les boutons Pro pointent déjà vers `/pro`. | boutons Pro |
 | R15 | `/compte/alertes` | `/compte#alertes` | e-mails d'alerte et de récap (`mail.ts`, `mail-templates.ts`) |
 | R16 | `/progression?site=…&url=…` | inchangée | e-mail d'échec (`relaunchAuditUrl`) |
 | R17 | `/partage/:jeton`, `/score/:x`, `/verifier/:id` | inchangées (liens publics à jeton, déjà diffusés) | partage, badge |

@@ -2,6 +2,8 @@
  * Dictionnaire français. Une clé absente de cet objet
  * ne peut pas être passée à `t()` (erreur de typage).
  */
+
+import { accueilFr } from './accueil-fr.js';
 import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
@@ -44,7 +46,7 @@ const frCore = {
     'Un score, ce qu’il veut dire, et quoi corriger. Rien n’est publié sans vous.',
   'home.url.example': 'https://exemple.fr',
   'home.url.error': 'Indiquez une adresse complète, comme https://exemple.fr.',
-  'home.guarantees.time': 'Résultats complets en ~1 minute',
+  'home.guarantees.time': 'Résultats complets en quelques minutes',
   'home.guarantees.free': 'Gratuit, sans abonnement',
   'home.guarantees.passive':
     'Tests passifs : nous observons, nous ne forçons rien',
@@ -651,6 +653,7 @@ const frCore = {
   'gauge.sample.zero': 'Note de zéro',
   'gauge.sample.full': 'Note pleine',
   'gauge.sample.empty': 'Note absente',
+  'gauge.sample.mid': 'Note moyenne',
   'score.empty': '—',
   'verdict.good': 'Votre site est en bonne santé.',
   'verdict.improve': 'Votre site peut mieux faire.',
@@ -2117,6 +2120,13 @@ const frCore = {
   'report.grade.label': '{label} ({score}/100)',
   'nav.home': 'Accueil',
   'nav.pricing': 'Tarifs',
+  'nav.how': 'Comment ça marche',
+  'nav.example': 'Exemple de rapport',
+  'nav.mysites': 'Mes sites',
+  'nav.scan': 'Scanner mon site',
+  'footer.col.product': 'Produit',
+  'footer.col.transparency': 'Transparence',
+  'footer.col.legal': 'Légal',
   'nav.backtop': 'Remonter en haut',
   'nav.bottom': 'Navigation principale',
   'nav.pages': 'Pages',
@@ -2898,6 +2908,7 @@ export const fr = {
   ...mqLegalFr,
   ...pdfFr,
   ...v6Fr,
+  ...accueilFr,
 };
 
 export type MessageKey = keyof typeof fr;

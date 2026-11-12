@@ -1,0 +1,47 @@
+---
+import { t } from '../../../i18n/index.js';
+import HomeAuditForm from '../../HomeAuditForm.svelte';
+import TrustLine from './TrustLine.astro';
+---
+
+<section class="hero" id="top" data-dock-hide aria-labelledby="h1">
+ <div class="wrap hero-t">
+  <p class="badge"><b>{t('ac.001')}</b> {t('ac.002')}</p>
+  <h1 id="h1">{t('ac.003')} <span>{t('ac.004')}</span></h1>
+  <p class="lead">{t('ac.005')}</p>
+  <HomeAuditForm label={t('ac.290')} submit={t('ac.007')} hint={t('ac.291')} client:load />
+  <TrustLine items={[t('ac.009'), t('ac.010'), t('ac.011')]} />
+ </div>
+ <figure class="scanner" aria-labelledby="scan-cap">
+  <div class="frame">
+   <div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span class="url">https://monsite-exemple.fr</span><span class="st" data-scanst data-run={t('ac.012')} data-done={t('ac.292')}>{t('ac.012')}</span></div>
+   <div class="scan-body">
+    <div class="viewport" data-scan aria-hidden="true">
+     <div class="render"><div class="fs r" data-fs="r"><div class="e-logo" style="--l:4%;--t:6%;--w:12%;--h:4%"></div><div class="e-nav" style="--l:62%;--t:6%;--w:34%;--h:4%"><i></i><i></i><i></i><i></i></div><div class="e-title" style="--l:5%;--t:22%;--w:44%;--h:16%">{t('ac.013')}</div><div class="e-txt" style="--l:5%;--t:42%;--w:42%;--h:13%"><i></i><i></i><i></i></div><div class="e-form" style="--l:5%;--t:60%;--w:40%;--h:9%"><span></span><b></b></div><div class="e-img" style="--l:54%;--t:17%;--w:41%;--h:70%"></div></div></div>
+     <div class="xray"><div class="fs x" data-fs="x"><div class="e-logo okb" style="--l:4%;--t:6%;--w:12%;--h:4%"><span class="k">{t('ac.015')}</span><span>{t('ac.016')}</span></div><div class="e-nav okb" style="--l:62%;--t:6%;--w:34%;--h:4%"><span class="k">{t('ac.017')}</span><span>{t('ac.018')}</span></div><div class="e-title ko" style="--l:5%;--t:22%;--w:44%;--h:16%"><span class="k">{t('ac.019')}</span><span>{t('ac.020')}</span></div><div class="e-txt ko" style="--l:5%;--t:42%;--w:42%;--h:13%"><span class="k">{t('ac.021')}</span><span>{t('ac.022')}</span></div><div class="e-form ko" style="--l:5%;--t:60%;--w:40%;--h:9%"><span class="k">{t('ac.023')}</span><span>{t('ac.024')}</span></div><div class="e-img ko" style="--l:54%;--t:17%;--w:41%;--h:70%"><span class="k">{t('ac.025')}</span><span><strong>{t('ac.026')}</strong></span></div></div></div>
+     <div class="beam"><span class="beam-tag" aria-hidden="true">{t('ac.295')}</span></div>
+    </div>
+    <div class="journal" aria-live="off">
+     <h2>{t('ac.027')} <span class="sim">{t('ac.028')}</span></h2>
+     <ol>
+      <li class="good" data-at=".05"><span class="d"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span><b>{t('ac.029')}</b><small>{t('ac.030')}</small></span></li>
+      <li class="bad" data-at=".08"><span class="d">!</span><span><b>{t('ac.031')}</b><small>{t('ac.032')}</small></span></li>
+      <li class="bad" data-at=".12"><span class="d">!</span><span><b>{t('ac.033')}</b><small>{t('ac.034')}</small></span></li>
+      <li class="bad" data-at=".40"><span class="d">!</span><span><b>{t('ac.035')}</b><small>{t('ac.036')}</small></span></li>
+      <li class="bad" data-at=".56"><span class="d">!</span><span><b>{t('ac.037')}</b><small>{t('ac.038')}</small></span></li>
+     </ol>
+     <div class="score" data-tot>
+      <p class="score-l">{t('ac.039')}</p>
+      <div class="score-r"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="tr" cx="50" cy="50" r="43"/><circle class="va" cx="50" cy="50" r="43" pathLength="100" data-ringv/></svg>
+       <p class="score-c" data-i18n-skip><b data-ringl>·</b><span class="num"><span data-ringn2>0</span>/100</span></p></div>
+     </div>
+    </div>
+   </div>
+   <div class="legend cap" id="scan-cap">
+    <p><i class="lr" aria-hidden="true"></i><span><b>{t('ac.040')}</b> {t('ac.041')}</span></p>
+    <p><i class="lb" aria-hidden="true"></i><i class="lx" aria-hidden="true"></i><span><b>{t('ac.042')}</b> {t('ac.043')}</span></p>
+    <p><span class="sim">{t('ac.044')}</span></p>
+   </div>
+  </div>
+ </figure>
+</section>
