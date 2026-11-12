@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
 /** Vue du navigateur, sans le DOM de TypeScript. */
@@ -208,14 +206,19 @@ for (const theme of THEMES) {
     const gauge = page.locator('.gauge-mid .gauge');
     await expect(gauge.locator('defs path')).toHaveCount(1);
     await expect(gauge.locator('use.gauge-band')).toHaveCount(6);
-    // HTML construit : un cadran pèse moins de 2 000 octets.
-    const built = readFileSync(
-      path.resolve('dist/dev/composants/index.html'),
-      'utf8',
-    );
+    // HTML rendu par le serveur : un cadran pèse moins de 2 000 octets.
+    // Le banc /dev n’est pas publié (dropDevPages) : on lit la réponse
+    // d’astro dev, ramenée au HTML construit (sans attributs de source ni
+    // classes de portée Svelte, que seul le mode dev ajoute).
+    const res = await page.request.get('/dev/composants');
+    expect(res.ok()).toBe(true);
+    const built = (await res.text())
+      .replace(/ data-astro-source-(?:file|loc)="[^"]*"/g, '')
+      .replace(/ class="svelte-[a-z0-9]+"/g, '')
+      .replace(/ svelte-[a-z0-9]+(?=[\s"])/g, '');
     const from = built.indexOf(
-      '<div class="gauge ',
-      built.indexOf('gauge-mid'),
+      '<div class="gauge',
+      built.indexOf('class="gauge-mid"') + 17,
     );
     const to = built.indexOf('<div class="gauge-status', from);
     expect(from).toBeGreaterThan(-1);
