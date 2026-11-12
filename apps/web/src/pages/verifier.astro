@@ -1,13 +1,12 @@
 ---
-import '../styles/maquettes/liens.css';
-import '../styles/maquettes/preuve.css';
+import '../styles/maquettes/preuve-v6.css';
 import VerificationPanel from '../components/VerificationPanel.svelte';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
+import V6Page from '../layouts/V6Page.astro';
 ---
 
-<Canon vue="preuve" title={t('meta.verify.title')} description={t('meta.verify.description')}>
-  <main id="contenu" tabindex="-1">
+<V6Page vue="preuve" title={t('meta.verify.title')} description={t('meta.verify.description')}>
+  <main id="contenu" class="pv" tabindex="-1">
     <VerificationPanel client:load />
   </main>
-</Canon>
+</V6Page>

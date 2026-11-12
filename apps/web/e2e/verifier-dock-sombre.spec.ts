@@ -77,7 +77,7 @@ test('#30 barre du bas opaque en sombre', async ({ page }) => {
   });
   await signIn(page);
   await page.goto(`/verifier?site=${SITE_ID}&theme=dark`);
-  const dock = page.locator('.dock');
+  const dock = page.locator('.vdock');
   await expect(dock).toBeVisible();
   const c = await dock.evaluate((node) => {
     const { getComputedStyle } = globalThis as unknown as Dom;

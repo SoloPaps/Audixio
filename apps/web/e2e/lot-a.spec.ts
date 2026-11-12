@@ -150,33 +150,23 @@ test('la note du scan ne chevauche pas le texte', async ({ page }) => {
     const total = page.locator('#top [data-tot]');
     await expect(total).toBeVisible();
     await expect(total.locator('[data-ringl]')).toHaveText('C');
-    const boxes = await page.evaluate(() => {
-      const view = globalThis as unknown as {
-        document: {
-          querySelector: (selector: string) => Painted | null;
-          querySelectorAll: (selector: string) => Iterable<Painted>;
-        };
-      };
-      const box = (node: Painted) => node.getBoundingClientRect();
-      const hit = (a: Painted, b: Painted) => {
+    // Fonction en chaîne : pas de helper __name injecté par la transpilation.
+    const boxes = await page.evaluate<{
+      title: boolean;
+      lines: boolean;
+    } | null>(`(() => {
+      const box = (node) => node.getBoundingClientRect();
+      const hit = (a, b) => {
         const one = box(a);
         const two = box(b);
-        return (
-          one.left < two.right &&
-          one.right > two.left &&
-          one.top < two.bottom &&
-          one.bottom > two.top
-        );
+        return one.left < two.right && one.right > two.left && one.top < two.bottom && one.bottom > two.top;
       };
-      const total = view.document.querySelector('#top [data-tot]');
-      const title = view.document.querySelector('#top h1');
-      const lines = [...view.document.querySelectorAll('#top .journal li')];
+      const total = document.querySelector('#top [data-tot]');
+      const title = document.querySelector('#top h1');
+      const lines = [...document.querySelectorAll('#top .journal li')];
       if (!total || !title || lines.length === 0) return null;
-      return {
-        title: hit(total, title),
-        lines: lines.some((line) => hit(total, line)),
-      };
-    });
+      return { title: hit(total, title), lines: lines.some((line) => hit(total, line)) };
+    })()`);
     expect(boxes, `${width}`).not.toBeNull();
     expect(boxes?.title, `${width} titre`).toBe(false);
     expect(boxes?.lines, `${width} journal`).toBe(false);

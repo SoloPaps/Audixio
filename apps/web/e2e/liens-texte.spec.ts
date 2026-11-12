@@ -46,7 +46,18 @@ for (const theme of ['light', 'dark'] as const) {
       expect(rest.thickness).toBe('1px');
       expect(rest.offset).not.toBe('auto');
       expect(rest.tint).not.toBe(rest.color);
-      if (theme === 'dark') expect(rest.color).toBe('rgb(169, 189, 246)');
+      // v6 : bleu --beam du thème (clair en sombre), distinct du texte.
+      const beam = await page.evaluate<string>(`(() => {
+        const t = document.createElement('i');
+        t.style.color = 'var(--beam)';
+        document.querySelector('main').appendChild(t);
+        const c = getComputedStyle(t).color;
+        t.remove();
+        return c;
+      })()`);
+      const v6 = await page.locator('html[data-v6]').count();
+      if (v6) expect(rest.color).toBe(beam);
+      else if (theme === 'dark') expect(rest.color).toBe('rgb(169, 189, 246)');
       await link.hover();
       await expect.poll(async () => (await style(link)).thickness).toBe('2px');
     });

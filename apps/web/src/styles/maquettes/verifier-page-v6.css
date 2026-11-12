@@ -1,0 +1,204 @@
+/* Vérification d’un rapport en v6 : feuille de la page portée sous .vf, couleurs
+ * sur les jetons v6 (le sombre suit theme-dark.css), police Geist. */
+.vf {
+  box-sizing: border-box;
+  color: var(--x-text);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: clip;
+}
+.vf {
+  overflow-x: clip;
+  --x-space-1: 4px;
+  --x-space-2: 8px;
+  --x-space-3: 12px;
+  --x-space-4: 16px;
+  --x-space-5: 24px;
+  --x-space-6: 32px;
+  --x-space-7: 48px;
+  --x-space-8: 64px;
+  --x-border: 1px;
+  --x-radius-md: 16px;
+  --x-focus-width: 3px;
+  --x-text-sm: 0.875rem;
+  --x-leading-body: 1.55;
+  --x-leading-title: 1.2;
+  --x-font-mono: var(--mono);
+  --x-icon-size: 20px;
+  --x-ink: var(--ink);
+  --x-ink-2: var(--ink-2);
+  --x-line: var(--line);
+  --x-paper: var(--surf);
+  --x-surface: var(--surf-2);
+  --x-focus: var(--beam);
+  --x-score-good: var(--ok);
+  --x-score-problem: var(--find);
+  --x-score-untested: var(--ink-2);
+}
+.vf {
+  flex: 1;
+  width: min(1040px, calc(100% - 2rem));
+  margin: 1rem auto 2.5rem;
+}
+.vf .crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  color: var(--ink-2);
+  font-size: 0.9rem;
+}
+.vf .crumbs a {
+  color: var(--beam);
+  font-weight: 600;
+  text-decoration: none;
+}
+.vf .crumbs li + li::before {
+  content: "/";
+  margin-right: 0.6rem;
+  color: var(--beam);
+}
+.vf h1 {
+  margin: 0 0 0.6rem;
+  color: var(--ink);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.vf .lead {
+  max-width: 62ch;
+  margin: 0 0 1.25rem;
+  color: var(--ink-2);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+.vf .vcard {
+  padding: clamp(1.1rem, 3vw, 1.75rem);
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  box-shadow: 0 18px 40px -28px rgba(61, 82, 160, 0.45);
+}
+.vf .button,
+.vf .vcard button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--beam);
+  border-radius: 999px;
+  background: var(--cta);
+  color: var(--cta-fg);
+  font: 600 0.95rem var(--sans);
+  cursor: pointer;
+}
+.vf .drop {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1px dashed var(--x-line);
+  border-radius: 20px;
+  background: var(--x-surface);
+}
+.vf .drop.is-over {
+  border-color: var(--x-focus);
+}
+.vf .drop label {
+  margin: 0;
+  color: var(--x-ink);
+  font-weight: 700;
+}
+.vf .drop-name {
+  margin: 0;
+  color: var(--x-ink);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.vf .drop .hint {
+  margin: 0;
+  color: var(--x-ink-2);
+}
+.vf input[type="file"] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+  clip-path: inset(50%);
+}
+.vf .stamp .kicker {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 0.75rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid var(--x-line);
+  border-radius: 999px;
+  background: var(--x-surface);
+  color: var(--x-ink);
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.vf .qr-card {
+  display: inline-flex;
+  padding: 0.75rem;
+  border: 1px solid var(--x-line);
+  border-radius: 20px;
+  background: var(--x-paper);
+}
+.vf .qr {
+  display: block;
+  width: 8rem;
+  height: 8rem;
+  max-width: 100%;
+  background: var(--x-paper);
+  color: var(--x-ink);
+}
+@media (max-width: 400px) {
+  .vf .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .vf {
+    width: calc(100% - 1rem);
+  }
+}
+
+/* Noms lus par VerifierPanel.svelte (--ink et --line sont déjà des jetons v6). */
+.vf {
+  --border: var(--x-border);
+  --focus: var(--x-focus);
+  --focus-width: var(--x-focus-width);
+  --font-mono: var(--x-font-mono);
+  --icon-size: var(--x-icon-size);
+  --leading-body: var(--x-leading-body);
+  --leading-title: var(--x-leading-title);
+  --paper: var(--x-paper);
+  --radius-md: var(--x-radius-md);
+  --score-good: var(--x-score-good);
+  --score-problem: var(--x-score-problem);
+  --score-untested: var(--x-score-untested);
+  --space-1: var(--x-space-1);
+  --space-2: var(--x-space-2);
+  --space-3: var(--x-space-3);
+  --space-4: var(--x-space-4);
+  --space-5: var(--x-space-5);
+  --space-6: var(--x-space-6);
+  --space-7: var(--x-space-7);
+  --space-8: var(--x-space-8);
+  --surface: var(--x-surface);
+  --text-sm: var(--x-text-sm);
+}

@@ -10,8 +10,6 @@ type View = {
   getComputedStyle: (node: unknown) => Record<string, string>;
 };
 
-const LINE = 'rgb(56, 70, 124)';
-
 async function css(locator: Locator, prop: string): Promise<string> {
   await locator.scrollIntoViewIfNeeded();
   return locator.evaluate(
@@ -128,8 +126,11 @@ test('sombre : méthode, exemple et demande d’accès suivent le modèle de car
   );
 
   await open(page, '/demande-acces?theme=dark');
-  expect(await css(page.locator('.request-card'), 'borderTopColor')).toBe(LINE);
+  // /demande-acces v6 : même trait v6 que les cartes de /methode.
+  expect(await css(page.locator('.request-card'), 'borderTopColor')).toBe(
+    hexToRgb(tokens.line),
+  );
   expect(await css(page.locator('.report-preview'), 'borderTopColor')).toBe(
-    LINE,
+    hexToRgb(tokens.line),
   );
 });

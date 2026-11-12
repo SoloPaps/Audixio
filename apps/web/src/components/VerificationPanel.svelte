@@ -402,7 +402,7 @@ async function onCopy(value: string): Promise<void> {
       <li><span class="tk" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>{t('preuve.gov.3')}</li>
     </ul>
   </section>
-  <div class="dock" role="region" aria-label={t('preuve.choose')}>
+  <div class="vdock" role="region" aria-label={t('preuve.choose')}>
     <p>{t('preuve.dock', { host: site.host, method: methodLabel(method) })}</p>
     <div class="r">
       <a class="btn btn-ghost btn-sm" href="/sites">{t('verify.back')}</a>
