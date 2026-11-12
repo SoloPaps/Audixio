@@ -786,3 +786,11 @@
   opacity: 0;
   visibility: hidden;
 }
+
+/* La barre collante est toujours à l’écran : ses liens ne suivent pas le
+ * scroll-padding-top de la page, sinon le focus (Tab, menu) fait remonter
+ * la page de plusieurs centaines de pixels. */
+[data-v6] .axn,
+[data-v6] .axn * {
+  scroll-margin-top: calc(-1 * var(--scroll-pad));
+}
