@@ -48,7 +48,7 @@ test('M3 (bug_5db3cab6, bug_6de9c2d4) : badge visiteur sans lien public ni lien 
   page,
 }) => {
   await asGuest(page);
-  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await page.goto(`/rapport/${GUEST_ID}/badge?theme=light`);
   const code = page.locator('#code');
   await expect(code).toHaveValue(/<a href=/, { timeout: 15_000 });
   for (const style of [/^Complet/, /^Compact/, /^Pastille/]) {
@@ -145,7 +145,7 @@ test('B4 (bug_cb501466, bug_f85727e1) : badge Complet lisible en sombre', async 
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await asGuest(page);
-  await page.goto(`/badge?id=${GUEST_ID}&theme=dark`);
+  await page.goto(`/rapport/${GUEST_ID}/badge?theme=dark`);
   const label = page.locator('.stage a span');
   await expect(label).toHaveText('Audité par Audixio', { timeout: 15_000 });
   // Contraste du libellé contre le fond blanc du badge (style en ligne).
@@ -181,7 +181,7 @@ test('B4 : badge Compact lisible en sombre sur le fond d’aperçu', async ({
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await asGuest(page);
-  await page.goto(`/badge?id=${GUEST_ID}&theme=dark`);
+  await page.goto(`/rapport/${GUEST_ID}/badge?theme=dark`);
   await page.getByRole('radio', { name: /^Compact/ }).check();
   const label = page.locator('.stage a span');
   await expect(label).toHaveText('Audixio', { timeout: 15_000 });
@@ -227,7 +227,7 @@ test('badge connecté sans lien public : créer le lien d’abord, jamais de cod
       body: JSON.stringify({ id: 'l1', url: '/partage/jeton-public-1' }),
     });
   });
-  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await page.goto(`/rapport/${GUEST_ID}/badge?theme=light`);
   await expect(
     page.getByText(
       'Créez d’abord le lien public du rapport pour obtenir le code du badge.',
@@ -236,7 +236,7 @@ test('badge connecté sans lien public : créer le lien d’abord, jamais de cod
   await expect(page.locator('#code')).toHaveCount(0);
   await expect(page.locator('.stage')).toHaveCount(0);
   await expect(
-    page.locator(`.dlg a[href*="/rapport?id="]:not(.x):not(.lk-pill)`),
+    page.locator(`.dlg a[href^="/rapport/"]:not(.x):not(.lk-pill)`),
   ).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Créer le lien public' }).click();
@@ -293,7 +293,7 @@ test('badge connecté avec lien public : le code vise /partage', async ({
       });
     },
   );
-  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await page.goto(`/rapport/${GUEST_ID}/badge?theme=light`);
   await expect(page.locator('#code')).toHaveValue(
     new RegExp(`href="${escapeRe(ORIGIN)}/partage/deja-public"`),
     { timeout: 15_000 },
@@ -330,7 +330,7 @@ test('badge connecté, plafond d’un lien du plan gratuit atteint : message dé
   page,
 }) => {
   await linkLimitReached(page);
-  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await page.goto(`/rapport/${GUEST_ID}/badge?theme=light`);
   await page
     .getByRole('button', { name: 'Créer le lien public' })
     .click({ timeout: 15_000 });
@@ -347,7 +347,7 @@ test('badge connecté, plafond d’un lien atteint : message dédié en anglais'
   await linkLimitReached(page);
   await page.goto('/bienvenue?theme=light');
   await toEnglish(page);
-  await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
+  await page.goto(`/rapport/${GUEST_ID}/badge?theme=light`);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await page
     .getByRole('button', { name: 'Create the public link' })

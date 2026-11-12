@@ -33,10 +33,10 @@ async function signedIn(page: Page, status: number): Promise<void> {
 }
 
 const PAGES = [
-  `/rapport?id=${OTHER}`,
-  `/plan?id=${OTHER}`,
-  `/brief?id=${OTHER}`,
-  `/domaine?id=${OTHER}&domaine=securite`,
+  `/rapport/${OTHER}`,
+  `/rapport/${OTHER}/plan`,
+  `/rapport/${OTHER}/brief`,
+  `/rapport/${OTHER}/domaines/securite`,
   `/rapport/imprimer/?id=${OTHER}`,
 ];
 

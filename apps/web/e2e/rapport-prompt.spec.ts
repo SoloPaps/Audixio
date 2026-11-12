@@ -99,7 +99,7 @@ test('B8 (bug_c3b0c4d3) : un constat Sécurité n’affiche pas de gain en secon
   page,
 }) => {
   await verifiedAudit(page);
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=securite&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/securite?theme=light`);
   const impacts = page.locator('.cst .imp');
   await expect(impacts).toHaveCount(2, { timeout: 15_000 });
   await expect(impacts).toHaveText(['Impact moyen', 'Impact faible']);
@@ -109,7 +109,7 @@ test('B8 (bug_c3b0c4d3) : un constat Sécurité n’affiche pas de gain en secon
   await expect(page.locator('.gain')).toHaveCount(0);
 
   // La vitesse garde son estimation en secondes.
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=light`);
   await expect(page.locator('.cst .imp').first()).toHaveText(/Impact ≈ 1,1 s/, {
     timeout: 15_000,
   });

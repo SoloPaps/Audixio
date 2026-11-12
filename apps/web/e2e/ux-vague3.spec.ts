@@ -242,7 +242,7 @@ test('la liste des sites garde une tuile et replie les actions', async ({
   await page.goto('/sites');
   await waitForIslands(page);
   const tile = page.getByRole('link', { name: 'exemple.fr', exact: true });
-  await expect(tile).toHaveAttribute('href', `/rapport?id=${AUDIT_ID}`);
+  await expect(tile).toHaveAttribute('href', `/rapport/${AUDIT_ID}`);
   await expect(tile).toHaveCSS('font-weight', '800');
   const card = page.locator('article.beam', { hasText: 'exemple.fr' });
   await expect(card).toContainText('23 oct. 2026');

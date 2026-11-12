@@ -10,6 +10,7 @@ import {
 } from './domains.js';
 import type { Finding, FindingStatus } from './findings.js';
 import { presentFinding } from './report-export.js';
+import { domainHref } from './report-route.js';
 import { type Level, levelForScore } from './score.js';
 import { asParams, translate } from './translate.js';
 import { causeOfFinding, explainUntested } from './untested-cause.js';
@@ -152,7 +153,7 @@ export function categoryItems(
         : domainSentence(id, level),
       score: row?.locked ? null : row ? score : null,
       locked: row?.locked === true,
-      href: `/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(id)}`,
+      href: domainHref(auditId, id),
     };
     if (row?.locked) return item;
     if (findings && item.score === null) {

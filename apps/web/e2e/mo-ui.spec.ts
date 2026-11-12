@@ -172,7 +172,7 @@ test('M13 : badge Complet et Compact affichent le libellé et la note', async ({
     }),
   );
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto(`/badge?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/badge?theme=light`);
   const stage = page.locator('.stage');
   await expect(stage.locator('b')).toBeVisible({ timeout: 15_000 });
   await expect(stage.locator('img')).toBeVisible();
@@ -193,9 +193,7 @@ test('B-4 : /domaine Sécurité à 330 px en EN, le texte reste dans la carte de
 }) => {
   await verifiedReport(page, 86, { securite: 55 });
   await page.setViewportSize({ width: 330, height: 900 });
-  await page.goto(
-    `/domaine?id=${AUDIT_ID}&domaine=securite&theme=light&lang=en`,
-  );
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/securite?theme=light&lang=en`);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('.gcard')).toContainText(
     'Some protections can be strengthened.',
@@ -221,7 +219,7 @@ test('B-5 : /rapport sombre à 330 px, la note 86/100 se lit sur le disque centr
   await verifiedReport(page);
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await page.setViewportSize({ width: 330, height: 900 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=dark`);
   const score = page.locator('#rose .c-score');
   await expect(score).toHaveText('86/100', { timeout: 15_000 });
   const colors = await page.evaluate<{ fill: string; stops: string[] }>(`({
@@ -284,7 +282,7 @@ test('B-6 : fenêtre Partager en sombre (thème choisi dans le menu), sous-titre
     });
   });
   await page.setViewportSize({ width: 330, height: 800 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&lang=en`);
+  await page.goto(`/rapport/${AUDIT_ID}?lang=en`);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await page.waitForLoadState('networkidle');
   // Comme Mo : thème sombre choisi depuis le menu du haut.

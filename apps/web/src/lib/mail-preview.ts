@@ -84,7 +84,7 @@ export function auditEndPreview(
   reason: 'denied' | 'down' | 'stale' | 'generic' = 'denied',
 ): string {
   const report =
-    'https://audixio.fr/rapport?id=11111111-1111-4111-8111-111111111111';
+    'https://audixio.fr/rapport/11111111-1111-4111-8111-111111111111';
   const retry =
     'https://audixio.fr/progression?site=22222222-2222-4222-8222-222222222222&url=https%3A%2F%2Fexemple.fr';
   return renderAuditEndMail({

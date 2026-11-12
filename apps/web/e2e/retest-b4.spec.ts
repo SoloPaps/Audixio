@@ -3,9 +3,9 @@ import { expect, test } from '@playwright/test';
 // B4 (retest nuit) : les pages « sans id » et l’impression visiteur
 // affichent une carte centrée avec un h1 explicite, comme les autres murs.
 const pages = [
-  '/badge',
-  '/brief',
-  '/rapport/imprimer?id=00000000-0000-4000-8000-000000000000',
+  '/rapport/badge',
+  '/rapport/brief',
+  '/rapport/00000000-0000-4000-8000-000000000000/imprimer',
 ] as const;
 
 for (const theme of ['light', 'dark'] as const) {

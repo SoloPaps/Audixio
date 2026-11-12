@@ -1,7 +1,8 @@
 /** Lien du dernier rapport, ou les sites s’il n’y en a pas. */
+import { reportHref } from './report-route.js';
 export function latestReportHref(id: string | null): string {
   if (!id) return '/sites';
-  return `/rapport?id=${encodeURIComponent(id)}`;
+  return reportHref(id);
 }
 
 /** Le compte Pro déverrouille les alertes sur mesure. */

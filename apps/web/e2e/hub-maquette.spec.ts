@@ -159,7 +159,7 @@ async function axe(page: Page): Promise<void> {
 test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
   await install(page);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await expect(
     page.getByRole('heading', { name: 'Audit de atelier-martin.fr' }),
   ).toBeVisible();
@@ -185,7 +185,7 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
     .getByRole('button', { name: 'Fermer' })
     .click();
   await page.getByRole('link', { name: /^Performance/ }).click();
-  await expect(page).toHaveURL(/domaine=performance/);
+  await expect(page).toHaveURL(/\/domaines\/performance/);
   await expect(
     page.getByRole('heading', { name: /Votre site est ralenti/ }),
   ).toBeVisible();
@@ -199,7 +199,7 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
   await axe(page);
 
   await page.setViewportSize({ width: 330, height: 700 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await expect(
     page.getByRole('heading', { name: 'Audit de atelier-martin.fr' }),
   ).toBeVisible();
@@ -220,7 +220,7 @@ test('hub, partage et domaine ouvert, bureau et 330 px', async ({ page }) => {
 test('domaine verrouillé sans indice précis', async ({ page }) => {
   await install(page, true);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=securite&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/securite?theme=light`);
   await expect(
     page.getByRole('heading', { name: 'Sécurité', exact: true }),
   ).toBeVisible();

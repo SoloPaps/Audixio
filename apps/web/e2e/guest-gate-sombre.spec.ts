@@ -58,7 +58,7 @@ async function openLockedSecurity(page: Page): Promise<void> {
     },
     guestPayload() as { audit: { id: string } },
   );
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=dark`);
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.locator('#domaine-securite').click();
   await expect(page.locator('.gg-root .gg')).toBeVisible();

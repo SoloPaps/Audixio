@@ -324,7 +324,7 @@ for (const lang of ['fr', 'en'] as const) {
 
     // Rapport du domaine : « Détails » du constat frames.
     await page.goto(
-      `/domaine?id=${SEC_ID}&domaine=securite&theme=dark&lang=${lang}`,
+      `/rapport/${SEC_ID}/domaines/securite?theme=dark&lang=${lang}`,
     );
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
     await page.locator('.cst .det').first().click();
@@ -339,7 +339,7 @@ for (const lang of ['fr', 'en'] as const) {
 
     // Page de correction : plan d’action en étapes.
     await page.goto(
-      `/constat?id=${SEC_ID}&check=securite.frames-0&theme=dark&lang=${lang}`,
+      `/rapport/${SEC_ID}/constats/securite.frames-0?theme=dark&lang=${lang}`,
     );
     await page.locator('a[href="#plan"]').first().click();
     await expect(page.locator('#plan pre.step-code').first()).toBeVisible();

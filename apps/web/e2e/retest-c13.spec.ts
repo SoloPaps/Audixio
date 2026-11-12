@@ -7,7 +7,7 @@ import { stubSession } from './session-stub.js';
 test('/constat sans id : titre du constat et invitation à choisir', async ({
   page,
 }) => {
-  await page.goto('/constat');
+  await page.goto('/rapport/constats');
   const heading = page.getByRole('heading', { level: 1 });
   await expect(heading).toHaveText('Détail du constat', { timeout: 15_000 });
   await expect(heading).toHaveCount(1);
@@ -34,7 +34,7 @@ test('/badge sans id (connecté) : titre du badge et invitation à choisir', asy
     );
   });
   await stubSession(page);
-  await page.goto('/badge');
+  await page.goto('/rapport/badge');
   const heading = page.getByRole('heading', { level: 1 });
   await expect(heading).toHaveText('Badge de note', { timeout: 15_000 });
   await expect(heading).toHaveCount(1);

@@ -78,9 +78,11 @@ export function auditEndSender(env: Record<string, string | undefined>): {
 
 export function privateReportUrl(origin: string, auditId: string): string {
   const base = origin.replace(/\/$/u, '');
-  const url = new URL('/rapport', `${base}/`);
-  url.searchParams.set('id', auditId);
-  return url.toString();
+  // Adresse v6 (STRUCTURE.md R1) : plus de requête ?id=.
+  return new URL(
+    `/rapport/${encodeURIComponent(auditId)}`,
+    `${base}/`,
+  ).toString();
 }
 
 export function relaunchAuditUrl(

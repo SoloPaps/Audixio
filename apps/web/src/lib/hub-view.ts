@@ -1,6 +1,12 @@
 import { t } from '../i18n/index.js';
 import type { AuditPayload } from './audit-api.js';
 import { gradeForScore } from './grade.js';
+import {
+  badgePageHref,
+  checkHref,
+  domainHref,
+  reportHref,
+} from './report-route.js';
 
 const SENSITIVE = new Set(['securite', 'vie_privee', 'dns_email']);
 
@@ -29,23 +35,23 @@ export function priorityHref(
   domain: string,
   findingId: string,
 ): string {
-  return `/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(domain)}#finding-${findingId}`;
+  return `${domainHref(auditId, domain)}#finding-${findingId}`;
 }
 
 export function detailHref(auditId: string, findingId: string): string {
-  return `/constat?id=${encodeURIComponent(auditId)}&check=${encodeURIComponent(findingId)}`;
+  return checkHref(auditId, findingId);
 }
 
 export function planHref(auditId: string): string {
-  return `/plan?id=${encodeURIComponent(auditId)}`;
+  return reportHref(auditId, 'plan');
 }
 
 export function briefHref(auditId: string): string {
-  return `/brief?id=${encodeURIComponent(auditId)}`;
+  return reportHref(auditId, 'brief');
 }
 
 export function badgeHref(auditId: string): string {
-  return `/badge?id=${encodeURIComponent(auditId)}`;
+  return badgePageHref(auditId);
 }
 
 export function verifyHref(siteId: string): string {

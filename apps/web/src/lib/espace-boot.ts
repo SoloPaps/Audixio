@@ -59,6 +59,7 @@ import { filterHistoryPoints, historySpanOf } from './history-range.js';
 import { historySince } from './history-since.js';
 import type { PlaceSummary, PlacesState } from './places-api.js';
 import { parsePlacesState } from './places-api.js';
+import { reportHref } from './report-route.js';
 import { loadSiteHistory } from './site-history.js';
 import { latestAuditBySite } from './site-tiles.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from './site-url.js';
@@ -217,7 +218,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       id: row.id,
       host: row.host,
       href: mark
-        ? `/rapport?id=${encodeURIComponent(mark.auditId)}`
+        ? reportHref(mark.auditId)
         : `/progression?site=${encodeURIComponent(row.id)}`,
       verify: `/verifier?site=${encodeURIComponent(row.id)}`,
       when: mark ? formatDate(new Date(mark.at)) : '',

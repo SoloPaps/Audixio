@@ -2,6 +2,7 @@ import { formatDate, formatNumber, t } from '../i18n/index.js';
 import { packActive } from '../i18n/pack.js';
 import { domainPlain, REPORT_DOMAINS } from './domains.js';
 import type { FindingStatus } from './findings.js';
+import { reportHref } from './report-route.js';
 import { type Level, levelForScore } from './score.js';
 
 export const SCORE_MIN = 0;
@@ -353,7 +354,7 @@ export function rowsToHistory(input: {
       return {
         id: row.id,
         at,
-        href: `/rapport?id=${encodeURIComponent(row.id)}`,
+        href: reportHref(row.id),
         scores,
       };
     }),

@@ -75,7 +75,7 @@ async function openBrief(page: Page): Promise<void> {
       }),
     });
   });
-  await page.goto(`/brief?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief`);
 }
 
 test('C7 : un contrôle réussi ne compte pas, « 1 ignoré » au singulier', async ({

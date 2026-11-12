@@ -317,7 +317,7 @@ describe('lignes stockées', () => {
       ],
     });
     expect(built.points.map((point) => point.id)).toEqual(['a', 'c']);
-    expect(built.points[1]?.href).toBe('/rapport?id=c');
+    expect(built.points[1]?.href).toBe('/rapport/c');
     expect(built.points[0]?.scores.performance).toBe(64);
     expect(built.points[1]?.scores.performance).toBe(86);
     expect(built.series.map((item) => item.id)).toEqual([

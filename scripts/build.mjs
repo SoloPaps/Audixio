@@ -38,6 +38,8 @@ await pruneUnreferenced(dist);
 await access(path.join(dist, 'index.html'));
 await access(path.join(dist, 'dictionnaire-en.json'));
 await access(path.join(dist, 'dictionnaire-fr.json'));
+// Anciennes adresses et onglets du rapport (lib/redirects.ts).
+await access(path.join(dist, '_redirects'));
 await access(path.join(dist, '.well-known', 'audigy-signing-key'));
 const preuves = await readdir(path.join(dist, 'preuves'));
 if (!preuves.some((name) => name.endsWith('.json'))) {

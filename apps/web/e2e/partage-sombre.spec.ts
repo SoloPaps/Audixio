@@ -129,7 +129,7 @@ const SESSION = {
 async function darkSheet(page: Page): Promise<void> {
   await page.setViewportSize({ width: 330, height: 900 });
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=dark`);
   await page.locator('#shareBtn').click();
   await expect(page.locator('.sh-dlg')).toBeVisible();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');

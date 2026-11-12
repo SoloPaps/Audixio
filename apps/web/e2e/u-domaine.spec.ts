@@ -89,9 +89,7 @@ for (const [theme, width] of [
     await verifiedReport(page);
     // Bascule EN au sélecteur (large), puis passage à 330 px.
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(
-      `/domaine?id=${AUDIT_ID}&domaine=performance&theme=${theme}`,
-    );
+    await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=${theme}`);
     await toEnglish(page);
     await page.setViewportSize({ width, height: 800 });
     await page.reload();

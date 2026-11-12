@@ -12,7 +12,6 @@
  * et ReportView décide.
  */
 interface Props {
-  /** « domain » : seulement quand ?domaine= est présent (sinon message). */
   mode: 'report' | 'domain' | 'detail' | 'badge';
 }
 const { mode } = Astro.props;
@@ -26,11 +25,15 @@ const { mode } = Astro.props;
 <script is:inline data-guest-mode={mode}>
 (function () {
   try {
-    var script = document.currentScript;
-    var mode = script && script.getAttribute('data-guest-mode');
+    // /rapport/:id/<onglet> (lib/report-route.ts), ou l’ancienne requête ?id=.
     var query = new URLSearchParams(location.search);
-    var id = query.get('id');
-    if (!id || (mode === 'domain' && !query.get('domaine'))) return;
+    var path = /^\/rapport\/([^/]+)(?:\/[^/]+){0,2}\/?$/.exec(location.pathname);
+    var reserved = ['domaines', 'constats', 'plan', 'brief', 'badge', 'imprimer', 'index.html'];
+    var id =
+      path && reserved.indexOf(path[1]) < 0
+        ? decodeURIComponent(path[1])
+        : query.get('id');
+    if (!id) return;
     if ((document.cookie || '').split('; ').indexOf('audixio_connecte=1') >= 0)
       return;
     try {

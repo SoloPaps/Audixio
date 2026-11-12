@@ -1,0 +1,16 @@
+---
+import '../../styles/maquettes/liens.css';
+import '../../styles/maquettes/domaine.css';
+import '../../styles/maquettes/restreint.css';
+import GuestReportRedirect from '../../components/GuestReportRedirect.astro';
+import ReportView from '../../components/ReportView.svelte';
+import { t } from '../../i18n/index.js';
+import Canon from '../../layouts/Canon.astro';
+---
+
+<Canon vue="domaine" title={t('meta.domain.title')} description={t('meta.domain.description')}>
+  <GuestReportRedirect slot="head" mode="domain" />
+  <main id="contenu" tabindex="-1">
+    <ReportView mode="domain" client:load />
+  </main>
+</Canon>

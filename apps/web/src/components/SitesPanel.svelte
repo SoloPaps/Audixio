@@ -14,6 +14,7 @@ import {
   parsePlacesState,
 } from '../lib/places-api.js';
 import { relaunchHref } from '../lib/relaunch.js';
+import { reportHref } from '../lib/report-route.js';
 import { latestAuditBySite, type SiteMark } from '../lib/site-tiles.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from '../lib/site-url.js';
 import EmptyState from './EmptyState.svelte';
@@ -213,7 +214,7 @@ async function onSignOut(): Promise<void> {
           {#if mark}
             <a
               class="site-tile lift glass glass-module"
-              href={`/rapport?id=${encodeURIComponent(mark.auditId)}`}
+              href={reportHref(mark.auditId)}
             >
               <div class="glass-plate">
                 <span>{site.label}</span>

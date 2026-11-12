@@ -253,7 +253,7 @@ describe('bug 10 — 8 domaines à 100 %', () => {
 
 describe('bug 11 — lien du rapport', () => {
   it('ouvre le rapport de l’audit, et un rapport réel sans identifiant', () => {
-    expect(reportHrefFromSearch(`?id=${AUDIT}`)).toBe(`/rapport?id=${AUDIT}`);
+    expect(reportHrefFromSearch(`?id=${AUDIT}`)).toBe(`/rapport/${AUDIT}`);
     expect(reportHrefFromSearch('')).toBe('/exemple-rapport');
     expect(reportHrefFromSearch('')).not.toBe('/rapport');
     expect(source('../lib/progress-scene.ts')).toContain(

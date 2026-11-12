@@ -12,6 +12,7 @@ import { copyText } from '../lib/clipboard.js';
 import { gradeForScore } from '../lib/grade.js';
 import { say } from '../lib/motion.js';
 import { loginHref, signupHref } from '../lib/nav.js';
+import { reportHref } from '../lib/report-route.js';
 
 interface Props {
   auditId: string;
@@ -34,7 +35,7 @@ let pending = $state(false);
 let error = $state('');
 
 const grade = $derived(verified ? gradeForScore(score) : null);
-const rapport = $derived(`/rapport?id=${encodeURIComponent(auditId)}`);
+const rapport = $derived(reportHref(auditId));
 const target = $derived(
   badgeTargetHref({ origin: location.origin, shareToken, guest }),
 );

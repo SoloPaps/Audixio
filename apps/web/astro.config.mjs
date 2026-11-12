@@ -1,6 +1,13 @@
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import svelte from '@astrojs/svelte';
 import { defineConfig } from 'astro/config';
 import { dropDevPages } from './drop-dev-pages.mjs';
+import {
+  renderRedirects,
+  resolveRedirect,
+  resolveRewrite,
+} from './src/lib/redirects.ts';
 
 function piece(chars) {
   return chars.join('');
@@ -20,16 +27,30 @@ function labFlagKey() {
   return `import.meta.env.${pub}_${name}_${lab}`;
 }
 
-function rewriteRoutes(req, _res, next) {
+function rewriteRoutes(req, res, next) {
   const raw = req.url ?? '';
   const query = raw.indexOf('?');
   const path = query === -1 ? raw : raw.slice(0, query);
   const extra = query === -1 ? '' : raw.slice(query + 1);
   const params = new URLSearchParams(extra);
+  // Anciennes adresses : même table que dist/_redirects (STRUCTURE.md §4).
+  const moved = resolveRedirect(path, extra ? `?${extra}` : '');
+  if (moved) {
+    res.statusCode = 301;
+    res.setHeader('location', moved);
+    res.end();
+    return;
+  }
   const print = path.match(/^\/rapport\/([^/]+)\/imprimer\/?$/);
   if (print && print[1] !== 'imprimer') {
     params.set('id', print[1]);
     req.url = `/rapport/imprimer/?${params.toString()}`;
+    next();
+    return;
+  }
+  const tab = resolveRewrite(path);
+  if (tab) {
+    req.url = `${tab.replace(/index\.html$/u, '')}${extra ? `?${extra}` : ''}`;
     next();
     return;
   }
@@ -178,6 +199,22 @@ function dropDevOnBuild() {
   };
 }
 
+/** Écrit dist/_redirects depuis la table unique (aucun déploiement). */
+function redirectsFile() {
+  return {
+    name: 'audigy-redirects',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        await writeFile(
+          fileURLToPath(new URL('_redirects', dir)),
+          renderRedirects(),
+          'utf8',
+        );
+      },
+    },
+  };
+}
+
 function printRoute() {
   const mount = (server) => {
     server.middlewares.stack.unshift({ route: '', handle: rewriteRoutes });
@@ -191,7 +228,7 @@ function printRoute() {
 }
 
 export default defineConfig({
-  integrations: [svelte()],
+  integrations: [svelte(), redirectsFile()],
   output: 'static',
   devToolbar: {
     enabled: process.env.AUDIGY_DEV_TOOLBAR !== 'off',

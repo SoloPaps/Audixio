@@ -32,6 +32,7 @@ import {
   reportRows,
   scoredDomainCount,
 } from '../lib/report-model.js';
+import { parseReportRoute, type ReportTab } from '../lib/report-route.js';
 import { levelLabel } from '../lib/score.js';
 import { explainUntested } from '../lib/untested-cause.js';
 import { verdictCopy } from '../lib/verdict.js';
@@ -43,6 +44,8 @@ import DomainLockedView from './DomainLockedView.svelte';
 import DomainView from './DomainView.svelte';
 import HubView from './HubView.svelte';
 import PlanView from './PlanView.svelte';
+import ReportIndex from './ReportIndex.svelte';
+import ReportTabs from './ReportTabs.svelte';
 import SessionWall from './SessionWall.svelte';
 import UntestedCause from './UntestedCause.svelte';
 
@@ -217,10 +220,19 @@ function downloadMarkdown(event: MouseEvent): void {
   );
 }
 
+const TAB_OF: Record<NonNullable<Props['mode']>, ReportTab> = {
+  report: 'resume',
+  domain: 'domaines',
+  detail: 'constats',
+  plan: 'plan',
+  brief: 'brief',
+  badge: 'resume',
+};
+
 // Sans `id`, /badge et /constat gardent un titre propre à la page et
 // invitent à choisir un site ou un rapport (retest C13).
 function missingMessage(hasId: boolean): string {
-  if (mode === 'domain') return t('report.domain.missing');
+  if (hasId && mode === 'domain') return t('report.domain.missing');
   if (!hasId && mode === 'badge') return t('badge.pick');
   if (!hasId && mode === 'detail') return t('constat.pick');
   return t('report.missing');
@@ -237,10 +249,11 @@ onMount(() => {
   void load();
 
   async function load(): Promise<void> {
-    const params = new URLSearchParams(location.search);
-    const id = params.get('id');
-    domainId = params.get('domaine') ?? '';
-    checkId = params.get('check') ?? '';
+    // /rapport/:id/<onglet>/… ; les anciennes requêtes restent lues.
+    const route = parseReportRoute(location.pathname, location.search);
+    const id = route.id || null;
+    domainId = route.domain;
+    checkId = route.check;
     if (!id && (mode === 'brief' || mode === 'badge' || mode === 'plan')) {
       const visitor = await currentSession();
       if (!visitor) {
@@ -248,7 +261,7 @@ onMount(() => {
         return;
       }
     }
-    if (!id || (mode === 'domain' && !isKnownDomain(domainId))) {
+    if (!id || (mode === 'domain' && domainId && !isKnownDomain(domainId))) {
       phase = 'message';
       message = missingMessage(Boolean(id));
       return;
@@ -377,6 +390,7 @@ onMount(() => {
   />
 {:else if payload}
   <div class="reading">
+    <ReportTabs auditId={payload.audit.id} current={TAB_OF[mode]} />
     {#if mode === 'plan'}
       <PlanView
         auditId={payload.audit.id}
@@ -400,7 +414,9 @@ onMount(() => {
         rows={reportRowList}
       />
     {:else if mode === 'detail'}
-      {#if detailRows[0]}
+      {#if !checkId}
+        <ReportIndex kind="constats" auditId={payload.audit.id} {host} {items} rows={reportRowList} verified={siteVerified} />
+      {:else if detailRows[0]}
         <ConstatView
           auditId={payload.audit.id}
           {host}
@@ -414,7 +430,9 @@ onMount(() => {
         <p role="status">{t('constat.missing')}</p>
       {/if}
     {:else if mode === 'domain'}
-      {#if domainLocked}
+      {#if !domainId}
+        <ReportIndex kind="domaines" auditId={payload.audit.id} {host} {items} rows={reportRowList} verified={siteVerified} />
+      {:else if domainLocked}
         <DomainLockedView auditId={payload.audit.id} siteId={payload.audit.site.id} {domainId} {host} {items} />
       {:else}
         {#if domainUntested}

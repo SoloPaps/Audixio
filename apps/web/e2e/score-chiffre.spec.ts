@@ -121,7 +121,7 @@ for (const theme of ['light', 'dark'] as const) {
     page,
   }) => {
     await install(page);
-    await page.goto(`/rapport?id=${AUDIT_ID}&theme=${theme}`);
+    await page.goto(`/rapport/${AUDIT_ID}?theme=${theme}`);
     const perf = page.locator('#domaine-performance');
     await expect(perf.locator('[data-score-num]')).toHaveText('58');
     await expect(perf.locator('.grade')).toHaveText('D');
@@ -138,9 +138,7 @@ for (const theme of ['light', 'dark'] as const) {
     page,
   }) => {
     await install(page);
-    await page.goto(
-      `/domaine?id=${AUDIT_ID}&domaine=performance&theme=${theme}`,
-    );
+    await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=${theme}`);
     const card = page.locator('.gcard');
     await expect(card.locator('.gbig')).toHaveText('D');
     await expect(card.locator('[data-score-num]')).toHaveText('58/100');
@@ -157,7 +155,7 @@ test('domaine verrouillé : les voisins montrent lettre et score', async ({
   page,
 }) => {
   await install(page, false);
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=securite&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/securite?theme=light`);
   const prev = page.locator('.pg.prev');
   const next = page.locator('.pg.next');
   await expect(prev.locator('[data-score-num]')).toHaveText('88/100');
@@ -310,7 +308,7 @@ test('rapport visiteur partiel : scores ronds sans « 0/100 »', async ({
       JSON.stringify({ [value.audit.id]: value }),
     );
   }, payload);
-  await page.goto(`/rapport?id=${id}`);
+  await page.goto(`/rapport/${id}`);
   await expect(
     page.getByText(/partielle · \d+ domaines · site non vérifié/),
   ).toBeVisible({ timeout: 15_000 });

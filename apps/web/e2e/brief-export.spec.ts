@@ -206,9 +206,9 @@ test('le hub ouvre le brief et les boutons prennent le fichier serveur', async (
   await install(page);
   const posted = await fulfillBrief(page, 200, `${MARKER}\n`);
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}`);
   await page.getByRole('link', { name: 'Ouvrir le brief IA' }).click();
-  await expect(page).toHaveURL(new RegExp(`/brief\\?id=${AUDIT_ID}`));
+  await expect(page).toHaveURL(new RegExp(`/rapport/${AUDIT_ID}/brief`));
   await expect(page.getByText(MARKER)).toHaveCount(0);
 
   await page
@@ -251,7 +251,7 @@ test('un refus d’accès n’écrit pas le brief du navigateur', async ({
     'application/json; charset=utf-8',
   );
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.goto(`/brief?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief`);
   await writeClip(page, 'AVANT');
   let downloaded = false;
   page.on('download', () => {
@@ -276,7 +276,7 @@ test('sans réponse serveur le domaine ne télécharge pas le texte local', asyn
 }) => {
   await install(page);
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance`);
   await writeClip(page, 'AVANT');
   let downloaded = false;
   page.on('download', () => {
@@ -296,7 +296,7 @@ test('la page domaine copie, télécharge et prépare le courriel serveur', asyn
   await install(page);
   const posted = await fulfillBrief(page, 200, `${MARKER}\n`);
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance`);
   const mail = page.getByRole('link', { name: 'Envoyer par e-mail' });
   await expect(mail).toHaveAttribute('href', /^mailto:\?subject=/);
   const href = await mail.getAttribute('href');
@@ -339,7 +339,7 @@ test('M5 (bug_df4d0934) : le domaine envoie au serveur les checkId choisis, sans
   await install(page);
   const posted = await fulfillBrief(page, 200, `${MARKER}\n`);
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance`);
   await page
     .getByRole('button', { name: 'Générer et copier le prompt' })
     .click();
@@ -386,10 +386,10 @@ test('le titre anglais du brief ne répète pas « AI » (bug #25/#86/#144)', as
     storage.setItem('audigy-en', text);
     storage.setItem('audigy-locale', 'en');
   }, pack);
-  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}`);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await page.locator(`a[href*="/brief?id=${AUDIT_ID}"]`).first().click();
-  await expect(page).toHaveURL(new RegExp(`/brief\\?id=${AUDIT_ID}`));
+  await page.locator(`a[href*="/rapport/${AUDIT_ID}/brief"]`).first().click();
+  await expect(page).toHaveURL(new RegExp(`/rapport/${AUDIT_ID}/brief`));
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   const h1 = page.getByRole('heading', { level: 1 });
   await expect(h1).toHaveText(/Setup of your AI prompt/);
@@ -401,7 +401,7 @@ test('B3 sombre : les pastilles « à corriger / à vérifier » gardent leur fo
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await install(page);
-  await page.goto(`/brief?id=${AUDIT_ID}&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief?theme=dark`);
   const dots = page.locator('.dot-fix, .dot-check');
   await expect(dots.first()).toBeVisible({ timeout: 15_000 });
   const colors = await dots.evaluateAll((nodes) =>
@@ -430,7 +430,7 @@ for (const theme of ['light', 'dark'] as const) {
   }) => {
     await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' });
     await install(page);
-    await page.goto(`/brief?id=${AUDIT_ID}&theme=${theme}`);
+    await page.goto(`/rapport/${AUDIT_ID}/brief?theme=${theme}`);
     const md = page.locator('#md');
     await expect(md.locator('.l-h1')).toHaveCount(1, { timeout: 15_000 });
     await expect(md.locator('.l-h2').first()).toBeVisible();
