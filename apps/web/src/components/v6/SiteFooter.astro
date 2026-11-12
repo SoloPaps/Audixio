@@ -1,58 +1,26 @@
 ---
 import { t } from '../../i18n/index.js';
-
-const product = [
-  { href: '/methode', label: t('v6.footer.method') },
-  { href: '/exemple-rapport', label: t('v6.footer.example') },
-  { href: '/pro', label: t('v6.footer.offers') },
-  { href: '/ecoconception', label: t('v6.footer.eco') },
-];
-const resources = [
-  { href: '/methode', label: t('v6.nav.method') },
-  { href: '/partage', label: t('v6.footer.share') },
-  { href: '/robot', label: t('v6.footer.robot') },
-];
-const legal = [
-  { href: '/mentions-legales', label: t('v6.footer.mentions') },
-  { href: '/confidentialite', label: t('v6.footer.privacy') },
-  { href: '/cookies', label: t('v6.footer.cookies') },
-  { href: '/cgu', label: t('v6.footer.cgu') },
-  { href: '/accessibilite', label: t('v6.footer.a11y') },
-];
+import { FOOTER_COLUMNS } from '../../lib/nav-canon.js';
 ---
 
-<footer>
+<footer data-dock-hide>
   <div class="cols">
     <div>
-      <a class="v6-logo" href="/" aria-label={t('v6.nav.home')}>
-        <img src="/v6/logo.svg" alt="" width="120" height="38" />
+      <a class="v6-logo" href="/" aria-label={t('footer.home')}>
+        <img src="/v6/logo.svg" alt="" width="120" height="38" loading="lazy" decoding="async" />
       </a>
       <p class="cap">{t('v6.footer.tag')}</p>
     </div>
-    <div>
-      <h2>{t('v6.footer.product')}</h2>
-      <ul>
-        {product.map((item) => (
-          <li><a href={item.href}>{item.label}</a></li>
-        ))}
-      </ul>
-    </div>
-    <div>
-      <h2>{t('v6.footer.resources')}</h2>
-      <ul>
-        {resources.map((item) => (
-          <li><a href={item.href}>{item.label}</a></li>
-        ))}
-      </ul>
-    </div>
-    <div>
-      <h2>{t('v6.footer.legal')}</h2>
-      <ul>
-        {legal.map((item) => (
-          <li><a href={item.href}>{item.label}</a></li>
-        ))}
-      </ul>
-    </div>
+    {FOOTER_COLUMNS.map((column) => (
+      <nav aria-label={t(column.key)}>
+        <h2>{t(column.key)}</h2>
+        <ul>
+          {column.links.map((link) => (
+            <li><a class="link-footer" href={link.href}>{t(link.key)}</a></li>
+          ))}
+        </ul>
+      </nav>
+    ))}
   </div>
   <p class="legal">{t('v6.footer.note')}</p>
 </footer>

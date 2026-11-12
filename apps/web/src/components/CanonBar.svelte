@@ -10,7 +10,12 @@ import { applyLocale } from '../i18n/live.js';
 import { packLine } from '../i18n/pack.js';
 import { type SlimKey, t } from '../i18n/slim.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
-import { accountHref, accountKey, NAV_ITEMS } from '../lib/nav-canon.js';
+import {
+  accountHref,
+  accountKey,
+  navItems,
+  SCAN_HREF,
+} from '../lib/nav-canon.js';
 
 interface Props {
   pathname: string;
@@ -64,7 +69,7 @@ function tr(key: SlimKey): string {
 }
 
 const items = $derived(
-  NAV_ITEMS.map((item) => ({ href: item.href, label: tr(item.key) })),
+  navItems(loggedIn).map((item) => ({ href: item.href, label: tr(item.key) })),
 );
 
 let menuScroll = 0;
@@ -230,6 +235,10 @@ onMount(() => {
   </button>
 {/snippet}
 
+{#snippet arrow()}
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+{/snippet}
+
 {#snippet person()}
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
 {/snippet}
@@ -247,7 +256,8 @@ onMount(() => {
     <div class="axn-tools">
       {@render lang()}
       {@render theme()}
-      <a class="axn-cta link-nav" href={accountHref(loggedIn)}>{@render person()}<span class="axn-cta-txt">{tr(accountKey(loggedIn))}</span></a>
+      <a class="axn-acct link-nav" href={accountHref(loggedIn)} aria-current={current(accountHref(loggedIn))}>{@render person()}<span>{tr(accountKey(loggedIn))}</span></a>
+      <a class="axn-cta" href={SCAN_HREF}><span class="axn-cta-txt">{tr('nav.scan')}</span>{@render arrow()}</a>
     </div>
     <button class="axn-burger" type="button" aria-expanded={open} aria-controls="axn-menu" aria-label={open ? t('nav.close') : t('nav.open')} bind:this={burger} onclick={() => setMenu(!open, true)}><i aria-hidden="true"><b></b><b></b><b></b></i></button>
   </div>
@@ -266,7 +276,10 @@ onMount(() => {
       {@render lang()}
       {@render theme()}
     </div>
-    <div class="axn-cta-wrap"><a class="axn-cta" style="--i:5" href={accountHref(loggedIn)}>{@render person()}<span>{tr(accountKey(loggedIn))}</span></a></div>
+    <div class="axn-cta-wrap">
+      <a class="axn-acct" style="--i:5" href={accountHref(loggedIn)} aria-current={current(accountHref(loggedIn))}>{@render person()}<span>{tr(accountKey(loggedIn))}</span></a>
+      <a class="axn-cta" style="--i:6" href={SCAN_HREF}><span>{tr('nav.scan')}</span>{@render arrow()}</a>
+    </div>
   </div>
 </header>
 <button class="axn-top" data-chrome class:is-on={showTop} type="button" aria-label={tr('nav.backtop')} onclick={toTop}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>

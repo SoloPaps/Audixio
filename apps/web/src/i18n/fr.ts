@@ -2,6 +2,7 @@
  * Dictionnaire français. Une clé absente de cet objet
  * ne peut pas être passée à `t()` (erreur de typage).
  */
+
 import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
@@ -2117,6 +2118,13 @@ const frCore = {
   'report.grade.label': '{label} ({score}/100)',
   'nav.home': 'Accueil',
   'nav.pricing': 'Tarifs',
+  'nav.how': 'Comment ça marche',
+  'nav.example': 'Exemple de rapport',
+  'nav.mysites': 'Mes sites',
+  'nav.scan': 'Scanner mon site',
+  'footer.col.product': 'Produit',
+  'footer.col.transparency': 'Transparence',
+  'footer.col.legal': 'Légal',
   'nav.backtop': 'Remonter en haut',
   'nav.bottom': 'Navigation principale',
   'nav.pages': 'Pages',
