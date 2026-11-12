@@ -786,3 +786,42 @@
   opacity: 0;
   visibility: hidden;
 }
+
+/* Panneau toujours sombre (.v6-nuit : offre Pro, bandeaux de fin), dans les
+ * deux thèmes. Palette « nuit » fixe, mêmes valeurs que le sombre v6 ; elle
+ * n’est pas un thème, donc elle vit ici et non dans theme-dark.css. */
+[data-v6] .v6-nuit {
+  color-scheme: dark;
+  --bg: #06090d;
+  --bg-2: #080c12;
+  --surf: #0c121a;
+  --surf-2: #111924;
+  --surf-3: #16202d;
+  --line: #1b2633;
+  --line-2: #263445;
+  --ink: #e8eef6;
+  --ink-2: #93a1b5;
+  --ink-3: #7a889c;
+  --beam: #7cc4ff;
+  --beam-a: rgb(124 196 255 / 0.16);
+  --beam-b: rgb(124 196 255 / 0.32);
+  --find: #ff7a6b;
+  --find-a: rgb(255 122 107 / 0.14);
+  --ok: #5ee0b0;
+  --ok-a: rgb(94 224 176 / 0.12);
+  --focus: #b9dcff;
+  --cta: #7cc4ff;
+  --cta-fg: #061018;
+  --cta-h: #a3d6ff;
+  --gA: #5ee0b0;
+  --gB: #a9dc6c;
+  --gC: #f2c14e;
+  --gD: #ffa36b;
+  --gE: #ff8f86;
+  --gF: #ff8fb4;
+  --k-shadow: rgb(0 0 0 / 0.7);
+  --on-find: #1a0805;
+  --on-ok: #03140d;
+  background-color: var(--bg);
+  color: var(--ink);
+}

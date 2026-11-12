@@ -133,10 +133,8 @@ html[data-theme="dark"] {
     }
   }
 
-  /* Sombre v6 : seules ces --d-v* portent les couleurs. Les rôles sémantiques les relaient.
-   * .v6-nuit : panneau toujours sombre (offre Pro), mêmes jetons dans les deux thèmes. */
-  html[data-theme="dark"][data-v6],
-  html[data-v6] .v6-nuit {
+  /* Sombre v6 : seules ces --d-v* portent les couleurs. Les rôles sémantiques les relaient. */
+  html[data-theme="dark"][data-v6] {
     color-scheme: dark;
     background-color: var(--d-vbg);
     --d-vbg: #06090d;
