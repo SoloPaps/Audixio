@@ -34,9 +34,7 @@ test.describe('/exemple-rapport v6', () => {
       const card = page.locator('.rcard').first();
       const bg = await css(card, 'backgroundColor');
       expect(bg).not.toBe('rgb(237, 232, 245)');
-      await expect(
-        page.locator('footer[data-dock-hide] .cols'),
-      ).toBeVisible();
+      await expect(page.locator('footer[data-dock-hide] .cols')).toBeVisible();
     });
   }
 
