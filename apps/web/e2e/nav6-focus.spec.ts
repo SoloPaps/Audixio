@@ -12,18 +12,31 @@ for (const path of ['/', '/methode', '/pro']) {
     test(`${path} à ${width} px : focus dans la barre sans saut`, async ({
       page,
     }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.setViewportSize({ width, height: 700 });
       await page.goto(`${path}?theme=light`);
       await page.evaluate(`(() => window.scrollTo(0, 1200))()`);
       await expect.poll(() => page.evaluate<number>(scrollY)).toBe(1200);
       const target = width < 700 ? '.axn-burger' : '.axn-logo';
-      await page.evaluate(
-        `(() => document.querySelector('${target}').focus())()`,
+      // Mesure synchrone : rien d’autre ne peut faire défiler entre les deux lectures.
+      const [before, after] = await page.evaluate<[number, number]>(
+        `(() => { const y = window.scrollY; document.querySelector('${target}').focus(); return [y, window.scrollY]; })()`,
       );
-      expect(await page.evaluate<number>(scrollY)).toBe(1200);
+      expect(after).toBe(before);
       if (width < 700) {
-        await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
-        expect(await page.evaluate<number>(scrollY)).toBe(1200);
+        // Clic DOM (le clic Playwright fait lui-même défiler jusqu’à la cible),
+        // répété tant que l’îlot de la barre n’est pas hydraté.
+        const burger = page.locator('.axn-burger');
+        await expect(async () => {
+          await page.evaluate(
+            `(() => { const b = document.querySelector('.axn-burger'); if (b.getAttribute('aria-expanded') !== 'true') b.click(); })()`,
+          );
+          await expect(burger).toHaveAttribute('aria-expanded', 'true', {
+            timeout: 500,
+          });
+        }).toPass();
+        await page.waitForTimeout(200);
+        expect(await page.evaluate<number>(scrollY)).toBe(before);
       }
     });
   }
