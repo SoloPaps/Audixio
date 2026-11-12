@@ -201,16 +201,32 @@ test.describe('accueil v6', () => {
       await page.setViewportSize({ width, height: 900 });
       await page.addInitScript(`
         window.__cls = 0;
+        window.__shifts = [];
         new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            if (!entry.hadRecentInput) window.__cls += entry.value;
+            if (entry.hadRecentInput) continue;
+            window.__cls += entry.value;
+            window.__shifts.push({
+              value: Number(entry.value.toFixed(3)),
+              at: Math.round(entry.startTime),
+              nodes: entry.sources.map((s) => {
+                const n = s.node;
+                if (!n || !n.nodeName) return '?';
+                const el = n.nodeType === 1 ? n : n.parentElement;
+                const id = el && el.id ? '#' + el.id : '';
+                const cls = el && typeof el.className === 'string' ? '.' + el.className.split(' ').join('.') : '';
+                return (n.nodeName + id + cls).slice(0, 60) + ' ' + JSON.stringify([s.previousRect.y, s.currentRect.y]);
+              }),
+            });
           }
         }).observe({ type: 'layout-shift', buffered: true });
       `);
       await open(page);
       await page.waitForTimeout(1500);
       const cls = await page.evaluate<number>('window.__cls');
-      expect(cls).toBeLessThan(0.1);
+      // En cas d’échec, le message nomme les nœuds déplacés et le moment.
+      const shifts = await page.evaluate<unknown>('window.__shifts');
+      expect(cls, JSON.stringify(shifts)).toBeLessThan(0.1);
     });
   }
 
