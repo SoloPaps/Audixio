@@ -1,17 +1,13 @@
 ---
-import '../styles/maquettes/liens.css';
 import SitesBoard from '../components/SitesBoard.svelte';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
-import '../styles/maquettes/sites-liste.css';
-import '../styles/maquettes/sites-vide.css';
+import V6Page from '../layouts/V6Page.astro';
+import '../styles/maquettes/sites-liste-v6.css';
+import '../styles/maquettes/sites-vide-v6.css';
 ---
 
-<Canon
-  vue="sites"
-  title={t('meta.sites.title')}
-  description={t('meta.sites.description')}
-  robots="noindex, nofollow"
->
-  <SitesBoard client:load />
-</Canon>
+<V6Page vue="sites" title={t('meta.sites.title')} description={t('meta.sites.description')}>
+  <div class="msl">
+    <SitesBoard client:load />
+  </div>
+</V6Page>

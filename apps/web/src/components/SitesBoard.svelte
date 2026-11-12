@@ -148,7 +148,7 @@ function levelOf(metric: MesureDomaine): string {
 </form>
 <p class="hint" id="url-h">{plan === 'pro' ? t('mq.sl.live.hint.pro', { used: sitesUsed, max: siteCap }) : t('mq.sl.live.hint', { used: sitesUsed, max: siteCap })}</p>
 </section>
-<section class="block" aria-labelledby="list-t" style="margin-top:var(--s6)">
+<section class="block" aria-labelledby="list-t" style="margin-top:var(--x-s6)">
 <p class="kicker">{t('mq.sl.024')}</p><h2 class="sec" id="list-t">{t('mq.sl.025')}</h2>
 <div class="sites">
 {#each sites as site, index (site.id)}
@@ -246,7 +246,7 @@ function levelOf(metric: MesureDomaine): string {
 <p class="hint" id="url-h">{t('mq.sl.023')}</p>
 </section>
 
-<section class="block" aria-labelledby="list-t" style="margin-top:var(--s6)">
+<section class="block" aria-labelledby="list-t" style="margin-top:var(--x-s6)">
 <p class="kicker rv">{t('mq.sl.024')}</p><h2 class="sec rv" id="list-t">{t('mq.sl.025')}</h2>
 <div class="sites">
 <article class="beam rv" aria-labelledby="s1">
