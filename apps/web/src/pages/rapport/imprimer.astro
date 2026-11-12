@@ -1,16 +1,23 @@
 ---
-import '../../styles/maquettes/liens.css';
 import PrintReport from '../../components/PrintReport.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
-import '../../styles/maquettes/pdf.css';
+import V6Page from '../../layouts/V6Page.astro';
+// Feuilles de page après le gabarit : elles passent devant v6.css à spécificité égale.
+import '../../styles/maquettes/pdf-v6.css';
+import '../../styles/geist-imprimer.css';
 ---
 
-<Canon
+<V6Page
   vue="pdf"
   title={t('meta.print.title')}
   description={t('meta.print.description')}
   robots="noindex, nofollow"
 >
-  <PrintReport client:load />
-</Canon>
+  <Fragment slot="head">
+    <link rel="preload" href="/fonts/geist-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist-700.woff2" as="font" type="font/woff2" crossorigin />
+  </Fragment>
+  <div class="r6-pdf">
+    <PrintReport client:load />
+  </div>
+</V6Page>

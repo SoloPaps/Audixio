@@ -343,7 +343,7 @@ $effect(() => {
 onMount(() => {
   signedIn = storedSessionPresent();
   void loadChoices();
-  document.documentElement.dataset.vue = 'domaine';
+  document.getElementById('contenu')?.classList.replace('r6-res', 'r6-dom');
   document.documentElement.classList.add('has-ind');
   let stop = (): void => {};
   const goHash = (): void => {

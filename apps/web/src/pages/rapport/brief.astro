@@ -1,13 +1,13 @@
 ---
-import '../../styles/maquettes/liens.css';
-import '../../styles/maquettes/brief.css';
 import ReportView from '../../components/ReportView.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
+import V6Page from '../../layouts/V6Page.astro';
+// Feuilles de page après le gabarit : elles passent devant v6.css à spécificité égale.
+import '../../styles/maquettes/brief-v6.css';
 ---
 
-<Canon vue="brief" title={t('mq.ui.meta.brief.title')} description={t('brief.lead')}>
-  <main id="contenu" class="wrap">
+<V6Page vue="brief" title={t('mq.ui.meta.brief.title')} description={t('brief.lead')}>
+  <main id="contenu" class="r6-brief wrap" tabindex="-1">
     <ReportView mode="brief" client:load />
   </main>
-</Canon>
+</V6Page>

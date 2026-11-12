@@ -5764,5 +5764,13 @@
   "rp.share.choices": "What do you want to share?",
   "rp.share.link.hint": "A read-only page, no account needed, that you can take down.",
   "rp.share.pdf": "Export as PDF",
-  "rp.share.pdf.hint": "The printable version of the report, to save as PDF."
+  "rp.share.pdf.hint": "The printable version of the report, to save as PDF.",
+  "rp.guide.eyebrow": "In a few minutes",
+  "rp.guide.title": "How to read this report",
+  "rp.guide.note.title": "The grade",
+  "rp.guide.note.text": "Each tested area gets a letter from A to F. The overall grade is their average.",
+  "rp.guide.prio.title": "The priorities",
+  "rp.guide.prio.text": "Issues are ranked from most to least urgent. Start with the first one.",
+  "rp.guide.detail.title": "The detail",
+  "rp.guide.detail.text": "Each finding says what was measured, why it matters and how to fix it."
 }

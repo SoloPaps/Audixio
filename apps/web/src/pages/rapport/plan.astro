@@ -1,13 +1,13 @@
 ---
-import '../../styles/maquettes/liens.css';
-import '../../styles/maquettes/plan.css';
 import ReportView from '../../components/ReportView.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
+import V6Page from '../../layouts/V6Page.astro';
+// Feuilles de page après le gabarit : elles passent devant v6.css à spécificité égale.
+import '../../styles/maquettes/plan-v6.css';
 ---
 
-<Canon vue="plan" title={t('mq.ui.meta.plan.title')} description={t('plan.lede')}>
-  <main id="contenu" tabindex="-1">
+<V6Page vue="plan" title={t('mq.ui.meta.plan.title')} description={t('plan.lede')}>
+  <main id="contenu" class="r6-plan" tabindex="-1">
     <ReportView mode="plan" client:load />
   </main>
-</Canon>
+</V6Page>

@@ -17,9 +17,21 @@ const tabs = [
   ['brief', 'rp.tab.brief'],
   ['imprimer', 'rp.tab.imprimer'],
 ] as const;
+
+let nav: HTMLElement | undefined = $state();
+
+/* Sur téléphone, la barre défile : l’onglet courant est ramené dans la vue. */
+$effect(() => {
+  const active = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+  if (!nav || !active || nav.scrollWidth <= nav.clientWidth) return;
+  nav.scrollLeft = Math.max(
+    0,
+    active.offsetLeft - (nav.clientWidth - active.offsetWidth) / 2,
+  );
+});
 </script>
 
-<nav class="rp-tabs" aria-label={t('rp.tabs.label')}>
+<nav class="rp-tabs" bind:this={nav} aria-label={t('rp.tabs.label')}>
   <ul>
     {#each tabs as [tab, label] (tab)}
       <li><a href={reportHref(auditId, tab)} aria-current={tab === current ? 'page' : undefined}>{t(label)}</a></li>
@@ -57,8 +69,7 @@ const tabs = [
     align-items: center;
     min-height: 2.75rem;
     padding: 0 0.75rem;
-    border-bottom: 0.1875rem solid transparent;
-    color: var(--muted, var(--ink-2));
+    color: var(--ink-2);
     font: 600 0.9375rem / 1.2 inherit;
     text-decoration: none;
     white-space: nowrap;
@@ -66,16 +77,55 @@ const tabs = [
   }
 
   a:hover {
-    color: var(--text, var(--ink));
+    color: var(--ink);
+  }
+
+  a {
+    position: relative;
+  }
+
+  a::after {
+    content: '';
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0;
+    left: 0.75rem;
+    height: 0.1875rem;
+    border-radius: 0.125rem;
+    background: var(--beam);
+    transform: scaleX(0);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  a:hover::after {
+    transform: scaleX(0.4);
   }
 
   a[aria-current='page'] {
-    border-bottom-color: var(--primary, var(--accent));
-    color: var(--text, var(--ink));
+    color: var(--ink);
+  }
+
+  a[aria-current='page']::after {
+    transform: scaleX(1);
+    animation: rp-tab-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @keyframes rp-tab-in {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a,
+    a::after {
+      transition: none;
+      animation: none;
+    }
   }
 
   a:focus-visible {
-    outline: 0.1875rem solid var(--primary, var(--focus));
+    outline: 0.1875rem solid var(--focus);
     outline-offset: calc(-1 * 0.1875rem);
   }
 </style>

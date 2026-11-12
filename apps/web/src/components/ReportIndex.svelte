@@ -76,7 +76,7 @@ const total = $derived(
 
   .rp-host {
     margin: 0 0 0.25rem;
-    color: var(--muted, var(--ink-2));
+    color: var(--ink-2);
     font: 600 0.9375rem / 1.4 ui-monospace, monospace;
   }
 
@@ -86,7 +86,7 @@ const total = $derived(
 
   .rp-lead {
     margin: 0 0 1.5rem;
-    color: var(--muted, var(--ink-2));
+    color: var(--ink-2);
   }
 
   .rp-count {
@@ -116,18 +116,18 @@ const total = $derived(
     padding: 0.75rem 1rem;
     border: 0.0625rem solid var(--line);
     border-radius: 0.75rem;
-    background: var(--surface, var(--surf));
-    color: var(--text, var(--ink));
+    background: var(--surf);
+    color: var(--ink);
     text-decoration: none;
     transition: border-color 0.15s ease;
   }
 
   .rp-row:hover {
-    border-color: var(--primary, var(--accent));
+    border-color: var(--beam);
   }
 
   .rp-row:focus-visible {
-    outline: 0.1875rem solid var(--primary, var(--focus));
+    outline: 0.1875rem solid var(--focus);
     outline-offset: 0.0625rem;
   }
 
@@ -138,7 +138,7 @@ const total = $derived(
   }
 
   .rp-txt span {
-    color: var(--muted, var(--ink-2));
+    color: var(--ink-2);
     font-size: 0.9375rem;
   }
 

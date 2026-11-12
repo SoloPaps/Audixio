@@ -487,9 +487,9 @@ $effect(() => {
     <div class="orbit-wrap"><canvas id="orbit" bind:this={canvas} aria-hidden="true" onpointerdown={(event) => { const id = hitDomain(event); if (id) open = id; }}></canvas></div>
     <figcaption>
       <ul class="legend">
-        <li><i style="background:var(--peach2)"></i>{t('brief.leg.fix')}</li>
-        <li><i style="background:var(--teal)"></i>{t('brief.leg.check')}</li>
-        <li><i style="background:var(--peach)"></i>{t('brief.leg.skip')}</li>
+        <li><i style="background:var(--x-peach2)"></i>{t('brief.leg.fix')}</li>
+        <li><i style="background:var(--x-teal)"></i>{t('brief.leg.check')}</li>
+        <li><i style="background:var(--x-peach)"></i>{t('brief.leg.skip')}</li>
       </ul>
       <p class="hint">{t('brief.hint')}</p>
     </figcaption>

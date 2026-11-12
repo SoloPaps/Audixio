@@ -1,13 +1,15 @@
 ---
-import '../../styles/maquettes/liens.css';
-import '../../styles/maquettes/badge.css';
 import GuestReportRedirect from '../../components/GuestReportRedirect.astro';
 import ReportView from '../../components/ReportView.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
+import V6Page from '../../layouts/V6Page.astro';
+// Feuilles de page après le gabarit : elles passent devant v6.css à spécificité égale.
+import '../../styles/maquettes/badge-v6.css';
 ---
 
-<Canon vue="badge" title={t('mq.ui.meta.badge.title')} description={t('badge.lead')}>
+<V6Page vue="badge" title={t('mq.ui.meta.badge.title')} description={t('badge.lead')}>
   <GuestReportRedirect slot="head" mode="badge" />
-  <ReportView mode="badge" client:load />
-</Canon>
+  <div class="r6-badge">
+    <ReportView mode="badge" client:load />
+  </div>
+</V6Page>
