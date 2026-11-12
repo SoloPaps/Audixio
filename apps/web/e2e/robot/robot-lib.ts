@@ -310,12 +310,16 @@ function anchorInBrowser(
           waitUntil: 'networkidle',
           timeout: 30_000,
         });
-        await page.waitForTimeout(800);
-        // Une ancre-commande (« #partager » ouvre la feuille de partage puis
-        // s’efface de l’adresse) est prise en charge : la page l’a consommée.
-        return await page.evaluate<boolean>(
-          `!!document.getElementById(${JSON.stringify(id)}) || document.getElementsByName(${JSON.stringify(id)}).length > 0 || location.hash !== ${JSON.stringify(`#${encodeURIComponent(id)}`)}`,
-        );
+        // Une ancre-commande (« #partager » ouvre la feuille de partage) est
+        // prise en charge : la page l’a consommée ou a ouvert un dialogue.
+        // Attente active : le script de la page peut finir tard (CI lente).
+        const ok = `!!document.getElementById(${JSON.stringify(id)}) || document.getElementsByName(${JSON.stringify(id)}).length > 0 || location.hash !== ${JSON.stringify(`#${encodeURIComponent(id)}`)} || [...document.querySelectorAll('[role=dialog][aria-modal=true], dialog[open]')].some((d) => d.getClientRects().length > 0)`;
+        return await page
+          .waitForFunction(ok, undefined, { timeout: 8_000, polling: 200 })
+          .then(
+            () => true,
+            () => false,
+          );
       } catch {
         return false;
       }
