@@ -26,8 +26,14 @@ const initial = theme === 'light' || theme === 'dark' ? theme : 'system';
     <meta name="description" content={description} />
     <meta name="robots" content="noindex, nofollow" />
     <meta name="referrer" content="no-referrer" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#EDE8F5" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#F3F5F8"
+      data-light="#F3F5F8"
+      data-dark="#06090D"
+    />
+    <meta property="og:locale" content="fr_FR" />
     <link rel="canonical" href={Astro.url.pathname || '/'} />
     <script is:inline src="/theme-init.js"></script>
   </head>

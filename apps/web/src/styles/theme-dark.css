@@ -132,4 +132,71 @@ html[data-theme="dark"] {
       background-image: none;
     }
   }
+
+  /* Sombre v6 : seules ces --d-v* portent les couleurs. Les rôles sémantiques les relaient. */
+  html[data-theme="dark"][data-v6] {
+    color-scheme: dark;
+    --d-vbg: #06090d;
+    --d-vbg2: #080c12;
+    --d-vsf: #0c121a;
+    --d-vsf2: #111924;
+    --d-vsf3: #16202d;
+    --d-vln: #1b2633;
+    --d-vln2: #263445;
+    --d-vtx: #e8eef6;
+    --d-vmu: #93a1b5;
+    --d-vmu3: #7a889c;
+    --d-vbeam: #7cc4ff;
+    --d-vbeama: rgb(124 196 255 / 0.16);
+    --d-vbeamb: rgb(124 196 255 / 0.32);
+    --d-vfind: #ff7a6b;
+    --d-vfinda: rgb(255 122 107 / 0.14);
+    --d-vok: #5ee0b0;
+    --d-voka: rgb(94 224 176 / 0.12);
+    --d-vfocus: #b9dcff;
+    --d-vcta: #7cc4ff;
+    --d-vctafg: #061018;
+    --d-vctah: #a3d6ff;
+    --d-vga: #5ee0b0;
+    --d-vgb: #a9dc6c;
+    --d-vgc: #f2c14e;
+    --d-vgd: #ffa36b;
+    --d-vge: #ff8f86;
+    --d-vgf: #ff8fb4;
+    --d-vksh: rgb(0 0 0 / 0.7);
+    --bg: var(--d-vbg);
+    --bg-2: var(--d-vbg2);
+    --surf: var(--d-vsf);
+    --surf-2: var(--d-vsf2);
+    --surf-3: var(--d-vsf3);
+    --line: var(--d-vln);
+    --line-2: var(--d-vln2);
+    --ink: var(--d-vtx);
+    --ink-2: var(--d-vmu);
+    --ink-3: var(--d-vmu3);
+    --beam: var(--d-vbeam);
+    --beam-a: var(--d-vbeama);
+    --beam-b: var(--d-vbeamb);
+    --find: var(--d-vfind);
+    --find-a: var(--d-vfinda);
+    --ok: var(--d-vok);
+    --ok-a: var(--d-voka);
+    --focus: var(--d-vfocus);
+    --cta: var(--d-vcta);
+    --cta-fg: var(--d-vctafg);
+    --cta-h: var(--d-vctah);
+    --gA: var(--d-vga);
+    --gB: var(--d-vgb);
+    --gC: var(--d-vgc);
+    --gD: var(--d-vgd);
+    --gE: var(--d-vge);
+    --gF: var(--d-vgf);
+    --k-shadow: var(--d-vksh);
+    --shadow: 0 30px 60px -30px var(--d-vksh);
+    --bar: var(--d-vbg);
+  }
+
+  html[data-theme="dark"][data-v6] .v6-logo img {
+    filter: brightness(0) invert(1);
+  }
 }

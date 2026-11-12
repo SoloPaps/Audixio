@@ -1,0 +1,83 @@
+---
+import Btn from '../../components/v6/Btn.svelte';
+import Card from '../../components/v6/Card.svelte';
+import CardLink from '../../components/v6/CardLink.svelte';
+import Field from '../../components/v6/Field.svelte';
+import SectionDock from '../../components/v6/SectionDock.svelte';
+import SiteFooter from '../../components/v6/SiteFooter.astro';
+import SiteHeader from '../../components/v6/SiteHeader.svelte';
+import TextLink from '../../components/v6/TextLink.svelte';
+import { t } from '../../i18n/index.js';
+import V6Shell from '../../layouts/V6Shell.astro';
+
+const sections = [
+  { id: 'boutons', label: t('v6.dock.buttons') },
+  { id: 'liens', label: t('v6.dock.links') },
+  { id: 'champs', label: t('v6.dock.fields') },
+  { id: 'cartes', label: t('v6.dock.cards') },
+];
+---
+
+<V6Shell title={t('v6.meta.title')} description={t('v6.demo.description')}>
+  <a class="skip" href="#boutons">{t('v6.skip')}</a>
+  <SiteHeader pathname={Astro.url.pathname} client:load />
+  <main>
+    <section class="bench" id="top">
+      <p>{t('v6.demo.lead')}</p>
+    </section>
+    <section class="bench" id="boutons">
+      <h2>{t('v6.dock.buttons')}</h2>
+      <div class="row">
+        <Btn label={t('v6.btn.primary')} icon />
+        <Btn label={t('v6.btn.secondary')} variant="secondary" icon />
+        <Btn label={t('v6.btn.ghost')} variant="ghost" />
+        <Btn label={t('v6.demo.disabled')} disabled />
+      </div>
+    </section>
+    <section class="bench" id="liens">
+      <h2>{t('v6.dock.links')}</h2>
+      <div class="row">
+        <TextLink href="/methode" label={t('v6.link')} />
+        <TextLink href="/methode" label={t('v6.demo.disabled')} disabled />
+      </div>
+    </section>
+    <section class="bench" id="champs">
+      <h2>{t('v6.dock.fields')}</h2>
+      <Field
+        id="u1"
+        label={t('v6.field.label')}
+        prefix={t('v6.field.prefix')}
+        placeholder={t('v6.field.placeholder')}
+        error={t('v6.field.error')}
+        submit={t('v6.btn.icon')}
+      />
+      <Field
+        id="u2"
+        label={t('v6.field.label')}
+        prefix={t('v6.field.prefix')}
+        placeholder={t('v6.field.placeholder')}
+        error={t('v6.field.error')}
+        invalid
+      />
+      <Field
+        id="u3"
+        label={t('v6.field.label')}
+        prefix={t('v6.field.prefix')}
+        placeholder={t('v6.field.placeholder')}
+        error={t('v6.field.error')}
+        disabled
+      />
+    </section>
+    <section class="bench" id="cartes">
+      <h2>{t('v6.dock.cards')}</h2>
+      <CardLink href="/exemple-rapport" heading={t('v6.cardLink.title')} sub={t('v6.cardLink.sub')} />
+      <Card heading={t('v6.card.title')} body={t('v6.card.body')} />
+      <Card heading={t('v6.demo.disabled')} body={t('v6.card.body')} disabled />
+    </section>
+    <section class="bench" id="fin" data-dock-hide>
+      <p>{t('v6.footer.note')}</p>
+    </section>
+  </main>
+  <SiteFooter />
+  <SectionDock {sections} client:load />
+</V6Shell>

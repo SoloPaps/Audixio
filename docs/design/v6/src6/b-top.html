@@ -1,0 +1,143 @@
+<a class="skip" href="#main">Aller au contenu</a>
+<header class="top" data-component="SiteHeader"><div class="bar">
+ <a class="logo" href="/" aria-label="Audixio, accueil">{{LOGO}}</a>
+ <nav class="nav" aria-label="Principale"><a href="#comment">Comment ça marche</a><a href="#domaines">Les 8 domaines</a><a href="/methode">Méthode</a><a href="/exemple-rapport">Exemple de rapport</a><a href="/pro">Offres</a></nav>
+ <div class="tools">
+  <a href="#" lang="en" hreflang="en" aria-label="English version">EN</a>
+  <button type="button" id="theme" data-theme-toggle aria-label="Passer en thème clair"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+  <a class="login" href="/connexion"><svg aria-hidden="true"><use href="#i-user"/></svg>Se connecter</a>
+ </div>
+</div></header>
+{{INC:dock.html}}
+<main id="main">
+<section class="hero" id="top" aria-labelledby="h1" data-component="HeroScan">
+ <div class="wrap hero-t">
+  <p class="badge"><b>8 domaines</b> Performance · Accessibilité · SEO · Sécurité · RGPD · et 3 autres</p>
+  <h1 id="h1">Ce que votre site cache, <span>révélé en une minute.</span></h1>
+  <p class="lead">Audixio passe votre site au scanner. Vous obtenez une note de A à F et la liste de ce qu'il faut corriger d'abord, en français simple.</p>
+  <form class="audit" id="scan" novalidate data-form data-component="ScanForm">
+   <label class="sr" for="u1">Adresse de votre site</label>
+   <div class="field"><div class="inp"><span aria-hidden="true">https://</span><input id="u1" name="url" type="text" inputmode="url" autocomplete="url" placeholder="monsite.fr" required></div><button class="btn" type="submit">Scanner mon site, gratuit<svg aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+   <p class="err" role="alert" hidden>Indiquez une adresse, par exemple monsite.fr</p>
+  </form>
+  <ul class="trust" data-component="TrustLine">
+   <li><svg aria-hidden="true"><use href="#i-check"/></svg>Sans compte</li>
+   <li><svg aria-hidden="true"><use href="#i-check"/></svg>Lecture passive : rien n'est soumis</li>
+   <li><svg aria-hidden="true"><use href="#i-check"/></svg>Rapport calculé sans IA</li>
+  </ul>
+ </div>
+ <figure class="scanner" aria-labelledby="scan-cap" data-component="LiveScan">
+  <div class="frame">
+   <div class="chrome" aria-hidden="true"><i></i><i></i><i></i><span class="url">https://monsite-exemple.fr</span><span class="st" data-scanst>Analyse en cours…</span></div>
+   <div class="scan-body">
+    <div class="viewport" data-scan aria-hidden="true">
+     <div class="render"><div class="fs r" data-fs="r">{{FS:r}}</div></div>
+     <div class="xray"><div class="fs x" data-fs="x">{{FS:x}}</div></div>
+     <div class="beam"></div>
+    </div>
+    <div class="journal" aria-live="off">
+     <h2>Journal du scan <span class="sim">Simulé</span></h2>
+     <ol>
+      <li class="good" data-at=".05"><span class="d"><svg aria-hidden="true"><use href="#i-check"/></svg></span><span><b>Navigation lue</b><small>4 liens, tous nommés</small></span></li>
+      <li class="bad" data-at=".08"><span class="d">!</span><span><b>Titre principal absent</b><small>Google ne sait pas de quoi parle la page</small></span></li>
+      <li class="bad" data-at=".12"><span class="d">!</span><span><b>Texte trop pâle</b><small>Illisible en plein soleil ou avec une vue faible</small></span></li>
+      <li class="bad" data-at=".40"><span class="d">!</span><span><b>Bouton sans nom</b><small>Muet pour un lecteur d'écran</small></span></li>
+      <li class="bad" data-at=".56"><span class="d">!</span><span><b>Image de 2,4 Mo</b><small>Lente à charger sur mobile</small></span></li>
+     </ol>
+     <div class="score" data-tot>
+      <p class="score-l">Note provisoire</p>
+      <div class="score-r"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="tr" cx="50" cy="50" r="43"/><circle class="va" cx="50" cy="50" r="43" pathLength="100" data-ringv/></svg>
+       <p class="score-c"><b data-ringl>·</b><span class="num"><span data-ringn2>0</span>/100</span></p></div>
+     </div>
+    </div>
+   </div>
+   <figcaption class="legend cap" id="scan-cap">
+    <p><i class="lr" aria-hidden="true"></i><span><b>À droite du faisceau</b> : ce que voit le visiteur.</span></p>
+    <p><i class="lb" aria-hidden="true"></i><i class="lx" aria-hidden="true"></i><span><b>À gauche</b> : ce qu'Audixio lit dans le code.</span></p>
+    <p><span class="sim">Aperçu simulé</span></p>
+   </figcaption>
+  </div>
+ </figure>
+</section>
+
+<section class="sec wrap" id="comment" aria-labelledby="h-how" data-component="HowItWorks" data-dock="Comment ça marche">
+ <div class="sh" data-rv><p class="eyebrow">Comment ça marche</p><h2 id="h-how">Trois étapes, une minute.</h2><p>Pas d'installation, pas de code à ajouter. Audixio visite votre site comme un visiteur, puis lit ce qu'il y a dessous.</p></div>
+ <ol class="steps" data-how>
+  <li class="flow" aria-hidden="true"><i></i></li>
+  <li class="step" data-rv>
+   <p class="who"><span>Vous</span><b>01</b></p>
+   <div class="viz" aria-hidden="true"><div class="typing"><span>https://</span><span data-type="monsite-exemple.fr"></span><i></i></div><span class="go">Scanner</span></div>
+   <h3>Vous donnez l'adresse</h3><p>Celle de votre page d'accueil suffit. Pas de compte, pas d'accès à votre hébergement.</p>
+  </li>
+  <li class="step" data-rv>
+   <p class="who"><span>Audixio</span><b>02</b></p>
+   <div class="viz" aria-hidden="true"><div class="ring"><svg viewBox="0 0 100 100" data-ring></svg><div class="mid"><b class="num" data-ringn>0</b><small>/ 8 domaines</small></div></div></div>
+   <h3>Le scanner lit le code</h3><p>8 domaines contrôlés avec un barème public. 5 sont notés tout de suite, 3 restent sous scellé.</p>
+  </li>
+  <li class="step" data-rv>
+   <p class="who"><span>Vous</span><b>03</b></p>
+   <div class="viz" aria-hidden="true"><div class="mini"><span class="L">C</span><ol><li><b>1</b>Alléger l'image d'accueil</li><li><b>2</b>Nommer le bouton</li><li><b>3</b>Ajouter un titre</li></ol></div></div>
+   <h3>Vous recevez le rapport</h3><p>Une note de A à F et les priorités, classées par effet sur vos visiteurs. Chaque point dit quoi faire.</p>
+  </li>
+ </ol>
+ <figure class="video" data-rv data-component="VideoPlaceholder">
+  <div class="video-f">
+   <div class="video-bg" aria-hidden="true"><div class="fs x" data-fs="x">{{FS:x}}</div></div>
+   <div class="video-c"><span class="video-p" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></span><p class="video-t">Vidéo à venir</p><p class="video-d">Une courte vidéo d'un vrai scan, de l'adresse au rapport.</p></div>
+  </div>
+  <figcaption class="video-cap"><span class="cap">En attendant, le scanner en haut de page est un aperçu simulé.</span><a class="lnk" href="/methode"><span class="lnk-i"><svg aria-hidden="true"><use href="#i-book"/></svg></span>Le détail de chaque étape<svg class="lnk-a" aria-hidden="true"><use href="#i-arrow"/></svg></a></figcaption>
+ </figure>
+</section>
+
+{{INC:b-dom.html}}
+
+<section class="explode" id="couches" aria-labelledby="h-ex" data-explode data-component="ExplodedView" data-dock="Vue éclatée">
+ <div class="ex-pin"><div class="wrap ex-grid">
+  <div class="ex-side">
+   <div class="sh"><p class="eyebrow">Vue éclatée</p><h2 id="h-ex">Une page, quatre couches.</h2><p>Votre visiteur ne voit que la première. Audixio les sépare pour trouver ce qui bloque en dessous.</p></div>
+   <ol class="lyr" data-lyr>
+    <li class="on" data-cap-t="Rendu : ce que voit le visiteur" data-cap-d="Rien ne semble cassé. Les problèmes sont dessous."><div class="row"><span class="i">01</span><b>Rendu</b><span class="c">ce qu'on voit</span></div><div class="more"><p>La page telle qu'elle s'affiche. Tout a l'air normal.</p></div></li>
+    <li data-cap-t="Structure : le plan lu par Google" data-cap-d="La grande phrase n'est pas balisée comme titre."><div class="row"><span class="i">02</span><b>Structure</b><span class="c bad">1 constat</span></div><div class="more"><p>Le plan de la page lu par Google : ici, aucun titre principal.</p></div></li>
+    <li data-cap-t="Accessibilité : ce que lit un lecteur d'écran" data-cap-d="Un bouton sans nom, un texte trop pâle."><div class="row"><span class="i">03</span><b>Accessibilité</b><span class="c bad">2 constats</span></div><div class="more"><p>Ce que lit un lecteur d'écran : un bouton muet, un texte trop pâle.</p></div></li>
+    <li data-cap-t="Poids : ce que le téléphone télécharge" data-cap-d="Une image de 2,4 Mo, plus que tout le reste."><div class="row"><span class="i">04</span><b>Poids</b><span class="c bad">1 constat</span></div><div class="more"><p>Ce que le téléphone télécharge : une seule image pèse 2,4 Mo.</p></div></li>
+   </ol>
+  </div>
+  <div class="stage" aria-hidden="true">
+   <p class="hint"><svg aria-hidden="true"><use href="#i-down"/></svg>faites défiler pour séparer les couches</p>
+   <div class="ex-res" data-exres><span class="L">C</span><p><b>67 / 100</b>4 constats, 3 priorités</p></div>
+   <div class="stack" data-stack style="--p:0">
+    <div class="ly l0" style="--k:0"><div class="fs r" data-fs="r">{{FS:r}}</div><span class="tagl">01 Rendu</span></div>
+    <div class="ly l1" style="--k:1"><div class="fs x" data-fs="s">{{FS:s}}</div><span class="tagl">02 Structure</span></div>
+    <div class="ly l2" style="--k:2"><div class="fs x" data-fs="a">{{FS:a}}</div><span class="tagl">03 Accessibilité</span></div>
+    <div class="ly l3" style="--k:3"><div class="fs x" data-fs="n">{{FS:n}}</div><span class="tagl">04 Poids</span></div>
+   </div>
+   <p class="ex-cap"><span class="n num" data-capn>01</span><b data-capt>Rendu : ce que voit le visiteur</b><span data-capd>Rien ne semble cassé. Les problèmes sont dessous.</span></p>
+  </div>
+ </div></div>
+</section>
+
+<section class="sec wrap" id="jeu" aria-labelledby="h-game" data-component="SpotGame" data-dock="À vous de jouer">
+ <div class="sh" data-rv><p class="eyebrow">À vous de jouer</p><h2 id="h-game">Trouvez les quatre problèmes avant nous.</h2><p>Cette page a l'air correcte. Touchez les points rouges, ou activez les rayons X pour voir ce que lit Audixio.</p></div>
+ <div class="game">
+  <figure>
+   <div class="gv" data-game>
+    <div class="vp">
+     <div class="render"><div class="fs r" data-fs="r">{{FS:r}}</div></div>
+     <div class="xray"><div class="fs x" data-fs="x">{{FS:x}}</div></div>
+     <button class="spot" type="button" style="--x:4%;--y:24%" aria-pressed="false" data-s="0" aria-label="Problème 1 : le titre">1</button>
+     <button class="spot" type="button" style="--x:4%;--y:46%" aria-pressed="false" data-s="1" aria-label="Problème 2 : le texte">2</button>
+     <button class="spot" type="button" style="--x:44%;--y:68%" aria-pressed="false" data-s="2" aria-label="Problème 3 : le bouton">3</button>
+     <button class="spot" type="button" style="--x:88%;--y:24%" aria-pressed="false" data-s="3" aria-label="Problème 4 : l'image">4</button>
+    </div>
+   </div>
+   <figcaption class="g-bar"><button class="switch" type="button" aria-pressed="false" data-xr><i aria-hidden="true"></i>Rayons X</button><span class="cap" data-gc aria-live="polite">0 / 4 trouvés</span><button class="btn-s" type="button" data-all><svg aria-hidden="true"><use href="#i-eye"/></svg>Tout montrer</button></figcaption>
+  </figure>
+  <ol class="found" data-found aria-live="polite">
+   <li><span class="n">1</span><span><b>Le titre n'en est pas un</b><span>Il est grand à l'écran, mais le code ne dit pas que c'est le titre. Google l'ignore.</span></span></li>
+   <li><span class="n">2</span><span><b>Texte trop pâle</b><span>Gris clair sur blanc : le contraste est trop faible pour être lu facilement.</span></span></li>
+   <li><span class="n">3</span><span><b>Bouton muet</b><span>Une icône sans nom. Un lecteur d'écran annonce juste « bouton ».</span></span></li>
+   <li><span class="n">4</span><span><b>Image de 2,4 Mo</b><span>À elle seule, elle pèse plus que tout le reste de la page.</span></span></li>
+  </ol>
+ </div>
+</section>
+

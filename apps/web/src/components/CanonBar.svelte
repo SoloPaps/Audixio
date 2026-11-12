@@ -10,13 +10,16 @@ import { applyLocale } from '../i18n/live.js';
 import { packLine } from '../i18n/pack.js';
 import { type SlimKey, t } from '../i18n/slim.js';
 import { storedSessionPresent } from '../lib/auth-storage.js';
+import { accountHref, accountKey, NAV_ITEMS } from '../lib/nav-canon.js';
 
 interface Props {
   pathname: string;
   initial?: 'system' | 'light' | 'dark';
+  /** v6 : verrou sur html seulement, ancre axn (le héros garde #top). */
+  shell?: 'canon' | 'v6';
 }
 
-let { pathname }: Props = $props();
+let { pathname, shell = 'canon' }: Props = $props();
 let loggedIn = $state(false);
 let open = $state(false);
 let scrolled = $state(false);
@@ -60,12 +63,9 @@ function tr(key: SlimKey): string {
   return t(key);
 }
 
-const items = $derived([
-  { href: '/', label: tr('nav.home') },
-  { href: '/methode', label: tr('nav.method') },
-  { href: '/sites', label: tr('nav.sites.long') },
-  { href: '/pro', label: tr('nav.pricing') },
-]);
+const items = $derived(
+  NAV_ITEMS.map((item) => ({ href: item.href, label: tr(item.key) })),
+);
 
 let menuScroll = 0;
 
@@ -75,16 +75,18 @@ function setMenu(next: boolean, back: boolean): void {
   const root = document.documentElement;
   if (next) {
     root.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
+    if (shell !== 'v6') document.body.style.overflow = 'hidden';
     setTimeout(() => {
       sheet?.querySelector<HTMLElement>('a,button')?.focus();
     }, 50);
   } else {
     root.style.overflow = '';
-    document.body.style.overflow = '';
-    // Certaines pages repartent en haut pendant le verrou : on rend la position.
-    if (window.scrollY !== menuScroll)
-      window.scrollTo({ top: menuScroll, behavior: 'instant' });
+    if (shell !== 'v6') {
+      document.body.style.overflow = '';
+      // Certaines pages repartent en haut pendant le verrou : on rend la position.
+      if (window.scrollY !== menuScroll)
+        window.scrollTo({ top: menuScroll, behavior: 'instant' });
+    }
     if (back) burger?.focus({ preventScroll: true });
   }
 }
@@ -232,20 +234,20 @@ onMount(() => {
   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
 {/snippet}
 
-<header class="axn site-bar" data-chrome class:is-open={open} class:is-scrolled={scrolled} id="top" bind:this={header}>
+<header class="axn site-bar" data-chrome class:is-open={open} class:is-scrolled={scrolled} id={shell === 'v6' ? 'axn' : 'top'} bind:this={header}>
   <div class="axn-bar">
     <a class="axn-logo" href="/" aria-label={t('footer.home')}><img class="axn-logo-d" src="/marque/logo-pc.svg" alt="" width="107" height="34" decoding="async"><img class="axn-logo-m" src="/marque/logo-mobile.svg" alt="" width="36" height="36" decoding="async"></a>
     <nav aria-label={t('nav.bottom')}>
       <ul class="axn-links">
         {#each items as item (item.href)}
-          <li><a href={item.href} aria-current={current(item.href)}>{item.label}</a></li>
+          <li><a class="link-nav" href={item.href} aria-current={current(item.href)}>{item.label}</a></li>
         {/each}
       </ul>
     </nav>
     <div class="axn-tools">
       {@render lang()}
       {@render theme()}
-      <a class="axn-cta" href={loggedIn ? '/compte' : '/connexion'}>{@render person()}<span class="axn-cta-txt">{loggedIn ? tr('nav.account') : tr('nav.login')}</span></a>
+      <a class="axn-cta link-nav" href={accountHref(loggedIn)}>{@render person()}<span class="axn-cta-txt">{tr(accountKey(loggedIn))}</span></a>
     </div>
     <button class="axn-burger" type="button" aria-expanded={open} aria-controls="axn-menu" aria-label={open ? t('nav.close') : t('nav.open')} bind:this={burger} onclick={() => setMenu(!open, true)}><i aria-hidden="true"><b></b><b></b><b></b></i></button>
   </div>
@@ -264,7 +266,7 @@ onMount(() => {
       {@render lang()}
       {@render theme()}
     </div>
-    <div class="axn-cta-wrap"><a class="axn-cta" style="--i:5" href={loggedIn ? '/compte' : '/connexion'}>{@render person()}<span>{loggedIn ? tr('nav.account') : tr('nav.login')}</span></a></div>
+    <div class="axn-cta-wrap"><a class="axn-cta" style="--i:5" href={accountHref(loggedIn)}>{@render person()}<span>{tr(accountKey(loggedIn))}</span></a></div>
   </div>
 </header>
 <button class="axn-top" data-chrome class:is-on={showTop} type="button" aria-label={tr('nav.backtop')} onclick={toTop}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>

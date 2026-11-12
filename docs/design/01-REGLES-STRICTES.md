@@ -1,5 +1,7 @@
 # Audixio — Règles strictes (gelées 2026-10-28)
 
+> **Mise à jour du 11/11/2026 (fondations v6)** — pour tout composant neuf : jetons de `docs/design/v6/INTEGRATION-v6.md`, clair dans `tokens.css` (`[data-v6]`, faisceau `#1D5FD1`), sombre uniquement dans `theme-dark.css` via `--d-v*`. Police **Geist** et **Geist Mono**, auto-hébergées. La palette v2 et Inter ne s’appliquent plus à ce chrome. Les pages déjà en place gardent leur CSS jusqu’à leur lot.
+
 > **Mise à jour du 29/10/2026 (réorganisation des docs)** — ces décisions priment sur le texte ci-dessous (détail : [00-DECISIONS.md](../00-DECISIONS.md)) :
 > - Palette **v2** = référence couleurs (`design/design-elements/palette-foundations-v2.*` : boutons `#3D52A0` survol `#1E2A55`, accent `#7091E6`, secondaire `#8697C4`, bordures `#ADBBDA`, surfaces `#EDE8F5`, texte `#1E2A55` / `#4A5585`). Les couleurs pétrole / pêche (teal) de ce fichier sont **remplacées**.
 > - Thème **clair par défaut**, suit `prefers-color-scheme`, le choix manuel gagne. Thème sombre complet = **plus tard**.
@@ -47,7 +49,7 @@ Libellés exacts, dans cet ordre :
 - **1 seul** `AppHeader` partagé partout.
 - Header : logo officiel + mot **Audixio** seul (pas de tagline sous le nom).
 - **Forme :** barre **flottante encadrée** (coins arrondis, bordure) ; liens nav au **milieu** de l’encadré — voir [`NAV-CANON-desktop-et-mobile.md`](maquettes/chrome/NAV-CANON-desktop-et-mobile.md) + PNG canon.
-- Police UI : **Inter**.
+- Police UI du chrome neuf : **Geist** et **Geist Mono** (auto-hébergées). Inter n’est plus la police de ce chrome.
 - **Mobile :** bottom sticky = les 4 destinations (icônes) ; top = logo + FR/EN · thème · Connexion/Compte — voir `NAV-CANON-desktop-et-mobile.md` (pas drawer hamburger pour la nav principale).
 - **Tarifs** (30/10/2026) remplace « Documentation » : mène à la page Pro (`maquettes/finales/page_pro/`) ; la popup `interface_passer_pro` = limite atteinte seulement. Méthode, guides et pages légales restent joignables via Méthode et le footer. Pas de 5ᵉ item.
 

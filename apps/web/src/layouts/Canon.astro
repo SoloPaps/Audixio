@@ -67,8 +67,14 @@ const canonical = Astro.url.pathname || '/';
     <meta name="description" content={description} />
     {robots ? <meta name="robots" content={robots} /> : null}
     <meta name="referrer" content="no-referrer" />
-    <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#EDE8F5" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#F3F5F8"
+      data-light="#F3F5F8"
+      data-dark="#06090D"
+    />
+    <meta property="og:locale" content="fr_FR" />
     <link rel="canonical" href={canonical} />
     <script is:inline src="/theme-init.js"></script>
     <script is:inline>
@@ -83,12 +89,6 @@ const canonical = Astro.url.pathname || '/';
   </head>
   <body>
     <a class="skip" href="#contenu">{t('skip.main')}</a>
-    {(vue === 'accueil' || vue === 'methode') ? (
-      <nav class="legacy-pages" aria-label={t('nav.pages')}>
-        <a class="link-nav" href="/methode" aria-current={Astro.url.pathname === '/methode' ? 'page' : undefined}>{t('nav.method')}</a>
-        <a class="link-nav" href="/connexion">{t('nav.login')}</a>
-      </nav>
-    ) : null}
     <CanonBar pathname={Astro.url.pathname} client:load />
     <slot />
     <CanonFooter classic={vue === 'accueil' || vue === 'methode'} />

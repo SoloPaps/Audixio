@@ -22,13 +22,21 @@ test('la barre flottante indique la page et le menu se ferme avec Échap', async
   page,
 }) => {
   await page.goto('/methode');
-  const bar = page.getByRole('navigation', { name: 'Pages' });
-  await expect(bar.getByRole('link', { name: 'Méthode' })).toHaveAttribute(
-    'aria-current',
-    'page',
-  );
-  await expect(bar.getByRole('link', { name: 'Connexion' })).toBeVisible();
-  await expect(bar.getByRole('link', { name: 'Sites' })).toHaveCount(0);
+  // La nav cachée « Pages » (doublon) est retirée : la barre principale porte ces liens.
+  await expect(page.getByRole('navigation', { name: 'Pages' })).toHaveCount(0);
+  const bar = page.getByRole('navigation', {
+    name: 'Navigation principale',
+    exact: true,
+  });
+  await expect(
+    bar.getByRole('link', { name: 'Méthode', exact: true }),
+  ).toHaveAttribute('aria-current', 'page');
+  await expect(
+    page.locator('.axn-bar').getByRole('link', { name: 'Connexion' }),
+  ).toBeVisible();
+  await expect(
+    bar.getByRole('link', { name: 'Sites', exact: true }),
+  ).toHaveCount(0);
   await expect(
     page.getByRole('link', { name: 'Aller au contenu' }),
   ).toBeVisible();

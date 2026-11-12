@@ -11,6 +11,7 @@ const MAQUETTE_PORT = [
   'apps/web/src/styles/maquettes/',
   'apps/web/src/styles/canon.css',
   'apps/web/src/styles/chrome.css',
+  'apps/web/src/styles/nav6.css',
   'apps/web/src/styles/theme-dark.css',
   'apps/web/src/components/ShareSheet.svelte',
   'apps/web/src/components/AccountBoard.svelte',
@@ -89,6 +90,24 @@ const ALLOWED_HEX = new Set(
     '#f8e4d8',
     '#e39a78',
     '#1a2830',
+    /* Clair v6 (docs/design/v6). Le sombre reste dans theme-dark.css. */
+    '#f3f5f8',
+    '#ebeff4',
+    '#f2f5f9',
+    '#e3e9f0',
+    '#d5dce6',
+    '#c3cdda',
+    '#0b1220',
+    '#4a5568',
+    '#5b677a',
+    '#1d5fd1',
+    '#c2341f',
+    '#0f7a55',
+    '#24324a',
+    '#3f7f14',
+    '#8f6300',
+    '#b9520f',
+    '#8a1538',
   ].map((hex) => hex.toLowerCase()),
 );
 
@@ -99,6 +118,12 @@ const ALLOWED_RGB = [
   'rgb(27 31 36 / 0.1)',
   'rgb(29 33 38 / 0.72)',
   'rgb(0 0 0 / 0.35)',
+  'rgb(29 95 209 / 0.1)',
+  'rgb(29 95 209 / 0.25)',
+  'rgb(194 52 31 / 0.08)',
+  'rgb(15 122 85 / 0.08)',
+  'rgb(11 18 32 / 0.22)',
+  'rgb(11 18 32 / 0.35)',
 ];
 const HEX =
   /#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})\b/g;
@@ -213,7 +238,7 @@ describe('couleurs des CSS', () => {
               /linear-gradient\(to bottom, var\(--wash-top\), var\(--wash-bottom\)\)/.test(
                 line,
               ) ||
-              /blur\(var\(--(?:space-8|glass-blur)\)\)/.test(line) ||
+              /blur\(var\(--(?:space-8|glass-blur|v6-blur)\)\)/.test(line) ||
               /backdrop-filter:\s*none/.test(line);
             if (!tokenEffect) {
               violations.push(`${relative}:${index + 1} effet interdit`);
@@ -223,8 +248,10 @@ describe('couleurs des CSS', () => {
             violations.push(`${relative}:${index + 1} capitales`);
           }
           if (
-            /box-shadow/.test(line) &&
-            !/box-shadow:\s*(?:var\(--shadow-float\)|none)\s*;/.test(line)
+            /box-shadow\s*:/.test(line) &&
+            !/box-shadow\s*:\s*(?:var\(--(?:shadow-float|shadow|sh-lift|sh-dock)\)|none)\s*;/.test(
+              line,
+            )
           ) {
             violations.push(`${relative}:${index + 1} ombre`);
           }

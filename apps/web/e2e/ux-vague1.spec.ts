@@ -95,12 +95,33 @@ test('la barre étroite ne coupe pas la marque, le menu ni le thème', async ({
 
 test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => {
   await page.goto('/methode');
-  const bar = page.getByRole('navigation', { name: 'Pages' });
-  const method = bar.getByRole('link', { name: 'Méthode' });
+  // Barre principale (la nav cachée « Pages » en doublon est retirée).
+  const bar = page.getByRole('navigation', {
+    name: 'Navigation principale',
+    exact: true,
+  });
+  const method = bar.getByRole('link', { name: 'Méthode', exact: true });
   await expect(method).toHaveClass(/link-nav/);
   await expect(method).toHaveAttribute('aria-current', 'page');
-  await expect(method).toHaveCSS('text-decoration-line', /underline/);
-  const login = bar.getByRole('link', { name: 'Connexion' });
+  // Page en cours marquée sans soulignement : graisse plus forte que ses voisines.
+  await expect(method).toHaveCSS('text-decoration-line', 'none');
+  const home = bar.getByRole('link', { name: 'Accueil', exact: true });
+  await expect(home).toHaveCSS('text-decoration-line', 'none');
+  const weight = async (node: typeof method) =>
+    Number(
+      await node.evaluate(
+        (el) =>
+          (
+            globalThis as unknown as {
+              getComputedStyle: (node: unknown) => { fontWeight: string };
+            }
+          ).getComputedStyle(el).fontWeight,
+      ),
+    );
+  expect(await weight(method)).toBeGreaterThan(await weight(home));
+  const login = page
+    .locator('.axn-bar')
+    .getByRole('link', { name: 'Connexion' });
   await expect(login).toHaveClass(/link-nav/);
   await expect(login).toHaveCSS('text-decoration-line', 'none');
 

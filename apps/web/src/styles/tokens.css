@@ -82,6 +82,98 @@
   --duration-gauge: 400ms;
 }
 
+/*
+ * Jetons v6 (clair). Une seule liste sémantique.
+ * Le sombre ne vit pas ici : theme-dark.css pose les --d-v* puis réassigne ces rôles.
+ * Portée [data-v6] pour que les pages déjà en place gardent leurs jetons.
+ */
+[data-v6] {
+  color-scheme: light;
+  --bg: #f3f5f8;
+  --bg-2: #ebeff4;
+  --surf: #ffffff;
+  --surf-2: #f2f5f9;
+  --surf-3: #e3e9f0;
+  --line: #d5dce6;
+  --line-2: #c3cdda;
+  --ink: #0b1220;
+  --ink-2: #4a5568;
+  --ink-3: #5b677a;
+  --beam: #1d5fd1;
+  --beam-a: rgb(29 95 209 / 0.1);
+  --beam-b: rgb(29 95 209 / 0.25);
+  --find: #c2341f;
+  --find-a: rgb(194 52 31 / 0.08);
+  --ok: #0f7a55;
+  --ok-a: rgb(15 122 85 / 0.08);
+  --focus: #1d5fd1;
+  --cta: #0b1220;
+  --cta-fg: #ffffff;
+  --cta-h: #24324a;
+  --gA: #0f7a55;
+  --gB: #3f7f14;
+  --gC: #8f6300;
+  --gD: #b9520f;
+  --gE: #b3261e;
+  --gF: #8a1538;
+  --k-shadow: rgb(11 18 32 / 0.22);
+  --shadow: 0 30px 60px -34px rgb(11 18 32 / 0.35);
+  --sh-lift: 0 22px 44px -26px var(--k-shadow);
+  --sh-dock: 0 18px 40px -18px var(--k-shadow);
+  --c-hover: color-mix(in oklab, var(--beam) 8%, var(--surf));
+  --c-active: color-mix(in oklab, var(--beam) 14%, var(--surf));
+  --c-ring: var(--focus);
+  --sans: "Geist", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, monospace;
+  --hh: 64px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.25rem;
+  --s-6: 1.5rem;
+  --s-7: 2rem;
+  --s-8: 2.5rem;
+  --s-9: 3rem;
+  --s-10: 4rem;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-pill: 999px;
+  --t-xs: 0.75rem;
+  --t-sm: 0.8125rem;
+  --t-md: 0.9375rem;
+  --t-base: 1.0625rem;
+  --t-h3: 1.25rem;
+  --dur-fast: 0.15s;
+  --dur-med: 0.3s;
+  --dur-slow: 0.6s;
+  --ic: 20px;
+  --ic-sm: 16px;
+  --ib: 2.4rem;
+  --tap: 44px;
+  --ctl-h: 52px;
+  --bw: 1px;
+  --focus-w: 3px;
+  --focus-off: 3px;
+  --dock-h: 48px;
+  --dock-gap: 14px;
+  --dock-space: calc(var(--dock-h) + var(--dock-gap) * 2);
+  --w-dock: 17rem;
+  --logo-h: 28px;
+  --logo-sm: 20px;
+  --v6-blur: 14px;
+  --nudge: 1px;
+  --press: 0.99;
+  --shift: 3px;
+  --shift-lg: 4px;
+  --lift-y: -2px;
+  --mark: 2px;
+  --bar: #f3f5f8;
+}
+
 @media print {
   :root {
     color-scheme: light;

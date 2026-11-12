@@ -1,0 +1,366 @@
+{
+ "1440-dark": {
+  "H": 12148,
+  "fcp": 108,
+  "cls": 0,
+  "shifts": [],
+  "longtasks_load": [],
+  "longtasks_all": [],
+  "overflow": [
+   1440,
+   []
+  ],
+  "sections": [
+   [
+    "top",
+    1155
+   ],
+   [
+    "comment",
+    1228
+   ],
+   [
+    "domaines",
+    1246
+   ],
+   [
+    "couches",
+    3960
+   ],
+   [
+    "jeu",
+    892
+   ],
+   [
+    "rapport",
+    811
+   ],
+   [
+    "suite",
+    773
+   ],
+   [
+    "offres",
+    696
+   ],
+   [
+    "faq",
+    377
+   ],
+   [
+    "fin",
+    406
+   ],
+   [
+    "FOOTER",
+    420
+   ]
+  ],
+  "form_visible": [
+   524,
+   900,
+   true
+  ]
+ },
+ "dock-1440": {
+  "on": true,
+  "w": 893,
+  "left": 274,
+  "right": 1167,
+  "active": "05Le rapport",
+  "btn": "Le rapport",
+  "hidden_on_hero": true,
+  "hidden_on_final": true
+ },
+ "tab": {
+  "count": 52,
+  "no_ring": [],
+  "seq": [
+   "A.skip:Aller au contenu",
+   "A.logo:",
+   "A.:Comment ça marche",
+   "A.:Les 8 domaines",
+   "A.:Méthode",
+   "A.:Exemple de rapport",
+   "A.:Offres",
+   "A.:EN",
+   "BUTTON.:theme",
+   "A.login:Se connecter",
+   "INPUT.:u1",
+   "BUTTON.btn:Scanner mon site, gratui",
+   "A.lnk:Le détail de chaque étap",
+   "BUTTON.tab:PerformanceVotre page s’",
+   "DIV.ctl-panel on:PerformanceInclus sans c",
+   "A.lnk:Lire la méthode",
+   "BUTTON.spot:1",
+   "BUTTON.spot:2",
+   "BUTTON.spot:3",
+   "BUTTON.spot:4",
+   "BUTTON.switch:Rayons X",
+   "BUTTON.btn-s:Tout montrer",
+   "BUTTON.rp-k:1Une note de A à FPour t",
+   "BUTTON.rp-k:2Les priorités d'abordCl",
+   "BUTTON.rp-k:3Quoi faire, pas à pasCh",
+   "A.card-l:Voir un exemple de rappo",
+   "A.lnk:Voir le brief dans l'exe",
+   "A.lnk:Comment marche le partag",
+   "A.lnk:Découvrir Pro",
+   "A.btn:Scanner mon site",
+   "A.btn btn--ghost:Créer un compte",
+   "A.btn btn--ghost:Découvrir Pro",
+   "A.lnk:Comparer les offres en d",
+   "A.card-l:Comment fonctionne Audix",
+   "SUMMARY.:Une bonne note veut-elle",
+   "SUMMARY.:Est-ce que le scan peut ",
+   "SUMMARY.:L'IA intervient-elle dan",
+   "INPUT.:u2",
+   "BUTTON.btn:Scanner mon site",
+   "A.logo:",
+   "A.:Comment ça marche",
+   "A.:Les 8 domaines",
+   "A.:Exemple de rapport",
+   "A.:Offres",
+   "A.:Méthode et barème",
+   "A.:Partage",
+   "A.:Notre robot",
+   "A.:Mentions légales",
+   "A.:Confidentialité",
+   "A.:Cookies",
+   "A.:CGU",
+   "A.:Accessibilité"
+  ]
+ },
+ "faq_esc": 0,
+ "game": "4 / 4 : bravo, comme le scanner",
+ "1440-light": {
+  "H": 12148,
+  "fcp": 68,
+  "cls": 0,
+  "shifts": [],
+  "longtasks_load": [],
+  "longtasks_all": [],
+  "overflow": [
+   1440,
+   []
+  ],
+  "sections": [
+   [
+    "top",
+    1155
+   ],
+   [
+    "comment",
+    1228
+   ],
+   [
+    "domaines",
+    1246
+   ],
+   [
+    "couches",
+    3960
+   ],
+   [
+    "jeu",
+    892
+   ],
+   [
+    "rapport",
+    811
+   ],
+   [
+    "suite",
+    773
+   ],
+   [
+    "offres",
+    696
+   ],
+   [
+    "faq",
+    377
+   ],
+   [
+    "fin",
+    406
+   ],
+   [
+    "FOOTER",
+    420
+   ]
+  ],
+  "form_visible": [
+   524,
+   900,
+   true
+  ]
+ },
+ "390-dark": {
+  "H": 14550,
+  "fcp": 76,
+  "cls": 0.0,
+  "shifts": [
+   [
+    0,
+    6089,
+    "I."
+   ],
+   [
+    0,
+    6156,
+    "I."
+   ]
+  ],
+  "longtasks_load": [],
+  "longtasks_all": [],
+  "overflow": [
+   390,
+   []
+  ],
+  "sections": [
+   [
+    "top",
+    1522
+   ],
+   [
+    "comment",
+    1818
+   ],
+   [
+    "domaines",
+    1463
+   ],
+   [
+    "couches",
+    3376
+   ],
+   [
+    "jeu",
+    1071
+   ],
+   [
+    "rapport",
+    1721
+   ],
+   [
+    "suite",
+    738
+   ],
+   [
+    "offres",
+    705
+   ],
+   [
+    "faq",
+    571
+   ],
+   [
+    "fin",
+    517
+   ],
+   [
+    "FOOTER",
+    912
+   ]
+  ],
+  "form_visible": [
+   590,
+   844,
+   true
+  ]
+ },
+ "dock-390": {
+  "on": true,
+  "w": 362,
+  "left": 14,
+  "right": 376,
+  "active": "05Le rapport",
+  "btn": "Le rapport",
+  "opened": true,
+  "esc_closed": true,
+  "nav_offres": 80,
+  "hidden_on_hero": true,
+  "hidden_on_final": true
+ },
+ "390-light": {
+  "H": 14550,
+  "fcp": 64,
+  "cls": 0.0,
+  "shifts": [
+   [
+    0,
+    6076,
+    "I."
+   ],
+   [
+    0,
+    6159,
+    "I."
+   ]
+  ],
+  "longtasks_load": [],
+  "longtasks_all": [],
+  "overflow": [
+   390,
+   []
+  ],
+  "sections": [
+   [
+    "top",
+    1522
+   ],
+   [
+    "comment",
+    1818
+   ],
+   [
+    "domaines",
+    1463
+   ],
+   [
+    "couches",
+    3376
+   ],
+   [
+    "jeu",
+    1071
+   ],
+   [
+    "rapport",
+    1721
+   ],
+   [
+    "suite",
+    738
+   ],
+   [
+    "offres",
+    705
+   ],
+   [
+    "faq",
+    571
+   ],
+   [
+    "fin",
+    517
+   ],
+   [
+    "FOOTER",
+    912
+   ]
+  ],
+  "form_visible": [
+   590,
+   844,
+   true
+  ]
+ },
+ "reduced": {
+  "H": 8940,
+  "cls": 0.0,
+  "scan_done": true
+ },
+ "errors": [],
+ "external": []
+}

@@ -1,5 +1,6 @@
 import svelte from '@astrojs/svelte';
 import { defineConfig } from 'astro/config';
+import { dropDevPages } from './drop-dev-pages.mjs';
 
 function piece(chars) {
   return chars.join('');
@@ -167,6 +168,16 @@ function authDev() {
   };
 }
 
+function dropDevOnBuild() {
+  return {
+    name: 'audigy-drop-dev-pages',
+    apply: 'build',
+    async closeBundle() {
+      await dropDevPages('dist');
+    },
+  };
+}
+
 function printRoute() {
   const mount = (server) => {
     server.middlewares.stack.unshift({ route: '', handle: rewriteRoutes });
@@ -195,6 +206,7 @@ export default defineConfig({
       sitesPublicDev(),
       authDev(),
       printRoute(),
+      dropDevOnBuild(),
     ],
     define: {
       [envKey('URL')]: JSON.stringify(process.env.SUPABASE_URL ?? ''),

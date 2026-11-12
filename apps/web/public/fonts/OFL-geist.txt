@@ -1,0 +1,4 @@
+Geist and Geist Mono
+Copyright (c) Vercel, Inc.
+Licensed under the SIL Open Font License, Version 1.1.
+Subsets: docs/design/v6/fonts.

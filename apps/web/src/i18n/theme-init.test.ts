@@ -83,4 +83,70 @@ describe('démarrage de la langue', () => {
     const { host } = boot({});
     expect(host.__audigy_en).toBeUndefined();
   });
+
+  it('aligne lang, color-scheme et theme-color sur le choix', () => {
+    const attrs = new Map<string, string>([
+      ['content', 'light dark'],
+      ['data-light', '#F3F5F8'],
+      ['data-dark', '#06090D'],
+    ]);
+    const scheme = new Map<string, string>([['content', 'light dark']]);
+    const bar = {
+      getAttribute: (key: string) => attrs.get(key) ?? null,
+      setAttribute: (key: string, value: string) => attrs.set(key, value),
+    };
+    const colorScheme = {
+      getAttribute: (key: string) => scheme.get(key) ?? null,
+      setAttribute: (key: string, value: string) => scheme.set(key, value),
+    };
+    const html = new Map<string, string>();
+    const sandbox: Record<string, unknown> = {
+      document: {
+        documentElement: {
+          setAttribute(key: string, value: string) {
+            html.set(key, value);
+          },
+        },
+        querySelector(sel: string) {
+          if (sel === 'meta[name="theme-color"]') return bar;
+          if (sel === 'meta[name="color-scheme"]') return colorScheme;
+          return null;
+        },
+        addEventListener() {
+          return undefined;
+        },
+      },
+      URLSearchParams,
+      JSON,
+      location: { search: '?theme=dark' },
+      localStorage: {
+        getItem(key: string) {
+          if (key === 'audigy-locale') return 'en';
+          if (key === 'audigy-en') {
+            return JSON.stringify({
+              'login.password': 'Password',
+              'login.submit': 'Sign in',
+              'login.lead': 'Sign in with your email and password.',
+            });
+          }
+          return null;
+        },
+        setItem() {
+          return undefined;
+        },
+        removeItem() {
+          return undefined;
+        },
+      },
+      matchMedia() {
+        return { matches: false, addEventListener() {} };
+      },
+    };
+    sandbox.globalThis = sandbox;
+    runInNewContext(source, sandbox);
+    expect(html.get('data-theme')).toBe('dark');
+    expect(html.get('lang')).toBe('en');
+    expect(scheme.get('content')).toBe('dark');
+    expect(attrs.get('content')).toBe('#06090D');
+  });
 });
