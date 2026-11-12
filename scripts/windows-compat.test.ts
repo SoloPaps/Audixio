@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { commande } from './commande.mjs';
 
 // Sous Windows, `new URL(import.meta.url).pathname` donne « /C:/… » : joint
 // à un chemin, il devient « C:\C:\… » (ENOENT). Les fichiers de code passent
@@ -42,5 +43,38 @@ describe('compatibilité Windows', () => {
       expect(out).toContain(`${file}: eol: lf`);
       expect(out).not.toContain(`${file}: text: unset`);
     }
+  });
+
+  it('pnpm, npx et tsx passent par le shell sous Windows, arguments cités', () => {
+    expect(
+      commande('pnpm', ['exec', 'tsx', 'scripts/e2e-ui-lab.ts'], 'linux'),
+    ).toEqual({
+      cmd: 'pnpm',
+      args: ['exec', 'tsx', 'scripts/e2e-ui-lab.ts'],
+      shell: false,
+    });
+    expect(
+      commande('pnpm', ['exec', 'tsx', 'scripts/e2e-ui-lab.ts'], 'win32'),
+    ).toEqual({
+      cmd: 'pnpm exec tsx scripts/e2e-ui-lab.ts',
+      args: [],
+      shell: true,
+    });
+    expect(
+      commande(
+        'pnpm',
+        ['-e', "console.log('a b')", 'C:\\Mes Projets\\x'],
+        'win32',
+      ).cmd,
+    ).toBe('pnpm -e "console.log(\'a b\')" "C:\\Mes Projets\\x"');
+  });
+
+  it('aucun spawn direct de pnpm, npx, npm ou tsx (ENOENT sous Windows)', () => {
+    const direct =
+      /\b(?:spawn|spawnSync|execFile|execFileSync)\(\s*['"`](?:pnpm|npx|npm|tsx)['"`]/u;
+    const offenders = trackedCode().filter((file) =>
+      direct.test(readFileSync(file, 'utf8')),
+    );
+    expect(offenders).toEqual([]);
   });
 });

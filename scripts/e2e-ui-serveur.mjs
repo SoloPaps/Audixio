@@ -2,10 +2,10 @@
  * Serveur de `pnpm test:ui` : labo local, puis Astro.
  * Le plafond visiteur reste à 3. Aucun secret n’est écrit.
  */
-import { spawn } from 'node:child_process';
 import { access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnCommande } from './commande.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const kids = [];
@@ -32,7 +32,7 @@ function shutdown(code) {
 process.on('SIGTERM', () => shutdown(0));
 process.on('SIGINT', () => shutdown(0));
 
-const lab = spawn('pnpm', ['exec', 'tsx', 'scripts/e2e-ui-lab.ts'], {
+const lab = spawnCommande('pnpm', ['exec', 'tsx', 'scripts/e2e-ui-lab.ts'], {
   cwd: root,
   env: process.env,
   stdio: ['ignore', 'pipe', 'pipe'],
@@ -64,7 +64,7 @@ const astroEnv = {
 };
 delete astroEnv.AUDIGY_GUEST_UNLIMITED;
 
-const astro = spawn(
+const astro = spawnCommande(
   'pnpm',
   [
     '--dir',

@@ -1,10 +1,10 @@
-import { execFileSync, spawn } from 'node:child_process';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import net from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { pathToFileURL } from 'node:url';
+import { execFileCommande, spawnCommande } from './commande.mjs';
 
 export const A11Y_CHROME_FLAGS =
   '--headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage';
@@ -89,7 +89,7 @@ function waitForPort(timeoutMs: number): Promise<void> {
 
 function playwrightChrome(): string {
   try {
-    const out = execFileSync(
+    const out = execFileCommande(
       'pnpm',
       [
         '--filter',
@@ -113,7 +113,7 @@ function runLighthouse(
   output: string,
   chromePath: string,
 ): Promise<number | null> {
-  const child = spawn(
+  const child = spawnCommande(
     'pnpm',
     [
       'exec',
@@ -138,7 +138,7 @@ function runLighthouse(
 }
 
 async function main(): Promise<void> {
-  const server = spawn(
+  const server = spawnCommande(
     'pnpm',
     [
       '--filter',

@@ -5,10 +5,10 @@
  * Seuls les extracteurs sont gardés : les failles viennent d’OSV, pas de retire.js.
  * Jamais lancé en CI : les tests lisent la copie versionnée.
  */
-import { execFileSync } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileCommande } from './commande.mjs';
 
 const REPO = 'RetireJS/retire.js';
 const DEFAULT_COMMIT = 'e5e228659bbcaea7ba85536a2ef8d4fb97b366e9';
@@ -131,7 +131,7 @@ async function main(): Promise<void> {
     path.join(OUT, 'NOTICE.md'),
     `${notice.trimEnd()}\n\n---\n\nsignatures.json est dérivé de repository/jsrepository-master.json\n(${REPO}, commit ${commit}). Audigy n’en garde que les extracteurs.\n`,
   );
-  execFileSync('pnpm', ['exec', 'biome', 'format', '--write', target], {
+  execFileCommande('pnpm', ['exec', 'biome', 'format', '--write', target], {
     stdio: 'inherit',
   });
   console.log(`${Object.keys(libraries).length} bibliothèques → ${target}`);

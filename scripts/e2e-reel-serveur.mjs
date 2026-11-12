@@ -7,6 +7,7 @@ import { access, readFile, writeFile } from 'node:fs/promises';
 import { createConnection } from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnCommande } from './commande.mjs';
 import { syncWebEnv } from './dev-env.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -165,7 +166,7 @@ if (!(await portOpen(54321))) {
 await writeEnv(statusEnv());
 await syncWebEnv(root);
 
-const lab = spawn('pnpm', ['exec', 'tsx', 'fixtures/lab.ts'], {
+const lab = spawnCommande('pnpm', ['exec', 'tsx', 'fixtures/lab.ts'], {
   cwd: root,
   env: process.env,
   stdio: ['ignore', 'pipe', 'pipe'],
