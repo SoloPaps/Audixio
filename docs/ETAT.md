@@ -1,6 +1,6 @@
 # État du projet (mis à jour à chaque PR)
 
-Dernière mise à jour : 12/11/2026, PR « barre v6 : focus sans saut » (correctif commun).
+Dernière mise à jour : 12/11/2026, PR « demande d’accès et vérifier v6 » (lot 4b, pages publiques).
 
 ## Lots de la refonte v6
 
@@ -13,7 +13,8 @@ Dernière mise à jour : 12/11/2026, PR « barre v6 : focus sans saut » (correc
 | 3a. Exemple de rapport | `/exemple-rapport` sur V6Page, feuille portée sous `.ex` (`exemple-v6.css`), couleurs sur les jetons v6, Geist | fusionné (#207, `7354922`) |
 | 3b. Tarifs | `/pro` sur V6Page (`pro-v6.css`, `.pr6`), panneau toujours sombre `.v6-nuit` (palette nuit fixe dans `pro-v6.css` ; `theme-dark.css` reste réservé au thème sombre), `/passer-pro` réduite à son renvoi vers `/pro` (requête et ancre gardées) | fusionné (#208, `f156f6c`) |
 | 4a. Transparence | `/robot`, `/ecoconception`, `/accessibilite` sur V6Page (`.rb`, `.eco`, `.acc`), texte `--cta-fg` sur `--cta`, bandeau final en panneau `.v6-nuit` (palette dans la feuille de page) | fusionné (#209, `924602e`) |
-| Barre v6 | focus dans la barre collante sans saut (liens hors `scroll-padding-top`), position rendue à la fermeture du menu ; test `nav6-focus.spec` | cette PR |
+| Barre v6 | focus dans la barre collante sans saut (liens hors `scroll-padding-top`), position rendue à la fermeture du menu ; test `nav6-focus.spec` | fusionné (#210, `27dad43`) |
+| 4b. Demande d’accès, vérifier | `/demande-acces`, `/verifier`, `/verifier/[id]` sur V6Page (`.dem`, `.pv`, `.vf`), barre de /verifier en `.vdock`, liens de texte et encart hors session au dessin v6 (`chrome.css`, sélecteurs `[data-v6]`) ; test commun `pages-v6.spec` | cette PR |
 | 3. Rapport | `/rapport/:id` à onglets, feuille « Partager », redirections R1–R10 et R13 | à faire |
 | 4. Sites et compte | `/sites/:host`, compte en sections, redirections R11, R12 et R15 | à faire |
 | 5. Légales et erreurs | gabarits v6 | à faire |
@@ -23,9 +24,9 @@ Dernière mise à jour : 12/11/2026, PR « barre v6 : focus sans saut » (correc
 - Branches restantes : `main`, `design/v6-reference` (#200 fermée, branches fusionnées supprimées ; chaque branche est supprimée juste après son squash).
 - Local vert : lint, typecheck, vitest (136 fichiers), e2e UI hors tests qui demandent l'API invitée (`guest-audit`, `qa-momentic`, vérifiés en CI).
 - PR #205 : correctifs CI (jauge lue par `page.request`, légende du scanner hors `<figcaption>` pour `qualite.html`, défilement bloqué sous la fenêtre visiteur v6, `toEnglish` attend le rechargement, e2e-reel sur « Scanner mon site, gratuit », Geist préchargée avec replis recalés : CLS 0,43 → 0,002 avec DejaVu Sans).
-- `main` = `924602e` (#209 transparence v6), après `f156f6c` (#208), `7354922` (#207), `72fb162` (#206) et `96f324b` (#205). Worktree de travail : `/workspace/audixio-methode` (branche de la page en cours). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
-- Outil de portage d’une feuille v2 vers v6 : `/workspace/port-exemple/scope.py` (portée sous une classe, `--d-*` → jetons v6, noms locaux préfixés `--x-`, animations préfixées) ; `port_page.py` (Canon → V6Page), `fix_inline.py` (variables en ligne), `port_mobile.py` (règles `html[data-vue]` de `mobile-fit.css`, que V6Page ne pose plus), `ctafg.py` (texte blanc sur `--cta` → `--cta-fg`).
-- Étapes suivantes : lot 4b (demande d’accès, vérifier, `.vdock`, liens de texte et encart hors session v6), puis espace connecté (R1–R17), légales et erreurs.
+- `main` = `27dad43` (#210 barre v6), après `924602e` (#209), `f156f6c` (#208), `7354922` (#207), `72fb162` (#206) et `96f324b` (#205). Worktree de travail : `/workspace/audixio-methode` (branche de la page en cours). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
+- Outil de portage d’une feuille v2 vers v6 : `/workspace/port-exemple/scope.py` (portée sous une classe, `--d-*` → jetons v6, noms locaux préfixés `--x-`, animations préfixées, sélecteurs `html[data-vue]` et `:where(...)` repris) ; `port_page.py` (Canon → V6Page), `fix_inline.py` (variables en ligne), `port_mobile.py` (règles `html[data-vue]` de `mobile-fit.css`, que V6Page ne pose plus), `ctafg.py` (texte blanc sur `--cta` → `--cta-fg`).
+- Étapes suivantes : rapport à onglets `/rapport/:id` + R1–R10, R13 et feuille Partager ; puis `/sites/:host`, `/compte` en sections, R11, R12, R15 ; puis espace connecté (R1–R17), légales et erreurs.
 - Tranches téléphone (390 px FR clair, 780 × 1200) : `/workspace/port-accueil/tools/tel.mjs` puis `tel.py`, dans `/workspace/boards/tel/`.
 - Après une coupure de la machine : `pnpm install --frozen-lockfile` puis `pnpm --filter @audigy/web exec playwright install chromium`.
 
