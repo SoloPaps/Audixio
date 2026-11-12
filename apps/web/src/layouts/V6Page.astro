@@ -27,6 +27,8 @@ const canonical = Astro.url.pathname || '/';
 <html lang="fr" data-theme="light" data-v6 data-page={vue}>
   <head>
     <meta charset="utf-8" />
+    <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist-mono.woff2" as="font" type="font/woff2" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
