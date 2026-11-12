@@ -209,13 +209,17 @@ test.describe('accueil v6', () => {
             window.__shifts.push({
               value: Number(entry.value.toFixed(3)),
               at: Math.round(entry.startTime),
+              bar: innerWidth - document.documentElement.clientWidth,
+              html: document.documentElement.className,
+              fonts: document.fonts.status,
+              sheets: document.styleSheets.length,
               nodes: entry.sources.map((s) => {
                 const n = s.node;
                 if (!n || !n.nodeName) return '?';
                 const el = n.nodeType === 1 ? n : n.parentElement;
                 const id = el && el.id ? '#' + el.id : '';
                 const cls = el && typeof el.className === 'string' ? '.' + el.className.split(' ').join('.') : '';
-                return (n.nodeName + id + cls).slice(0, 60) + ' ' + JSON.stringify([s.previousRect.y, s.currentRect.y]);
+                return (n.nodeName + id + cls).slice(0, 60) + ' ' + JSON.stringify([s.previousRect.x, s.previousRect.y, s.previousRect.width, s.previousRect.height, s.currentRect.x, s.currentRect.y, s.currentRect.width, s.currentRect.height]);
               }),
             });
           }
