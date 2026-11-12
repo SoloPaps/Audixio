@@ -1,16 +1,16 @@
 ---
-import '../styles/maquettes/liens.css';
 import HistoryBoard from '../components/HistoryBoard.svelte';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
-import '../styles/maquettes/historique.css';
+import V6Page from '../layouts/V6Page.astro';
+import '../styles/maquettes/historique-v6.css';
 ---
 
-<Canon
+<V6Page
   vue="historique"
   title={t('mq.ui.meta.history.title')}
   description={t('mq.ui.meta.history.description')}
-  robots="noindex, nofollow"
 >
-  <HistoryBoard client:load />
-</Canon>
+  <div class="hs">
+    <HistoryBoard client:load />
+  </div>
+</V6Page>
