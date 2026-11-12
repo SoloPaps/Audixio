@@ -1,8 +1,7 @@
 ---
-import '../styles/maquettes/liens.css';
-import '../styles/maquettes/ecologie.css';
+import '../styles/maquettes/ecologie-v6.css';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
+import V6Page from '../layouts/V6Page.astro';
 
 const messages = {
   'mq.lg.414': t('mq.lg.414'),
@@ -13,8 +12,8 @@ const messages = {
 };
 ---
 
-<Canon vue="ecologie" title={t('mq.meta.ecologie.title')} description={t('mq.meta.ecologie.desc')} robots="noindex, nofollow">
-<main id="contenu" tabindex="-1" data-ripple="1" data-copied={t('mq.lg.381')} data-copied-long={t('mq.lg.380')} data-copy-failed={t('copy.failed')}>
+<V6Page vue="ecologie" title={t('mq.meta.ecologie.title')} description={t('mq.meta.ecologie.desc')} robots="noindex, nofollow">
+<main id="contenu" class="eco" tabindex="-1" data-ripple="1" data-copied={t('mq.lg.381')} data-copied-long={t('mq.lg.380')} data-copy-failed={t('copy.failed')}>
 
 <nav class="crumbs" aria-label={t('mq.lg.001')}><ol><li><a href="/rapport">{t('mq.lg.382')}</a></li><li><span aria-current="page">{t('mq.lg.383')}</span></li></ol></nav>
 <div class="hg"><div><p class="eyebrow"><span class="dot" aria-hidden="true"></span>{t('mq.lg.384')}</p>
@@ -49,4 +48,4 @@ d.getElementById('later').addEventListener('click',function(){AX.say(MSG['mq.lg.
 })();
 
 </script>
-</Canon>
+</V6Page>
