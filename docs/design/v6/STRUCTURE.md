@@ -32,16 +32,16 @@ Le logo mène à `/`. Il n'y a plus d'entrée « Accueil ». Menu mobile : même
 
 ## 3. Rapport : une adresse par audit, avec onglets
 
-Nouvelle adresse : `/audit/:id`, avec un onglet par sous-chemin (le site statique sert `/audit/index.html` en réécriture 200, comme `/score/*` et `/partage/*`).
+Nouvelle adresse : `/rapport/:id` (le mot connu des utilisateurs), avec un onglet par sous-chemin. Le site statique sert `/rapport/index.html` en réécriture 200, comme `/score/*` et `/partage/*`.
 
 | Onglet | Adresse |
 |---|---|
-| Résumé | `/audit/:id` |
-| Domaines | `/audit/:id/domaines` et `/audit/:id/domaines/:domaine` (précédent et suivant) |
-| Constats | `/audit/:id/constats` et `/audit/:id/constats/:check` |
-| Plan d'action | `/audit/:id/plan` |
-| Brief IA | `/audit/:id/brief` |
-| Impression / PDF | `/audit/:id/imprimer` |
+| Résumé | `/rapport/:id` |
+| Domaines | `/rapport/:id/domaines` et `/rapport/:id/domaines/:domaine` (précédent et suivant) |
+| Constats | `/rapport/:id/constats` et `/rapport/:id/constats/:check` |
+| Plan d'action | `/rapport/:id/plan` |
+| Brief IA | `/rapport/:id/brief` |
+| Impression / PDF | `/rapport/:id/imprimer` |
 
 Fil d'Ariane : Mes sites › `host` › onglet. Pour un visiteur sans compte : Accueil › `host` › onglet.
 
@@ -66,42 +66,39 @@ Les paramètres non repris sont conservés tels quels. L'ancre est gardée par l
 
 | # | Ancienne adresse | Nouvelle adresse | Qui l'envoie aujourd'hui |
 |---|---|---|---|
-| R1 | `/rapport?id=:id` | `/audit/:id` | e-mail de fin d'audit (`privateReportUrl`), liens internes |
-| R2 | `/rapport?id=:id&domaine=:d` | `/audit/:id/domaines/:d` | ReportView |
-| R3 | `/rapport?id=:id&check=:c` | `/audit/:id/constats/:c` | ReportView |
-| R4 | `/domaine?id=:id&domaine=:d` | `/audit/:id/domaines/:d` | liens internes |
-| R5 | `/domaine?id=:id` | `/audit/:id/domaines` | liens internes |
-| R6 | `/constat?id=:id&check=:c` | `/audit/:id/constats/:c` | liens internes |
-| R7 | `/constat?id=:id` | `/audit/:id/constats` | liens internes |
-| R8 | `/plan?id=:id` | `/audit/:id/plan` | liens internes |
-| R9 | `/brief?id=:id` | `/audit/:id/brief` | liens internes |
-| R10 | `/rapport/:id/imprimer` | `/audit/:id/imprimer` | export PDF |
-| R11 | `/historique?site=:site` | `/sites/:host#historique` | liens internes (résolution id → host côté page, voir Q1) |
-| R12 | `/verifier?site=:site` | `/sites/:host#verification` | liens internes (voir Q1) |
-| R13 | `/badge?id=:id` | `/audit/:id?partager=badge` (ouvre la feuille Partager) | liens internes |
+| R1 | `/rapport?id=:id` | `/rapport/:id` | e-mail de fin d'audit (`privateReportUrl`), liens internes |
+| R2 | `/rapport?id=:id&domaine=:d` | `/rapport/:id/domaines/:d` | ReportView |
+| R3 | `/rapport?id=:id&check=:c` | `/rapport/:id/constats/:c` | ReportView |
+| R4 | `/domaine?id=:id&domaine=:d` | `/rapport/:id/domaines/:d` | liens internes |
+| R5 | `/domaine?id=:id` | `/rapport/:id/domaines` | liens internes |
+| R6 | `/constat?id=:id&check=:c` | `/rapport/:id/constats/:c` | liens internes |
+| R7 | `/constat?id=:id` | `/rapport/:id/constats` | liens internes |
+| R8 | `/plan?id=:id` | `/rapport/:id/plan` | liens internes |
+| R9 | `/brief?id=:id` | `/rapport/:id/brief` | liens internes |
+| R10 | `/rapport/imprimer?id=:id` (ancienne page statique) | `/rapport/:id/imprimer` (déjà servie, inchangée) | export PDF |
+| R11 | `/historique?site=:site` | `/sites/id/:site#historique` → `/sites/:host#historique` | liens internes |
+| R12 | `/verifier?site=:site` | `/sites/id/:site#verification` → `/sites/:host#verification` | liens internes |
+| R13 | `/badge?id=:id` | `/rapport/:id?partager=badge` (ouvre la feuille Partager) | liens internes |
 | R14 | `/passer-pro` (et `?…`) | `/pro` (requête gardée) | boutons Pro |
 | R15 | `/compte/alertes` | `/compte#alertes` | e-mails d'alerte et de récap (`mail.ts`, `mail-templates.ts`) |
 | R16 | `/progression?site=…&url=…` | inchangée | e-mail d'échec (`relaunchAuditUrl`) |
 | R17 | `/partage/:jeton`, `/score/:x`, `/verifier/:id` | inchangées (liens publics à jeton, déjà diffusés) | partage, badge |
 
 Mise en œuvre :
-- Une seule table, `apps/web/src/lib/redirects.ts`. Le build écrit les règles Netlify (`_redirects`), avec la correspondance de requête : `/rapport id=:id /audit/:id 301`. Aucun déploiement ni lien Netlify.
+- Une seule table, `apps/web/src/lib/redirects.ts`. Le build écrit les règles Netlify (`_redirects`), avec la correspondance de requête : `/rapport id=:id /rapport/:id 301`. Aucun déploiement ni lien Netlify.
 - Le serveur e2e local applique la même table.
 - Tests : un cas par ligne R1 à R17, en unitaire (table → adresse) et en e2e (statut 301 et `Location`). Les règles avec plusieurs paramètres passent avant les règles à un paramètre.
 - Les e-mails et les liens internes produisent directement les nouvelles adresses. Les anciennes ne servent plus qu'aux liens déjà envoyés.
 
-## 8. Ce qui reste à trancher
+## 8. Décisions de l'owner (12/11/2026)
 
-- **Q1, `/sites/:host` ou `/sites/:id` :** les liens actuels portent l'identifiant du site (`?site=`), pas son nom de domaine. Une règle 301 statique ne peut pas passer de l'un à l'autre. Il y a deux options :
-  - (a) `/sites/:host`, plus lisible. R11 et R12 passent alors par une page de résolution qui lit le site puis remplace l'adresse.
-  - (b) `/sites/:id`, avec un 301 statique pur.
-  
-  Aucune des deux ne touche la base. Je propose (a).
-- **Q2, `/audit/:id` ou garder `/rapport/:id` :** `/rapport/:id` garderait le mot connu des utilisateurs, mais l'adresse change de toute façon. Je propose `/audit/:id`.
-- **Aucune migration de base n'est prévue.** Si une évolution en demande une (par exemple un champ « host » unique par compte pour Q1-a), elle attendra le oui de l'owner.
+- **Page d'un site : `/sites/:host`.** Les anciens liens portent l'identifiant du site (`?site=`). Ils passent en 301 vers `/sites/id/:site`, une petite page qui lit le site, puis remplace l'adresse par `/sites/:host` (`location.replace`, ancre gardée). La base ne change pas.
+- **Rapport : `/rapport/:id`.** `/rapport?id=` redirige vers `/rapport/:id`.
+- **Page active de la barre : texte plus gras, sans soulignement.**
+- Aucune migration de base sans le oui de l'owner.
 
 ## 9. Découpage
 
 - **Lot 2 (PR accueil) :** la nav visiteur et la nav connecté, le bouton « Scanner mon site », le pied de page en 3 colonnes, et R14 (`/passer-pro` → `/pro`).
-- **Lot 3 :** le rapport à onglets (`/audit/:id`) et les redirections R1 à R10 et R13, avec la feuille Partager.
+- **Lot 3 :** le rapport à onglets (`/rapport/:id`) et les redirections R1 à R10 et R13, avec la feuille Partager.
 - **Lot 4 :** la page par site, le compte en sections, et les redirections R11, R12 et R15.
