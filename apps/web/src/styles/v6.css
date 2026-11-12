@@ -1,4 +1,10 @@
-/* Chrome v6. Couleurs et mesures : tokens.css et theme-dark.css. */
+/* Chrome v6. Couleurs et mesures : tokens.css et theme-dark.css.
+ *
+ * Chaque règle générale s’écrit sous deux formes (contrôlé par scripts/v6-portee.test.ts) :
+ *   [data-v6] .x:where(:not([data-port] *))  pages v6 natives, poids inchangé ;
+ *   :where([data-v6] [data-port]) .x         pages portées : une classe seulement,
+ *                                            la feuille de la page (.portée .x) gagne.
+ * Une nouvelle règle « [data-v6] .x » doit suivre ce modèle. */
 
 [data-v6] {
   background: var(--bg);
@@ -13,14 +19,16 @@
   -webkit-font-smoothing: antialiased;
 }
 
-[data-v6] .sprite {
+[data-v6] .sprite:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .sprite {
   position: absolute;
   width: 0;
   height: 0;
   overflow: hidden;
 }
 
-[data-v6] .sr {
+[data-v6] .sr:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .sr {
   position: absolute;
   width: var(--bw);
   height: var(--bw);
@@ -28,7 +36,8 @@
   clip: rect(0 0 0 0);
 }
 
-[data-v6] .skip {
+[data-v6] .skip:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .skip {
   position: absolute;
   left: var(--s-4);
   top: calc(var(--s-10) * -1);
@@ -39,48 +48,58 @@
   border-radius: var(--r-sm);
 }
 
-[data-v6] .skip:focus {
+[data-v6] .skip:focus:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .skip:focus {
   top: var(--s-4);
 }
 
-[data-v6] h2 {
+[data-v6] h2:where(:not([data-port] *)),
+:where([data-v6] [data-port]) h2 {
   margin: 0;
   font: 600 var(--t-h3) var(--sans);
 }
 
-[data-v6] .bench {
+[data-v6] .bench:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .bench {
   width: min(100% - var(--s-7), 78rem);
   margin: var(--s-8) auto;
   display: grid;
   gap: var(--s-4);
 }
 
-[data-v6] .row {
+[data-v6] .row:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .row {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-4);
   align-items: center;
 }
 
-[data-v6] footer ul {
+[data-v6] footer:where(:not([data-port] *)) ul,
+:where([data-v6] [data-port]) footer ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-[data-v6] :focus-visible {
+[data-v6] :focus-visible:where(:not([data-port] *)),
+:where([data-v6] [data-port]) :focus-visible {
   outline: var(--focus-w) solid var(--c-ring);
   outline-offset: var(--focus-off);
 }
 
-[data-v6] button,
-[data-v6] input {
+[data-v6] button:where(:not([data-port] *)),
+:where([data-v6] [data-port]) button,
+[data-v6] input:where(:not([data-port] *)),
+:where([data-v6] [data-port]) input {
   font: inherit;
   color: inherit;
 }
 
-[data-v6] .btn,
-[data-v6] .btn-s {
+[data-v6] .btn:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn,
+[data-v6] .btn-s:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn-s {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -100,14 +119,19 @@
     border-color var(--dur-fast);
 }
 
-[data-v6] .btn {
+[data-v6] .btn:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn {
   min-height: var(--ctl-h);
 }
 
-[data-v6] .btn svg,
-[data-v6] .btn-s svg,
-[data-v6] .lnk-a,
-[data-v6] .card-l .arr {
+[data-v6] .btn:where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .btn svg,
+[data-v6] .btn-s:where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .btn-s svg,
+[data-v6] .lnk-a:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .lnk-a,
+[data-v6] .card-l:where(:not([data-port] *)) .arr,
+:where([data-v6] [data-port]) .card-l .arr {
   width: var(--ic);
   height: var(--ic);
   fill: none;
@@ -120,46 +144,76 @@
 
 /* :where() : le survol générique ne pèse pas plus qu’une règle de page
  * (`.portée .btn-ghost:hover`), qui garde ses couleurs et son contraste. */
-[data-v6] .btn:hover:where(:not(:disabled):not([aria-disabled="true"])),
-[data-v6] .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])) {
+[data-v6]
+  .btn:hover:where(:not(:disabled):not([aria-disabled="true"])):where(
+    :not([data-port] *)
+  ),
+:where([data-v6] [data-port])
+  .btn:hover:where(:not(:disabled):not([aria-disabled="true"])),
+[data-v6]
+  .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])):where(
+    :not([data-port] *)
+  ),
+:where([data-v6] [data-port])
+  .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])) {
   background: var(--cta-h);
 }
 
-[data-v6] .btn:hover:not(:disabled) svg,
-[data-v6] .btn-s:hover:not(:disabled) svg {
+[data-v6] .btn:hover:not(:disabled):where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .btn:hover:not(:disabled) svg,
+[data-v6] .btn-s:hover:not(:disabled):where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .btn-s:hover:not(:disabled) svg {
   transform: translateX(var(--shift));
 }
 
-[data-v6] .btn:active:not(:disabled),
-[data-v6] .btn-s:active:not(:disabled) {
+[data-v6] .btn:active:not(:disabled):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn:active:not(:disabled),
+[data-v6] .btn-s:active:not(:disabled):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn-s:active:not(:disabled) {
   transform: translateY(var(--nudge)) scale(var(--press));
 }
 
-[data-v6] .btn--ghost,
-[data-v6] .btn-s {
+[data-v6] .btn--ghost:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn--ghost,
+[data-v6] .btn-s:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn-s {
   background: transparent;
   color: var(--ink);
   border: var(--bw) solid var(--line-2);
 }
 
-[data-v6] .btn-s {
+[data-v6] .btn-s:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn-s {
   border-radius: var(--r-pill);
   background: var(--surf);
   font-weight: 500;
 }
 
-[data-v6] .btn--ghost:hover:where(:not(:disabled):not([aria-disabled="true"])),
-[data-v6] .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])) {
+[data-v6]
+  .btn--ghost:hover:where(:not(:disabled):not([aria-disabled="true"])):where(
+    :not([data-port] *)
+  ),
+:where([data-v6] [data-port])
+  .btn--ghost:hover:where(:not(:disabled):not([aria-disabled="true"])),
+[data-v6]
+  .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])):where(
+    :not([data-port] *)
+  ),
+:where([data-v6] [data-port])
+  .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])) {
   background: var(--c-hover);
   border-color: var(--beam);
 }
 
-[data-v6] .btn--ghost:active:not(:disabled),
-[data-v6] .btn-s:active:not(:disabled) {
+[data-v6] .btn--ghost:active:not(:disabled):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn--ghost:active:not(:disabled),
+[data-v6] .btn-s:active:not(:disabled):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .btn-s:active:not(:disabled) {
   background: var(--c-active);
 }
 
-[data-v6] .lnk {
+[data-v6] .lnk:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .lnk {
   display: inline-flex;
   align-items: center;
   gap: var(--s-3);
@@ -175,8 +229,10 @@
   transition: text-decoration-color var(--dur-med) var(--ease);
 }
 
-[data-v6] .lnk-i,
-[data-v6] .card-l .ib {
+[data-v6] .lnk-i:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .lnk-i,
+[data-v6] .card-l:where(:not([data-port] *)) .ib,
+:where([data-v6] [data-port]) .card-l .ib {
   display: grid;
   place-items: center;
   flex: none;
@@ -185,7 +241,8 @@
   border: var(--bw) solid var(--beam-b);
 }
 
-[data-v6] .lnk-i {
+[data-v6] .lnk-i:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .lnk-i {
   width: var(--s-7);
   height: var(--s-7);
   border-radius: var(--r-pill);
@@ -194,8 +251,10 @@
     color var(--dur-fast);
 }
 
-[data-v6] .lnk-i svg,
-[data-v6] .card-l .ib svg {
+[data-v6] .lnk-i:where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .lnk-i svg,
+[data-v6] .card-l:where(:not([data-port] *)) .ib svg,
+:where([data-v6] [data-port]) .card-l .ib svg {
   width: var(--ic-sm);
   height: var(--ic-sm);
   fill: none;
@@ -203,25 +262,39 @@
   stroke-width: 2;
 }
 
-[data-v6] .lnk:hover:not([aria-disabled="true"]) {
+[data-v6] .lnk:hover:not([aria-disabled="true"]):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .lnk:hover:not([aria-disabled="true"]) {
   text-decoration-color: var(--beam);
 }
 
-[data-v6] .lnk:hover:not([aria-disabled="true"]) .lnk-a,
-[data-v6] .card-l:hover:not([aria-disabled="true"]) .arr {
+[data-v6]
+  .lnk:hover:not([aria-disabled="true"]):where(:not([data-port] *))
+  .lnk-a,
+:where([data-v6] [data-port]) .lnk:hover:not([aria-disabled="true"]) .lnk-a,
+[data-v6]
+  .card-l:hover:not([aria-disabled="true"]):where(:not([data-port] *))
+  .arr,
+:where([data-v6] [data-port]) .card-l:hover:not([aria-disabled="true"]) .arr {
   transform: translateX(var(--shift-lg));
 }
 
-[data-v6] .lnk:hover:not([aria-disabled="true"]) .lnk-i {
+[data-v6]
+  .lnk:hover:not([aria-disabled="true"]):where(:not([data-port] *))
+  .lnk-i,
+:where([data-v6] [data-port]) .lnk:hover:not([aria-disabled="true"]) .lnk-i {
   background: var(--beam);
   color: var(--cta-fg);
 }
 
-[data-v6] .lnk:active:not([aria-disabled="true"]) .lnk-i {
+[data-v6]
+  .lnk:active:not([aria-disabled="true"]):where(:not([data-port] *))
+  .lnk-i,
+:where([data-v6] [data-port]) .lnk:active:not([aria-disabled="true"]) .lnk-i {
   transform: scale(var(--press));
 }
 
-[data-v6] .card-l,
+[data-v6] .card-l:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .card-l,
 /* `.card` des composants v6. Les pages portées (racine `[data-port]`) ont
  * leurs propres cartes du même nom : ces règles ne s’y appliquent pas. */
 [data-v6] :where(:not([data-port] *)).card {
@@ -240,23 +313,27 @@
     transform var(--dur-med) var(--ease);
 }
 
-[data-v6] .card-l {
+[data-v6] .card-l:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .card-l {
   grid-template-columns: auto minmax(0, 1fr) auto;
 }
 
-[data-v6] .card-l .ib {
+[data-v6] .card-l:where(:not([data-port] *)) .ib,
+:where([data-v6] [data-port]) .card-l .ib {
   width: var(--ib);
   height: var(--ib);
   border-radius: var(--r-md);
 }
 
-[data-v6] .card-l b,
+[data-v6] .card-l:where(:not([data-port] *)) b,
+:where([data-v6] [data-port]) .card-l b,
 [data-v6] :where(:not([data-port] *)).card h2 {
   display: block;
   font-weight: 600;
 }
 
-[data-v6] .card-l small,
+[data-v6] .card-l:where(:not([data-port] *)) small,
+:where([data-v6] [data-port]) .card-l small,
 [data-v6] :where(:not([data-port] *)).card p {
   display: block;
   margin: 0;
@@ -264,7 +341,8 @@
   font-size: var(--t-sm);
 }
 
-[data-v6] .card-l:hover:not([aria-disabled="true"]),
+[data-v6] .card-l:hover:not([aria-disabled="true"]):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .card-l:hover:not([aria-disabled="true"]),
 [data-v6] :where(:not([data-port] *)).card:hover:not([aria-disabled="true"]) {
   border-color: var(--beam);
   background: var(--c-hover);
@@ -272,13 +350,15 @@
   transform: translateY(var(--lift-y));
 }
 
-[data-v6] .card-l:active:not([aria-disabled="true"]),
+[data-v6] .card-l:active:not([aria-disabled="true"]):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .card-l:active:not([aria-disabled="true"]),
 [data-v6] :where(:not([data-port] *)).card:active:not([aria-disabled="true"]) {
   background: var(--c-active);
   transform: translateY(0);
 }
 
-[data-v6] .field {
+[data-v6] .field:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .field {
   display: grid;
   gap: var(--s-2);
   padding: var(--s-2);
@@ -288,15 +368,18 @@
   box-shadow: var(--shadow);
 }
 
-[data-v6] .field:focus-within {
+[data-v6] .field:focus-within:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .field:focus-within {
   border-color: var(--beam);
 }
 
-[data-v6] .field .btn {
+[data-v6] .field:where(:not([data-port] *)) .btn,
+:where([data-v6] [data-port]) .field .btn {
   justify-self: start;
 }
 
-[data-v6] .inp {
+[data-v6] .inp:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .inp {
   display: flex;
   align-items: center;
   gap: var(--s-2);
@@ -304,12 +387,14 @@
   padding: 0 var(--s-4);
 }
 
-[data-v6] .inp span {
+[data-v6] .inp:where(:not([data-port] *)) span,
+:where([data-v6] [data-port]) .inp span {
   font: 400 var(--t-md) var(--mono);
   color: var(--ink-2);
 }
 
-[data-v6] .inp input {
+[data-v6] .inp:where(:not([data-port] *)) input,
+:where([data-v6] [data-port]) .inp input {
   flex: 1;
   min-width: 0;
   border: 0;
@@ -318,18 +403,21 @@
   font: 500 var(--t-base) var(--sans);
 }
 
-[data-v6] .inp input::placeholder {
+[data-v6] .inp:where(:not([data-port] *)) input::placeholder,
+:where([data-v6] [data-port]) .inp input::placeholder {
   color: var(--ink-3);
 }
 
-[data-v6] .err {
+[data-v6] .err:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .err {
   margin: 0;
   color: var(--find);
   font-weight: 600;
   font-size: var(--t-md);
 }
 
-[data-v6] .top {
+[data-v6] .top:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .top {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -339,13 +427,15 @@
   backdrop-filter: blur(var(--v6-blur));
 }
 
-[data-v6] .v6-logo img {
+[data-v6] .v6-logo:where(:not([data-port] *)) img,
+:where([data-v6] [data-port]) .v6-logo img {
   display: block;
   height: var(--logo-h);
   width: auto;
 }
 
-[data-v6] .nav {
+[data-v6] .nav:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .nav {
   display: none;
   gap: var(--s-6);
   margin-left: var(--s-7);
@@ -353,14 +443,16 @@
   font-weight: 500;
 }
 
-[data-v6] .nav a {
+[data-v6] .nav:where(:not([data-port] *)) a,
+:where([data-v6] [data-port]) .nav a {
   position: relative;
   color: var(--ink-2);
   text-decoration: none;
   padding: var(--s-2) 0;
 }
 
-[data-v6] .nav a::after {
+[data-v6] .nav:where(:not([data-port] *)) a::after,
+:where([data-v6] [data-port]) .nav a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -374,26 +466,34 @@
   transition: transform var(--dur-med) var(--ease);
 }
 
-[data-v6] .nav a:hover::after,
-[data-v6] .nav a:focus-visible::after,
-[data-v6] .nav a[aria-current="page"]::after {
+[data-v6] .nav:where(:not([data-port] *)) a:hover::after,
+:where([data-v6] [data-port]) .nav a:hover::after,
+[data-v6] .nav:where(:not([data-port] *)) a:focus-visible::after,
+:where([data-v6] [data-port]) .nav a:focus-visible::after,
+[data-v6] .nav:where(:not([data-port] *)) a[aria-current="page"]::after,
+:where([data-v6] [data-port]) .nav a[aria-current="page"]::after {
   transform: scaleX(1);
 }
 
-[data-v6] .nav a:hover,
-[data-v6] .nav a[aria-current="page"] {
+[data-v6] .nav:where(:not([data-port] *)) a:hover,
+:where([data-v6] [data-port]) .nav a:hover,
+[data-v6] .nav:where(:not([data-port] *)) a[aria-current="page"],
+:where([data-v6] [data-port]) .nav a[aria-current="page"] {
   color: var(--ink);
 }
 
-[data-v6] .tools {
+[data-v6] .tools:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .tools {
   margin-left: auto;
   display: flex;
   gap: var(--s-1);
   align-items: center;
 }
 
-[data-v6] .switch,
-[data-v6] .login {
+[data-v6] .switch:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .switch,
+[data-v6] .login:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .login {
   min-height: var(--tap);
   min-width: var(--tap);
   display: inline-flex;
@@ -412,27 +512,34 @@
     border-color var(--dur-fast);
 }
 
-[data-v6] .switch:hover:not(:disabled),
-[data-v6] .login:hover {
+[data-v6] .switch:hover:not(:disabled):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .switch:hover:not(:disabled),
+[data-v6] .login:hover:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .login:hover {
   background: var(--c-hover);
   border-color: var(--beam);
 }
 
-[data-v6] .switch:active:not(:disabled),
-[data-v6] .login:active {
+[data-v6] .switch:active:not(:disabled):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .switch:active:not(:disabled),
+[data-v6] .login:active:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .login:active {
   background: var(--c-active);
   transform: translateY(var(--nudge));
 }
 
-[data-v6] .login {
+[data-v6] .login:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .login {
   border: var(--bw) solid var(--line-2);
   background: var(--surf);
   padding: 0 var(--s-4);
   gap: var(--s-2);
 }
 
-[data-v6] .switch svg,
-[data-v6] .login svg {
+[data-v6] .switch:where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .switch svg,
+[data-v6] .login:where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .login svg {
   width: var(--ic);
   height: var(--ic);
   fill: none;
@@ -440,31 +547,36 @@
   stroke-width: 2;
 }
 
-[data-v6] footer {
+[data-v6] footer:where(:not([data-port] *)),
+:where([data-v6] [data-port]) footer {
   margin-top: var(--s-10);
   border-top: var(--bw) solid var(--line);
   padding: var(--s-9) 0 calc(var(--s-7) + var(--dock-space));
   background: var(--bg-2);
 }
 
-[data-v6] footer .cols {
+[data-v6] footer:where(:not([data-port] *)) .cols,
+:where([data-v6] [data-port]) footer .cols {
   display: grid;
   gap: var(--s-6);
   width: min(100% - var(--s-7), 78rem);
   margin-inline: auto;
 }
 
-[data-v6] footer h2 {
+[data-v6] footer:where(:not([data-port] *)) h2,
+:where([data-v6] [data-port]) footer h2 {
   margin: 0 0 var(--s-3);
   font: 500 var(--t-xs) var(--mono);
   color: var(--ink-2);
 }
 
-[data-v6] footer li {
+[data-v6] footer:where(:not([data-port] *)) li,
+:where([data-v6] [data-port]) footer li {
   padding: var(--s-1) 0;
 }
 
-[data-v6] footer a {
+[data-v6] footer:where(:not([data-port] *)) a,
+:where([data-v6] [data-port]) footer a {
   color: var(--ink);
   text-decoration: none;
   text-decoration-line: underline;
@@ -473,23 +585,28 @@
   transition: text-decoration-color var(--dur-med) var(--ease);
 }
 
-[data-v6] footer a:hover {
+[data-v6] footer:where(:not([data-port] *)) a:hover,
+:where([data-v6] [data-port]) footer a:hover {
   color: var(--beam);
   text-decoration-color: var(--beam);
 }
 
-[data-v6] footer .cap,
-[data-v6] footer .legal {
+[data-v6] footer:where(:not([data-port] *)) .cap,
+:where([data-v6] [data-port]) footer .cap,
+[data-v6] footer:where(:not([data-port] *)) .legal,
+:where([data-v6] [data-port]) footer .legal {
   color: var(--ink-2);
   font: 500 var(--t-xs) var(--mono);
 }
 
-[data-v6] footer .legal {
+[data-v6] footer:where(:not([data-port] *)) .legal,
+:where([data-v6] [data-port]) footer .legal {
   width: min(100% - var(--s-7), 78rem);
   margin: var(--s-7) auto 0;
 }
 
-[data-v6] .dock {
+[data-v6] .dock:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .dock {
   position: fixed;
   z-index: 60;
   left: 50%;
@@ -512,14 +629,17 @@
     opacity var(--dur-med);
 }
 
-[data-v6] .dock:not(.on) {
+[data-v6] .dock:not(.on):where(:not([data-port] *)),
+:where([data-v6] [data-port]) .dock:not(.on) {
   transform: translateY(100%);
   opacity: 0;
   visibility: hidden;
 }
 
-[data-v6] .dock a,
-[data-v6] .dock button {
+[data-v6] .dock:where(:not([data-port] *)) a,
+:where([data-v6] [data-port]) .dock a,
+[data-v6] .dock:where(:not([data-port] *)) button,
+:where([data-v6] [data-port]) .dock button {
   display: inline-flex;
   align-items: center;
   gap: var(--s-2);
@@ -539,50 +659,61 @@
     color var(--dur-fast);
 }
 
-[data-v6] .dock a:hover,
-[data-v6] .dock button:hover {
+[data-v6] .dock:where(:not([data-port] *)) a:hover,
+:where([data-v6] [data-port]) .dock a:hover,
+[data-v6] .dock:where(:not([data-port] *)) button:hover,
+:where([data-v6] [data-port]) .dock button:hover {
   color: var(--ink);
   background: var(--c-hover);
 }
 
-[data-v6] .dock a:active,
-[data-v6] .dock button:active {
+[data-v6] .dock:where(:not([data-port] *)) a:active,
+:where([data-v6] [data-port]) .dock a:active,
+[data-v6] .dock:where(:not([data-port] *)) button:active,
+:where([data-v6] [data-port]) .dock button:active {
   background: var(--c-active);
 }
 
-[data-v6] .dock a[aria-current="location"] {
+[data-v6] .dock:where(:not([data-port] *)) a[aria-current="location"],
+:where([data-v6] [data-port]) .dock a[aria-current="location"] {
   color: var(--ink);
   background: var(--beam-a);
 }
 
-[data-v6] .dock .num {
+[data-v6] .dock:where(:not([data-port] *)) .num,
+:where([data-v6] [data-port]) .dock .num {
   font: 500 var(--t-xs) var(--mono);
   /* --ink-3 restait sous 4,5:1 sur le fond du dock (3,76 clair, 3,33 sombre). */
   color: var(--ink-2);
 }
 
-[data-v6] .dock svg {
+[data-v6] .dock:where(:not([data-port] *)) svg,
+:where([data-v6] [data-port]) .dock svg {
   width: var(--ic-sm);
   height: var(--ic-sm);
   flex: none;
 }
 
 /* Plus fort que « .dock button » : au large, seul le fil des sections s’affiche. */
-[data-v6] .dock .dock-btn {
+[data-v6] .dock:where(:not([data-port] *)) .dock-btn,
+:where([data-v6] [data-port]) .dock .dock-btn {
   display: none;
 }
 
 @media (min-width: 85rem) {
-  [data-v6] .dock-l .num {
+  [data-v6] .dock-l:where(:not([data-port] *)) .num,
+  :where([data-v6] [data-port]) .dock-l .num {
     display: none;
   }
 
-  [data-v6] .dock-l a {
+  [data-v6] .dock-l:where(:not([data-port] *)) a,
+  :where([data-v6] [data-port]) .dock-l a {
     padding: 0 var(--s-3);
   }
 }
 
-[data-v6] .dock-l {
+[data-v6] .dock-l:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .dock-l {
   display: flex;
   gap: var(--s-1);
   margin: 0;
@@ -594,41 +725,52 @@
   :is(.btn, .btn-s, .lnk, .card-l, .card, .switch, .inp input):is(
     :disabled,
     [aria-disabled="true"]
+  ):where(:not([data-port] *)),
+:where([data-v6] [data-port])
+  :is(.btn, .btn-s, .lnk, .card-l, .card, .switch, .inp input):is(
+    :disabled,
+    [aria-disabled="true"]
   ) {
   cursor: not-allowed;
   opacity: 0.45;
 }
 
 @media (min-width: 48rem) {
-  [data-v6] .field {
+  [data-v6] .field:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .field {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
-  [data-v6] footer .cols {
+  [data-v6] footer:where(:not([data-port] *)) .cols,
+  :where([data-v6] [data-port]) footer .cols {
     grid-template-columns: 2fr 1fr 1fr 1fr;
   }
 }
 
 @media (min-width: 64rem) {
-  [data-v6] .nav {
+  [data-v6] .nav:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .nav {
     display: flex;
   }
 }
 
 @media (max-width: 84.99rem) {
-  [data-v6] .dock {
+  [data-v6] .dock:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .dock {
     left: auto;
     right: var(--dock-gap);
     translate: none;
   }
 
-  [data-v6] .dock .dock-btn {
+  [data-v6] .dock:where(:not([data-port] *)) .dock-btn,
+  :where([data-v6] [data-port]) .dock .dock-btn {
     display: inline-flex;
     color: var(--ink);
     max-width: var(--w-dock);
   }
 
-  [data-v6] .dock-l {
+  [data-v6] .dock-l:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .dock-l {
     display: none;
     position: absolute;
     right: 0;
@@ -642,20 +784,23 @@
     box-shadow: var(--sh-dock);
   }
 
-  [data-v6] .dock.open .dock-l {
+  [data-v6] .dock.open:where(:not([data-port] *)) .dock-l,
+  :where([data-v6] [data-port]) .dock.open .dock-l {
     display: flex;
   }
 }
 
 @media (max-width: 39.99rem) {
-  [data-v6] .dock {
+  [data-v6] .dock:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .dock {
     left: var(--dock-gap);
     right: var(--dock-gap);
     width: auto;
     justify-content: space-between;
   }
 
-  [data-v6] .dock .dock-btn {
+  [data-v6] .dock:where(:not([data-port] *)) .dock-btn,
+  :where([data-v6] [data-port]) .dock .dock-btn {
     flex: 1;
     min-width: 0;
     max-width: none;
@@ -663,8 +808,10 @@
 }
 
 /* Barre actuelle, peinte avec les jetons et Geist. */
-[data-v6] .axn,
-[data-v6] .axn-top {
+[data-v6] .axn:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn,
+[data-v6] .axn-top:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-top {
   --axn-p: var(--beam);
   --axn-ph: var(--ink);
   --axn-ac: var(--beam);
@@ -678,77 +825,105 @@
   color: var(--ink);
 }
 
-[data-v6] .axn-bar,
-[data-v6] .axn-sheet,
-[data-v6] .axn-lang,
-[data-v6] .axn-theme,
-[data-v6] .axn-burger,
-[data-v6] .axn-top {
+[data-v6] .axn-bar:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-bar,
+[data-v6] .axn-sheet:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-sheet,
+[data-v6] .axn-lang:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-lang,
+[data-v6] .axn-theme:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-theme,
+[data-v6] .axn-burger:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-burger,
+[data-v6] .axn-top:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-top {
   background: var(--surf);
   border-color: var(--line);
   color: var(--ink);
 }
 
-[data-v6] .axn-bar {
+[data-v6] .axn-bar:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-bar {
   background: color-mix(in oklab, var(--surf) 92%, transparent);
   box-shadow: var(--sh-dock);
 }
 
-[data-v6] .axn.is-scrolled .axn-bar,
-[data-v6] .axn-sheet,
-[data-v6] .axn-top {
+[data-v6] .axn.is-scrolled:where(:not([data-port] *)) .axn-bar,
+:where([data-v6] [data-port]) .axn.is-scrolled .axn-bar,
+[data-v6] .axn-sheet:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-sheet,
+[data-v6] .axn-top:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-top {
   box-shadow: var(--shadow);
 }
 
-[data-v6] .axn .axn-cta,
-[data-v6] .axn .axn-cta span,
-[data-v6] .axn .axn-cta svg {
+[data-v6] .axn:where(:not([data-port] *)) .axn-cta,
+:where([data-v6] [data-port]) .axn .axn-cta,
+[data-v6] .axn:where(:not([data-port] *)) .axn-cta span,
+:where([data-v6] [data-port]) .axn .axn-cta span,
+[data-v6] .axn:where(:not([data-port] *)) .axn-cta svg,
+:where([data-v6] [data-port]) .axn .axn-cta svg {
   color: var(--cta-fg);
   -webkit-text-fill-color: var(--cta-fg);
   stroke: var(--cta-fg);
 }
 
-[data-v6] .axn .axn-cta {
+[data-v6] .axn:where(:not([data-port] *)) .axn-cta,
+:where([data-v6] [data-port]) .axn .axn-cta {
   background: var(--cta);
   box-shadow: none;
 }
 
-[data-v6] .axn .axn-cta:hover {
+[data-v6] .axn:where(:not([data-port] *)) .axn-cta:hover,
+:where([data-v6] [data-port]) .axn .axn-cta:hover {
   background: var(--cta-h);
   box-shadow: none;
 }
 
-[data-v6] .axn-links a,
-[data-v6] .axn-cta,
-[data-v6] .axn-sheet ul a {
+[data-v6] .axn-links:where(:not([data-port] *)) a,
+:where([data-v6] [data-port]) .axn-links a,
+[data-v6] .axn-cta:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn-cta,
+[data-v6] .axn-sheet:where(:not([data-port] *)) ul a,
+:where([data-v6] [data-port]) .axn-sheet ul a {
   white-space: nowrap;
 }
 
 /* 320–390 : libellés sur une ligne. Au-dessus, le 1440 ne change pas. */
 @media (max-width: 390px) {
-  [data-v6] .bar {
+  [data-v6] .bar:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .bar {
     width: min(100% - var(--s-4), 82rem);
   }
 
-  [data-v6] .v6-logo img {
+  [data-v6] .v6-logo:where(:not([data-port] *)) img,
+  :where([data-v6] [data-port]) .v6-logo img {
     height: var(--logo-sm);
   }
 
-  [data-v6] .login {
+  [data-v6] .login:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .login {
     white-space: nowrap;
     padding: 0 var(--s-2);
     flex-shrink: 0;
   }
 
-  [data-v6] .login svg {
+  [data-v6] .login:where(:not([data-port] *)) svg,
+  :where([data-v6] [data-port]) .login svg {
     display: none;
   }
 
-  [data-v6] :is(.switch, .nav a, .btn, .btn-s, .dock button, .dock a) {
+  [data-v6]
+    :is(.switch, .nav a, .btn, .btn-s, .dock button, .dock a):where(
+      :not([data-port] *)
+    ),
+  :where([data-v6] [data-port])
+    :is(.switch, .nav a, .btn, .btn-s, .dock button, .dock a) {
     white-space: nowrap;
   }
 
-  [data-v6] .dock-t {
+  [data-v6] .dock-t:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .dock-t {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
@@ -756,32 +931,55 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-v6] .btn,
-  [data-v6] .btn-s,
-  [data-v6] .lnk,
-  [data-v6] .lnk-i,
-  [data-v6] .lnk-a,
-  [data-v6] .card,
-  [data-v6] .card-l,
-  [data-v6] .card-l .arr,
-  [data-v6] .nav a::after,
-  [data-v6] .switch,
-  [data-v6] .login,
-  [data-v6] footer a,
-  [data-v6] .dock,
-  [data-v6] .dock a,
-  [data-v6] .dock button {
+  [data-v6] .btn:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .btn,
+  [data-v6] .btn-s:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .btn-s,
+  [data-v6] .lnk:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .lnk,
+  [data-v6] .lnk-i:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .lnk-i,
+  [data-v6] .lnk-a:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .lnk-a,
+  [data-v6] .card:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .card,
+  [data-v6] .card-l:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .card-l,
+  [data-v6] .card-l:where(:not([data-port] *)) .arr,
+  :where([data-v6] [data-port]) .card-l .arr,
+  [data-v6] .nav:where(:not([data-port] *)) a::after,
+  :where([data-v6] [data-port]) .nav a::after,
+  [data-v6] .switch:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .switch,
+  [data-v6] .login:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .login,
+  [data-v6] footer:where(:not([data-port] *)) a,
+  :where([data-v6] [data-port]) footer a,
+  [data-v6] .dock:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .dock,
+  [data-v6] .dock:where(:not([data-port] *)) a,
+  :where([data-v6] [data-port]) .dock a,
+  [data-v6] .dock:where(:not([data-port] *)) button,
+  :where([data-v6] [data-port]) .dock button {
     transition: none;
   }
 
-  [data-v6] .btn:active,
-  [data-v6] .btn-s:active,
-  [data-v6] .card-l:hover,
-  [data-v6] .card:hover,
-  [data-v6] .lnk:hover .lnk-a,
-  [data-v6] .card-l:hover .arr,
-  [data-v6] .switch:active,
-  [data-v6] .login:active {
+  [data-v6] .btn:active:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .btn:active,
+  [data-v6] .btn-s:active:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .btn-s:active,
+  [data-v6] .card-l:hover:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .card-l:hover,
+  [data-v6] .card:hover:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .card:hover,
+  [data-v6] .lnk:hover:where(:not([data-port] *)) .lnk-a,
+  :where([data-v6] [data-port]) .lnk:hover .lnk-a,
+  [data-v6] .card-l:hover:where(:not([data-port] *)) .arr,
+  :where([data-v6] [data-port]) .card-l:hover .arr,
+  [data-v6] .switch:active:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .switch:active,
+  [data-v6] .login:active:where(:not([data-port] *)),
+  :where([data-v6] [data-port]) .login:active {
     transform: none;
   }
 }
@@ -795,7 +993,9 @@
 /* La barre collante est toujours à l’écran : ses liens ne suivent pas le
  * scroll-padding-top de la page, sinon le focus (Tab, menu) fait remonter
  * la page de plusieurs centaines de pixels. */
-[data-v6] .axn,
-[data-v6] .axn * {
+[data-v6] .axn:where(:not([data-port] *)),
+:where([data-v6] [data-port]) .axn,
+[data-v6] .axn:where(:not([data-port] *)) *,
+:where([data-v6] [data-port]) .axn * {
   scroll-margin-top: calc(-1 * var(--scroll-pad));
 }
