@@ -1,5 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { accueilEn } from '../i18n/accueil-en.js';
+import { accueilFr } from '../i18n/accueil-fr.js';
 import { fr } from '../i18n/fr.js';
 import { slim } from '../i18n/slim.js';
 import { v6En } from '../i18n/v6-en.js';
@@ -135,11 +137,15 @@ describe('pied de page en trois colonnes (STRUCTURE.md §2)', () => {
 });
 
 describe('le chrome v6 dit « Tarifs »', () => {
-  it('n’emploie plus « Offres » ni « Plans »', () => {
-    for (const text of [v6Fr].map((pack) => Object.values(pack).join(' '))) {
+  it('n’emploie plus « Offres » ni « Plans », ni dans la v6 ni sur l’accueil', () => {
+    for (const text of [v6Fr, accueilFr].map((pack) =>
+      Object.values(pack).join(' '),
+    )) {
       expect(text).not.toMatch(/\bOffres\b/);
     }
-    for (const text of [v6En].map((pack) => Object.values(pack).join(' '))) {
+    for (const text of [v6En, accueilEn].map((pack) =>
+      Object.values(pack).join(' '),
+    )) {
       expect(text).not.toMatch(/\bPlans\b/);
     }
   });

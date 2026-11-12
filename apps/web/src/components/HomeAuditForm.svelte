@@ -4,9 +4,20 @@ import { saveGuestAudit } from '../lib/guest-store.js';
 import { launchFromHome } from '../lib/home-audit-client.js';
 import { t as gateText } from '../lib/home-audit-copy.js';
 import { homeFormAlert } from '../lib/home-audit-notice.js';
-import { homeUrlIssue } from '../lib/home-url-issue.js';
+import { homeUrlIssue, withScheme } from '../lib/home-url-issue.js';
 import { progressionHref } from '../lib/relaunch.js';
 import '../styles/maquettes/guest-gate.css';
+
+interface Props {
+  /** Formulaire du héros : porte les ancres #audit-form et #url-input. */
+  primary?: boolean;
+  label: string;
+  submit: string;
+  hint: string;
+}
+
+let { primary = true, label, submit, hint }: Props = $props();
+const suffix = primary ? '' : '-fin';
 
 let formEl = $state<HTMLFormElement | null>(null);
 let invalid = $state(false);
@@ -31,7 +42,7 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
   event.preventDefault();
   const form = formEl;
   if (!form || busy) return;
-  const raw = String(new FormData(form).get('url') ?? '').trim();
+  const raw = withScheme(String(new FormData(form).get('url') ?? ''));
   if (homeUrlIssue(raw, t('home.url.error'))) {
     invalid = true;
     apiMessage = '';
@@ -55,17 +66,13 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
 }
 </script>
 
-<form id="audit-form" class="form" novalidate bind:this={formEl} onsubmit={onSubmit}>
-  <label for="url-input">
-    <span>{t('home.url.long')}</span>
-    <kbd class="kbd">URL</kbd>
-  </label>
-  <div class="field" id="audit-field">
-    <div class="input-wrap">
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>
+<form id={primary ? 'audit-form' : undefined} class="audit" novalidate bind:this={formEl} onsubmit={onSubmit}>
+  <label class="sr" for={`url-input${suffix}`}>{label}</label>
+  <div class="field">
+    <div class="inp">
+      <span aria-hidden="true">https://</span>
       <input
-        class="input"
-        id="url-input"
+        id={`url-input${suffix}`}
         name="url"
         type="text"
         inputmode="url"
@@ -74,24 +81,22 @@ async function onSubmit(event: SubmitEvent): Promise<void> {
         spellcheck="false"
         required
         maxlength="2048"
-        placeholder={t('home.url.example')}
-        aria-describedby={invalid ? 'url-error' : 'url-hint'}
+        placeholder="monsite.fr"
+        aria-describedby={invalid ? `url-error${suffix}` : `url-hint${suffix}`}
         aria-invalid={invalid ? 'true' : undefined}
       />
     </div>
-    <button class="btn btn-primary" id="audit-btn" type="submit">
-      <span>{t('home.submit.free')}</span>
-      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    <button class="btn" id={primary ? 'audit-btn' : undefined} type="submit" aria-busy={busy ? 'true' : undefined}>
+      {submit}<svg aria-hidden="true"><use href="#i-arrow" /></svg>
     </button>
   </div>
-  <p class="error" id="url-error" role="alert">{homeFormAlert({
+  <p class="err" id={`url-error${suffix}`} role="alert">{homeFormAlert({
     invalidUrl: invalid,
     apiMessage,
     urlError: t('home.url.error'),
   })}</p>
-  <p class="hint" id="url-hint">{t('home.url.format')}</p>
+  <p class="sr" id={`url-hint${suffix}`}>{hint}</p>
 </form>
-<p><a class="link-inline" href="/methode">{t('home.method')}</a></p>
 {#if gate}
   <div class="gg-root">
     <div class="gg-veil"></div>

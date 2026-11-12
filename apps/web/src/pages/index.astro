@@ -1,470 +1,55 @@
 ---
-import '../styles/maquettes/accueil.css';
-import HomeAuditForm from '../components/HomeAuditForm.svelte';
-import ScoreGauge from '../components/ScoreGauge.svelte';
+import AfterNote from '../components/v6/accueil/AfterNote.astro';
+import DomainsXray from '../components/v6/accueil/DomainsXray.astro';
+import ExplodedView from '../components/v6/accueil/ExplodedView.astro';
+import Faq from '../components/v6/accueil/Faq.astro';
+import FinalCta from '../components/v6/accueil/FinalCta.astro';
+import HeroScan from '../components/v6/accueil/HeroScan.astro';
+import HowItWorks from '../components/v6/accueil/HowItWorks.astro';
+import Plans from '../components/v6/accueil/Plans.astro';
+import ReportPreview from '../components/v6/accueil/ReportPreview.astro';
+import SpotGame from '../components/v6/accueil/SpotGame.astro';
+import SectionDock from '../components/v6/SectionDock.svelte';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
-import { HOME_EXAMPLE_SCORE } from '../lib/home-example.js';
+import V6Page from '../layouts/V6Page.astro';
+import '../styles/maquettes/accueil-v6.css';
+
+const sections = [
+  { id: 'comment', label: t('ac.045') },
+  { id: 'domaines', label: t('ac.065') },
+  { id: 'couches', label: t('ac.151') },
+  { id: 'jeu', label: t('ac.190') },
+  { id: 'rapport', label: t('ac.206') },
+  { id: 'suite', label: t('ac.235') },
+  { id: 'tarifs', label: t('ac.257') },
+  { id: 'faq', label: t('ac.274') },
+];
 ---
 
-<Canon vue="accueil" title={t('mq.ui.meta.home.title')} description={t('meta.home.description')} robots="index, follow">
-<canvas id="bg-canvas" aria-hidden="true"></canvas>
-
-<div class="progress" id="prog" aria-hidden="true"></div>
-<div class="c-dot" id="c-dot" aria-hidden="true"></div>
-<div class="c-ring" id="c-ring" aria-hidden="true"></div>
-<div class="blob-petrol" hidden></div><div class="blob-lilac" hidden></div><main id="contenu">
-
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="wrap">
-      <div class="hero-copy">
-        <p class="pill rv" style="--d:0s"><i aria-hidden="true"></i><span>{t('mq.a.001')}</span></p>
-        <h1 id="hero-title">
-          <span class="w"><span style="--i:0">{t('mq.a.002')}</span></span>{' '}
-          <span class="w"><span style="--i:1">{t('mq.a.003')}</span></span>{' '}
-          <span class="w"><span class="grad" style="--i:2">{t('mq.a.004')}</span></span>{' '}
-          <span class="w"><span style="--i:3">{t('mq.a.005')}</span></span>{' '}
-          <span class="w"><span style="--i:4">{t('mq.a.006')}</span></span>{' '}
-          <span class="w"><span class="grad" style="--i:5">{t('mq.a.007')}</span></span>{' '}
-          <span class="w"><span style="--i:6">{t('mq.a.008')}</span></span>
-        </h1>
-        <p class="lead rv" style="--d:.5s">{t('mq.a.009')}</p>
-        <p class="lead">{t('home.support')}</p>
-
-        <HomeAuditForm client:load />
-
-        <ul class="trust rv" style="--d:.7s">
-          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg>{t('mq.a.010')}</li>
-          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg>{t('mq.a.011')}</li>
-          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg>{t('mq.a.012')}</li>
-        </ul>
-      </div>
-    </div>
-
-    <aside class="stage rv" style="--d:.4s">
-      <canvas class="stage-canvas" id="stage-canvas" aria-hidden="true"></canvas>
-      <svg class="ecg" id="ecg" viewBox="0 0 1440 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-        <path id="ecg-path" d="M0 120H250C262 120 266 104 280 104C294 104 298 120 312 120H380L394 130L412 34L432 188L448 120H500C520 120 528 92 552 92C576 92 584 120 604 120H820L834 130L852 34L872 188L888 120H940C960 120 968 92 992 92C1016 92 1024 120 1044 120H1440"/>
-      </svg>
-
-      <figure class="window" id="window" aria-label={t('mq.a.013')}>
-        <div class="w-bar" aria-hidden="true">
-          <div class="dots"><i></i><i></i><i></i></div>
-          <div class="w-url"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span>{t('mq.a.014')}<b id="url-site">{t('mq.a.015')}</b></span></div>
-          <div class="w-spacer"></div>
-        </div>
-        <div class="win-body" id="exemple">
-          <div class="w-left">
-            <div class="w-site">
-              <small>{t('mq.a.016')}</small>
-              <strong id="rep-site">{t('mq.a.015')}</strong>
-              <small class="stamp">{t('mq.a.017')}</small>
-            </div>
-
-            <div class="score-slot"><ScoreGauge domain={t('domain.global')} score={HOME_EXAMPLE_SCORE} size="compact" label={t('mq.ui.home.gauge')} /></div>
-            <div class="gauge-wrap">
-              <div class="gauge" role="img" aria-label={t('mq.a.018')}>
-                <svg viewBox="0 0 120 120" aria-hidden="true">
-                  <defs>
-                    <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#3D52A0"/>
-                      <stop offset="100%" stop-color="#7091E6"/>
-                    </linearGradient>
-                  </defs>
-                  <circle class="g-track" cx="60" cy="60" r="50"/>
-                  <circle class="g-prog" id="g-prog" cx="60" cy="60" r="50"/>
-                </svg>
-                <div class="g-num" aria-hidden="true"><b id="g-val">{t('mq.a.019')}</b></div>
-              </div>
-              <div>
-                <strong>{t('mq.a.020')}</strong>
-                <p>{t('mq.a.021')}</p>
-              </div>
-            </div>
-
-            <ul class="finds" id="legacy-rows"><li>{t('domain.seo.plain')}</li><li>{t('home.example.https')}</li></ul><div class="finds" id="finds">
-              <div class="find ok"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg><span><strong>{t('mq.a.024')}</strong> {t('mq.a.025')}</span></div>
-              <div class="find warn"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg><span><strong>{t('mq.a.026')}</strong> {t('mq.a.027')}</span></div>
-            </div>
-          </div>
-
-          <div class="w-right">
-            <div class="w-head">
-              <h2>{t('mq.a.028')}</h2>
-              <span class="tag" id="rep-tag" data-i18n-key="mq.a.029"><span>{t('mq.a.029')}</span> {t('mq.a.030')}</span>
-            </div>
-            <p class="w-sub" id="win-sub">{t('mq.a.031')}</p>
-            <ul class="rows" id="rows" role="list">
-              <li class="row" data-score="62" style="--w:62%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></span>
-                <span class="r-name">{t('mq.a.032')}</span>
-                <span class="meter g-c" aria-hidden="true"><i></i></span>
-                <span class="grade g-c"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.019')}</span>
-              </li>
-              <li class="row" data-score="70" style="--w:70%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-                <span class="r-name">{t('mq.a.034')}</span>
-                <span class="meter g-b" aria-hidden="true"><i></i></span>
-                <span class="grade g-b"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.035')}</span>
-              </li>
-              <li class="row" data-score="35" style="--w:35%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-                <span class="r-name">{t('mq.a.036')}</span>
-                <span class="meter g-d" aria-hidden="true"><i></i></span>
-                <span class="grade g-d"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.037')}</span>
-              </li>
-              <li class="row" data-score="58" style="--w:58%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 22s5-2 9-6c4-4 7-9 7-14 0 0-5 2-9 6-4 4-7 9-7 14z"/><path d="M9 16c2-2 5-3 8-3"/></svg></span>
-                <span class="r-name">{t('mq.a.038')}</span>
-                <span class="meter g-c" aria-hidden="true"><i></i></span>
-                <span class="grade g-c"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.019')}</span>
-              </li>
-              <li class="row" data-score="48" style="--w:48%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.5" r="2.5"/><path d="M5 9h14M12 9v11m-3-6 3 6 3-6"/></svg></span>
-                <span class="r-name">{t('mq.a.039')}</span>
-                <span class="meter g-d" aria-hidden="true"><i></i></span>
-                <span class="grade g-d"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.037')}</span>
-              </li>
-              <li class="row" data-score="52" style="--w:52%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span>
-                <span class="r-name">{t('mq.a.040')}</span>
-                <span class="meter g-c" aria-hidden="true"><i></i></span>
-                <span class="grade g-c"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.019')}</span>
-              </li>
-              <li class="row" data-score="40" style="--w:40%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 11c0 3.5-1 6.8-2.75 9.57m-3.44-2.04.05-.09A13.9 13.9 0 0 0 8 11a4 4 0 1 1 8 0c0 1-.07 2-.2 3m-2.12 6.84A21.9 21.9 0 0 0 15.17 17m3.84 1.13c.65-2 1-4.15 1-6.36A10 10 0 0 0 12 2a10 10 0 0 0-9.85 8.3"/></svg></span>
-                <span class="r-name">{t('mq.a.041')}</span>
-                <span class="meter g-d" aria-hidden="true"><i></i></span>
-                <span class="grade g-d"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.037')}</span>
-              </li>
-              <li class="row" data-score="66" style="--w:66%">
-                <span class="r-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg></span>
-                <span class="r-name">{t('mq.a.042')}</span>
-                <span class="meter g-c" aria-hidden="true"><i></i></span>
-                <span class="grade g-c"><span class="sr-only">{t('mq.a.033')} </span>{t('mq.a.019')}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </figure>
-      <p class="sr-only" id="scan-status" role="status" aria-live="polite"></p>
-      <p class="win-link"><a class="link lk-pill" href="/exemple-rapport">{t('mq.a.043')}<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></p>
-    </aside>
-  </section>
-
-  <nav aria-label={t('mq.a.044')}><ul class="qpills"><li><a href="/exemple-rapport"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"/></svg>{t('mq.a.045')}</a></li><li><a href="/methode"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h16M7 16V9M12 16V5M17 16v-4"/></svg>{t('mq.a.046')}</a></li><li><a href="/pro"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg>{t('mq.a.047')}</a></li><li><a href="/robot"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 9h14v10H5zM12 4v5M9 14h.01M15 14h.01"/></svg>{t('mq.a.048')}</a></li></ul></nav>
-  <section class="proof" aria-label={t('mq.a.049')}>
-    <div class="wrap">
-      <p class="rv">{t('mq.a.050')}</p>
-      <ul class="rv" style="--d:.1s">
-        <li>{t('mq.a.051')}</li>
-        <li>{t('mq.a.052')}</li>
-        <li>{t('mq.a.053')}</li>
-        <li>{t('mq.a.054')}</li>
-        <li>{t('mq.a.055')}</li>
-        <li>{t('mq.a.056')}</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="section" id="methode" aria-labelledby="domains-title">
-    <div class="wrap">
-      <div class="s-head rv">
-        <p class="eyebrow">{t('mq.a.057')}</p>
-        <h2 class="h2" id="domains-title">{t('mq.a.058')}</h2>
-        <p class="lead">{t('mq.a.059')}</p>
-      </div>
-
-      <div class="explorer rv" id="explorer">
-        <div class="tabs" role="tablist" aria-label={t('mq.a.028')} aria-orientation="vertical" id="tablist">
-          <button class="tab" role="tab" id="tab-performance" aria-selected="true" aria-controls="panel-performance" tabindex="0" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></span>
-            <span class="t-name">{t('mq.a.032')}</span>
-            <span class="grade g-c" aria-hidden="true">{t('mq.a.019')}</span>
-          </button>
-          <button class="tab" role="tab" id="tab-seo" aria-selected="false" aria-controls="panel-seo" tabindex="-1" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-            <span class="t-name">{t('mq.a.034')}</span>
-            <span class="grade g-b" aria-hidden="true">{t('mq.a.035')}</span>
-          </button>
-          <button class="tab" role="tab" id="tab-securite" aria-selected="false" aria-controls="panel-securite" tabindex="-1" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-            <span class="t-name">{t('mq.a.036')}</span>
-            <span class="grade g-d" aria-hidden="true">{t('mq.a.037')}</span>
-          </button>
-          <button class="tab" role="tab" id="tab-ecologie" aria-selected="false" aria-controls="panel-ecologie" tabindex="-1" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 22s5-2 9-6c4-4 7-9 7-14 0 0-5 2-9 6-4 4-7 9-7 14z"/><path d="M9 16c2-2 5-3 8-3"/></svg></span>
-            <span class="t-name">{t('mq.a.038')}</span>
-            <span class="grade g-c" aria-hidden="true">{t('mq.a.019')}</span>
-          </button>
-          <button class="tab" role="tab" id="tab-accessibilite" aria-selected="false" aria-controls="panel-accessibilite" tabindex="-1" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.5" r="2.5"/><path d="M5 9h14M12 9v11m-3-6 3 6 3-6"/></svg></span>
-            <span class="t-name">{t('mq.a.039')}</span>
-            <span class="grade g-d" aria-hidden="true">{t('mq.a.037')}</span>
-          </button>
-          <button class="tab" role="tab" id="tab-qualite" aria-selected="false" aria-controls="panel-qualite" tabindex="-1" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span>
-            <span class="t-name">{t('mq.a.040')}</span>
-            <span class="grade g-c" aria-hidden="true">{t('mq.a.019')}</span>
-          </button>
-          <button class="tab" role="tab" id="tab-vie-privee" aria-selected="false" aria-controls="panel-vie-privee" tabindex="-1" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 11c0 3.5-1 6.8-2.75 9.57m-3.44-2.04.05-.09A13.9 13.9 0 0 0 8 11a4 4 0 1 1 8 0c0 1-.07 2-.2 3m-2.12 6.84A21.9 21.9 0 0 0 15.17 17m3.84 1.13c.65-2 1-4.15 1-6.36A10 10 0 0 0 12 2a10 10 0 0 0-9.85 8.3"/></svg></span>
-            <span class="t-name">{t('mq.a.041')}</span>
-            <span class="grade g-d" aria-hidden="true">{t('mq.a.037')}</span>
-          </button>
-          <button class="tab" role="tab" id="tab-dns-email" aria-selected="false" aria-controls="panel-dns-email" tabindex="-1" type="button">
-            <span class="t-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg></span>
-            <span class="t-name">{t('mq.a.042')}</span>
-            <span class="grade g-c" aria-hidden="true">{t('mq.a.019')}</span>
-          </button>
-        </div>
-        <div class="panels" id="panels">
-          <div class="panel" role="tabpanel" id="panel-performance" aria-labelledby="tab-performance" tabindex="0">
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></span>
-              <h3>{t('mq.a.032')}</h3>
-              <span class="p-grade"><span class="grade g-c"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.019')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.061')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.063')}</li><li>{t('mq.a.064')}</li><li>{t('mq.a.065')}</li><li>{t('mq.a.066')}</li><li>{t('mq.a.067')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.068')}</h4><p class="p-ref">{t('mq.a.069')}</p></div>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-seo" aria-labelledby="tab-seo" tabindex="0" hidden>
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-              <h3>{t('mq.a.034')}</h3>
-              <span class="p-grade"><span class="grade g-b"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.035')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.070')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.071')}</li><li>{t('mq.a.072')}</li><li>{t('mq.a.073')}</li><li>{t('mq.a.074')}</li><li>{t('mq.a.075')}</li><li>{t('mq.a.076')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.077')}</h4><p class="p-ref">{t('mq.a.078')}</p></div>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-securite" aria-labelledby="tab-securite" tabindex="0" hidden>
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-              <h3>{t('mq.a.036')}</h3>
-              <span class="p-grade"><span class="grade g-d"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.037')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.079')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.080')}</li><li>{t('mq.a.081')}</li><li>{t('mq.a.082')}</li><li>{t('mq.a.083')}</li><li>{t('mq.a.084')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.085')}</h4><p class="p-ref">{t('mq.a.086')}</p></div>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-ecologie" aria-labelledby="tab-ecologie" tabindex="0" hidden>
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 22s5-2 9-6c4-4 7-9 7-14 0 0-5 2-9 6-4 4-7 9-7 14z"/><path d="M9 16c2-2 5-3 8-3"/></svg></span>
-              <h3>{t('mq.a.038')}</h3>
-              <span class="p-grade"><span class="grade g-c"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.019')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.087')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.088')}</li><li>{t('mq.a.089')}</li><li>{t('mq.a.090')}</li><li>{t('mq.a.091')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.092')}</h4><p class="p-ref">{t('mq.a.093')}</p></div>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-accessibilite" aria-labelledby="tab-accessibilite" tabindex="0" hidden>
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="4.5" r="2.5"/><path d="M5 9h14M12 9v11m-3-6 3 6 3-6"/></svg></span>
-              <h3>{t('mq.a.039')}</h3>
-              <span class="p-grade"><span class="grade g-d"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.037')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.094')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.095')}</li><li>{t('mq.a.096')}</li><li>{t('mq.a.097')}</li><li>{t('mq.a.098')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.099')}</h4><p class="p-ref">{t('mq.a.054')}</p></div>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-qualite" aria-labelledby="tab-qualite" tabindex="0" hidden>
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span>
-              <h3>{t('mq.a.040')}</h3>
-              <span class="p-grade"><span class="grade g-c"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.019')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.100')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.101')}</li><li>{t('mq.a.102')}</li><li>{t('mq.a.103')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.104')}</h4><p class="p-ref">{t('mq.a.056')}</p></div>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-vie-privee" aria-labelledby="tab-vie-privee" tabindex="0" hidden>
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 11c0 3.5-1 6.8-2.75 9.57m-3.44-2.04.05-.09A13.9 13.9 0 0 0 8 11a4 4 0 1 1 8 0c0 1-.07 2-.2 3m-2.12 6.84A21.9 21.9 0 0 0 15.17 17m3.84 1.13c.65-2 1-4.15 1-6.36A10 10 0 0 0 12 2a10 10 0 0 0-9.85 8.3"/></svg></span>
-              <h3>{t('mq.a.041')}</h3>
-              <span class="p-grade"><span class="grade g-d"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.037')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.105')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.106')}</li><li>{t('mq.a.107')}</li><li>{t('mq.a.108')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.109')}</h4><p class="p-ref">{t('mq.a.110')}</p></div>
-          </div>
-          <div class="panel" role="tabpanel" id="panel-dns-email" aria-labelledby="tab-dns-email" tabindex="0" hidden>
-            <header class="p-top">
-              <span class="p-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/></svg></span>
-              <h3>{t('mq.a.042')}</h3>
-              <span class="p-grade"><span class="grade g-c"><span class="sr-only">{t('mq.a.060')} </span>{t('mq.a.019')}</span><small>{t('mq.a.060')}</small></span>
-            </header>
-            <p class="p-desc">{t('mq.a.111')}</p>
-            <div class="p-sec"><h4>{t('mq.a.062')}</h4><ul class="chips" role="list"><li>{t('mq.a.112')}</li><li>{t('mq.a.113')}</li><li>{t('mq.a.114')}</li><li>{t('mq.a.115')}</li></ul></div>
-            <div class="p-sec"><h4>{t('mq.a.116')}</h4><p class="p-ref">{t('mq.a.117')}</p></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section band" id="comment-ca-marche" aria-labelledby="how-title">
-    <div class="wrap">
-      <div class="s-head rv">
-        <p class="eyebrow">{t('mq.a.118')}</p>
-        <h2 class="h2" id="how-title">{t('mq.a.119')}</h2>
-      </div>
-      <ol class="steps">
-        <li class="step rv">
-          <span class="step-n" aria-hidden="true">01</span>
-          <h3>{t('mq.a.120')}</h3>
-          <p>{t('mq.a.121')}</p>
-        </li>
-        <li class="step rv" style="--d:.12s">
-          <span class="step-n" aria-hidden="true">02</span>
-          <h3>{t('mq.a.122')}</h3>
-          <p>{t('mq.a.123')}</p>
-        </li>
-        <li class="step rv" style="--d:.24s">
-          <span class="step-n" aria-hidden="true">03</span>
-          <h3>{t('mq.a.124')}</h3>
-          <p>{t('mq.a.125')}</p>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="section dark" aria-labelledby="pledge-title">
-    <div class="wrap">
-      <div class="s-head rv">
-        <p class="eyebrow">{t('mq.a.126')}</p>
-        <h2 class="h2" id="pledge-title">{t('mq.a.127')}</h2>
-        <p class="lead">{t('mq.a.128')}</p>
-      </div>
-      <div class="pledges">
-        <div class="pledge rv">
-          <span class="pl-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
-          <h3>{t('mq.a.011')}</h3>
-          <p>{t('mq.a.129')}</p>
-        </div>
-        <div class="pledge rv" style="--d:.07s">
-          <span class="pl-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></span>
-          <h3>{t('mq.a.130')}</h3>
-          <p>{t('mq.a.131')}</p>
-        </div>
-        <div class="pledge rv" style="--d:.14s">
-          <span class="pl-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 6.25v13m0-13C10.8 5.5 9.2 5 7.5 5S4.2 5.5 3 6.25v13C4.2 18.5 5.8 18 7.5 18s3.3.5 4.5 1.25m0-13C13.2 5.5 14.8 5 16.5 5s3.3.5 4.5 1.25v13C19.8 18.5 18.2 18 16.5 18s-3.3.5-4.5 1.25"/></svg></span>
-          <h3>{t('mq.a.012')}</h3>
-          <p>{t('mq.a.132')}</p>
-        </div>
-        <div class="pledge rv" style="--d:.21s">
-          <span class="pl-ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-          <h3>{t('mq.a.133')}</h3>
-          <p>{t('mq.a.134')}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="plans-title">
-    <div class="wrap">
-      <div class="s-head center rv">
-        <p class="eyebrow">{t('mq.a.135')}</p>
-        <h2 class="h2" id="plans-title">{t('mq.a.136')}</h2>
-        <p class="lead">{t('mq.a.137')}</p>
-      </div>
-      <div class="plans">
-        <div class="plan rv">
-          <h3>{t('mq.a.138')}</h3>
-          <p class="price">{t('mq.a.139')}</p>
-          <p>{t('mq.a.140')}</p>
-          <ul>
-            <li><span class="mark" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.141')}</span></li>
-            <li><span class="mark lock" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span>{t('mq.a.142')}<small>{t('mq.a.143')}</small></span></li>
-          </ul>
-          <a class="btn btn-ghost js-focus-input" href="#url-input">{t('mq.a.144')}</a>
-        </div>
-
-        <div class="plan accent rv" style="--d:.08s">
-          <h3>{t('mq.a.145')}</h3>
-          <p class="price">{t('mq.a.139')}</p>
-          <p>{t('mq.a.146')}</p>
-          <ul>
-            <li><span class="mark" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.147')}<small>{t('mq.a.148')}</small></span></li>
-            <li><span class="mark" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.149')}</span></li>
-            <li><span class="mark" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.150')}</span></li>
-          </ul>
-          <a class="btn btn-ghost" href="/connexion">{t('mq.a.151')}</a>
-        </div>
-
-        <div class="plan soon rv" style="--d:.16s">
-          <h3>{t('mq.a.047')}</h3>
-          <p><span class="badge-soon">{t('mq.a.152')}</span></p>
-          <p>{t('mq.a.153')}</p>
-          <ul>
-            <li><span class="mark up" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.154')}</span></li>
-            <li><span class="mark up" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.155')}</span></li>
-            <li><span class="mark up" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.156')}</span></li>
-            <li><span class="mark up" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.157')}</span></li>
-            <li><span class="mark up" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 13l4 4L19 7"/></svg></span><span>{t('mq.a.158')}<small>{t('mq.a.159')}</small></span></li>
-          </ul>
-          <a class="btn btn-ghost" href="/pro"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 0 0-4-5.66V5a2 2 0 1 0-4 0v.34C7.7 6.2 6 8.4 6 11v3.2c0 .5-.2 1.1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9"/></svg>{t('mq.a.160')}</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section band faq" id="faq" aria-labelledby="faq-title">
-    <div class="wrap faq-wrap">
-      <div class="rv">
-        <p class="eyebrow">{t('mq.a.161')}</p>
-        <h2 class="h2" id="faq-title">{t('mq.a.162')}</h2>
-        <p class="lead">{t('mq.a.163')}</p>
-      </div>
-      <div class="rv" style="--d:.1s">
-        <details>
-          <summary>{t('mq.a.164')}</summary>
-          <p class="ans">{t('mq.a.165')}</p>
-        </details>
-        <details>
-          <summary>{t('mq.a.166')}</summary>
-          <p class="ans">{t('mq.a.167')}</p>
-        </details>
-        <details>
-          <summary>{t('mq.a.168')}</summary>
-          <p class="ans">{t('mq.a.169')}</p>
-        </details>
-        <details>
-          <summary>{t('mq.a.170')}</summary>
-          <p class="ans">{t('mq.a.171')}</p>
-        </details>
-        <details>
-          <summary>{t('mq.a.172')}</summary>
-          <p class="ans">{t('mq.a.173')}</p>
-        </details>
-        <details>
-          <summary>{t('mq.a.174')}</summary>
-          <p class="ans">{t('mq.a.175')}</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="explore-title">
-    <div class="wrap">
-      <h2 id="explore-title">{t('mq.a.176')}</h2>
-      <ul class="lcards"><li><a href="/exemple-rapport"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 3h9l4 4v14H6zM9 12h7M9 16h7"/></svg></span><b>{t('mq.a.045')}</b><span class="d">{t('mq.a.177')}</span></a></li><li><a href="/methode"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h16M7 16V9M12 16V5M17 16v-4"/></svg></span><b>{t('mq.a.046')}</b><span class="d">{t('mq.a.178')}</span></a></li><li><a href="/pro"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg></span><b>{t('mq.a.047')}</b><span class="d">{t('mq.a.179')}</span></a></li><li><a href="/robot"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 9h14v10H5zM12 4v5M9 14h.01M15 14h.01"/></svg></span><b>{t('mq.a.048')}</b><span class="d">{t('mq.a.180')}</span></a></li><li><a href="/ecoconception"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19c8 0 14-6 14-14C11 5 5 11 5 19zM5 19l7-7"/></svg></span><b>{t('mq.a.181')}</b><span class="d">{t('mq.a.182')}</span></a></li><li><a href="/accessibilite"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5a1 1 0 1 0 0-.01M5 8l7 2 7-2M12 10v5l-3 5M12 15l3 5"/></svg></span><b>{t('mq.a.039')}</b><span class="d">{t('mq.a.183')}</span></a></li><li><a href="/connexion"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 3h4v18h-4M10 17l5-5-5-5M15 12H3"/></svg></span><b>{t('mq.a.184')}</b><span class="d">{t('mq.a.185')}</span></a></li><li><a href="/sites"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><b>{t('mq.a.186')}</b><span class="d">{t('mq.a.187')}</span></a></li></ul>
-    </div>
-  </section>
-  <section class="section" aria-labelledby="cta-title">
-    <div class="wrap">
-      <div class="final rv">
-        <h2 id="cta-title">{t('mq.a.188')}</h2>
-        <p>{t('mq.a.189')}</p>
-        <a class="btn btn-light js-focus-input" href="#url-input">{t('mq.a.190')}<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-        <svg class="pulse" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M0 50H380C388 50 391 42 399 42C407 42 410 50 418 50H470L478 56L488 12L500 84L508 50H560C572 50 577 34 591 34C605 34 610 50 622 50H1200"/></svg>
-      </div>
-    </div>
-  </section>
-</main>
+<V6Page
+  vue="accueil"
+  title={t('mq.ui.meta.home.title')}
+  description={t('meta.home.description')}
+  robots="index, follow"
+>
+  <main id="contenu" class="ac">
+    <HeroScan />
+    <HowItWorks />
+    <DomainsXray />
+    <ExplodedView />
+    <SpotGame />
+    <ReportPreview />
+    <AfterNote />
+    <Plans />
+    <Faq />
+    <FinalCta />
+  </main>
+  <SectionDock {sections} client:idle />
+</V6Page>
 
 <script>
-import '../lib/motion/accueil.js';
+  import { bootAccueil } from '../lib/motion/accueil-v6';
+
+  const root = document.querySelector<HTMLElement>('main.ac');
+  if (root) bootAccueil(root);
 </script>
-</Canon>

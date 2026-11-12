@@ -1,0 +1,61 @@
+---
+import Icons from '../components/v6/Icons.astro';
+import SiteFooter from '../components/v6/SiteFooter.astro';
+import SiteHeader from '../components/v6/SiteHeader.svelte';
+import { t } from '../i18n/index.js';
+import '../styles/geist.css';
+import '../styles/tokens.css';
+import '../styles/theme-dark.css';
+import '../styles/chrome.css';
+import '../styles/nav6.css';
+import '../styles/v6.css';
+
+/** Gabarit des pages publiées en v6 : barre, contenu, pied de page en trois colonnes. */
+interface Props {
+  title: string;
+  description: string;
+  /** Nom de la page, repris par les tests et les feuilles de style. */
+  vue: string;
+  robots?: string | false;
+}
+
+const { title, description, vue, robots = 'noindex, nofollow' } = Astro.props;
+const canonical = Astro.url.pathname || '/';
+---
+
+<!doctype html>
+<html lang="fr" data-theme="light" data-v6 data-page={vue}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {robots ? <meta name="robots" content={robots} /> : null}
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#F3F5F8"
+      data-light="#F3F5F8"
+      data-dark="#06090D"
+    />
+    <meta property="og:locale" content="fr_FR" />
+    <link rel="canonical" href={canonical} />
+    <script is:inline src="/theme-init.js"></script>
+    <script is:inline>
+      document.documentElement.classList.add('has-js', 'js');
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#contenu">{t('skip.main')}</a>
+    <Icons />
+    <SiteHeader pathname={Astro.url.pathname} client:load />
+    <slot />
+    <SiteFooter />
+    <script>
+      import { bootLocale } from '../i18n/live';
+      bootLocale();
+    </script>
+  </body>
+</html>

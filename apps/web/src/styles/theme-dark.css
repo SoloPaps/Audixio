@@ -136,6 +136,7 @@ html[data-theme="dark"] {
   /* Sombre v6 : seules ces --d-v* portent les couleurs. Les rôles sémantiques les relaient. */
   html[data-theme="dark"][data-v6] {
     color-scheme: dark;
+    background-color: var(--d-vbg);
     --d-vbg: #06090d;
     --d-vbg2: #080c12;
     --d-vsf: #0c121a;
@@ -164,6 +165,8 @@ html[data-theme="dark"] {
     --d-vge: #ff8f86;
     --d-vgf: #ff8fb4;
     --d-vksh: rgb(0 0 0 / 0.7);
+    --d-vonfind: #1a0805;
+    --d-vonok: #03140d;
     --bg: var(--d-vbg);
     --bg-2: var(--d-vbg2);
     --surf: var(--d-vsf);
@@ -192,6 +195,8 @@ html[data-theme="dark"] {
     --gE: var(--d-vge);
     --gF: var(--d-vgf);
     --k-shadow: var(--d-vksh);
+    --on-find: var(--d-vonfind);
+    --on-ok: var(--d-vonok);
     --shadow: 0 30px 60px -30px var(--d-vksh);
     --bar: var(--d-vbg);
   }

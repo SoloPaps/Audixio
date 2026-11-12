@@ -172,6 +172,9 @@
   --lift-y: -2px;
   --mark: 2px;
   --bar: #f3f5f8;
+  /* Texte posé sur --find et --ok (pastilles pleines). */
+  --on-find: #ffffff;
+  --on-ok: #ffffff;
 }
 
 @media print {

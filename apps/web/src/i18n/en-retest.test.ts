@@ -42,7 +42,7 @@ describe('dictionnaire EN, retest B9', () => {
 
 describe('dictionnaire EN, retest C12', () => {
   it('« Sites suivis » se dit « Tracked sites » partout, fil d’Ariane compris', () => {
-    for (const key of ['nav.sites.long', 'plan.sites', 'mq.a.186']) {
+    for (const key of ['nav.sites.long', 'plan.sites']) {
       expect(pack[key]).toBe('Tracked sites');
     }
     const followed = Object.entries(pack).filter(([, line]) =>

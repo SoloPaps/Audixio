@@ -3,6 +3,7 @@
  * ne peut pas être passée à `t()` (erreur de typage).
  */
 
+import { accueilFr } from './accueil-fr.js';
 import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
 import { mqFr } from './mq-fr.js';
@@ -2906,6 +2907,7 @@ export const fr = {
   ...mqLegalFr,
   ...pdfFr,
   ...v6Fr,
+  ...accueilFr,
 };
 
 export type MessageKey = keyof typeof fr;
