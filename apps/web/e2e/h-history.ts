@@ -121,4 +121,13 @@ export async function openHistory(
   });
 
   await page.goto(`/historique?site=${SITE}&theme=${theme}`);
+  // R11 (lot 4) : /sites/id/:site puis /sites/:host#historique.
+  await page.waitForURL(/\/sites\/[^/?#]+(\?[^#]*)?#historique$/u);
+}
+
+/** Même adresse, en anglais (la requête passe avant l’ancre). */
+export function englishUrl(current: string): string {
+  const url = new URL(current);
+  url.searchParams.set('lang', 'en');
+  return url.toString();
 }

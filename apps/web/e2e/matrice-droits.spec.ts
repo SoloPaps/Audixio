@@ -23,9 +23,10 @@ const WALLED = [
     en: 'Sign in to see your sites.',
   },
   {
-    path: '/compte/alertes',
-    fr: 'Réglages des alertes',
-    en: 'Settings for alerts',
+    // Page d’un site (lot 4) ; /compte/alertes est devenue /compte#alertes (R15).
+    path: '/sites/exemple.fr',
+    fr: 'Connectez-vous pour ouvrir ce site.',
+    en: 'Sign in to open this site.',
   },
   { path: '/bienvenue', fr: 'Bienvenue', en: 'Welcome' },
 ];

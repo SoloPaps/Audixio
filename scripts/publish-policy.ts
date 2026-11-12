@@ -299,7 +299,7 @@ export function hoistIslandStyle(html: string): string {
 
 /**
  * Pages servies aussi sous des adresses réécrites (200) : `/rapport/:id/…`
- * (apps/web/src/lib/redirects.ts), `/partage/:jeton`, `/score/:x`,
+ * et `/sites/:host` (apps/web/src/lib/redirects.ts), `/partage/:jeton`, `/score/:x`,
  * `/verifier/:id` (netlify.toml). Netlify applique `_headers` à l’adresse
  * demandée, pas à la page servie : chaque famille reçoit une seule CSP,
  * union des empreintes de ses pages, sous `/famille` et `/famille/*`. Une
@@ -311,6 +311,7 @@ export const REWRITE_FAMILIES = [
   '/partage',
   '/score',
   '/verifier',
+  '/sites',
 ] as const;
 
 export function familyOf(urlPath: string): string | null {

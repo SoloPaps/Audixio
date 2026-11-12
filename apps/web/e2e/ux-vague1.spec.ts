@@ -163,6 +163,8 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
   await expect(
     page.locator('.axn-tools').getByRole('button', { name: 'Thème' }),
   ).toBeVisible();
+  // /compte est passée sur V6Page (lot 4) : le pied Canon se lit sur /historique.
+  await page.goto('/historique');
   const cgu = page.getByRole('contentinfo').getByRole('link', { name: 'CGU' });
   await expect(cgu).toHaveCSS('text-decoration-line', 'none');
   await expect(cgu).toHaveCSS('font-weight', '500');

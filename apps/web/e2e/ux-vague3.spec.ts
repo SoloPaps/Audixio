@@ -249,9 +249,10 @@ test('la liste des sites garde une tuile et replie les actions', async ({
   await expect(card).toContainText('72');
   const ownership = page.getByRole('link', { name: 'Propriété vérifiée' });
   await expect(ownership).toBeVisible();
+  // Lot 4 : la section #verification de la page du site (R12).
   await expect(ownership).toHaveAttribute(
     'href',
-    `/verifier?site=${encodeURIComponent(SITE_ID)}`,
+    '/sites/exemple.fr#verification',
   );
   await expect(page.locator('details[open]')).toHaveCount(0);
   await expectNoViolations(page);

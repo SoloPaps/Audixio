@@ -15,6 +15,7 @@ import {
 } from '../lib/places-api.js';
 import { relaunchHref } from '../lib/relaunch.js';
 import { reportHref } from '../lib/report-route.js';
+import { siteIdHref } from '../lib/site-route.js';
 import { latestAuditBySite, type SiteMark } from '../lib/site-tiles.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from '../lib/site-url.js';
 import EmptyState from './EmptyState.svelte';
@@ -246,7 +247,7 @@ async function onSignOut(): Promise<void> {
                 {mark ? t('progress.retry') : t('sites.audit')}
                 <span class="visually-hidden">{site.label}</span>
               </a>
-              <a class="link-action" href={`/verifier?site=${encodeURIComponent(site.id)}`}>
+              <a class="link-action" href={siteIdHref(site.id, 'verification')}>
                 {t('sites.verify')}
                 <span class="visually-hidden">{site.label}</span>
               </a>

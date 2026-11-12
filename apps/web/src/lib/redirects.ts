@@ -75,6 +75,21 @@ export const REDIRECTS: readonly RedirectRule[] = [
     query: { id: 'id' },
     to: '/rapport/:id?partager=badge',
   },
+  // Page par site (lot 4) : l’ancien lien porte l’identifiant du site ;
+  // /sites/id/:site lit l’hôte puis remplace l’adresse par /sites/:host.
+  {
+    code: 'R11',
+    from: '/historique',
+    query: { site: 'site' },
+    to: '/sites/id/:site#historique',
+  },
+  {
+    code: 'R12',
+    from: '/verifier',
+    query: { site: 'site' },
+    to: '/sites/id/:site#verification',
+  },
+  { code: 'R15', from: '/compte/alertes', query: {}, to: '/compte#alertes' },
   // Sans identifiant : la page de l’onglet, qui invite à choisir un rapport
   // (ou demande la connexion), comme les anciennes pages.
   {
@@ -105,6 +120,10 @@ export const REWRITES: readonly RewriteRule[] = [
   { from: '/rapport/:id/badge', to: '/rapport/badge/index.html' },
   { from: '/rapport/:id/imprimer', to: '/rapport/imprimer/index.html' },
   { from: '/rapport/:id', to: '/rapport/index.html' },
+  // Page d’un site : le résolveur d’identifiant, puis la page par hôte.
+  // Les demandes (/sites/:host/demandes/:id) ont leur propre page.
+  { from: '/sites/id/:site', to: '/sites/id/index.html' },
+  { from: '/sites/:host', to: '/sites/fiche/index.html' },
 ];
 
 /** Pages statiques sous /rapport/ : jamais prises pour un identifiant. */
@@ -146,11 +165,12 @@ export function resolveRedirect(
     for (const [key, value] of params) {
       if (!keys.includes(key)) rest.append(key, value);
     }
-    const [base, own = ''] = target.split('?');
+    const [beforeHash = target, hash = ''] = target.split('#');
+    const [base = beforeHash, own = ''] = beforeHash.split('?');
     const merged = new URLSearchParams(own);
     for (const [key, value] of rest) merged.append(key, value);
     const query = merged.toString();
-    return query ? `${base}?${query}` : (base ?? target);
+    return `${base}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`;
   }
   return null;
 }
@@ -158,9 +178,14 @@ export function resolveRedirect(
 /** Page statique à servir pour une adresse d’onglet, sinon null. */
 export function resolveRewrite(pathname: string): string | null {
   const parts = clean(pathname).split('/').filter(Boolean);
-  if (parts[0] !== 'rapport' || parts.length < 2) return null;
-  const id = parts[1] ?? '';
-  if (STATIC.has(id)) return null;
+  if (parts.length < 2) return null;
+  if (parts[0] === 'sites') {
+    // `id` et `fiche` sont les pages servies elles-mêmes, pas des hôtes.
+    if (parts.length === 2 && (parts[1] === 'id' || parts[1] === 'fiche'))
+      return null;
+  } else if (parts[0] !== 'rapport' || STATIC.has(parts[1] ?? '')) {
+    return null;
+  }
   for (const rule of REWRITES) {
     const pattern = rule.from.split('/').filter(Boolean);
     const splat = pattern[pattern.length - 1] === '*';

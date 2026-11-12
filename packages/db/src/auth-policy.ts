@@ -84,7 +84,13 @@ export function protectedPath(pathname: string): boolean {
     pathname.length > 1 && pathname.endsWith('/')
       ? pathname.slice(0, -1)
       : pathname;
-  return path === '/sites' || path === '/compte' || path === '/bienvenue';
+  if (path === '/sites' || path === '/compte' || path === '/bienvenue')
+    return true;
+  // Page d’un site (`/sites/:host`) et son résolveur (`/sites/id/:site`).
+  // Les pages de démonstration plus profondes (`/sites/:host/demandes/:id`) restent ouvertes.
+  const parts = path.split('/').filter(Boolean);
+  if (parts[0] !== 'sites') return false;
+  return parts.length === 2 || (parts.length === 3 && parts[1] === 'id');
 }
 
 export function shouldShowWelcome(input: {

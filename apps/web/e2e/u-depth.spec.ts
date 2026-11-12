@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { openHistory } from './h-history.js';
+import { englishUrl, openHistory } from './h-history.js';
 
 for (const theme of ['light', 'dark'] as const) {
   test(`U5 : gratuit, dernier audit seul et appel Pro (${theme})`, async ({
@@ -61,7 +61,7 @@ test('U5 : appel Pro EN, pas de français et aucune fuite sur chargement direct'
   page,
 }) => {
   await openHistory(page, [72, 88]);
-  await page.goto(`${page.url()}&lang=en`);
+  await page.goto(englishUrl(page.url()));
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await page.waitForLoadState('networkidle');
   await expect(page.locator('table tbody tr')).toHaveCount(1);

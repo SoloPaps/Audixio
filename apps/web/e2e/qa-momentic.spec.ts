@@ -293,7 +293,7 @@ async function chromeGeom(page: Page): Promise<unknown> {
   });
 }
 
-test('la nav et le pied de Sites suivis ont la même géométrie que le compte', async ({
+test('la nav et le pied de Sites suivis ont la même géométrie que l’historique (gabarit Canon)', async ({
   page,
 }) => {
   test.setTimeout(60_000);
@@ -352,7 +352,8 @@ test('la nav et le pied de Sites suivis ont la même géométrie que le compte',
         page.getByRole('heading', { name: 'gratuit.audigy.test' }),
       ).toBeVisible();
       const sites = await chromeGeom(page);
-      await page.goto(`/compte?theme=${theme}`);
+      // /compte est passée sur V6Page (lot 4) : même gabarit Canon que /sites, /historique.
+      await page.goto(`/historique?theme=${theme}`);
       await expect(page.locator('main')).toBeVisible();
       const compte = await chromeGeom(page);
       expect(sites, `${theme} ${width}`).toEqual(compte);
