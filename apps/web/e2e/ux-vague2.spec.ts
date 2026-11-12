@@ -229,24 +229,26 @@ test('méthode, conditions, confidentialité et mentions ont un sommaire', async
   await expect(
     page.getByRole('heading', {
       level: 2,
-      name: 'Un audit passif en 3 étapes',
+      name: 'Suivez un audit, du site à la lettre.',
     }),
   ).toBeVisible();
   await expect(
     page.getByRole('heading', {
       level: 2,
-      name: 'Ce que signifie chaque note',
+      name: 'Six lettres, des seuils fixes.',
     }),
   ).toBeVisible();
-  await expect(
-    page.getByRole('link', { name: 'Voir les conditions d’utilisation.' }),
-  ).toHaveClass(/link-inline/);
-  await page.locator('a[href="#method-repro"]').click();
+  // Sommaire de /methode v6 : le fil des sections, une entrée par section.
+  // Le fil reste caché sur le héros : on le lit sans exiger qu’il soit visible.
+  const dock = page.locator('nav.dock[aria-label="Sections de la page"]');
+  await expect(dock.locator('.dock-l a')).toHaveCount(7);
+  await expect(dock.locator('a[href="#method-repro"]')).toHaveCount(1);
+  await page.locator('.m-ctas a[href="#method-repro"]').click();
   await expect(page).toHaveURL(/#method-repro$/);
   await expect(
     page.getByRole('heading', {
       level: 2,
-      name: 'La formule, et pourquoi elle est reproductible',
+      name: 'Deux moyennes, rien de caché.',
     }),
   ).toBeVisible();
 

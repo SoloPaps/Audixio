@@ -135,12 +135,15 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
     .getByRole('contentinfo')
     .getByRole('link', { name: 'Conditions d’utilisation' });
   await expect(footer).toHaveClass(/link-footer/);
-  await expect(footer).toHaveCSS('text-decoration-line', 'none');
-  await expect(footer).toHaveCSS('font-weight', '500');
+  // Pied v6 : le trait n’apparaît qu’au survol (couleur transparente au repos).
+  await expect(footer).toHaveCSS('text-decoration-color', 'rgba(0, 0, 0, 0)');
+  // Graisse du pied de la maquette v6 (texte courant), plus celle du pied Canon.
+  await expect(footer).toHaveCSS('font-weight', '400');
 
-  const prose = page.getByRole('link', {
-    name: 'Voir les conditions d’utilisation.',
-  });
+  // /methode v6 n’a plus de lien dans le texte : le lien de prose se lit
+  // sur la vitrine des composants (même classe que les constats du rapport).
+  await page.goto('/dev/composants');
+  const prose = page.locator('a.link-inline').first();
   await expect(prose).toHaveClass(/link-inline/);
   await expect(prose).toHaveCSS('font-weight', '600');
   await expect(prose).toHaveCSS('text-decoration-line', /underline/);

@@ -87,13 +87,34 @@ test('accueil v6 clair : fond gris clair, cartes blanches, constats francs', asy
   ).toBe('rgb(15, 122, 85)');
 });
 
+function hexToRgb(hex: string): string {
+  const h = hex.replace('#', '');
+  const n = (i: number) => Number.parseInt(h.slice(i, i + 2), 16);
+  return `rgb(${n(0)}, ${n(2)}, ${n(4)})`;
+}
+
 test('sombre : méthode, exemple et demande d’accès suivent le modèle de carte', async ({
   page,
 }) => {
+  // /methode v6 : cartes des domaines sur la surface v6 sombre, trait v6.
   await open(page, '/methode?theme=dark');
-  const lk = page.locator('a.lk').first();
-  expect(await css(lk, 'backgroundColor')).toBe(CARD);
-  expect(await css(lk, 'borderTopColor')).toBe(LINE);
+  const dom = page.locator('#domaines .dom').first();
+  const tokens = await page.locator('html').evaluate((node) => {
+    const style = (
+      globalThis as unknown as {
+        getComputedStyle: (el: unknown) => {
+          getPropertyValue: (name: string) => string;
+        };
+      }
+    ).getComputedStyle(node);
+    return {
+      surf: style.getPropertyValue('--d-vsf').trim(),
+      line: style.getPropertyValue('--d-vln').trim(),
+    };
+  });
+  expect(tokens.surf).not.toBe('');
+  expect(await css(dom, 'backgroundColor')).toBe(hexToRgb(tokens.surf));
+  expect(await css(dom, 'borderTopColor')).toBe(hexToRgb(tokens.line));
 
   await open(page, '/exemple-rapport?theme=dark');
   expect(await css(page.locator('.cst .seg').first(), 'backgroundColor')).toBe(

@@ -136,8 +136,10 @@ test('Vos droits ouvre le chapitre des droits', async ({ page }) => {
 
 test('la méthode n’a pas de point en trop', async ({ page }) => {
   await page.goto('/methode');
-  await expect(page.getByText('Méthode 2026.1', { exact: true })).toBeVisible();
-  await expect(page.getByText('Méthode 2026.1.')).toHaveCount(0);
+  await expect(
+    page.getByText('Méthode · version 2026.1', { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText('version 2026.1.')).toHaveCount(0);
 });
 
 test('la note du scan ne chevauche pas le texte', async ({ page }) => {

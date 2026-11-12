@@ -300,6 +300,6 @@ test('B-8 : /methode EN parle de GDPR, pas de RGPD', async ({ page }) => {
   await page.goto('/methode?theme=light');
   await toEnglish(page);
   const main = page.locator('main');
-  await expect(main).toContainText('GDPR gaps');
+  await expect(main).toContainText('GDPR: consent before tracking');
   await expect(main).not.toContainText('RGPD');
 });
