@@ -120,21 +120,22 @@ test('/progression EN : les compteurs sont en anglais', async ({ page }) => {
   );
 });
 
-test('/ EN : l’étiquette d’exemple suit l’ordre anglais', async ({ page }) => {
+test('/ EN : la mention d’exemple suit l’ordre anglais', async ({ page }) => {
   await page.goto('/?theme=light');
   await toEnglish(page);
-  await expect(page.locator('#rep-tag')).toHaveText('Illustrative example');
+  await expect(page.locator('#suite .sim-note')).toHaveText(
+    'Sample visuals, simulated data.',
+  );
 });
 
-test('/ EN : l’animation de lecture passive est en anglais', async ({
-  page,
-}) => {
+test('/ EN : le scan animé du héros est en anglais', async ({ page }) => {
   await page.goto('/?theme=light');
   await toEnglish(page);
-  const sub = page.locator('#win-sub');
-  await sub.scrollIntoViewIfNeeded();
-  await expect(sub).toContainText('Passive read:', { timeout: 15_000 });
-  await expect(sub).not.toContainText('Lecture passive');
+  await page.reload();
+  const status = page.locator('#top [data-scanst]');
+  await expect(status).toHaveText('Scan complete', { timeout: 15_000 });
+  await expect(status).not.toContainText('Analyse');
+  await expect(page.locator('#top .journal')).not.toContainText(/[éèàç]/);
 });
 
 // Clic sur « EN » avant l’hydratation : le navigateur suit le lien ?lang=en.

@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-const pages = ['/', '/dev/composants', '/methode'] as const;
+const pages = ['/dev/composants', '/methode'] as const;
 
 test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -15,7 +15,7 @@ test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
     });
     expect(name).toBe('none');
   }
-  for (const path of ['/compte', '/sites'] as const) {
+  for (const path of ['/', '/compte', '/sites'] as const) {
     await page.goto(path);
     await expect(page.locator('.blob-petrol')).toHaveCount(0);
     const running = await page.evaluate(() => {
@@ -36,7 +36,7 @@ test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
     });
     expect(running).toBe(false);
   }
-  await page.goto('/');
+  await page.goto('/dev/composants');
   const gauge = await page
     .locator('.gauge-fill')
     .first()

@@ -45,7 +45,7 @@ test('FR/EN traduit la page et le bouton de compte reste lisible', async ({
     .click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(
-    page.locator('.axn-links').getByRole('link', { name: 'Home' }),
+    page.locator('.axn-links').getByRole('link', { name: 'How it works' }),
   ).toBeVisible();
   await expect(
     page.locator('.axn-tools').getByRole('link', { name: 'FR — Français' }),
@@ -59,11 +59,11 @@ test('le thème bascule au clic et suit l’appareil', async ({ page }) => {
   const paper = await page.evaluate(() => {
     const view = globalThis as unknown as {
       getComputedStyle: (node: Painted) => { backgroundColor: string };
-      document: { body: Painted };
+      document: { documentElement: Painted };
     };
-    return view.getComputedStyle(view.document.body).backgroundColor;
+    return view.getComputedStyle(view.document.documentElement).backgroundColor;
   });
-  expect(paper).toBe('rgb(11, 15, 32)');
+  expect(paper).toBe('rgb(6, 9, 13)');
   const button = page
     .locator('.axn-tools')
     .getByRole('button', { name: 'Thème' });
@@ -110,9 +110,9 @@ test('aucune ligne de repère au survol mobile', async ({ page }) => {
 test('une adresse invalide reste sur l’accueil', async ({ page }) => {
   await page.goto('/');
   await page.getByLabel('Adresse du site').fill('not a url');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL('/');
-  await expect(page.getByRole('alert')).toContainText(
+  await expect(page.locator('#audit-form').getByRole('alert')).toContainText(
     'Indiquez une adresse complète',
   );
 });
@@ -140,71 +140,58 @@ test('la méthode n’a pas de point en trop', async ({ page }) => {
   await expect(page.getByText('Méthode 2026.1.')).toHaveCount(0);
 });
 
-test('la pastille de note ne chevauche pas le texte', async ({ page }) => {
+test('la note du scan ne chevauche pas le texte', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto('/');
-  const slot = page.locator('.score-slot');
-  await expect(slot).toBeVisible();
-  await expect(slot.getByText('À améliorer')).toBeVisible();
-  const boxes = await page.evaluate(() => {
-    // Esbuild nomme les fonctions imbriquées via __name, absent de la page.
-    (globalThis as { __name?: (target: unknown) => unknown }).__name ??= (
-      target,
-    ) => target;
-    const view = globalThis as unknown as {
-      document: {
-        querySelector: (selector: string) => Painted | null;
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    const total = page.locator('#top [data-tot]');
+    await expect(total).toBeVisible();
+    await expect(total.locator('[data-ringl]')).toHaveText('C');
+    const boxes = await page.evaluate(() => {
+      const view = globalThis as unknown as {
+        document: {
+          querySelector: (selector: string) => Painted | null;
+          querySelectorAll: (selector: string) => Iterable<Painted>;
+        };
       };
-      getComputedStyle: (node: Painted) => {
-        position: string;
-        whiteSpace: string;
+      const box = (node: Painted) => node.getBoundingClientRect();
+      const hit = (a: Painted, b: Painted) => {
+        const one = box(a);
+        const two = box(b);
+        return (
+          one.left < two.right &&
+          one.right > two.left &&
+          one.top < two.bottom &&
+          one.bottom > two.top
+        );
       };
-    };
-    const slotNode = view.document.querySelector('.score-slot');
-    const note = view.document.querySelector('.gauge-wrap strong');
-    const warn = view.document.querySelector('.find.warn');
-    const status = view.document.querySelector('.score-slot .gauge-pill');
-    if (!slotNode || !note || !warn || !status) return null;
-    const rect = (node: Painted) => {
-      const box = node.getBoundingClientRect();
+      const total = view.document.querySelector('#top [data-tot]');
+      const title = view.document.querySelector('#top h1');
+      const lines = [...view.document.querySelectorAll('#top .journal li')];
+      if (!total || !title || lines.length === 0) return null;
       return {
-        left: box.left,
-        right: box.right,
-        top: box.top,
-        bottom: box.bottom,
+        title: hit(total, title),
+        lines: lines.some((line) => hit(total, line)),
       };
-    };
-    const hit = (
-      a: { left: number; right: number; top: number; bottom: number },
-      b: { left: number; right: number; top: number; bottom: number },
-    ) =>
-      a.left < b.right &&
-      a.right > b.left &&
-      a.top < b.bottom &&
-      a.bottom > b.top;
-    const slotBox = rect(slotNode);
-    return {
-      position: view.getComputedStyle(slotNode).position,
-      nowrap: view.getComputedStyle(status).whiteSpace,
-      hitsNote: hit(slotBox, rect(note)),
-      hitsWarn: hit(slotBox, rect(warn)),
-    };
-  });
-  expect(boxes).not.toBeNull();
-  expect(boxes?.position).not.toBe('absolute');
-  expect(boxes?.nowrap).toBe('nowrap');
-  expect(boxes?.hitsNote).toBe(false);
-  expect(boxes?.hitsWarn).toBe(false);
+    });
+    expect(boxes, `${width}`).not.toBeNull();
+    expect(boxes?.title, `${width} titre`).toBe(false);
+    expect(boxes?.lines, `${width} journal`).toBe(false);
+  }
 });
 
 test('le compte mobile affiche Connexion', async ({ page }) => {
   await page.setViewportSize({ width: 330, height: 800 });
   await page.goto('/');
   await page.getByRole('button', { name: 'Ouvrir le menu' }).click();
+  const account = page.locator('.axn-sheet .axn-acct');
+  await expect(account).toBeVisible();
+  await expect(account).toContainText('Connexion');
+  await expect(account).toHaveAttribute('href', '/connexion');
   const cta = page.locator('.axn-sheet .axn-cta');
   await expect(cta).toBeVisible();
-  await expect(cta).toContainText('Connexion');
+  await expect(cta).toContainText('Scanner mon site');
   const color = await cta.evaluate((node) => {
     const view = globalThis as unknown as {
       getComputedStyle: (elt: typeof node) => { color: string };

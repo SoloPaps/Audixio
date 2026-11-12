@@ -93,7 +93,7 @@ test('le lien Sites suivis du compte gratuit affiche la page, même si Places ne
   await signIn(page, GRATUIT);
   await page.goto('/compte');
   await waitForIslands(page);
-  await page.getByRole('link', { name: 'Sites suivis', exact: true }).click();
+  await page.getByRole('link', { name: 'Mes sites', exact: true }).click();
   await expect(page).toHaveURL(/\/sites$/);
   await expect(
     page.getByRole('heading', { name: /Suivez votre premier site/ }),
@@ -193,7 +193,7 @@ test('un audit injoignable sans domaine mesuré ouvre la page d’échec, jamais
   await page.goto('/');
   await waitForIslands(page);
   await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
   await expect(page.getByText('Audit interrompu').first()).toBeVisible();
   await expect(page.getByText('0/100')).toHaveCount(0);
@@ -211,7 +211,7 @@ test('l’échec d’un site injoignable nomme ce site, pas la maquette', async 
   await page.goto('/');
   await waitForIslands(page);
   await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
   await expect(page.getByText('Audit interrompu').first()).toBeVisible();
   await expect(page.getByText('absent.audigy.test').first()).toBeVisible();
@@ -229,7 +229,7 @@ test('« Relancer l’audit » relance le même site, jamais la progression nue 
   await page.goto('/');
   await waitForIslands(page);
   await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL(/\/audit-echoue\?id=/, { timeout: 20_000 });
   await page.getByRole('button', { name: 'Relancer l’audit' }).click();
   await expect(page).toHaveURL(/\/progression\?/, { timeout: 10_000 });

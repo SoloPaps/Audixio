@@ -219,10 +219,10 @@ test('la note de pied est sous les liens et absente à l’impression du rapport
   await page.goto('/');
   const footer = page.getByRole('contentinfo');
   const note = footer.getByText(
-    'Outil gratuit. Aucun traceur. Polices hébergées ici.',
+    '© 2026 Audixio. Aucune certification délivrée.',
   );
   await expect(note).toBeVisible();
-  const links = footer.getByRole('navigation');
+  const links = footer.getByRole('navigation').first();
   const noteBox = await note.boundingBox();
   const linksBox = await links.boundingBox();
   expect(noteBox && linksBox ? noteBox.y : 0).toBeGreaterThan(linksBox?.y ?? 0);

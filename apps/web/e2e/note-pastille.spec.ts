@@ -4,7 +4,7 @@ import { expect, type Locator, type Page, test } from '@playwright/test';
  * Retour owner du 11 nov. (P5) : « je n'aime pas le design de cette note ».
  * Sous le cadran, une seule pastille « lettre + libellé du barème » à la
  * teinte de la lettre, sans icône de statut, lisible en clair et en sombre,
- * identique sur l'accueil, le lien public et le catalogue de composants.
+ * identique sur le lien public et le catalogue de composants.
  */
 
 type Rgb = [number, number, number];
@@ -102,15 +102,15 @@ async function checkPill(
 }
 
 for (const theme of ['light', 'dark'] as const) {
-  test(`pastille de note : accueil, lettre + libellé (${theme})`, async ({
+  test(`pastille de note : note moyenne, lettre + libellé (${theme})`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.goto(`/?theme=${theme}`);
+    await page.goto(`/dev/composants?theme=${theme}`);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await checkPill(
       page,
-      page.locator('.score-slot .gauge'),
+      page.locator('.gauge-mid .gauge'),
       'C',
       'À améliorer',
     );

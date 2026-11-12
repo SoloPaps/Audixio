@@ -100,12 +100,18 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
     name: 'Navigation principale',
     exact: true,
   });
-  const method = bar.getByRole('link', { name: 'Méthode', exact: true });
+  const method = bar.getByRole('link', {
+    name: 'Comment ça marche',
+    exact: true,
+  });
   await expect(method).toHaveClass(/link-nav/);
   await expect(method).toHaveAttribute('aria-current', 'page');
   // Page en cours marquée sans soulignement : graisse plus forte que ses voisines.
   await expect(method).toHaveCSS('text-decoration-line', 'none');
-  const home = bar.getByRole('link', { name: 'Accueil', exact: true });
+  const home = bar.getByRole('link', {
+    name: 'Exemple de rapport',
+    exact: true,
+  });
   await expect(home).toHaveCSS('text-decoration-line', 'none');
   const weight = async (node: typeof method) =>
     Number(

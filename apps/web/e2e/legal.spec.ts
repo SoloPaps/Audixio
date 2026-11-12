@@ -59,10 +59,9 @@ test('le pied de page ouvre les pages légales', async ({ page }) => {
   await expect(
     footer.getByRole('link', { name: 'Accessibilité' }),
   ).toHaveAttribute('href', '/accessibilite');
-  await expect(footer.getByRole('link', { name: 'Méthode' })).toHaveAttribute(
-    'href',
-    '/methode',
-  );
+  await expect(
+    footer.getByRole('link', { name: 'Comment ça marche' }),
+  ).toHaveAttribute('href', '/methode');
 
   await page.goto('/cgu');
   await waitForIslands(page);

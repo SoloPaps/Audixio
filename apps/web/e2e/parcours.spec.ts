@@ -325,11 +325,11 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Vérifiez la santé de votre site, gratuitement.',
+      name: 'Ce que votre site cache, révélé en quelques minutes.',
     }),
   ).toBeVisible();
   await page.getByLabel('Adresse du site').fill('https://exemple.fr');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expectGuestThroughProgression(page);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),
@@ -486,11 +486,11 @@ test('parcours invité : progression puis rapport, sans compte', async ({
   await expect(
     page.getByRole('heading', {
       level: 1,
-      name: 'Vérifiez la santé de votre site, gratuitement.',
+      name: 'Ce que votre site cache, révélé en quelques minutes.',
     }),
   ).toBeVisible();
   await page.getByLabel('Adresse du site').fill('https://exemple.fr');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expectGuestThroughProgression(page);
   await expect(page).not.toHaveURL(/\/connexion/);
   await expect(
@@ -518,7 +518,7 @@ test('parcours invité : le plafond ouvre la fenêtre sans rapport', async ({
   });
   await page.goto('/');
   await page.getByLabel('Adresse du site').fill('https://exemple.fr');
-  await page.getByRole('button', { name: "Lancer l'audit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page).not.toHaveURL(/\/lancer/);
   const gate = page.getByRole('dialog', {
