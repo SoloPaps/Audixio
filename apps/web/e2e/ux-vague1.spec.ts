@@ -163,9 +163,13 @@ test('la barre et le pied ne sont pas soulignés au repos', async ({ page }) => 
   await expect(
     page.locator('.axn-tools').getByRole('button', { name: 'Thème' }),
   ).toBeVisible();
-  // /compte est passée sur V6Page (lot 4) : le pied Canon se lit sur /historique.
+  // Plus aucune page sur Canon (lot 5) : le pied v6 de /historique, connecté
+  // ou non, n’est pas souligné au repos non plus.
   await page.goto('/historique');
-  const cgu = page.getByRole('contentinfo').getByRole('link', { name: 'CGU' });
-  await expect(cgu).toHaveCSS('text-decoration-line', 'none');
-  await expect(cgu).toHaveCSS('font-weight', '500');
+  const cgu = page
+    .getByRole('contentinfo')
+    .getByRole('link', { name: 'Conditions d’utilisation' });
+  await expect(cgu).toHaveClass(/link-footer/);
+  await expect(cgu).toHaveCSS('text-decoration-color', 'rgba(0, 0, 0, 0)');
+  await expect(cgu).toHaveCSS('font-weight', '400');
 });

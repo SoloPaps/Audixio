@@ -1,16 +1,16 @@
 ---
-import '../styles/maquettes/liens.css';
 import WelcomeBoard from '../components/WelcomeBoard.svelte';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
-import '../styles/maquettes/bienvenue.css';
+import V6Page from '../layouts/V6Page.astro';
+import '../styles/maquettes/bienvenue-v6.css';
 ---
 
-<Canon
+<V6Page
   vue="bienvenue"
   title={t('meta.welcome.title')}
   description={t('meta.welcome.description')}
-  robots="noindex, nofollow"
 >
+  <div class="bv" data-port>
   <WelcomeBoard client:load />
-</Canon>
+  </div>
+</V6Page>

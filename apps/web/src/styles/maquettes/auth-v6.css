@@ -1,27 +1,35 @@
-/* Cartes d'auth portées des maquettes finales (connexion, mot de passe, e-mail confirmé). */
-
-body.auth-gate,
-body.auth-gate * {
+/* Connexion et pages d’accès en v6 : feuille de la page portée sous .au, couleurs
+ * sur les jetons v6 (le sombre suit theme-dark.css), police Geist. */
+.au {
+  box-sizing: border-box;
+  color: var(--x-text);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: clip;
+}
+.au .auth-gate,
+.au .auth-gate * {
   box-sizing: border-box;
 }
-
-body.auth-gate {
-  --bg: var(--d-bg, #ede8f5);
-  --card: var(--d-gl, rgb(255 255 255 / 0.9));
-  --input: var(--d-sf2, #f8f7fc);
-  --line: var(--d-ln, #adbbda);
-  --soft: var(--d-t2, rgb(61 82 160 / 0.15));
-  --primary: var(--d-ac, #3d52a0);
-  --primary-h: var(--d-tx, #1e2a55);
-  --accent: var(--d-ic, #7091e6);
-  --lav: var(--d-ic, #8697c4);
-  --text: var(--d-tx, #1e2a55);
-  --muted: var(--d-mu, #4a5585);
-  --err: var(--d-er, #b42318);
-  --ok: var(--d-ok, #067647);
-  --out: cubic-bezier(0.16, 1, 0.3, 1);
-  --shadow:
+.au {
+  --x-bg: var(--bg);
+  --x-card: color-mix(in oklab, var(--surf) 88%, transparent);
+  --x-input: var(--surf-2);
+  --x-line: var(--line);
+  --x-soft: var(--beam-a);
+  --x-primary: var(--beam);
+  --x-primary-h: var(--ink);
+  --x-accent: var(--beam);
+  --x-lav: var(--beam);
+  --x-text: var(--ink);
+  --x-muted: var(--ink-2);
+  --x-err: var(--find);
+  --x-ok: var(--ok);
+  --x-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --x-shadow:
     0 30px 60px -15px rgb(61 82 160 / 0.28), 0 0 0 1px rgb(61 82 160 / 0.06);
+}
+.au .auth-gate {
   margin: 0;
   min-height: 100vh;
   display: flex;
@@ -31,103 +39,80 @@ body.auth-gate {
   position: relative;
   overflow-x: clip;
   overflow-y: auto;
-  color: var(--text);
-  background: linear-gradient(
-    180deg,
-    var(--d-bg, #f7f5fc),
-    var(--d-bg, #ede8f5) 40%,
-    var(--d-sf, #d5dcf0)
-  );
-  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  color: var(--x-text);
+  background: linear-gradient(180deg, var(--bg), var(--bg) 40%, var(--surf));
+  font-family: var(--sans);
   perspective: 1000px;
 }
-
-body.auth-gate .skip,
-body:has(main.auth-doc) .skip {
+.au .auth-gate .skip {
   position: absolute;
   left: 1rem;
   top: -4rem;
-  background: var(--d-cta, #3d52a0);
-  color: #fff;
+  background: var(--cta);
+  color: var(--cta-fg);
   padding: 0.7rem 1.1rem;
   border-radius: 12px;
   z-index: 100;
   font-weight: 600;
   text-decoration: none;
 }
-
-body.auth-gate .skip:focus,
-body:has(main.auth-doc) .skip:focus {
+.au .auth-gate .skip:focus {
   top: 1rem;
 }
-
-body.auth-gate .auth-tools {
+.au .auth-gate .auth-tools {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
 }
-
-body.auth-gate .backdrop,
-body.auth-gate .veil,
-body.auth-gate .orb {
+.au .auth-gate .backdrop,
+.au .auth-gate .veil,
+.au .auth-gate .orb {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
 }
-
-body.auth-gate .backdrop {
-  /* B1 : les orbes décoratives débordent du viewport (right/bottom négatifs).
-     On les clippe dans le backdrop plutôt que de modifier leur géométrie. */
+.au .auth-gate .backdrop {
   overflow: hidden;
-  /* Pas de transform : sinon les orbes fixed échapperaient au clip. */
+
   transform: none;
   background:
     radial-gradient(
       420px 180px at 18% 12%,
-      var(--d-gl, rgb(255 255 255 / 0.55)),
+      color-mix(in oklab, var(--surf) 88%, transparent),
       transparent 70%
     ),
-    linear-gradient(
-      180deg,
-      var(--d-bg, #f7f5fc),
-      var(--d-bg, #ede8f5) 40%,
-      var(--d-sf, #d5dcf0)
-    );
+    linear-gradient(180deg, var(--bg), var(--bg) 40%, var(--surf));
   filter: blur(14px) saturate(0.9);
   opacity: 0.75;
 }
-
-body.auth-gate .veil {
+.au .auth-gate .veil {
   background: linear-gradient(
     135deg,
-    var(--d-t1, rgb(237 232 245 / 0.72)),
-    var(--d-t1, rgb(173 187 218 / 0.45))
+    color-mix(in oklab, var(--beam) 6%, transparent),
+    color-mix(in oklab, var(--beam) 6%, transparent)
   );
 }
-
-body.auth-gate .orb {
+.au .auth-gate .orb {
   inset: auto;
   border-radius: 50%;
-  animation: auth-orb 12s ease-in-out infinite alternate;
+  animation: au-auth-orb 12s ease-in-out infinite alternate;
 }
-
-body.auth-gate .orb.o1 {
+.au .auth-gate .orb.o1 {
   width: 600px;
   height: 600px;
   top: -150px;
   left: -150px;
   background: radial-gradient(
     circle,
-    var(--d-t2, rgb(112 145 230 / 0.22)) 0%,
-    var(--d-t2, rgb(134 151 196 / 0.1)) 50%,
+    var(--beam-a) 0%,
+    var(--beam-a) 50%,
     transparent 70%
   );
 }
-
-body.auth-gate .orb.o2 {
+.au .auth-gate .orb.o2 {
   width: 500px;
   height: 500px;
   bottom: -150px;
@@ -136,13 +121,12 @@ body.auth-gate .orb.o2 {
   animation-direction: alternate-reverse;
   background: radial-gradient(
     circle,
-    var(--d-t2, rgb(61 82 160 / 0.16)) 0%,
-    var(--d-t1, rgb(112 145 230 / 0.06)) 60%,
+    var(--beam-a) 0%,
+    color-mix(in oklab, var(--beam) 6%, transparent) 60%,
     transparent 80%
   );
 }
-
-@keyframes auth-orb {
+@keyframes au-auth-orb {
   0% {
     transform: translate(0, 0) scale(1);
   }
@@ -153,24 +137,22 @@ body.auth-gate .orb.o2 {
     transform: translate(-40px, 80px) scale(0.95);
   }
 }
-
-.auth-card.login-card {
+.au .auth-card.login-card {
   position: relative;
   z-index: 1;
   width: 100%;
   max-width: 440px;
   min-width: 0;
-  background: var(--card);
+  background: var(--x-card);
   backdrop-filter: blur(20px);
-  border: 1px solid var(--soft);
+  border: 1px solid var(--x-soft);
   border-radius: 24px;
   padding: 40px 36px 28px;
-  box-shadow: var(--shadow);
+  box-shadow: var(--x-shadow);
   transform-style: preserve-3d;
-  animation: auth-card-in 0.8s var(--out) both;
+  animation: au-auth-card-in 0.8s var(--x-out) both;
 }
-
-@keyframes auth-card-in {
+@keyframes au-auth-card-in {
   from {
     opacity: 0;
     transform: translateY(30px) scale(0.95);
@@ -180,8 +162,7 @@ body.auth-gate .orb.o2 {
     transform: none;
   }
 }
-
-.auth-card::before {
+.au .auth-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -191,16 +172,15 @@ body.auth-gate .orb.o2 {
   border-radius: 24px 24px 0 0;
   background: linear-gradient(
     90deg,
-    var(--d-cta, var(--primary)),
-    var(--d-cta2, var(--accent)),
-    var(--lav),
-    var(--d-cta, var(--primary))
+    var(--cta),
+    var(--cta-h),
+    var(--x-lav),
+    var(--cta)
   );
   background-size: 300% 100%;
-  animation: auth-shift 6s ease infinite;
+  animation: au-auth-shift 6s ease infinite;
 }
-
-@keyframes auth-shift {
+@keyframes au-auth-shift {
   0%,
   100% {
     background-position: 0% 50%;
@@ -209,8 +189,7 @@ body.auth-gate .orb.o2 {
     background-position: 100% 50%;
   }
 }
-
-.auth-card .close {
+.au .auth-card .close {
   position: absolute;
   top: 14px;
   right: 14px;
@@ -219,82 +198,71 @@ body.auth-gate .orb.o2 {
   display: grid;
   place-items: center;
   border-radius: 12px;
-  color: var(--muted);
+  color: var(--x-muted);
   text-decoration: none;
   transition:
     background 0.2s,
     color 0.2s;
 }
-
-.auth-card .close:hover {
-  background: var(--d-t1, rgb(61 82 160 / 0.08));
-  color: var(--primary);
+.au .auth-card .close:hover {
+  background: color-mix(in oklab, var(--beam) 6%, transparent);
+  color: var(--x-primary);
 }
-
-.auth-card .close svg {
+.au .auth-card .close svg {
   width: 20px;
   height: 20px;
 }
-
-.auth-card .brand {
+.au .auth-card .brand {
   text-align: center;
   margin-bottom: 26px;
 }
-
-.auth-card .brand a {
+.au .auth-card .brand a {
   display: inline-block;
 }
-
-.auth-card .brand img {
+.au .auth-card .brand img {
   height: 34px;
   width: auto;
 }
-
-.auth-card h1 {
+.au .auth-card h1 {
   margin: 14px 0 0;
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.2;
-  color: var(--text);
+  color: var(--x-text);
 }
-
-.auth-card .brand p,
-.auth-card .vp {
+.au .auth-card .brand p,
+.au .auth-card .vp {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--x-muted);
   margin: 10px 0 0;
   line-height: 1.5;
 }
-
-.auth-card .tabs {
+.au .auth-card .tabs {
   position: relative;
   display: flex;
-  background: var(--input);
-  border: 1px solid var(--soft);
+  background: var(--x-input);
+  border: 1px solid var(--x-soft);
   border-radius: 14px;
   padding: 4px;
   margin-bottom: 26px;
 }
-
-.auth-card .tab-ind {
+.au .auth-card .tab-ind {
   position: absolute;
   top: 4px;
   left: 4px;
   width: calc(50% - 4px);
   height: calc(100% - 8px);
-  background: var(--d-sf, #fff);
+  background: var(--surf);
   border-radius: 10px;
   box-shadow: 0 4px 12px rgb(61 82 160 / 0.14);
-  transition: transform 0.35s var(--out);
+  transition: transform 0.35s var(--x-out);
   z-index: 1;
 }
-
-.auth-card .tabs.is-signup .tab-ind {
+.au .auth-card .tabs.is-signup .tab-ind {
   transform: translateX(100%);
 }
-
-.auth-card .tab {
+.au .auth-card .tab {
   flex: 1;
   position: relative;
   z-index: 2;
@@ -304,28 +272,21 @@ body.auth-gate .orb.o2 {
   border: 0;
   padding: 11px 6px;
   min-height: 44px;
-  font:
-    600 13px / 1.2 Inter,
-    "Segoe UI",
-    system-ui,
-    sans-serif;
-  color: var(--muted);
+  font: 600 13px / 1.2 var(--sans);
+  color: var(--x-muted);
   text-decoration: none;
   cursor: pointer;
   transition: color 0.3s;
 }
-
-.auth-card .tab[aria-current="page"] {
-  color: var(--text);
+.au .auth-card .tab[aria-current="page"] {
+  color: var(--x-text);
 }
-
-.auth-card .social {
+.au .auth-card .social {
   display: flex;
   gap: 12px;
   margin-bottom: 22px;
 }
-
-.auth-card .sbtn {
+.au .auth-card .sbtn {
   flex: 1;
   min-width: 0;
   display: flex;
@@ -333,108 +294,86 @@ body.auth-gate .orb.o2 {
   justify-content: center;
   gap: 10px;
   min-height: 46px;
-  background: var(--input);
-  border: 1px solid var(--soft);
-  color: var(--text);
+  background: var(--x-input);
+  border: 1px solid var(--x-soft);
+  color: var(--x-text);
   padding: 12px 8px;
   border-radius: 12px;
-  font:
-    600 13px Inter,
-    "Segoe UI",
-    system-ui,
-    sans-serif;
+  font: 600 13px var(--sans);
   text-decoration: none;
   cursor: pointer;
   transition: all 0.25s ease;
 }
-
-.auth-card .sbtn .gh {
-  fill: var(--d-tx, #1e2a55);
+.au .auth-card .sbtn .gh {
+  fill: var(--ink);
 }
-
-.auth-card .sbtn:hover {
-  border-color: var(--primary);
-  background: var(--d-sf, #fff);
+.au .auth-card .sbtn:hover {
+  border-color: var(--x-primary);
+  background: var(--surf);
   transform: translateY(-2px);
   box-shadow: 0 6px 15px rgb(61 82 160 / 0.12);
 }
-
-.auth-card .div {
+.au .auth-card .div {
   display: flex;
   align-items: center;
   margin-bottom: 22px;
-  color: var(--muted);
+  color: var(--x-muted);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   font-weight: 700;
 }
-
-.auth-card .div::before,
-.auth-card .div::after {
+.au .auth-card .div::before,
+.au .auth-card .div::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid var(--soft);
+  border-bottom: 1px solid var(--x-soft);
 }
-
-.auth-card .div::before {
+.au .auth-card .div::before {
   margin-right: 12px;
 }
-
-.auth-card .div::after {
+.au .auth-card .div::after {
   margin-left: 12px;
 }
-
-.auth-card .fg {
+.au .auth-card .fg {
   margin-bottom: 16px;
 }
-
-.auth-card .lbl {
+.au .auth-card .lbl {
   display: block;
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 6px;
 }
-
-.auth-card .ic {
+.au .auth-card .ic {
   position: relative;
   display: flex;
   align-items: center;
 }
-
-.auth-card .in {
+.au .auth-card .in {
   width: 100%;
   min-height: 46px;
-  background: var(--input);
-  border: 1px solid var(--line);
+  background: var(--x-input);
+  border: 1px solid var(--x-line);
   border-radius: 12px;
   padding: 12px 48px 12px 14px;
-  font:
-    400 15px Inter,
-    "Segoe UI",
-    system-ui,
-    sans-serif;
-  color: var(--text);
+  font: 400 15px var(--sans);
+  color: var(--x-text);
   outline: none;
   transition: all 0.25s ease;
 }
-
-.auth-card .in::placeholder {
-  color: var(--muted);
+.au .auth-card .in::placeholder {
+  color: var(--x-muted);
   opacity: 1;
 }
-
-.auth-card .in:focus {
-  border-color: var(--primary);
+.au .auth-card .in:focus {
+  border-color: var(--x-primary);
   box-shadow: 0 0 0 4px rgb(61 82 160 / 0.14);
-  background: var(--d-sf, #fff);
+  background: var(--surf);
 }
-
-.auth-card .in[aria-invalid="true"] {
-  border-color: var(--err);
+.au .auth-card .in[aria-invalid="true"] {
+  border-color: var(--x-err);
 }
-
-.auth-card .eye {
+.au .auth-card .eye {
   position: absolute;
   right: 4px;
   width: 40px;
@@ -444,41 +383,36 @@ body.auth-gate .orb.o2 {
   background: none;
   border: 0;
   border-radius: 10px;
-  color: var(--muted);
+  color: var(--x-muted);
   cursor: pointer;
   transition: color 0.2s;
 }
-
-.auth-card .eye:hover {
-  color: var(--primary);
+.au .auth-card .eye:hover {
+  color: var(--x-primary);
 }
-
-.auth-card .meter {
+.au .auth-card .meter {
   height: 5px;
-  background: var(--soft);
+  background: var(--x-soft);
   border-radius: 3px;
   margin-top: 10px;
   overflow: hidden;
 }
-
-.auth-card .bar {
+.au .auth-card .bar {
   height: 100%;
   width: 0;
   border-radius: 3px;
   transition:
-    width 0.4s var(--out),
+    width 0.4s var(--x-out),
     background-color 0.4s;
 }
-
-.auth-card .mtxt {
+.au .auth-card .mtxt {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--x-muted);
   margin: 5px 0 0;
   text-align: right;
   font-weight: 500;
 }
-
-.auth-card .opts {
+.au .auth-card .opts {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -487,32 +421,27 @@ body.auth-gate .orb.o2 {
   margin-bottom: 20px;
   font-size: 13px;
 }
-
-.auth-card .chk {
+.au .auth-card .chk {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  color: var(--muted);
+  color: var(--x-muted);
   cursor: pointer;
   line-height: 1.45;
 }
-
-/* B7 : le point final reste collé au dernier lien du consentement. */
-.auth-card .chk .keep {
+.au .auth-card .chk .keep {
   white-space: nowrap;
 }
-
-.auth-card .chk input {
-  accent-color: var(--primary);
+.au .auth-card .chk input {
+  accent-color: var(--x-primary);
   width: 16px;
   height: 16px;
   margin-top: 2px;
   flex: none;
 }
-
-.auth-card a.lk,
-.auth-card button.lk {
-  color: var(--primary);
+.au .auth-card a.lk,
+.au .auth-card button.lk {
+  color: var(--x-primary);
   text-decoration: none;
   background: none;
   border: 0;
@@ -521,42 +450,34 @@ body.auth-gate .orb.o2 {
   cursor: pointer;
   padding: 0;
 }
-
-.auth-card a.lk {
+.au .auth-card a.lk {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
 }
-
-.auth-card a.lk:hover,
-.auth-card button.lk:hover {
+.au .auth-card a.lk:hover,
+.au .auth-card button.lk:hover {
   text-decoration: underline;
-  color: var(--primary-h);
+  color: var(--x-primary-h);
 }
-
-.auth-card .cta {
+.au .auth-card .cta {
   position: relative;
   width: 100%;
   min-height: 48px;
-  background: var(--d-cta, var(--primary));
-  color: #fff;
+  background: var(--cta);
+  color: var(--cta-fg);
   border: 0;
   border-radius: 12px;
   padding: 14px;
-  font:
-    700 14px / 1.2 Inter,
-    "Segoe UI",
-    system-ui,
-    sans-serif;
+  font: 700 14px / 1.2 var(--sans);
   cursor: pointer;
   overflow: hidden;
   box-shadow: 0 6px 20px rgb(61 82 160 / 0.3);
   transition:
-    transform 0.25s var(--out),
+    transform 0.25s var(--x-out),
     box-shadow 0.25s;
 }
-
-.auth-card .cta::after {
+.au .auth-card .cta::after {
   content: "";
   position: absolute;
   top: -50%;
@@ -572,65 +493,55 @@ body.auth-gate .orb.o2 {
   transform: rotate(30deg) translateX(-100%);
   transition: transform 0.8s ease-in-out;
 }
-
-.auth-card .cta:hover {
+.au .auth-card .cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgb(61 82 160 / 0.4);
 }
-
-.auth-card .cta:hover::after {
+.au .auth-card .cta:hover::after {
   transform: rotate(30deg) translateX(100%);
 }
-
-.auth-card .cta:active {
+.au .auth-card .cta:active {
   transform: none;
 }
-
-.auth-card .cta[disabled] {
+.au .auth-card .cta[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
-
-.auth-card .vh {
+.au .auth-card .vh {
   font-size: 18px;
   font-weight: 800;
   margin: 0 0 6px;
 }
-
-.auth-card .status {
+.au .auth-card .status {
   margin-top: 14px;
   font-size: 13px;
   line-height: 1.45;
   border-radius: 12px;
   padding: 10px 12px;
 }
-
-.auth-card .status.ok {
-  background: var(--d-okb, rgb(6 118 71 / 0.08));
-  color: var(--ok);
-  border: 1px solid var(--d-okd, rgb(6 118 71 / 0.2));
+.au .auth-card .status.ok {
+  background: var(--ok-a);
+  color: var(--x-ok);
+  border: 1px solid color-mix(in oklab, var(--ok) 35%, transparent);
 }
-
-.auth-card .status.err {
-  background: var(--d-erb, rgb(180 35 24 / 0.06));
-  color: var(--err);
-  border: 1px solid var(--d-erd, rgb(180 35 24 / 0.2));
+.au .auth-card .status.err {
+  background: var(--find-a);
+  color: var(--x-err);
+  border: 1px solid color-mix(in oklab, var(--find) 35%, transparent);
 }
-
-.auth-card .mailic {
+.au .auth-card .mailic {
   width: 64px;
   height: 64px;
   margin: 0 auto 14px;
   border-radius: 20px;
   display: grid;
   place-items: center;
-  background: var(--d-t1, rgb(61 82 160 / 0.08));
-  color: var(--primary);
-  animation: auth-pop 0.6s var(--out) both;
+  background: color-mix(in oklab, var(--beam) 6%, transparent);
+  color: var(--x-primary);
+  animation: au-auth-pop 0.6s var(--x-out) both;
 }
-
-@keyframes auth-pop {
+@keyframes au-auth-pop {
   from {
     transform: scale(0.6);
     opacity: 0;
@@ -640,117 +551,86 @@ body.auth-gate .orb.o2 {
     opacity: 1;
   }
 }
-
-.auth-card .center {
+.au .auth-card .center {
   text-align: center;
 }
-
-.auth-card .legal {
+.au .auth-card .legal {
   margin-top: 22px;
   padding-top: 16px;
-  border-top: 1px solid var(--soft);
+  border-top: 1px solid var(--x-soft);
   font-size: 12px;
-  color: var(--muted);
+  color: var(--x-muted);
   text-align: center;
   line-height: 1.6;
 }
-
-.auth-card .legal a {
-  color: var(--muted);
+.au .auth-card .legal a {
+  color: var(--x-muted);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-
-.auth-card .legal a:hover {
-  color: var(--primary);
+.au .auth-card .legal a:hover {
+  color: var(--x-primary);
 }
-
-.auth-card :focus-visible {
-  outline: 3px solid var(--accent);
+.au .auth-card :focus-visible {
+  outline: 3px solid var(--x-accent);
   outline-offset: 2px;
 }
-
 @media (max-width: 480px) {
-  .auth-card.login-card {
+  .au .auth-card.login-card {
     padding: 34px 18px 22px;
     border-radius: 20px;
   }
-  .auth-card::before {
+  .au .auth-card::before {
     border-radius: 20px 20px 0 0;
   }
-  .auth-card .social {
+  .au .auth-card .social {
     gap: 8px;
   }
-  .auth-card .sbtn {
+  .au .auth-card .sbtn {
     gap: 6px;
     font-size: 12.5px;
   }
 }
-
 @media (max-width: 360px) {
-  .auth-card .brand p {
+  .au .auth-card .brand p {
     font-size: 13px;
   }
-  .auth-card .tab {
+  .au .auth-card .tab {
     font-size: 12.5px;
   }
 }
-
-/* Pages document (réinitialisation, e-mail confirmé) : hero + cartes, chrome canon à part. */
-
-body:has(main.auth-doc) {
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  color: var(--d-tx, #1e2a55);
-  line-height: 1.75;
-  background: linear-gradient(
-      160deg,
-      var(--d-bg, #ede8f5) 0%,
-      var(--d-bg, #ede8f5) 35%,
-      var(--d-bg, #adbbda) 100%
-    )
-    fixed;
-  font-family: Inter, "Segoe UI", system-ui, sans-serif;
-}
-
-main.auth-doc {
+.au main.auth-doc {
   width: min(1040px, calc(100% - 2.5rem));
   margin-inline: auto;
   padding-top: 24px;
   padding-bottom: 4rem;
   flex: 1;
 }
-
-main.auth-doc h1,
-main.auth-doc h2,
-main.auth-doc h3 {
+.au main.auth-doc h1,
+.au main.auth-doc h2,
+.au main.auth-doc h3 {
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin: 0;
-  color: var(--d-tx, #1e2a55);
+  color: var(--ink);
 }
-
-main.auth-doc h1,
-main.auth-doc .h1like {
+.au main.auth-doc h1,
+.au main.auth-doc .h1like {
   font-size: clamp(30px, 5.4vw, 52px);
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 1.1;
 }
-
-main.auth-doc .h1like {
+.au main.auth-doc .h1like {
   font-size: clamp(28px, 5vw, 46px);
 }
-
-main.auth-doc h1 .grad,
-main.auth-doc .h1like .grad {
+.au main.auth-doc h1 .grad,
+.au main.auth-doc .h1like .grad {
   background: linear-gradient(
     100deg,
-    var(--d-ac, #3d52a0),
-    var(--d-ic, #7091e6) 60%,
-    var(--d-ac, #3d52a0)
+    var(--beam),
+    var(--beam) 60%,
+    var(--beam)
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
@@ -758,36 +638,30 @@ main.auth-doc .h1like .grad {
   color: transparent;
   padding-bottom: 0.12em;
   margin-bottom: -0.12em;
-  animation: auth-sheen 6s ease-in-out infinite;
+  animation: au-auth-sheen 6s ease-in-out infinite;
 }
-
-@keyframes auth-sheen {
+@keyframes au-auth-sheen {
   50% {
     background-position: 100% 0;
   }
 }
-
-main.auth-doc h2 {
+.au main.auth-doc h2 {
   font-size: clamp(22px, 3vw, 28px);
   font-weight: 800;
 }
-
-main.auth-doc.auth-doc p {
+.au main.auth-doc.auth-doc p {
   margin: 0;
 }
-
-main.auth-doc .lead {
+.au main.auth-doc .lead {
   font-size: clamp(16px, 2vw, 19px);
-  color: var(--d-mu, #4a5585);
+  color: var(--ink-2);
   max-width: 60ch;
   margin: 16px auto 0;
 }
-
-main.auth-doc .crumbs {
+.au main.auth-doc .crumbs {
   margin-bottom: 16px;
 }
-
-main.auth-doc .crumbs ol {
+.au main.auth-doc .crumbs ol {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -796,110 +670,91 @@ main.auth-doc .crumbs ol {
   margin: 0;
   padding: 0;
   font-size: 14px;
-  color: var(--d-mu, #4a5585);
+  color: var(--ink-2);
 }
-
-main.auth-doc .crumbs li + li::before {
+.au main.auth-doc .crumbs li + li::before {
   content: "›";
   margin-right: 10px;
-  color: var(--d-mu, #4a5585);
+  color: var(--ink-2);
 }
-
-main.auth-doc .crumbs a {
+.au main.auth-doc .crumbs a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  color: var(--d-mu, #4a5585);
+  color: var(--ink-2);
   text-decoration: none;
   font-weight: 600;
 }
-
-main.auth-doc .crumbs a:hover {
-  color: var(--d-ac, #3d52a0);
+.au main.auth-doc .crumbs a:hover {
+  color: var(--beam);
 }
-
-main.auth-doc .hero {
+.au main.auth-doc .hero {
   position: relative;
   isolation: isolate;
   margin: 0 0 48px;
   text-align: center;
   padding: clamp(24px, 5vw, 48px) clamp(16px, 4vw, 48px) clamp(28px, 5vw, 48px);
   border-radius: 28px;
-  border: 1px solid var(--d-ln, rgb(173 187 218 / 0.7));
+  border: 1px solid var(--line);
   background:
-    radial-gradient(
-      60% 80% at 15% 0%,
-      var(--d-t2, rgb(112 145 230 / 0.22)),
-      transparent 70%
-    ),
-    radial-gradient(
-      50% 70% at 95% 0%,
-      var(--d-t2, rgb(134 151 196 / 0.22)),
-      transparent 70%
-    ),
-    linear-gradient(180deg, var(--d-bg, #ede8f5), var(--d-sf2, #f7f5fc));
+    radial-gradient(60% 80% at 15% 0%, var(--beam-a), transparent 70%),
+    radial-gradient(50% 70% at 95% 0%, var(--beam-a), transparent 70%),
+    linear-gradient(180deg, var(--bg), var(--surf-2));
   box-shadow: 0 1px 2px rgb(30 42 85 / 0.04);
 }
-
-main.auth-doc .chip {
+.au main.auth-doc .chip {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 6px 14px;
   border-radius: 999px;
-  background: var(--d-sf, #fff);
-  border: 1px solid var(--d-ln, #adbbda);
+  background: var(--surf);
+  border: 1px solid var(--line);
   font-size: 13px;
   font-weight: 700;
-  color: var(--d-ac, #3d52a0);
+  color: var(--beam);
   margin-bottom: 18px;
 }
-
-main.auth-doc .chip.ok {
-  color: var(--d-ok, #065f3a);
-  border-color: var(--d-okd, #a7dcc0);
+.au main.auth-doc .chip.ok {
+  color: var(--ok);
+  border-color: color-mix(in oklab, var(--ok) 35%, transparent);
 }
-
-main.auth-doc .chip i {
+.au main.auth-doc .chip i {
   position: relative;
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: #2fa36b;
 }
-
-main.auth-doc .chip i::after {
+.au main.auth-doc .chip i::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: 50%;
   background: #2fa36b;
-  animation: auth-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  animation: au-auth-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
-
-@keyframes auth-ping {
+@keyframes au-auth-ping {
   75%,
   100% {
     transform: scale(2.4);
     opacity: 0;
   }
 }
-
-main.auth-doc .badge-ic {
+.au main.auth-doc .badge-ic {
   width: 72px;
   height: 72px;
   margin: 0 auto 18px;
   border-radius: 22px;
   display: grid;
   place-items: center;
-  background: var(--d-sf, #fff);
-  border: 1px solid var(--d-ln, #adbbda);
-  color: var(--d-ac, #3d52a0);
+  background: var(--surf);
+  border: 1px solid var(--line);
+  color: var(--beam);
   box-shadow: 0 18px 36px -18px rgb(61 82 160 / 0.6);
-  animation: auth-badge 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: au-auth-badge 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-
-main.auth-doc .badge-ic svg {
+.au main.auth-doc .badge-ic svg {
   width: 34px;
   height: 34px;
   fill: none;
@@ -908,89 +763,75 @@ main.auth-doc .badge-ic svg {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-main.auth-doc .badge-ic.ok {
-  color: var(--d-ok, #2fa36b);
+.au main.auth-doc .badge-ic.ok {
+  color: var(--ok);
 }
-
-@keyframes auth-badge {
+@keyframes au-auth-badge {
   from {
     transform: scale(0.6);
     opacity: 0;
   }
 }
-
-main.auth-doc .panel {
-  background: var(--d-gl, rgb(255 255 255 / 0.82));
+.au main.auth-doc .panel {
+  background: color-mix(in oklab, var(--surf) 88%, transparent);
   backdrop-filter: blur(14px);
-  border: 1px solid var(--d-ln, rgb(173 187 218 / 0.8));
+  border: 1px solid var(--line);
   border-radius: 24px;
   padding: clamp(20px, 4vw, 36px);
   box-shadow:
     0 1px 2px rgb(30 42 85 / 0.05),
     0 14px 36px -16px rgb(61 82 160 / 0.26);
 }
-
-main.auth-doc .narrow {
+.au main.auth-doc .narrow {
   max-width: 560px;
   margin-inline: auto;
   margin-top: 28px;
 }
-
-main.auth-doc .field {
+.au main.auth-doc .field {
   display: grid;
   gap: 6px;
   margin-top: 18px;
   text-align: left;
 }
-
-main.auth-doc .field label {
+.au main.auth-doc .field label {
   font-weight: 700;
   font-size: 15px;
 }
-
-main.auth-doc .hint {
+.au main.auth-doc .hint {
   font-size: 14px;
-  color: var(--d-mu, #4a5585);
+  color: var(--ink-2);
 }
-
-main.auth-doc .inp {
+.au main.auth-doc .inp {
   box-sizing: border-box;
   width: 100%;
   min-height: 48px;
   padding: 10px 14px;
-  border: 1px solid var(--d-ln2, #8697c4);
+  border: 1px solid var(--line-2);
   border-radius: 14px;
-  background: var(--d-sf, #fff);
+  background: var(--surf);
   font: inherit;
-  color: var(--d-tx, #1e2a55);
+  color: var(--ink);
 }
-
-main.auth-doc .inp:focus {
-  outline: 3px solid var(--d-ac, #3d52a0);
+.au main.auth-doc .inp:focus {
+  outline: 3px solid var(--beam);
   outline-offset: 1px;
-  border-color: var(--d-ac, #3d52a0);
+  border-color: var(--beam);
 }
-
-main.auth-doc .inp[aria-invalid="true"] {
-  border-color: var(--d-er, #b42318);
+.au main.auth-doc .inp[aria-invalid="true"] {
+  border-color: var(--find);
 }
-
-main.auth-doc .err-msg {
-  color: var(--d-er, #b42318);
+.au main.auth-doc .err-msg {
+  color: var(--find);
   font-size: 14px;
   font-weight: 600;
 }
-
-main.auth-doc .pw {
+.au main.auth-doc .pw {
   position: relative;
 }
-
-main.auth-doc .pw .inp {
+.au main.auth-doc .pw .inp {
   padding-right: 60px;
 }
-
-main.auth-doc .pw button {
+.au main.auth-doc .pw button {
   position: absolute;
   right: 2px;
   top: 2px;
@@ -998,14 +839,13 @@ main.auth-doc .pw button {
   height: 44px;
   border: 0;
   background: none;
-  color: var(--d-ac, #3d52a0);
+  color: var(--beam);
   cursor: pointer;
   border-radius: 12px;
   display: grid;
   place-items: center;
 }
-
-main.auth-doc .pw button svg {
+.au main.auth-doc .pw button svg {
   width: 20px;
   height: 20px;
   fill: none;
@@ -1014,38 +854,31 @@ main.auth-doc .pw button svg {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-main.auth-doc .bars {
+.au main.auth-doc .bars {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   margin-top: 4px;
 }
-
-main.auth-doc .bars i {
+.au main.auth-doc .bars i {
   height: 6px;
   border-radius: 6px;
-  background: var(--d-bg, #ede8f5);
+  background: var(--bg);
   transition: background-color 0.3s;
 }
-
-main.auth-doc .bars[data-s="1"] i:nth-child(-n + 1) {
+.au main.auth-doc .bars[data-s="1"] i:nth-child(-n + 1) {
   background: #d64545;
 }
-
-main.auth-doc .bars[data-s="2"] i:nth-child(-n + 2) {
+.au main.auth-doc .bars[data-s="2"] i:nth-child(-n + 2) {
   background: #e0a63a;
 }
-
-main.auth-doc .bars[data-s="3"] i:nth-child(-n + 3) {
-  background: var(--d-cta2, #7091e6);
+.au main.auth-doc .bars[data-s="3"] i:nth-child(-n + 3) {
+  background: var(--cta-h);
 }
-
-main.auth-doc .bars[data-s="4"] i {
+.au main.auth-doc .bars[data-s="4"] i {
   background: #2fa36b;
 }
-
-main.auth-doc .btn {
+.au main.auth-doc .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1065,8 +898,7 @@ main.auth-doc .btn {
     box-shadow 0.25s,
     background-color 0.2s;
 }
-
-main.auth-doc.auth-doc .btn svg {
+.au main.auth-doc.auth-doc .btn svg {
   width: 18px;
   height: 18px;
   flex: none;
@@ -1076,68 +908,59 @@ main.auth-doc.auth-doc .btn svg {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-main.auth-doc .btn-primary {
-  background: var(--d-cta, #3d52a0);
-  color: #fff;
+.au main.auth-doc .btn-primary {
+  background: var(--cta);
+  color: var(--cta-fg);
   box-shadow: 0 14px 28px -14px rgb(61 82 160 / 0.8);
 }
-
-main.auth-doc .btn-primary:hover {
-  background: var(--d-inv, #1e2a55);
+.au main.auth-doc .btn-primary:hover {
+  background: #0b1220;
   transform: translateY(-2px);
 }
-
-main.auth-doc .btn-ghost {
-  background: var(--d-sf, #fff);
-  color: var(--d-ac, #3d52a0);
-  border-color: var(--d-ln, #adbbda);
+.au main.auth-doc .btn-ghost {
+  background: var(--surf);
+  color: var(--beam);
+  border-color: var(--line);
 }
-
-main.auth-doc .btn-ghost:hover {
-  border-color: var(--d-ic, #7091e6);
-  background: var(--d-bg, #ede8f5);
+.au main.auth-doc .btn-ghost:hover {
+  border-color: var(--beam);
+  background: var(--bg);
   transform: translateY(-2px);
 }
-
-main.auth-doc .btn[disabled] {
+.au main.auth-doc .btn[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
-
-main.auth-doc .wide {
+.au main.auth-doc .wide {
   width: 100%;
   margin-top: 20px;
 }
-
-main.auth-doc .acts {
+.au main.auth-doc .acts {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
   margin-top: 28px;
 }
-
-main.auth-doc .note {
+.au main.auth-doc .note {
   display: flex;
   gap: 12px;
   align-items: flex-start;
   padding: 14px 16px;
   border-radius: 16px;
-  background: var(--d-bg, #ede8f5);
-  border: 1px solid var(--d-ln, #adbbda);
+  background: var(--bg);
+  border: 1px solid var(--line);
   font-size: 15px;
-  color: var(--d-tx, #1e2a55);
+  color: var(--ink);
   text-align: left;
   margin-top: 18px;
 }
-
-main.auth-doc.auth-doc .note svg {
+.au main.auth-doc.auth-doc .note svg {
   flex: none;
   width: 22px;
   height: 22px;
-  color: var(--d-ac, #3d52a0);
+  color: var(--beam);
   margin-top: 2px;
   fill: none;
   stroke: currentColor;
@@ -1145,21 +968,17 @@ main.auth-doc.auth-doc .note svg {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-main.auth-doc .sec {
+.au main.auth-doc .sec {
   margin-top: 48px;
 }
-
-main.auth-doc .sec > h2 {
+.au main.auth-doc .sec > h2 {
   margin-bottom: 6px;
 }
-
-main.auth-doc .sub {
-  color: var(--d-mu, #4a5585);
+.au main.auth-doc .sub {
+  color: var(--ink-2);
   margin-bottom: 8px;
 }
-
-main.auth-doc .lk-grid {
+.au main.auth-doc .lk-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   gap: 16px;
@@ -1167,23 +986,21 @@ main.auth-doc .lk-grid {
   padding: 0;
   margin: 16px 0 0;
 }
-
-main.auth-doc .lk-grid li {
+.au main.auth-doc .lk-grid li {
   display: flex;
   min-width: 0;
 }
-
-main.auth-doc .lk {
+.au main.auth-doc .lk {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 16px;
   min-height: 44px;
   padding: 16px;
-  border: 1px solid var(--d-ln, #adbbda);
+  border: 1px solid var(--line);
   border-radius: 20px;
-  background: var(--d-sf, #fff);
-  color: var(--d-tx, #1e2a55);
+  background: var(--surf);
+  color: var(--ink);
   text-decoration: none;
   box-shadow: 0 1px 2px rgb(30 42 85 / 0.04);
   transition:
@@ -1191,27 +1008,24 @@ main.auth-doc .lk {
     box-shadow 0.25s,
     border-color 0.25s;
 }
-
-main.auth-doc .lk:hover,
-main.auth-doc .lk:focus-visible {
+.au main.auth-doc .lk:hover,
+.au main.auth-doc .lk:focus-visible {
   transform: translateY(-3px);
-  border-color: var(--d-ic, #7091e6);
+  border-color: var(--beam);
   box-shadow: 0 16px 32px -16px rgb(61 82 160 / 0.45);
 }
-
-main.auth-doc .lk-ico {
+.au main.auth-doc .lk-ico {
   flex: none;
   width: 44px;
   height: 44px;
   border-radius: 14px;
-  background: var(--d-bg, #ede8f5);
-  color: var(--d-ac, #3d52a0);
+  background: var(--bg);
+  color: var(--beam);
   display: grid;
   place-items: center;
 }
-
-main.auth-doc.auth-doc .lk-ico svg,
-main.auth-doc.auth-doc .lk-ar {
+.au main.auth-doc.auth-doc .lk-ico svg,
+.au main.auth-doc.auth-doc .lk-ar {
   width: 22px;
   height: 22px;
   fill: none;
@@ -1220,48 +1034,41 @@ main.auth-doc.auth-doc .lk-ar {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-main.auth-doc.auth-doc .lk-ar {
+.au main.auth-doc.auth-doc .lk-ar {
   flex: none;
   width: 20px;
   height: 20px;
   stroke-width: 2.2;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-main.auth-doc .lk:hover .lk-ar,
-main.auth-doc .lk:focus-visible .lk-ar {
+.au main.auth-doc .lk:hover .lk-ar,
+.au main.auth-doc .lk:focus-visible .lk-ar {
   transform: translateX(4px);
-  color: var(--d-tx, #1e2a55);
+  color: var(--ink);
 }
-
-main.auth-doc .lk-tx {
+.au main.auth-doc .lk-tx {
   min-width: 0;
   flex: 1;
 }
-
-main.auth-doc .lk-t {
+.au main.auth-doc .lk-t {
   display: block;
   font-weight: 700;
   font-size: 16px;
   line-height: 1.3;
 }
-
-main.auth-doc .lk-d {
+.au main.auth-doc .lk-d {
   display: block;
   margin-top: 4px;
   font-size: 14px;
   line-height: 1.45;
   font-weight: 400;
-  color: var(--d-mu, #4a5585);
+  color: var(--ink-2);
 }
-
-main.auth-doc .fade {
-  animation: auth-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+.au main.auth-doc .fade {
+  animation: au-auth-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: var(--d, 0s);
 }
-
-@keyframes auth-up {
+@keyframes au-auth-up {
   from {
     opacity: 0;
     transform: translateY(18px);
@@ -1271,14 +1078,13 @@ main.auth-doc .fade {
     transform: none;
   }
 }
-
-main.auth-doc .toast {
+.au main.auth-doc .toast {
   position: fixed;
   left: 50%;
   bottom: 24px;
   transform: translate(-50%, 140%);
   visibility: hidden;
-  background: var(--d-inv, #1e2a55);
+  background: #0b1220;
   color: #fff;
   padding: 12px 20px;
   border-radius: 14px;
@@ -1287,54 +1093,49 @@ main.auth-doc .toast {
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   max-width: calc(100% - 32px);
 }
-
-main.auth-doc .toast.show {
+.au main.auth-doc .toast.show {
   transform: translate(-50%, 0);
   visibility: visible;
 }
-
-main.auth-doc :focus-visible {
-  outline: 3px solid var(--d-ac, #3d52a0);
+.au main.auth-doc :focus-visible {
+  outline: 3px solid var(--beam);
   outline-offset: 3px;
   border-radius: 8px;
 }
-
 @media (max-width: 900px) {
-  main.auth-doc {
+  .au main.auth-doc {
     padding-top: 16px;
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
-  body.auth-gate .orb,
-  .auth-card.login-card,
-  .auth-card::before,
-  .auth-card .mailic,
-  .auth-card .tab-ind,
-  .auth-card .sbtn,
-  .auth-card .cta,
-  .auth-card .cta::after,
-  .auth-card .in,
-  .auth-card .bar,
-  main.auth-doc .fade,
-  main.auth-doc .badge-ic,
-  main.auth-doc .chip i::after,
-  main.auth-doc h1 .grad,
-  main.auth-doc .lk,
-  main.auth-doc .lk-ar,
-  main.auth-doc .btn,
-  main.auth-doc .toast,
-  main.auth-doc .bars i {
+  .au .auth-gate .orb,
+  .au .auth-card.login-card,
+  .au .auth-card::before,
+  .au .auth-card .mailic,
+  .au .auth-card .tab-ind,
+  .au .auth-card .sbtn,
+  .au .auth-card .cta,
+  .au .auth-card .cta::after,
+  .au .auth-card .in,
+  .au .auth-card .bar,
+  .au main.auth-doc .fade,
+  .au main.auth-doc .badge-ic,
+  .au main.auth-doc .chip i::after,
+  .au main.auth-doc h1 .grad,
+  .au main.auth-doc .lk,
+  .au main.auth-doc .lk-ar,
+  .au main.auth-doc .btn,
+  .au main.auth-doc .toast,
+  .au main.auth-doc .bars i {
     animation: none;
     transition: none;
   }
-
-  .auth-card .sbtn:hover,
-  .auth-card .cta:hover,
-  main.auth-doc .btn-primary:hover,
-  main.auth-doc .btn-ghost:hover,
-  main.auth-doc .lk:hover,
-  main.auth-doc .lk:hover .lk-ar {
+  .au .auth-card .sbtn:hover,
+  .au .auth-card .cta:hover,
+  .au main.auth-doc .btn-primary:hover,
+  .au main.auth-doc .btn-ghost:hover,
+  .au main.auth-doc .lk:hover,
+  .au main.auth-doc .lk:hover .lk-ar {
     transform: none;
   }
 }

@@ -1,16 +1,17 @@
 ---
-import '../styles/maquettes/liens.css';
-import '../styles/maquettes/auth.css';
+import '../styles/maquettes/auth-v6.css';
 import ResetForm from '../components/ResetForm.svelte';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
+import V6Page from '../layouts/V6Page.astro';
 ---
 
-<Canon vue="auth" title={t('meta.reset.title')} description={t('meta.reset.description')}>
+<V6Page vue="auth" title={t('meta.reset.title')} description={t('meta.reset.description')}>
+  <div class="au" data-port>
   <main id="contenu" class="auth-doc" tabindex="-1">
     <ResetForm
       renew={Astro.url.searchParams.get('etape') === 'nouveau'}
       client:load
     />
   </main>
-</Canon>
+  </div>
+</V6Page>

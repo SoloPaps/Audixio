@@ -1,52 +1,25 @@
 ---
-import ThemeToggle from '../components/ThemeToggle.svelte';
-import { t } from '../i18n/index.js';
-import '../styles/polices.css';
-import '../styles/maquettes/auth.css';
-import '../styles/mobile-fit.css';
-import '../styles/theme-dark.css';
-import '../styles/maquettes/liens.css';
+import '../styles/maquettes/auth-v6.css';
+import V6Page from './V6Page.astro';
 
+/** Connexion et inscription : carte centrée sur un fond animé, dans le gabarit v6. */
 interface Props {
   title: string;
   description: string;
 }
 
 const { title, description } = Astro.props;
-const theme = Astro.url.searchParams.get('theme');
-const initial = theme === 'light' || theme === 'dark' ? theme : 'system';
 ---
 
-<!doctype html>
-<html lang="fr" data-theme={initial === 'system' ? undefined : initial} data-vue="auth">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta name="referrer" content="no-referrer" />
-    <meta name="color-scheme" content="light dark" />
-    <meta
-      name="theme-color"
-      content="#F3F5F8"
-      data-light="#F3F5F8"
-      data-dark="#06090D"
-    />
-    <meta property="og:locale" content="fr_FR" />
-    <link rel="canonical" href={Astro.url.pathname || '/'} />
-    <script is:inline src="/theme-init.js"></script>
-  </head>
-  <body class="auth-gate">
-    <a class="skip" href="#contenu">{t('skip.content')}</a>
-    <header class="auth-tools">
-      <ThemeToggle initial={initial} client:load />
-    </header>
-    <div class="backdrop" aria-hidden="true">
-      <div class="orb o1"></div>
-      <div class="orb o2"></div>
+<V6Page vue="auth" title={title} description={description}>
+  <div class="au" data-port>
+    <div class="auth-gate">
+      <div class="backdrop" aria-hidden="true">
+        <div class="orb o1"></div>
+        <div class="orb o2"></div>
+      </div>
+      <div class="veil" aria-hidden="true"></div>
+      <slot />
     </div>
-    <div class="veil" aria-hidden="true"></div>
-    <slot />
-  </body>
-</html>
+  </div>
+</V6Page>

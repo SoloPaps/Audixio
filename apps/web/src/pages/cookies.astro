@@ -1,8 +1,7 @@
 ---
-import '../styles/maquettes/liens.css';
-import '../styles/maquettes/cookies.css';
+import '../styles/maquettes/cookies-v6.css';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
+import V6Page from '../layouts/V6Page.astro';
 
 const messages = {
   'mq.lg.591': t('mq.lg.591'),
@@ -12,10 +11,11 @@ const messages = {
 const closeLabel = t('mq.lg.650');
 ---
 
-<Canon vue="cookies" title={t('mq.meta.cookies.title')} description={t('mq.meta.cookies.title')} robots="noindex">
+<V6Page vue="cookies" title={t('mq.meta.cookies.title')} description={t('mq.meta.cookies.title')} robots="noindex">
+  <div class="cks" data-port>
 <div class="backdrop" aria-hidden="true"></div>
 <div class="veil" aria-hidden="true"></div>
-<div class="wrap" id="contenu" >
+<main class="wrap" id="contenu" tabindex="-1">
 <section class="bn" role="dialog" aria-modal="true" aria-labelledby="ct" aria-describedby="cd">
  <div class="hd"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9 4 4 0 0 1-4-4 4 4 0 0 1-5-5z"/><path d="M8.5 11.5h.01M12 16h.01M15.5 13.5h.01M8 15.5h.01"/></svg></span>
  <div><h1 id="ct">{t('mq.lg.578')}</h1>
@@ -36,7 +36,7 @@ const closeLabel = t('mq.lg.650');
  <p class="st" id="st" role="status" aria-live="polite"></p>
  <p class="ft">{t('mq.lg.590')}<a href="/">{t('mq.lg.378')}</a></p>
 </section>
-</div>
+</main>
 <script type="application/json" id="i18n-msg" set:html={JSON.stringify(messages)}></script>
 <script>
 import { bindMaquetteMotion } from '../lib/motion';
@@ -75,4 +75,5 @@ if(langBtn)langBtn.addEventListener('click',function(){
 })();
 
 </script>
-</Canon>
+  </div>
+</V6Page>

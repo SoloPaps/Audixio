@@ -73,7 +73,8 @@ describe('color-scheme des gabarits', () => {
   it('ne force plus le clair sur Canon ni sur la porte de connexion', () => {
     for (const file of [
       'apps/web/src/layouts/Canon.astro',
-      'apps/web/src/layouts/AuthGate.astro',
+      // La porte de connexion passe par V6Page (gabarit v6).
+      'apps/web/src/layouts/V6Page.astro',
     ]) {
       const text = readFileSync(file, 'utf8');
       expect(text, file).toContain('content="light dark"');
@@ -82,5 +83,8 @@ describe('color-scheme des gabarits', () => {
       expect(text, file).toContain('data-light="#F3F5F8"');
       expect(text, file).toContain('property="og:locale"');
     }
+    expect(
+      readFileSync('apps/web/src/layouts/AuthGate.astro', 'utf8'),
+    ).toContain('<V6Page');
   });
 });

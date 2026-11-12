@@ -52,10 +52,14 @@ const meter = $derived.by(() => {
   if (/[^A-Za-z0-9]/.test(password)) score += 25;
   const steps = [
     { max: 0, color: 'transparent', label: t('login.meter.empty') },
-    { max: 25, color: 'var(--d-er, #B42318)', label: t('login.meter.weak') },
-    { max: 50, color: 'var(--d-or, #B54708)', label: t('login.meter.fair') },
-    { max: 75, color: '#7091E6', label: t('login.meter.good') },
-    { max: 100, color: 'var(--d-ok, #067647)', label: t('login.meter.strong') },
+    { max: 25, color: 'var(--find)', label: t('login.meter.weak') },
+    {
+      max: 50,
+      color: 'color-mix(in oklab, var(--gD) 80%, var(--ink))',
+      label: t('login.meter.fair'),
+    },
+    { max: 75, color: 'var(--beam)', label: t('login.meter.good') },
+    { max: 100, color: 'var(--ok)', label: t('login.meter.strong') },
   ];
   const step = steps.find((item) => score <= item.max) ?? steps[4];
   return {

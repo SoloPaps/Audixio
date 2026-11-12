@@ -1,15 +1,15 @@
 ---
-import '../../../../styles/maquettes/liens.css';
-import '../../../../styles/maquettes/acces.css';
+import '../../../../styles/maquettes/acces-v6.css';
 import { t } from '../../../../i18n/index.js';
-import Canon from '../../../../layouts/Canon.astro';
+import V6Page from '../../../../layouts/V6Page.astro';
 
 export function getStaticPaths() {
   return [{ params: { host: 'exemple.fr', id: 'req_948f2a1b7e' } }];
 }
 ---
 
-<Canon vue="acces" title={t('mq.acces.meta.title')} description={t('mq.acces.meta.desc')} robots="noindex, nofollow">
+<V6Page vue="acces" title={t('mq.acces.meta.title')} description={t('mq.acces.meta.desc')}>
+  <div class="dmd" data-port>
 <p hidden id="badge.linkLimit">{t('badge.linkLimit')}</p><p hidden id="mq.ac.sending">{t('mq.ac.sending')}</p><p hidden id="mq.ac.refused.word">{t('mq.ac.refused.word')}</p><p hidden id="mq.ac.refused.title">{t('mq.ac.refused.title')}</p><p hidden id="mq.ac.granted.title">{t('mq.ac.granted.title')}</p><p hidden id="mq.ac.granted.say">{t('mq.ac.granted.say')}</p><p hidden id="mq.ac.granted.status">{t('mq.ac.granted.status')}</p><p hidden id="mq.ac.refused.say">{t('mq.ac.refused.say')}</p><p hidden id="mq.ac.refused.status">{t('mq.ac.refused.status')}</p><p hidden id="mq.ac.pending">{t('mq.ac.pending')}</p><p hidden id="mq.ac.pending.eyebrow">{t('mq.ac.pending.eyebrow')}</p><p hidden id="mq.ac.undone">{t('mq.ac.undone')}</p><p hidden id="mq.ac.denied">{t('mq.ac.denied')}</p>
 
 
@@ -73,7 +73,7 @@ export function getStaticPaths() {
           <div class="avatar" aria-hidden="true">
             <svg class="ring" viewBox="0 0 64 64">
               <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(112,145,230,.25)" stroke-width="1.5" stroke-dasharray="4 8"/>
-              <circle cx="32" cy="32" r="28" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="40 140" stroke-linecap="round"/>
+              <circle cx="32" cy="32" r="28" fill="none" stroke="var(--x-primary)" stroke-width="1.5" stroke-dasharray="40 140" stroke-linecap="round"/>
             </svg>
             <b>{t('mq.acces.018')}</b>
             <span class="status-dot" aria-label={t('mq.acces.019')}></span>
@@ -431,7 +431,7 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
         var angle=(Math.PI*2*i)/8;
         p.style.cssText=
           'position:absolute;left:'+cx+'px;top:'+cy+'px;width:5px;height:5px;'+
-          'border-radius:50%;background:var(--primary);pointer-events:none;'+
+          'border-radius:50%;background:var(--x-primary);pointer-events:none;'+
           'z-index:5;opacity:1;'+
           'transition:transform .65s cubic-bezier(.16,1,.3,1),opacity .65s;';
         role.appendChild(p);
@@ -576,4 +576,5 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
   if(location.hash==='#ok'){ok.click()}
 })();
 </script>
-</Canon>
+  </div>
+</V6Page>

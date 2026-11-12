@@ -75,6 +75,16 @@ test('inscription sombre : les liens CGU se distinguent du texte', async ({
     return (globalThis as unknown as View).getComputedStyle(parent).color ?? '';
   });
   const rest = await style(link);
-  expect(rest.color).toBe('rgb(169, 189, 246)');
+  // Porte de connexion en v6 (lot 5) : bleu --beam du thème sombre.
+  await expect(page.locator('html')).toHaveAttribute('data-v6', '');
+  const beam = await page.evaluate<string>(`(() => {
+    const t = document.createElement('i');
+    t.style.color = 'var(--beam)';
+    document.querySelector('main').appendChild(t);
+    const c = getComputedStyle(t).color;
+    t.remove();
+    return c;
+  })()`);
+  expect(rest.color).toBe(beam);
   expect(rest.color).not.toBe(text);
 });
