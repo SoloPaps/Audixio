@@ -1017,6 +1017,7 @@ html.js .bv .rv.in {
   position: absolute;
   inset: 0;
   z-index: -1;
+  overflow: hidden;
   pointer-events: none;
 }
 .bv .bv-bg i {
@@ -1212,5 +1213,11 @@ html.js .bv .rv.in {
 @media (prefers-reduced-motion: reduce) {
   .bv .bv-bg i {
     animation: none;
+  }
+}
+/* Téléphone : la lueur de droite reste dans le panneau (elle dépassait de la fenêtre à 390 px). */
+@media (max-width: 40rem) {
+  .bv .bv-bg i:nth-child(2) {
+    right: 10%;
   }
 }
