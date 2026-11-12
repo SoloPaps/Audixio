@@ -6,7 +6,7 @@ import V6Page from '../layouts/V6Page.astro';
 ---
 
 <V6Page vue="auth" title={t('meta.reset.title')} description={t('meta.reset.description')}>
-  <div class="au">
+  <div class="au" data-port>
   <main id="contenu" class="auth-doc" tabindex="-1">
     <ResetForm
       renew={Astro.url.searchParams.get('etape') === 'nouveau'}
