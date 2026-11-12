@@ -1,6 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { methodeEn } from '../i18n/methode-en.js';
+import { methodeFr } from '../i18n/methode-fr.js';
 import { activeShareLinks } from './account-access.js';
 import { badgeTargetHref } from './badge-target.js';
 import { briefScreen } from './brief-screen.js';
@@ -209,17 +211,23 @@ describe('bug 8 — brief du site', () => {
 describe('bug 9 — poids des domaines', () => {
   it('la page méthode affiche 8 poids égaux qui totalisent 100', () => {
     const html = readFileSync(
-      fileURLToPath(new URL('../pages/methode.astro', import.meta.url)),
+      fileURLToPath(
+        new URL(
+          '../components/v6/methode/MethodeDomains.astro',
+          import.meta.url,
+        ),
+      ),
       'utf8',
     );
-    const start = html.indexOf('class="domains"');
-    const block = html.slice(start, html.indexOf('</ol>', start));
-    const counts = [...block.matchAll(/data-count="([^"]+)"/g)].map((match) =>
-      Number(match[1]),
+    const cards = html.split('<article class="dom"').slice(1);
+    expect(cards).toHaveLength(8);
+    for (const card of cards) expect(card).toContain("{t('me.m.w')}");
+    const weight = Number(
+      methodeFr['me.m.w'].replace(/[^\d,]/g, '').replace(',', '.'),
     );
-    expect(counts).toHaveLength(8);
-    expect(counts.reduce((sum, count) => sum + count, 0)).toBe(100);
-    expect(new Set(counts)).toEqual(new Set([12.5]));
+    expect(weight).toBe(12.5);
+    expect(weight * cards.length).toBe(100);
+    expect(methodeEn['me.m.w']).toBe('12.5%');
   });
 });
 

@@ -24,6 +24,7 @@
     "apps/web/src/i18n/live.ts",
     "apps/web/src/i18n/locale-meta.test.ts",
     "apps/web/src/lib/progress-scene.ts",
-    "apps/web/src/lib/motion/accueil-v6.ts"
+    "apps/web/src/lib/motion/accueil-v6.ts",
+    "apps/web/src/lib/motion/methode-v6.ts"
   ]
 }

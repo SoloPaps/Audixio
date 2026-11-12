@@ -1,0 +1,29 @@
+---
+import { t } from '../../../i18n/index.js';
+---
+
+<section class="m-hero" id="top" data-dock-hide aria-labelledby="h1">
+ <div class="wrap m-hero-g">
+  <div class="m-hero-t">
+   <nav class="crumbs" aria-label={t('me.crumb')}><ol><li><a href="/">{t('me.nav.home')}</a></li><li><span aria-current="page">{t('me.nav.method')}</span></li></ol></nav>
+   <p class="eyebrow">{t('me.hero.k')}</p>
+   <h1 id="h1">{t('me.hero.h1.1')}<span>{t('me.hero.h1.2')}</span></h1>
+   <p class="lead">{t('me.hero.lead')}</p>
+   <div class="m-ctas"><a class="btn" href="#principe"><span>{t('me.hero.cta1')}</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn--ghost" href="#method-repro"><span>{t('me.hero.cta2')}</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+  </div>
+  <figure class="pipe" aria-labelledby="pipe-cap">
+   <figcaption id="pipe-cap" class="pipe-cap">{t('me.pipe.cap')}</figcaption>
+   <ol class="pipe-l">
+    <li><span class="pipe-n num">01</span><div><b>{t('me.pipe.1')}</b><small>{t('me.pipe.1s')}</small></div><span class="pipe-v" aria-hidden="true"><i class="v-ok">1</i><i class="v-w">{t('me.pipe.half')}</i><i class="v-ko">0</i></span></li>
+    <li><span class="pipe-n num">02</span><div><b>{t('me.pipe.2')}</b><small>{t('me.pipe.2s')}</small></div><span class="pipe-bar" aria-hidden="true"><i style="--w:67%"></i></span></li>
+    <li><span class="pipe-n num">03</span><div><b>{t('me.pipe.3')}</b><small>{t('me.pipe.3s')}</small></div><span class="pipe-g" aria-hidden="true"><span class="g g-A">A</span><span class="g g-B">B</span><span class="g g-C on">C</span><span class="g g-D">D</span><span class="g g-E">E</span><span class="g g-F">F</span></span></li>
+   </ol>
+  </figure>
+ </div>
+ <div class="wrap"><dl class="facts">
+  <div><dt>{t('me.f1.s')}</dt><dd class="num">{t('me.f1.b')}</dd></div>
+  <div><dt>{t('me.f2.s')}</dt><dd class="num">{t('me.f2.b')}</dd></div>
+  <div><dt>{t('me.f3.s')}</dt><dd class="num">{t('me.f3.b')}</dd></div>
+  <div><dt>{t('me.f4.s')}</dt><dd class="num">{t('me.f4.b')}</dd></div>
+ </dl></div>
+</section>

@@ -33,8 +33,8 @@ async function open(page: Page, url: string, theme: string): Promise<void> {
 const PROSE: [string, string][] = [
   ['/confidentialite', 'bandeau cookies'],
   ['/demande-acces', 'voir ce que reçoit le propriétaire'],
-  ['/methode', 'Voir les conditions d’utilisation.'],
 ];
+// /methode v6 n’a plus de lien dans le texte : ses liens fléchés (.lnk) ont leur test dans methode-v6.spec.
 
 for (const theme of ['light', 'dark'] as const) {
   for (const [url, name] of PROSE) {

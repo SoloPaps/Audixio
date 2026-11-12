@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-const pages = ['/dev/composants', '/methode'] as const;
+const pages = ['/dev/composants'] as const;
 
 test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -15,7 +15,7 @@ test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
     });
     expect(name).toBe('none');
   }
-  for (const path of ['/', '/compte', '/sites'] as const) {
+  for (const path of ['/', '/methode', '/compte', '/sites'] as const) {
     await page.goto(path);
     await expect(page.locator('.blob-petrol')).toHaveCount(0);
     const running = await page.evaluate(() => {
@@ -47,27 +47,19 @@ test('le mouvement réduit fige les blobs et la jauge', async ({ page }) => {
       return view.getComputedStyle(element).animationName;
     });
   expect(gauge).toBe('none');
+  // /methode v6 : Geist, comme l’accueil v6 (le gabarit Canon gardait Atkinson).
   await page.goto('/methode');
-  await expect(page.locator('h1')).toHaveCSS(
-    'font-family',
-    /Atkinson Hyperlegible Next/,
-  );
+  await expect(page.locator('h1')).toHaveCSS('font-family', /Geist/);
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations).toEqual([]);
 });
 
-test('la méthode fige les blobs même si le mouvement est permis', async ({
+test('la méthode n’a ni blob ni jauge, même si le mouvement est permis', async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/methode');
-  const name = await page.locator('.blob-petrol').evaluate((element) => {
-    const view = globalThis as unknown as {
-      getComputedStyle: (node: unknown) => { animationName: string };
-    };
-    return view.getComputedStyle(element).animationName;
-  });
-  expect(name).toBe('none');
+  await expect(page.locator('.blob-petrol')).toHaveCount(0);
   await expect(page.locator('.hero')).toHaveCount(0);
   await expect(page.locator('.gauge')).toHaveCount(0);
 });

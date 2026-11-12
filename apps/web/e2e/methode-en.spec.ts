@@ -11,6 +11,7 @@ test('la cible LCP de /methode est traduite en anglais (bug #15/#125)', async ({
     .click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   const main = page.locator('main');
-  await expect(main).toContainText('LCP target');
-  await expect(main).not.toContainText('cible LCP');
+  // /methode v6 : la ligne LCP est dans le détail des tests de Performance.
+  await expect(main).toContainText('LCP: main content display');
+  await expect(main).not.toContainText('affichage du contenu principal');
 });

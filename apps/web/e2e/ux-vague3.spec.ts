@@ -291,7 +291,7 @@ test('aucun site utilise la plaque vide, pas l’erreur réseau', async ({
 test('un ancrage reste sous la barre étroite', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
   await page.goto('/methode');
-  await page.locator('a[href="#method-repro"]').click();
+  await page.locator('.m-ctas a[href="#method-repro"]').click();
   const target = page.locator('#method-repro');
   const bar = page.locator('.site-bar');
   const targetBox = await target.boundingBox();

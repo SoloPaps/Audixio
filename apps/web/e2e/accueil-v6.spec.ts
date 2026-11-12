@@ -174,6 +174,38 @@ test.describe('accueil v6', () => {
     await expect(dock.locator('.dock-l a')).toHaveCount(8);
   });
 
+  test('dock au large : sans bouton de menu, chaque libellé sur une ligne', async ({
+    page,
+  }) => {
+    // left: 50% bornait le dock à la moitié de l’écran : libellés sur deux
+    // lignes, et le bouton « Sections » s’affichait aussi en 1440 px.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await open(page);
+    await page.locator('#couches').scrollIntoViewIfNeeded();
+    await page.mouse.wheel(0, 400);
+    const dock = page.locator('nav.dock');
+    await expect(dock).toHaveClass(/\bon\b/);
+    await expect(dock.locator('.dock-btn')).toBeHidden();
+    for (const link of await dock.locator('.dock-l a').all()) {
+      const box = await link.boundingBox();
+      expect(box?.height ?? 99).toBeLessThan(48);
+    }
+  });
+
+  test('dock en 390 px : toute la largeur, le menu s’ouvre', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await open(page);
+    await page.locator('#couches').scrollIntoViewIfNeeded();
+    await page.mouse.wheel(0, 400);
+    const dock = page.locator('nav.dock');
+    await expect(dock).toHaveClass(/\bon\b/);
+    expect((await dock.boundingBox())?.width ?? 0).toBeGreaterThan(330);
+    await dock.locator('.dock-btn').click();
+    await expect(dock.locator('.dock-l')).toBeVisible();
+  });
+
   test('chaque lien de la page mène à une page qui existe', async ({
     page,
     request,

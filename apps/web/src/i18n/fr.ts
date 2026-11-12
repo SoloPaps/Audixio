@@ -6,6 +6,7 @@
 import { accueilFr } from './accueil-fr.js';
 import { espaceFr } from './espace-fr.js';
 import { espaceUiFr } from './espace-ui-fr.js';
+import { methodeFr } from './methode-fr.js';
 import { mqFr } from './mq-fr.js';
 import { mqGatesFr } from './mq-gates-fr.js';
 import { mqLegalFr } from './mq-legal-fr.js';
@@ -2909,6 +2910,7 @@ export const fr = {
   ...pdfFr,
   ...v6Fr,
   ...accueilFr,
+  ...methodeFr,
 };
 
 export type MessageKey = keyof typeof fr;
