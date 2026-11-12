@@ -15,7 +15,8 @@ const messages = {
 <div id="failure-live">
 <div class="badge-ic err"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></svg></div>
 <span class="chip err"><i aria-hidden="true"></i>{t('mq.lg.601')}</span>
-<h1 class="fade"><span id="fail-lead">{t('failure.audit.generic')}</span><span id="fail-of" hidden>{t('failure.audit.of')}<span id="fail-host" data-i18n-skip></span> </span><span class="grad">{t('mq.lg.603')}</span></h1>
+<h1 class="fade" id="fail-h1"><span id="fail-lead">{t('failure.audit.generic')}</span><span class="grad">{t('mq.lg.603')}</span></h1>
+<span id="fail-alt" hidden><span id="fail-of">{t('failure.audit.of')}<span id="fail-host" data-i18n-skip></span> </span></span>
 <p class="lead fade" style="--d:.1s">{t('mq.lg.604')}</p>
 <div class="grid2 fade" style="--d:.2s">
 <div class="panel"><h2 class="h3">{t('mq.lg.605')}</h2><dl class="dl"><div><dt>{t('mq.lg.606')}</dt><dd id="fail-url" data-i18n-skip></dd></div><div><dt>{t('mq.lg.610')}</dt><dd id="fail-code" data-i18n-skip></dd></div><div><dt>{t('mq.lg.612')}</dt><dd id="fail-time" data-i18n-skip></dd></div></dl></div>
@@ -88,8 +89,18 @@ if (params.get('maquette') !== '1') {
     if (host) host.textContent = view.host;
     // Sans domaine connu, le titre reste « L’audit n’a pas abouti ».
     const named = view.host.trim() !== '';
-    document.getElementById('fail-of')?.toggleAttribute('hidden', !named);
-    document.getElementById('fail-lead')?.toggleAttribute('hidden', named);
+    // Une seule tournure dans le titre : l’autre attend hors du h1 (son texte
+    // ne double plus « L’audit » dans le titre lu par les robots et les tests).
+    const h1 = document.getElementById('fail-h1');
+    const alt = document.getElementById('fail-alt');
+    const of = document.getElementById('fail-of');
+    const lead = document.getElementById('fail-lead');
+    if (h1 && alt && of && lead) {
+      const shown = named ? of : lead;
+      const kept = named ? lead : of;
+      if (shown.parentElement !== h1) h1.prepend(shown);
+      if (kept.parentElement !== alt) alt.append(kept);
+    }
     if (url) url.textContent = view.url;
     if (code) code.textContent = view.code;
     if (time) time.textContent = view.time;

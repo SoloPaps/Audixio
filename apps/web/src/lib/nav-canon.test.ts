@@ -21,10 +21,6 @@ const en = JSON.parse(
   ),
 ) as Record<string, string>;
 
-const canon = readFileSync(
-  new URL('../components/CanonBar.svelte', import.meta.url),
-  'utf8',
-);
 const footer = readFileSync(
   new URL('../components/v6/SiteFooter.astro', import.meta.url),
   'utf8',
@@ -33,6 +29,8 @@ const header = readFileSync(
   new URL('../components/v6/SiteHeader.svelte', import.meta.url),
   'utf8',
 );
+// L’en-tête v6 est le seul composant de barre (CanonBar supprimé, lot 6).
+const canon = header;
 
 describe('barre : visiteur et connecté (STRUCTURE.md §1)', () => {
   it('visiteur : trois entrées, dans l’ordre, en français et en anglais', () => {
@@ -89,8 +87,8 @@ describe('barre : visiteur et connecté (STRUCTURE.md §1)', () => {
     expect(canon).toContain('SCAN_HREF');
     expect(canon).toContain('accountHref');
     expect(canon).toContain('accountKey');
-    expect(header).toContain('CanonBar');
-    expect(header).toContain('shell="v6"');
+    expect(header).not.toContain('CanonBar');
+    expect(header).toContain('id="axn"');
   });
 });
 

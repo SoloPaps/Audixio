@@ -70,10 +70,9 @@ describe('langue du document', () => {
 });
 
 describe('color-scheme des gabarits', () => {
-  it('ne force plus le clair sur Canon ni sur la porte de connexion', () => {
+  it('ne force plus le clair sur le gabarit v6 ni sur la porte de connexion', () => {
     for (const file of [
-      'apps/web/src/layouts/Canon.astro',
-      // La porte de connexion passe par V6Page (gabarit v6).
+      // Canon.astro est supprimé (lot 6) ; la porte de connexion passe par V6Page.
       'apps/web/src/layouts/V6Page.astro',
     ]) {
       const text = readFileSync(file, 'utf8');
