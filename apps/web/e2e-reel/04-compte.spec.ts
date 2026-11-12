@@ -35,7 +35,9 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   // R11 : l’ancien historique d’un site mène à sa page, section historique.
   await page.goto(`/historique?site=${encodeURIComponent(siteId)}`);
   await page.waitForURL(/\/sites\/mauvais\.audigy\.test(\?[^#]*)?#historique$/);
-  await expect(page.locator('#historique h2')).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Comment la note évolue' }),
+  ).toBeVisible();
 
   // R15 : les alertes sont une section de /compte.
   await page.goto('/compte/alertes');
@@ -43,7 +45,7 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   const alerts = page.locator('#alertes');
   await expect(alerts.getByText('Disponible avec Audixio Pro')).toBeVisible();
   await expect(
-    alerts.getByRole('link', { name: /Audixio Pro/ }),
+    alerts.getByRole('link', { name: /Découvrir Pro/ }),
   ).toHaveAttribute('href', '/pro');
 
   const state = await readState();
