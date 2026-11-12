@@ -287,6 +287,44 @@ async function statusOf(
   return hit;
 }
 
+const anchorCache = new Map<string, Promise<boolean>>();
+
+/**
+ * Ancre posée par le script de la page (absente du HTML servi) : on ouvre la
+ * page dans le même contexte (même onglet : même compte simulé, même audit) et on
+ * la cherche après le chargement.
+ */
+function anchorInBrowser(
+  page: Page,
+  path: string,
+  id: string,
+): Promise<boolean> {
+  const key = `${path}#${id}`;
+  let hit = anchorCache.get(key);
+  if (!hit) {
+    hit = (async () => {
+      try {
+        // Chargement neuf, même si l’adresse ne diffère que par l’ancre.
+        await page.goto('about:blank');
+        await page.goto(`${path}#${encodeURIComponent(id)}`, {
+          waitUntil: 'networkidle',
+          timeout: 30_000,
+        });
+        await page.waitForTimeout(800);
+        // Une ancre-commande (« #partager » ouvre la feuille de partage puis
+        // s’efface de l’adresse) est prise en charge : la page l’a consommée.
+        return await page.evaluate<boolean>(
+          `!!document.getElementById(${JSON.stringify(id)}) || document.getElementsByName(${JSON.stringify(id)}).length > 0 || location.hash !== ${JSON.stringify(`#${encodeURIComponent(id)}`)}`,
+        );
+      } catch {
+        return false;
+      }
+    })();
+    anchorCache.set(key, hit);
+  }
+  return hit;
+}
+
 /** Problèmes des liens d’une page : destination morte, ancre absente, faux lien. */
 export async function checkLinks(
   page: Page,
@@ -296,6 +334,7 @@ export async function checkLinks(
   const problems: string[] = [];
   const here = new URL(page.url());
   const seen = new Set<string>();
+  const later: { path: string; id: string; label: string }[] = [];
   for (const link of links) {
     const key = `${link.raw}|${link.href}`;
     if (seen.has(key)) continue;
@@ -328,6 +367,9 @@ export async function checkLinks(
       continue;
     }
     const path = `${url.pathname}${url.search}`;
+    // Lien vers la page elle-même (langue « ?lang=en », thème…) : elle vient
+    // d’être chargée, son statut est le sien (une 404 reste une 404).
+    if (url.pathname === here.pathname && url.hash === '') continue;
     const status = await statusOf(request, path);
     const known =
       (url.pathname === '/404' && status === 404) ||
@@ -340,8 +382,16 @@ export async function checkLinks(
       const id = decodeURIComponent(url.hash.slice(1));
       const html = (await htmlCache.get(path)) ?? '';
       if (!html.includes(`id="${id}"`) && !html.includes(`name="${id}"`)) {
-        problems.push(`ancre à vérifier « ${link.label} » → ${path}#${id}`);
+        later.push({ path, id, label: link.label });
       }
+    }
+  }
+  // En dernier : ces vérifications rechargent l’onglet (même sessionStorage).
+  for (const item of later) {
+    if (!(await anchorInBrowser(page, item.path, item.id))) {
+      problems.push(
+        `ancre absente « ${item.label} » → ${item.path}#${item.id}`,
+      );
     }
   }
   return problems;
@@ -363,7 +413,7 @@ export async function probeButton(
   if (!(await button.isVisible().catch(() => false))) return 'déjà retiré';
   const before = page.url();
   await page.evaluate(WATCH);
-  await page.waitForTimeout(350);
+  await page.waitForTimeout(250);
   const start = await page.evaluate<{ y: number; x: number; focus: string }>(
     STATE,
   );
@@ -380,6 +430,11 @@ export async function probeButton(
   const onDownload = () => {
     download = true;
   };
+  let chooser = false;
+  const onChooser = () => {
+    chooser = true;
+  };
+  page.on('filechooser', onChooser);
   page.on('request', onRequest);
   page.context().on('page', onPopup);
   page.on('download', onDownload);
@@ -387,11 +442,13 @@ export async function probeButton(
     `(() => { globalThis.__phase = 'click'; globalThis.__btn = document.querySelector('[data-robot="${n}"]'); })()`,
   );
   await button.click({ timeout: 3_000 }).catch(() => undefined);
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(550);
   page.off('request', onRequest);
   page.context().off('page', onPopup);
   page.off('download', onDownload);
+  page.off('filechooser', onChooser);
   if (page.url() !== before) return 'navigation';
+  if (chooser) return 'sélecteur de fichier';
   if (popup) return 'nouvel onglet';
   if (download) return 'téléchargement';
   if (requests > 0) return 'requête';
