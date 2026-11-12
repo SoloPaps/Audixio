@@ -488,8 +488,8 @@
   z-index: 1500;
   transform: translate(-50%, 30px);
   opacity: 0;
-  background: var(--cta-fg);
-  color: #fff;
+  background: var(--ink);
+  color: var(--bg);
   padding: 14px 22px;
   border-radius: 99px;
   font-weight: 600;
@@ -563,7 +563,7 @@
   height: 460px;
   right: 6%;
   top: 0;
-  background: var(--cta-fg);
+  background: var(--beam-a);
   opacity: 0.75;
   animation: ex-au2 22s ease-in-out infinite alternate;
 }
@@ -572,7 +572,7 @@
   height: 380px;
   left: 42%;
   top: 180px;
-  background: var(--cta-fg);
+  background: var(--beam-a);
   opacity: 0.45;
   animation: ex-au3 16s ease-in-out infinite alternate;
 }
@@ -3895,4 +3895,76 @@
 
 html[data-page="exemple"] {
   scroll-padding-top: 96px;
+}
+
+/* Repris de mobile-fit.css (html[data-vue="exemple"], que V6Page ne pose plus). */
+@media (max-width: 480px) {
+  .ex .aurora {
+    left: 0;
+    width: 100%;
+  }
+  .ex .stp,
+  .ex .lvh,
+  .ex h2,
+  .ex .s,
+  .ex,
+  .ex #cx1,
+  .ex #cx2 {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .ex #cx1,
+  .ex #cx2 {
+    overflow: hidden;
+  }
+  .ex #cx1 svg,
+  .ex #cx2 svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .ex .hacts {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 100%;
+  }
+  .ex .hacts .btn {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    box-sizing: border-box;
+    overflow: visible;
+    white-space: normal;
+  }
+  .ex #n2::before {
+    left: 0;
+    right: 0;
+  }
+  .ex .stp {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .ex .stp ol {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ex .stp a,
+  .ex .stp .sl,
+  .ex .lvh,
+  .ex .lvh > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .ex .stp .sl b,
+  .ex .lvh h2,
+  .ex .lvh p {
+    overflow-wrap: anywhere;
+  }
+  .ex .stp .sl b {
+    font-size: 0.75rem;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
 }
