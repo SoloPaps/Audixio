@@ -14,6 +14,9 @@ import {
 } from '../src/mail-templates.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..');
+/** Fichier relu tel que commité : un clone en CRLF (Windows) reste comparable. */
+const readLf = (rel: string) =>
+  readFileSync(join(ROOT, rel), 'utf8').replace(/\r\n/gu, '\n');
 
 describe('gabarits e-mail', () => {
   it('aligne la lettre sur le barème produit', () => {
@@ -77,14 +80,8 @@ describe('gabarits e-mail', () => {
 
   it('confirme l’inscription comme le fichier envoyé par GoTrue', () => {
     const built = supabaseSignupTemplate('{{ .SiteURL }}');
-    const html = readFileSync(
-      join(ROOT, 'supabase/templates/confirmation.html'),
-      'utf8',
-    );
-    const text = readFileSync(
-      join(ROOT, 'supabase/templates/confirmation.txt'),
-      'utf8',
-    );
+    const html = readLf('supabase/templates/confirmation.html');
+    const text = readLf('supabase/templates/confirmation.txt');
     expect(html).toBe(built.html);
     expect(text).toBe(built.text);
     expect(built.html).toContain(
