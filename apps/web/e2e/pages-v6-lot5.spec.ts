@@ -164,3 +164,18 @@ test('/cookies en v6 : boîte de dialogue sur un voile, page immobile, pied hors
     await expect(page.locator('#ct')).toHaveCSS('font-family', /^"?Geist/);
   }
 });
+
+test('/progression en v6 : « Voir le rapport » reste caché tant que l’audit n’est pas fini', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/progression?maquette=1&theme=light');
+  await expect(page.locator('body')).not.toHaveClass(/\bdone\b/);
+  await expect(page.locator('#reportBtn')).toBeHidden();
+  // Le squelette de la page n’hérite pas de la barre v6 `.nav`.
+  await expect(page.locator('.prg .sk.nav')).toHaveCSS('display', 'flex');
+  await expect(page.locator('body')).toHaveClass(/\bdone\b/, {
+    timeout: 60_000,
+  });
+  await expect(page.locator('#reportBtn')).toBeVisible();
+});

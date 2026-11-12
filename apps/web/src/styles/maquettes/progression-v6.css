@@ -381,8 +381,10 @@ body.done .prg .live i::after {
     box-shadow: 0 0 0 0 rgba(112, 145, 230, 0);
   }
 }
-.prg .nav {
+.prg .sk.nav {
   display: flex;
+  margin-left: 0;
+  font-size: inherit;
   align-items: center;
   gap: 0.8rem;
   background: none;
@@ -776,10 +778,10 @@ body.done .prg .fill::after {
   justify-content: center;
   margin-top: 2.25rem;
 }
-.prg .cta-done {
+.prg .btn.cta-done {
   display: none;
 }
-body.done .prg .cta-done {
+body.done .prg .btn.cta-done {
   display: inline-flex;
 }
 body.done .prg .cta-wait {
