@@ -118,8 +118,10 @@
   transition: transform var(--dur-med) var(--ease);
 }
 
-[data-v6] .btn:hover:not(:disabled):not([aria-disabled="true"]),
-[data-v6] .btn-s:hover:not(:disabled):not([aria-disabled="true"]) {
+/* :where() : le survol générique ne pèse pas plus qu’une règle de page
+ * (`.portée .btn-ghost:hover`), qui garde ses couleurs et son contraste. */
+[data-v6] .btn:hover:where(:not(:disabled):not([aria-disabled="true"])),
+[data-v6] .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])) {
   background: var(--cta-h);
 }
 
@@ -146,8 +148,8 @@
   font-weight: 500;
 }
 
-[data-v6] .btn--ghost:hover:not(:disabled):not([aria-disabled="true"]),
-[data-v6] .btn-s:hover:not(:disabled):not([aria-disabled="true"]) {
+[data-v6] .btn--ghost:hover:where(:not(:disabled):not([aria-disabled="true"])),
+[data-v6] .btn-s:hover:where(:not(:disabled):not([aria-disabled="true"])) {
   background: var(--c-hover);
   border-color: var(--beam);
 }
