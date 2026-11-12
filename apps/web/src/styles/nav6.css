@@ -1,5 +1,5 @@
 /* Portage de docs/design/v6/src6/nav6.css. Chargé seulement avec le gabarit v6. */
-/* ===== En-tête global (CanonBar de main) habillé v6. Mesures reprises de chrome.css, couleurs et typo = jetons v6. ===== */
+/* ===== En-tête global v6 (components/v6/SiteHeader.svelte). Mesures reprises de chrome.css, couleurs et typo = jetons v6. ===== */
 :root {
   --hh: 92px;
 }

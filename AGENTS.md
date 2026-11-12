@@ -40,7 +40,7 @@ Design v6 : `docs/design/01-REGLES-STRICTES.md`, `docs/design/v6/INTEGRATION-v6.
 - Clair : jetons `[data-v6]` de `tokens.css`. Sombre : seulement `theme-dark.css` (`--d-*`). Police Geist / Geist Mono. Plus de palette v2, d’Inter ni de maquettes Stitch (archivées hors du dépôt le 12/11/2026).
 - Une page passe en v6 lot par lot ; ses anciennes CSS de maquette partent avec elle.
 - **Règles produit** : 2 sites / 1 lien, soft-gate PARTIEL, **matrice statut→droits**, lock-components, hub TOP 10, brief matrice, sélection sync, Comment corriger générique ouvert / branché site après vérif, Pro plus tard (~9 €, 10 sites), vie privée **tests partiels** HTTP/HTML (pas Tracker Radar / pas navigateur d'audit requis en bêta), A11y lettre A–F + « mesure automatique / partielle ». Source : `FONCTIONNEMENT.md` + `SOFT-GATE-PARTIEL-CANON.md` + `MATRICE-STATUT-DROITS-CANON.md`.
-- Barre : `CanonBar`, entrées dans `apps/web/src/lib/nav-canon.ts` (voir `STRUCTURE.md`). Page active : texte plus gras, `aria-current="page"`.
+- Barre : `components/v6/SiteHeader.svelte`, entrées dans `apps/web/src/lib/nav-canon.ts` (voir `STRUCTURE.md`). Page active : texte plus gras, `aria-current="page"`.
 - Logo uniquement : `docs/design/logos/`. INTERDIT : Material `vital_signs`, `ecg_heart`, `graphic_eq`, `shield`, `verified` ; lettre A isolée ; SVG « ECG ».
 - Thème : clair par défaut, suit `prefers-color-scheme`, choix manuel prioritaire. Pas de violet « IA », pas de `#000` plein écran.
 - Corrections promesse (8 domaines, passif par défaut, horodaté, jargon, assistant IA) : `docs/produit/FONCTIONNEMENT.md` §10.
