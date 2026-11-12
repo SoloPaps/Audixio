@@ -23,6 +23,7 @@ import {
   type ReportRow,
   reputationAside,
 } from '../lib/report-model.js';
+import { reportHref } from '../lib/report-route.js';
 import { rose } from '../lib/rose.js';
 import GuestGate from './GuestGate.svelte';
 import ShareSheet from './ShareSheet.svelte';
@@ -64,6 +65,7 @@ let {
 }: Props = $props();
 
 let shareOpen = $state(false);
+let shareChoice = $state<'lien' | 'badge' | 'pdf'>('lien');
 let gate = $state(false);
 let root: HTMLElement | undefined = $state();
 let roseHost: HTMLDivElement | undefined = $state();
@@ -140,17 +142,40 @@ async function onShare(event: MouseEvent): Promise<void> {
     try {
       await navigator.share({
         title: document.title,
-        url: `${location.origin}/rapport?id=${encodeURIComponent(auditId)}`,
+        url: `${location.origin}${reportHref(auditId)}`,
       });
       return;
     } catch (error) {
       if (error instanceof DOMException && error.name === 'AbortError') return;
     }
   }
+  shareChoice = 'lien';
   shareOpen = true;
 }
 
+/** `?partager=badge|pdf|lien` (R13) ou `#partager` ouvre la feuille. */
+function openFromUrl(): void {
+  const asked = new URLSearchParams(location.search).get('partager');
+  if (asked === null && location.hash !== '#partager') return;
+  shareChoice = asked === 'badge' || asked === 'pdf' ? asked : 'lien';
+  shareOpen = true;
+}
+
+function closeShare(): void {
+  shareOpen = false;
+  const url = new URL(location.href);
+  if (!url.searchParams.has('partager') && url.hash !== '#partager') return;
+  url.searchParams.delete('partager');
+  if (url.hash === '#partager') url.hash = '';
+  history.replaceState(
+    history.state,
+    '',
+    `${url.pathname}${url.search}${url.hash}`,
+  );
+}
+
 onMount(() => {
+  openFromUrl();
   let stopRose: (() => void) | undefined;
   let stopReveal: (() => void) | undefined;
   let stopPins: (() => void) | undefined;
@@ -193,7 +218,8 @@ onMount(() => {
     stopReveal = revealAll(root);
     stopPins = linkPins(root);
     const hash = decodeURIComponent(location.hash.replace(/^#/u, ''));
-    if (hash) document.getElementById(hash)?.scrollIntoView();
+    if (hash && hash !== 'partager')
+      document.getElementById(hash)?.scrollIntoView();
   });
   return () => {
     stopRose?.();
@@ -244,7 +270,7 @@ onMount(() => {
       {#if !publicLink}<p class="date">{t('hub.date')} <time datetime={stamp.toISOString().slice(0, 10)}>{formatDate(stamp)}</time></p>{/if}
     </div>
     {#if !publicLink}<div class="acts">
-      <a class="btn btn-ghost" id="shareBtn" href={`/rapport?id=${encodeURIComponent(auditId)}#partager`} onclick={onShare}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>{t('hub.share')}</a>
+      <a class="btn btn-ghost" id="shareBtn" href={`${reportHref(auditId)}#partager`} onclick={onShare}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.6l6.8-4.2M8.6 13.4l6.8 4.2"/></svg>{t('hub.share')}</a>
       <a class="btn btn-ghost" href={badgeHref(auditId)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg>{t('hub.badge')}</a>
       <a class="btn btn-ghost" href={`/rapport/${auditId}/imprimer`}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>{t('hub.pdf')}</a>
       <a class="btn btn-ghost" id="rerunBtn" href={relaunchHref(payload.audit.site.id, payload.audit.site.url)}><svg class="ico" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg>{t('hub.rerun')}</a>
@@ -354,7 +380,7 @@ onMount(() => {
   <p class="eco-line">{t('hub.eco.lead')} <a href="/ecoconception">{t('hub.eco.link')}</a>.</p>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<ShareSheet {auditId} {host} open={shareOpen} onClose={() => { shareOpen = false; }} />
+<ShareSheet {auditId} {host} open={shareOpen} choice={shareChoice} onClose={closeShare} />
 {#if gate}
   <GuestGate open={true} onClose={() => { gate = false; }} />
 {/if}

@@ -136,7 +136,7 @@ for (const lang of ['fr', 'en'] as const) {
     page,
   }) => {
     await install(page, lang);
-    await page.goto(`/domaine?id=${AUDIT_ID}&domaine=securite&lang=${lang}`);
+    await page.goto(`/rapport/${AUDIT_ID}/domaines/securite?lang=${lang}`);
     const details = page.locator(
       'button.det[aria-controls^="d-securite.frames"]',
     );
@@ -157,7 +157,7 @@ for (const lang of ['fr', 'en'] as const) {
     page,
   }) => {
     await install(page, lang);
-    await page.goto(`/constat?id=${AUDIT_ID}&check=securite.hsts&lang=${lang}`);
+    await page.goto(`/rapport/${AUDIT_ID}/constats/securite.hsts?lang=${lang}`);
     const code = page.locator('#plan ol.steps li pre.step-code code');
     await expect(code.first()).toContainText('Strict-Transport-Security');
   });
@@ -169,7 +169,7 @@ for (const lang of ['fr', 'en'] as const) {
   }) => {
     await install(page, lang);
     await page.goto(
-      `/constat?id=${AUDIT_ID}&check=securite.frames&lang=${lang}`,
+      `/rapport/${AUDIT_ID}/constats/securite.frames?lang=${lang}`,
     );
     const preview = page.locator('.brief .bp .bb');
     await expect(preview).toBeVisible();
@@ -202,7 +202,7 @@ test('M9 : la carte modérée reste visible après Critique → Modéré → Tou
       finding('seo', 'seo.title', 'pass', 1, 'seo.title.pass'),
     ],
   });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=seo&lang=en`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/seo?lang=en`);
   const card = page.locator('#list > li.cst[data-sev="fix"]');
   await expect(card).toHaveCount(1);
   const filter = (value: string) =>

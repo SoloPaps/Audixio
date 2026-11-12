@@ -1,3 +1,5 @@
+import { reportHref } from './report-route.js';
+
 const AUDIT_ID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -34,6 +36,6 @@ export function progressEmpty(search: string): boolean {
  */
 export function reportHrefFromSearch(search: string): string {
   const id = new URLSearchParams(search).get('id')?.trim() ?? '';
-  if (AUDIT_ID.test(id)) return `/rapport?id=${encodeURIComponent(id)}`;
+  if (AUDIT_ID.test(id)) return reportHref(id);
   return '/exemple-rapport';
 }

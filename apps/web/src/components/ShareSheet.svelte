@@ -5,15 +5,18 @@ import { currentSession } from '../lib/browser-session.js';
 import { copyText } from '../lib/clipboard.js';
 import { badgeHref } from '../lib/hub-view.js';
 import { loginHref, signupHref } from '../lib/nav.js';
+import { reportHref } from '../lib/report-route.js';
 
 interface Props {
   auditId: string;
   host: string;
   open: boolean;
   onClose: () => void;
+  /** Choix mis en avant à l’ouverture (`?partager=badge`, R13). */
+  choice?: 'lien' | 'badge' | 'pdf';
 }
 
-let { auditId, host, open, onClose }: Props = $props();
+let { auditId, host, open, onClose, choice = 'lien' }: Props = $props();
 let link = $state('');
 let linkId = $state('');
 let notice = $state('');
@@ -25,6 +28,8 @@ let copied = $state(false);
 let canNative = $state(false);
 let first = $state<HTMLElement | null>(null);
 let dialog = $state<HTMLDivElement | null>(null);
+let badgeLink = $state<HTMLAnchorElement | null>(null);
+let pdfLink = $state<HTMLAnchorElement | null>(null);
 let opener: HTMLElement | null = null;
 
 $effect(() => {
@@ -37,7 +42,13 @@ $effect(() => {
   error = '';
   copied = false;
   document.documentElement.style.overflow = 'hidden';
-  void load().then(() => queueMicrotask(() => first?.focus()));
+  void load().then(() =>
+    queueMicrotask(() => {
+      const target =
+        choice === 'badge' ? badgeLink : choice === 'pdf' ? pdfLink : first;
+      (target ?? first)?.focus();
+    }),
+  );
   return () => {
     document.documentElement.style.overflow = '';
     opener?.focus();
@@ -201,6 +212,7 @@ function onKey(event: KeyboardEvent): void {
       </div>
       {#if link}
         <label class="sh-lbl" for="share-url">{t('share.public')}</label>
+        <p class="sh-hint">{t('rp.share.link.hint')}</p>
         <div class="sh-copy">
           <input class="sh-inp" id="share-url" readonly value={link} />
           <button class="sh-btn sh-main" class:done={copied} type="button" bind:this={first} onclick={copy}><svg class="sh-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>{copied ? t('share.copied') : t('share.copy')}</span></button>
@@ -219,7 +231,9 @@ function onKey(event: KeyboardEvent): void {
       {/if}
       <p class="sh-st" role="status" aria-live="polite">{notice}</p>
       {#if error}<p class="sh-err" role="alert">{error}</p>{/if}
-      <a class="sh-lk" href={badgeHref(auditId)}><span class="sh-lk-ico" aria-hidden="true"><svg class="sh-ico" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/></svg></span><span><b>{t('share.badge')}</b><span>{t('share.badge.hint')}</span></span><svg class="sh-ico sh-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <p class="sh-lbl sh-choices">{t('rp.share.choices')}</p>
+      <a class="sh-lk" class:sh-on={choice === 'badge'} href={badgeHref(auditId)} bind:this={badgeLink}><span class="sh-lk-ico" aria-hidden="true"><svg class="sh-ico" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 7 5-3 5 3-1.5-7"/></svg></span><span><b>{t('share.badge')}</b><span>{t('share.badge.hint')}</span></span><svg class="sh-ico sh-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="sh-lk" class:sh-on={choice === 'pdf'} href={reportHref(auditId, 'imprimer')} bind:this={pdfLink}><span class="sh-lk-ico" aria-hidden="true"><svg class="sh-ico" viewBox="0 0 24 24" focusable="false"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 14h6M9 17h4"/></svg></span><span><b>{t('rp.share.pdf')}</b><span>{t('rp.share.pdf.hint')}</span></span><svg class="sh-ico sh-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
   </div>
 {/if}
@@ -265,6 +279,11 @@ function onKey(event: KeyboardEvent): void {
   .sh-st:empty{display:none}
   .sh-err{margin:12px 0 0;font-size:14px;font-weight:600;color:var(--d-er, #B42318)}
   .sh-lk{display:flex;align-items:center;gap:14px;margin-top:22px;min-height:44px;padding:14px 16px;border:1px solid var(--d-ln, #ADBBDA);border-radius:18px;background:var(--d-sf, #fff);color:var(--d-tx, #1E2A55);text-decoration:none;transition:transform .25s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .25s}
+  .sh-hint{margin:0 0 8px;font-size:14px;color:var(--d-mu, #4A5585)}
+  .sh-choices{margin-top:26px}
+  .sh-choices+.sh-lk{margin-top:0}
+  .sh-lk+.sh-lk{margin-top:10px}
+  .sh-lk.sh-on{border-color:var(--d-ac, #3D52A0);box-shadow:0 0 0 1px var(--d-ac, #3D52A0)}
   .sh-lk:hover{transform:translateY(-3px);border-color:var(--d-ic, #7091E6);box-shadow:0 16px 32px -16px rgba(61,82,160,.45)}
   .sh-lk-ico{flex:none;width:44px;height:44px;border-radius:14px;background:var(--d-bg, #EDE8F5);color:var(--d-ac, #3D52A0);display:grid;place-items:center}
   .sh-lk-ico svg{width:22px;height:22px}

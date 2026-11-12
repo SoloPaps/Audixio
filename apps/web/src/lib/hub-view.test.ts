@@ -75,7 +75,7 @@ describe('hub', () => {
   it('nomme l’hôte et l’ancre du constat', () => {
     expect(hostLabel('https://exemple.fr/a')).toBe('exemple.fr');
     expect(priorityHref('a b', 'seo', 'seo.title-0')).toBe(
-      '/domaine?id=a%20b&domaine=seo#finding-seo.title-0',
+      '/rapport/a%20b/domaines/seo#finding-seo.title-0',
     );
   });
 

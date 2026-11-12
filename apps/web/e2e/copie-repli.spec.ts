@@ -192,7 +192,7 @@ for (const mode of ['absente', 'refus'] as const) {
         body: `${MARKER}\n`,
       }),
     );
-    await page.goto(`/brief?id=${AUDIT_ID}`);
+    await page.goto(`/rapport/${AUDIT_ID}/brief`);
     await seedClip(page);
     await page
       .getByRole('button', { name: 'Copier le prompt pour votre assistant IA' })

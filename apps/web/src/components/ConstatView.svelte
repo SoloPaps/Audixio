@@ -19,6 +19,7 @@ import {
 } from '../lib/hub-view.js';
 import { calm, revealAll, say } from '../lib/motion.js';
 import type { ReportRow } from '../lib/report-model.js';
+import { domainHref, reportHref } from '../lib/report-route.js';
 import InlineCode from './InlineCode.svelte';
 
 interface Props {
@@ -45,11 +46,9 @@ const index = $derived(
 );
 const prev = $derived(index > 0 ? siblings[index - 1] : null);
 const next = $derived(index < siblings.length - 1 ? siblings[index + 1] : null);
-const hubHref = $derived(`/rapport?id=${encodeURIComponent(auditId)}`);
-const domainHref = $derived(
-  `/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(row.domain ?? '')}`,
-);
-const briefHref = $derived(`/brief?id=${encodeURIComponent(auditId)}`);
+const hubHref = $derived(reportHref(auditId));
+const domainLink = $derived(domainHref(auditId, row.domain ?? ''));
+const briefHref = $derived(reportHref(auditId, 'brief'));
 
 let root = $state<HTMLElement | null>(null);
 let radar = $state<HTMLCanvasElement | null>(null);
@@ -241,7 +240,7 @@ onMount(() => {
   <nav class="crumbs" aria-label={t('hub.crumbs')}>
     <ol>
       <li><a href={hubHref}>{t('report.heading')} {host}</a></li>
-      <li><a href={domainHref}>{name}</a></li>
+      <li><a href={domainLink}>{name}</a></li>
       <li><span aria-current="page">{allowed ? row.title : t('domain.locked.badge')}</span></li>
     </ol>
   </nav>
@@ -249,14 +248,14 @@ onMount(() => {
     <section class="card pad">
       <h1>{t('domain.locked.badge')}</h1>
       <p>{t('domain.locked.teaser')}</p>
-      <p><a class="btn btn-primary" href={domainHref}>{t('constat.back', { name })}</a></p>
+      <p><a class="btn btn-primary" href={domainLink}>{t('constat.back', { name })}</a></p>
     </section>
   {:else}
     <div class="khero">
       <div class="aurora" aria-hidden="true"><i class="layer" data-depth="1"></i><i class="layer" data-depth="-.7"></i><i class="layer" data-depth=".5"></i><i></i></div>
       <div class="rbg" aria-hidden="true"><canvas class="ax-radar" id="axRadar" bind:this={radar} aria-hidden="true"></canvas></div>
       <div class="topbar">
-        <a class="backl" href={domainHref}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>{t('constat.back', { name })}</span></a>
+        <a class="backl" href={domainLink}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>{t('constat.back', { name })}</span></a>
         {#if verified}<span class="badge b-own"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>{t('constat.owned')}</span>{/if}
       </div>
       <div class="ch-hero">
@@ -375,7 +374,7 @@ onMount(() => {
 
     <nav class="block pager" aria-label={t('constat.pager', { name })}>
       {#if prev}<a class="pg prev" href={detailHref(auditId, prev.checkId)}><span><small>{t('constat.prev')}</small><b>{prev.title}</b></span></a>{/if}
-      <a class="pg mid" href={domainHref}>{t('constat.backdom', { name })}</a>
+      <a class="pg mid" href={domainLink}>{t('constat.backdom', { name })}</a>
       {#if next}<a class="pg next" href={detailHref(auditId, next.checkId)}><span><small>{t('constat.next')}</small><b>{next.title}</b></span></a>{/if}
     </nav>
   {/if}

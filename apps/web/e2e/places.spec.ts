@@ -257,7 +257,7 @@ test('la confirmation affiche la note et le score à part', async ({ page }) => 
   const sitesAxe = await new AxeBuilder({ page }).analyze();
   expect(sitesAxe.violations).toEqual([]);
 
-  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}`);
   await waitForIslands(page);
   await expect(page.getByRole('heading', { name: 'Avis' })).toBeVisible();
   await expect(page.getByText('Note publique : 4,6 sur 5.')).toBeVisible();

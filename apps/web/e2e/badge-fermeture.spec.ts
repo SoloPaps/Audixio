@@ -39,7 +39,7 @@ async function openBadge(page: Page): Promise<void> {
     sessionStorage.setItem('audixio-guest-audit', JSON.stringify(value));
   }, payload());
   await page.setViewportSize({ width: 330, height: 800 });
-  await page.goto(`/badge?id=${AUDIT}&theme=light`);
+  await page.goto(`/rapport/${AUDIT}/badge?theme=light`);
 }
 
 test('M7 : à 330 px, le bouton fermer reste cliquable au-dessus du kicker', async ({

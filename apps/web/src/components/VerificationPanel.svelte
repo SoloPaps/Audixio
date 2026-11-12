@@ -3,6 +3,7 @@ import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { browserClient, currentSession } from '../lib/browser-session.js';
 import { copyText } from '../lib/clipboard.js';
+import { reportHref } from '../lib/report-route.js';
 import {
   checkVerification,
   createVerification,
@@ -256,7 +257,7 @@ async function onCopy(value: string): Promise<void> {
   {@const token = sharedToken()}
   {@const challenge = token ? localChallenge(site, token) : null}
   {@const phase = pending ? 'checking' : phaseOf(proof)}
-  <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={`/rapport?id=${encodeURIComponent(reportId ?? '')}`}>{site.label || site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>
+  <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={reportHref(reportId ?? '')}>{site.label || site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>
   <section class="khero" id="st" data-st={phase === 'checking' ? 'scan' : phase} aria-labelledby="h1">
     <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="hgrid">
@@ -264,7 +265,7 @@ async function onCopy(value: string): Promise<void> {
         <p class="eyebrow">{t('preuve.eyebrow')}</p>
         <h1 id="h1">{t('preuve.h1')} <span class="grad-txt">{site.host}</span></h1>
         <p class="lede">{t('preuve.lede')}</p>
-        <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a>{#if reportId}<a class="btn btn-ghost" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('preuve.report')}</a>{/if}</div>
+        <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a>{#if reportId}<a class="btn btn-ghost" href={reportHref(reportId)}>{t('preuve.report')}</a>{/if}</div>
       </div>
       <div class="orbx">
         <span class="fchip c1" aria-hidden="true"><i class="pulse"></i>{t('preuve.sondes')}</span>
@@ -382,7 +383,7 @@ async function onCopy(value: string): Promise<void> {
       <div>
         <div class="sv idle"><span class="badge b-nt">{t('preuve.sv.idle.b')}</span><h3>{t('preuve.sv.idle.t')}</h3><p>{t('preuve.sv.idle.p')}</p></div>
         <div class="sv scan"><span class="badge b-own">{t('preuve.sv.scan.b')}</span><h3>{t('preuve.sv.scan.t')}</h3><p>{t('preuve.sv.scan.p')}</p><div class="skl" aria-hidden="true"><span class="sk"></span><span class="sk"></span><span class="sk"></span></div></div>
-        <div class="sv ok"><span class="badge b-ok">{t('preuve.sv.ok.b')}</span><h3>{t('preuve.sv.ok.t')}</h3><p>{t('preuve.sv.ok.p')}</p>{#if reportId}<div class="acts"><a class="btn btn-primary" href={`/rapport?id=${encodeURIComponent(reportId)}`}>{t('verify.report')}</a></div>{/if}</div>
+        <div class="sv ok"><span class="badge b-ok">{t('preuve.sv.ok.b')}</span><h3>{t('preuve.sv.ok.t')}</h3><p>{t('preuve.sv.ok.p')}</p>{#if reportId}<div class="acts"><a class="btn btn-primary" href={reportHref(reportId)}>{t('verify.report')}</a></div>{/if}</div>
         <div class="sv fail"><span class="badge b-crit">{t('preuve.sv.fail.b')}</span><h3>{t('preuve.sv.fail.t')}</h3><p>{t('preuve.sv.fail.p')}</p></div>
         <p class="auto">{t('preuve.detect.auto')}</p>
       </div>

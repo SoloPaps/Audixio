@@ -1,0 +1,13 @@
+---
+import '../../styles/maquettes/liens.css';
+import '../../styles/maquettes/badge.css';
+import GuestReportRedirect from '../../components/GuestReportRedirect.astro';
+import ReportView from '../../components/ReportView.svelte';
+import { t } from '../../i18n/index.js';
+import Canon from '../../layouts/Canon.astro';
+---
+
+<Canon vue="badge" title={t('mq.ui.meta.badge.title')} description={t('badge.lead')}>
+  <GuestReportRedirect slot="head" mode="badge" />
+  <ReportView mode="badge" client:load />
+</Canon>

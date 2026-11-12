@@ -79,6 +79,7 @@ Les paramètres non repris sont conservés tels quels. L'ancre est gardée par l
 | R11 | `/historique?site=:site` | `/sites/id/:site#historique` → `/sites/:host#historique` | liens internes |
 | R12 | `/verifier?site=:site` | `/sites/id/:site#verification` → `/sites/:host#verification` | liens internes |
 | R13 | `/badge?id=:id` | `/rapport/:id?partager=badge` (ouvre la feuille Partager) | liens internes |
+| R4–R13 sans id | `/domaine`, `/constat`, `/plan`, `/brief`, `/badge` sans `id` | `/rapport/domaines`, `/rapport/constats`, `/rapport/plan`, `/rapport/brief`, `/rapport/badge` (page de l'onglet : invitation à choisir un rapport, ou mur de connexion) | anciens favoris |
 | R14 | `/passer-pro` (et `?…`) | `/pro` (requête gardée) ; un compte Pro va sur `/compte` (#38). Renvoi côté page, pas en 301, pour garder cette règle. Les boutons Pro pointent déjà vers `/pro`. | boutons Pro |
 | R15 | `/compte/alertes` | `/compte#alertes` | e-mails d'alerte et de récap (`mail.ts`, `mail-templates.ts`) |
 | R16 | `/progression?site=…&url=…` | inchangée | e-mail d'échec (`relaunchAuditUrl`) |
@@ -86,7 +87,8 @@ Les paramètres non repris sont conservés tels quels. L'ancre est gardée par l
 
 Mise en œuvre :
 - Une seule table, `apps/web/src/lib/redirects.ts`. Le build écrit les règles Netlify (`_redirects`), avec la correspondance de requête : `/rapport id=:id /rapport/:id 301`. Aucun déploiement ni lien Netlify.
-- Le serveur e2e local applique la même table.
+- Onglets : une page statique par onglet (`pages/rapport/{domaines,constats,plan,brief,badge,imprimer}.astro`), servie sans changer l'adresse (règles 200 de la même table, `REWRITES`). `lib/report-route.ts` lit l'adresse (chemin, sinon ancienne requête) et produit toutes les adresses du rapport.
+- Le serveur e2e local applique la même table (intergiciel de `astro.config.mjs`).
 - Tests : un cas par ligne R1 à R17, en unitaire (table → adresse) et en e2e (statut 301 et `Location`). Les règles avec plusieurs paramètres passent avant les règles à un paramètre.
 - Les e-mails et les liens internes produisent directement les nouvelles adresses. Les anciennes ne servent plus qu'aux liens déjà envoyés.
 

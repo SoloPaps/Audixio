@@ -185,7 +185,7 @@ for (const [lang, theme] of [
     await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' });
     await install(page);
     await page.setViewportSize({ width: 330, height: 900 });
-    await page.goto(`/rapport?id=${AUDIT_ID}&theme=${theme}&lang=${lang}`);
+    await page.goto(`/rapport/${AUDIT_ID}?theme=${theme}&lang=${lang}`);
     await expect(page.locator('.dom .bar').first()).toBeVisible({
       timeout: 15_000,
     });

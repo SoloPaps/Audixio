@@ -8,6 +8,7 @@ import { loginHref } from '../lib/nav.js';
 import { buildPdfReport, type PdfReport } from '../lib/pdf-report.js';
 import { printPriorityTitle } from '../lib/print-priority.js';
 import { printAuditId } from '../lib/print-proof.js';
+import { badgePageHref, reportHref } from '../lib/report-route.js';
 
 const scales = ['A', 'B', 'C', 'D', 'E', 'F'] as const;
 
@@ -20,9 +21,7 @@ let root = $state<HTMLElement | null>(null);
 const view = $derived<PdfReport | null>(
   payload ? buildPdfReport(payload) : null,
 );
-const reportHref = $derived(
-  payload ? `/rapport?id=${encodeURIComponent(payload.audit.id)}` : '/sites',
-);
+const backHref = $derived(payload ? reportHref(payload.audit.id) : '/sites');
 
 $effect(() => {
   if (phase !== 'ready' || !root) return;
@@ -106,7 +105,7 @@ function onPrint(): void {
     <nav class="crumbs" aria-label={t('nav.pages')}>
       <ol>
         <li><a href="/sites">{t('nav.sites.long')}</a></li>
-        <li><a href={reportHref}>{view.host}</a></li>
+        <li><a href={backHref}>{view.host}</a></li>
         <li><span aria-current="page">{t('pdf.crumb')}</span></li>
       </ol>
     </nav>
@@ -114,7 +113,7 @@ function onPrint(): void {
     <div class="tb rv" role="region" aria-label={t('pdf.preview')}>
       <p>{t('pdf.preview')}</p>
       <div class="acts">
-        <a class="btn btn-ghost" href={reportHref}>{t('pdf.back')}</a>
+        <a class="btn btn-ghost" href={backHref}>{t('pdf.back')}</a>
         <button class="btn btn-primary" type="button" id="printBtn" onclick={onPrint}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/></svg>
           {t('pdf.print')}
@@ -233,21 +232,21 @@ function onPrint(): void {
       <h2 id="t-after" class="h2">{t('pdf.more')}</h2>
       <ul class="lk-grid">
         <li>
-          <a class="lk" href={`/brief?id=${encodeURIComponent(payload.audit.id)}`}>
+          <a class="lk" href={reportHref(payload.audit.id, 'brief')}>
             <span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg></span>
             <span class="lk-tx"><span class="lk-t">{t('pdf.brief')}</span><span class="lk-d">{t('pdf.brief.d')}</span></span>
             <svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
         </li>
         <li>
-          <a class="lk" href={`/plan?id=${encodeURIComponent(payload.audit.id)}`}>
+          <a class="lk" href={reportHref(payload.audit.id, 'plan')}>
             <span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg></span>
             <span class="lk-tx"><span class="lk-t">{t('pdf.plan')}</span><span class="lk-d">{t('pdf.plan.d')}</span></span>
             <svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
         </li>
         <li>
-          <a class="lk" href={`/badge?id=${encodeURIComponent(payload.audit.id)}`}>
+          <a class="lk" href={badgePageHref(payload.audit.id)}>
             <span class="lk-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14 7 22l5-3 5 3-1.5-8"/></svg></span>
             <span class="lk-tx"><span class="lk-t">{t('pdf.badge')}</span><span class="lk-d">{t('pdf.badge.d')}</span></span>
             <svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>

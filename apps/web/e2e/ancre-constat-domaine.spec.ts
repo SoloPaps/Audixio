@@ -81,9 +81,7 @@ test('B6 : l’ancre #finding-… fait défiler jusqu’au constat', async ({
 }) => {
   await page.setViewportSize({ width: 330, height: 800 });
   await storeGuest(page);
-  await page.goto(
-    `/domaine?id=${AUDIT}&domaine=qualite#finding-qualite.liens-0`,
-  );
+  await page.goto(`/rapport/${AUDIT}/domaines/qualite#finding-qualite.liens-0`);
   const target = page.locator('#finding-qualite\\.liens-0');
   await expect(target).toBeVisible({ timeout: 15_000 });
   await expect

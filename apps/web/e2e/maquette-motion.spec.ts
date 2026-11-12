@@ -118,7 +118,7 @@ async function install(page: Page, domainPage: boolean): Promise<void> {
 test('la rose se fige sur la note', async ({ page }) => {
   await install(page, false);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await expect(page.locator('#rose svg, #rose .rose-fb')).toBeVisible();
   await expect(page.getByText('74/100').first()).toBeVisible();
 });
@@ -133,7 +133,7 @@ test('un repère et sa priorité se lient au survol', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await install(page, false);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await ready(page);
   const pin = page.locator('.pin[data-pin="1"]');
   await expect(pin).toBeVisible();
@@ -147,7 +147,7 @@ test('un repère et sa priorité se lient au survol', async ({ page }) => {
 test('les blocs révélés reçoivent la classe in', async ({ page }) => {
   await install(page, false);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await expect(page.locator('.rv.in').first()).toBeVisible();
 });
 
@@ -155,7 +155,7 @@ test('le compteur pose la valeur finale', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await install(page, true);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=light`);
   const count = page.locator('#flt .n').first();
   await expect(count).toHaveAttribute('data-to', '3');
   await expect(count).toHaveText('3');
@@ -165,7 +165,7 @@ test('le toast confirme la copie du prompt', async ({ page }) => {
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
   await install(page, true);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=light`);
   await page
     .getByRole('button', { name: 'Générer et copier le prompt' })
     .click();
@@ -176,7 +176,7 @@ test('le toast confirme la copie du prompt', async ({ page }) => {
 test('le volet de partage s’ouvre et se ferme', async ({ page }) => {
   await install(page, false);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await page.getByRole('link', { name: 'Partager' }).click();
   const dialog = page.getByRole('dialog', { name: 'Partager le rapport' });
   await expect(dialog).toBeVisible();
@@ -187,7 +187,7 @@ test('le volet de partage s’ouvre et se ferme', async ({ page }) => {
 test('le menu burger s’ouvre, piège le focus et se ferme', async ({ page }) => {
   await install(page, false);
   await page.setViewportSize({ width: 330, height: 700 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await ready(page);
   const burger = page.locator('.axn-burger');
   await expect(burger).toHaveAccessibleName('Ouvrir le menu');
@@ -207,7 +207,7 @@ test('le retour en haut ramène au début', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await install(page, false);
   await page.setViewportSize({ width: 330, height: 700 });
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   await ready(page);
   await page.addStyleTag({
     content: 'html{scroll-behavior:auto !important}',
@@ -228,7 +228,7 @@ test('le retour en haut ramène au début', async ({ page }) => {
 test('le filtre et le détail d’un constat réagissent', async ({ page }) => {
   await install(page, true);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=light`);
   await page.getByRole('radio', { name: /Modérés/ }).check();
   await expect(page.locator('#flt')).toHaveAttribute('data-v', 'fix');
   await expect(

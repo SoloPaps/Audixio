@@ -122,7 +122,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('C3 : /rapport en EN nomme les constats en anglais', async ({ page }) => {
-  await page.goto(`/rapport?id=${AUDIT_ID}&lang=en`);
+  await page.goto(`/rapport/${AUDIT_ID}?lang=en`);
   await expect(
     page.getByText('Forbid display inside a frame').first(),
   ).toBeVisible({ timeout: 15_000 });
@@ -133,7 +133,7 @@ test('C3 : /rapport en EN nomme les constats en anglais', async ({ page }) => {
 });
 
 test('C3 : /plan en EN, tâches et raisons en anglais', async ({ page }) => {
-  await page.goto(`/plan?id=${AUDIT_ID}&lang=en`);
+  await page.goto(`/rapport/${AUDIT_ID}/plan?lang=en`);
   await expect(
     page.getByText('Forbid display inside a frame').first(),
   ).toBeVisible({ timeout: 15_000 });
@@ -146,7 +146,7 @@ test('C3 : /plan en EN, tâches et raisons en anglais', async ({ page }) => {
 test('C3 : /brief en EN, prompt et libellés accessibles en anglais', async ({
   page,
 }) => {
-  await page.goto(`/brief?id=${AUDIT_ID}&lang=en`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief?lang=en`);
   const preview = page.getByRole('region', { name: 'Markdown brief preview' });
   await expect(preview).toContainText('Findings- Write a useful description', {
     timeout: 15_000,
@@ -164,7 +164,7 @@ test('C3 : /brief en EN, prompt et libellés accessibles en anglais', async ({
 });
 
 test('C3 : en FR, les fiches restent en français', async ({ page }) => {
-  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}`);
   await expect(
     page
       .getByText('Interdire l’affichage dans un cadre')

@@ -88,7 +88,7 @@ for (const lang of ['fr', 'en'] as const) {
   }) => {
     await freeAccountAtLimit(page);
     if (lang === 'en') await english(page);
-    await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+    await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
     await expect(page.locator('html')).toHaveAttribute('lang', lang);
     await page.locator('#shareBtn').click({ timeout: 15_000 });
     await page

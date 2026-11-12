@@ -13,6 +13,7 @@ import {
   progressPhase,
   runnerGap,
 } from '../lib/progress-live.js';
+import { reportHref } from '../lib/report-route.js';
 import AuditOverlay from './AuditOverlay.svelte';
 
 const POLL_MS = 1500;
@@ -129,7 +130,7 @@ onMount(() => {
   {/if}
   {#if payload && (payload.audit.status === 'done' || payload.audit.status === 'partial')}
     <p>
-      <a class="link-action" href={`/rapport?id=${encodeURIComponent(payload.audit.id)}`}>{t('progress.report')}</a>
+      <a class="link-action" href={reportHref(payload.audit.id)}>{t('progress.report')}</a>
     </p>
   {/if}
   {#if payload?.audit.status === 'failed'}

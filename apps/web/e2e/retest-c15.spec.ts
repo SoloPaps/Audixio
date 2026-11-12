@@ -76,7 +76,7 @@ async function openDomain(page: Page, domain: string): Promise<void> {
       }),
     });
   });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=${domain}`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/${domain}`);
 }
 
 test('C15 : domaine sans constat, « Rien à signaler dans ce domaine »', async ({

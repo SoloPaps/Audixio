@@ -8,7 +8,7 @@ import {
 
 describe('compte', () => {
   it('ouvre le dernier rapport, pas une page vide', () => {
-    expect(latestReportHref('abc')).toBe('/rapport?id=abc');
+    expect(latestReportHref('abc')).toBe('/rapport/abc');
     expect(latestReportHref(null)).toBe('/sites');
     expect(latestReportHref(null)).not.toBe('/rapport');
   });

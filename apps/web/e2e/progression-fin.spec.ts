@@ -67,7 +67,7 @@ for (const lang of ['fr', 'en'] as const) {
     );
     await expect(page.locator('#ready-slot #reportBtn')).toHaveAttribute(
       'href',
-      `/rapport?id=${AUDIT_ID}`,
+      `/rapport/${AUDIT_ID}`,
     );
   });
 }

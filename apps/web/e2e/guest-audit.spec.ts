@@ -211,7 +211,7 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
     await expect(page.getByText('0/100')).toHaveCount(0);
     if (index === 0) {
       await page.locator('#reportBtn').click();
-      await expect(page).toHaveURL(/\/rapport\?id=/);
+      await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}/);
       await expect(
         page.getByText(/partielle · \d+ domaines · site non vérifié/),
       ).toBeVisible();
@@ -232,7 +232,7 @@ test('trois audits, quatrième fenêtre, domaine verrouillé, 330 px', async ({
       JSON.stringify({ [body.audit.id]: payload }),
     );
   }, measuredGuest());
-  await page.goto(`/rapport?id=${MEASURED}`);
+  await page.goto(`/rapport/${MEASURED}`);
   await expect(page).not.toHaveURL(/connexion/);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Audit de exemple.fr' }),

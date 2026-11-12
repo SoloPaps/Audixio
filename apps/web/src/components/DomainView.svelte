@@ -25,6 +25,7 @@ import type { Finding } from '../lib/findings.js';
 import { detailHref, domainLetter } from '../lib/hub-view.js';
 import { countUp, revealAll, say } from '../lib/motion.js';
 import { loginHref } from '../lib/nav.js';
+import { domainHref, reportHref } from '../lib/report-route.js';
 import { levelForScore } from '../lib/score.js';
 import CopyButton from './CopyButton.svelte';
 import InlineCode from './InlineCode.svelte';
@@ -97,7 +98,7 @@ const prevId = $derived(
 const nextId = $derived(order[(index + 1) % order.length] ?? domainId);
 const prev = $derived(items.find((item) => item.id === prevId));
 const next = $derived(items.find((item) => item.id === nextId));
-const hubHref = $derived(`/rapport?id=${encodeURIComponent(auditId)}`);
+const hubHref = $derived(reportHref(auditId));
 
 function sevOf(item: Finding): Sev {
   if (item.status === 'pass') return 'ok';
@@ -519,7 +520,7 @@ function seeLabel(n: number): string {
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.lock.3')}</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>{t('domaine.lock.4')}</li>
           </ul>
-          <a class="btn btn-primary" href={loginHref(`/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(domainId)}`)}>{t('domaine.lock.cta')}</a>
+          <a class="btn btn-primary" href={loginHref(domainHref(auditId, domainId))}>{t('domaine.lock.cta')}</a>
         </div>
       {/if}
     </div>

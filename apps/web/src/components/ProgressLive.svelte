@@ -23,6 +23,7 @@ import {
 } from '../lib/progress-live.js';
 import { hostFromProgressQuery } from '../lib/progress-target.js';
 import { progressionHref } from '../lib/relaunch.js';
+import { reportHref } from '../lib/report-route.js';
 import GuestGate from './GuestGate.svelte';
 
 let gate = $state(false);
@@ -178,7 +179,7 @@ onMount(() => {
       if (task) task.textContent = line;
       if (eta) eta.textContent = progressEta(shown, names.length) ?? '';
     }
-    const href = `/rapport?id=${encodeURIComponent(payload.audit.id)}`;
+    const href = reportHref(payload.audit.id);
     const reportBtn = document.getElementById('reportBtn');
     if (reportBtn) reportBtn.setAttribute('href', href);
     const slot = document.getElementById('ready-slot');

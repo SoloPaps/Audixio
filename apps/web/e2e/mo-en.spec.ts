@@ -223,7 +223,7 @@ test('B-1 : /rapport EN, pastille « partial · 2 domains · site not verified �
   page,
 }) => {
   await lockedReport(page, 'partielle · 2 domaines · site non vérifié');
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   const pill = page.locator('.verified.partial');
   await expect(pill).toHaveText('partielle · 2 domaines · site non vérifié');
   await toEnglish(page);
@@ -234,7 +234,7 @@ test('B-1 : un seul domaine ouvert, pastille au singulier', async ({
   page,
 }) => {
   await lockedReport(page, 'partielle · 1 domaines · site non vérifié');
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=light`);
   const pill = page.locator('.verified.partial');
   await expect(pill).toHaveText('partielle · 1 domaine · site non vérifié');
   await toEnglish(page);
@@ -277,7 +277,7 @@ test('B-3 : /domaine avec un seul constat, accords au singulier (FR puis EN)', a
     'partielle · 2 domaines · site non vérifié',
     ONE_FINDING,
   );
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=light`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=light`);
   const main = page.locator('main');
   await expect(main.locator('a[href="#constats"]')).toHaveText(
     'Voir le constat',

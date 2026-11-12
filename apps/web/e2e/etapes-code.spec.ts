@@ -123,7 +123,7 @@ for (const lang of ['fr', 'en'] as const) {
   }) => {
     await install(page, lang);
     await page.goto(
-      `/domaine?id=${AUDIT_ID}&domaine=securite&lang=${lang}&theme=dark`,
+      `/rapport/${AUDIT_ID}/domaines/securite?lang=${lang}&theme=dark`,
     );
     const details = page.locator('button.det[aria-controls^="d-securite.csp"]');
     await expect(details).toBeVisible();
@@ -141,7 +141,7 @@ for (const lang of ['fr', 'en'] as const) {
   }) => {
     await install(page, lang);
     await page.goto(
-      `/constat?id=${AUDIT_ID}&check=securite.csp&lang=${lang}&theme=dark`,
+      `/rapport/${AUDIT_ID}/constats/securite.csp?lang=${lang}&theme=dark`,
     );
     const steps = page.locator('#plan ol.steps li p');
     await expect(steps.first()).toHaveText(FIRST[lang]);

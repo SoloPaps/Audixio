@@ -150,7 +150,7 @@ test('#72 bouton prompt lisible en sombre', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await install(page, true);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=dark`);
   const button = page.locator('#prompt button.fz');
   await expect(button).toBeVisible();
   // Le fond visible du bouton est peint par ses pseudo-éléments (dégradé).
@@ -204,7 +204,7 @@ test('#147 filtres sans contour rectangulaire en sombre', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await install(page, true);
   await page.setViewportSize({ width: 330, height: 900 });
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=dark`);
   await expect(page.locator('#flt')).toBeVisible();
   const box = await page.locator('.tools fieldset').evaluate((node) => {
     const c = (globalThis as unknown as Dom).getComputedStyle(node);
@@ -227,7 +227,7 @@ test('filtres #flt lisibles en sombre (axe color-contrast)', async ({
 }) => {
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
   await install(page, true);
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=performance&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/performance?theme=dark`);
   await expect(page.locator('#flt')).toBeVisible();
   const result = await new AxeBuilder({ page })
     .include('#flt')

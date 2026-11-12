@@ -11,7 +11,7 @@ test('lien public 30 jours, lecture anonyme, expiration', async ({
   const state = await readState();
   const auditId = state.auditId ?? '';
   expect(auditId).not.toBe('');
-  await page.goto(`/rapport?id=${encodeURIComponent(auditId)}`);
+  await page.goto(`/rapport/${encodeURIComponent(auditId)}`);
   await page.locator('#shareBtn').click();
   const created = page.waitForResponse(
     (res) =>
@@ -104,7 +104,7 @@ test('demande d’accès puis lien équipe', async ({ page, browser }) => {
 test('le dialogue de partage retire le lien public', async ({ page }) => {
   const state = await readState();
   const auditId = state.auditId ?? '';
-  await page.goto(`/rapport?id=${encodeURIComponent(auditId)}`);
+  await page.goto(`/rapport/${encodeURIComponent(auditId)}`);
   await page.locator('#shareBtn').click();
   const created = page.waitForResponse(
     (res) =>

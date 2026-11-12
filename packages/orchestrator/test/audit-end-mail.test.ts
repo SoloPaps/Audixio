@@ -128,7 +128,7 @@ describe('rendu de l’e-mail de fin d’audit', () => {
     expect(mail.html).toContain(href);
     expect(mail.html).not.toMatch(/https?:\/\/[^"' ]+\/marque\//);
     expect(linkLooksSafe(href)).toBe(true);
-    expect(href).toBe(`https://audixio.fr/rapport?id=${AUDIT}`);
+    expect(href).toBe(`https://audixio.fr/rapport/${AUDIT}`);
     expect(mail.html).not.toMatch(/[?&](token|jeton|share)=/i);
     expect(mail.text).not.toMatch(/[?&](token|jeton|share)=/i);
   });

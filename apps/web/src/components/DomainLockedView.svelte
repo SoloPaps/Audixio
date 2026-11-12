@@ -6,6 +6,7 @@ import { copyText } from '../lib/clipboard.js';
 import { domainPager, domainShort, REPORT_DOMAINS } from '../lib/domains.js';
 import { domainLetter, verifyHref } from '../lib/hub-view.js';
 import { revealAll } from '../lib/motion.js';
+import { domainHref, reportHref } from '../lib/report-route.js';
 
 interface Props {
   auditId: string;
@@ -19,7 +20,7 @@ let { auditId, siteId, domainId, host, items = [] }: Props = $props();
 let root: HTMLElement | undefined = $state();
 let tab = $state<'gsc' | 'dns' | 'meta' | 'file' | 'wk'>('gsc');
 const name = $derived(domainShort(domainId));
-const hubHref = $derived(`/rapport?id=${encodeURIComponent(auditId)}`);
+const hubHref = $derived(reportHref(auditId));
 const guideHref = $derived(`${verifyHref(siteId)}#methodes`);
 const order = REPORT_DOMAINS as readonly string[];
 const index = $derived(Math.max(0, order.indexOf(domainId)));
@@ -56,10 +57,7 @@ const tabs = [
 ];
 
 function hrefOf(item: CategoryItem | undefined, id: string): string {
-  return (
-    item?.href ??
-    `/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(id)}`
-  );
+  return item?.href ?? domainHref(auditId, id);
 }
 
 function letterOf(item: CategoryItem | undefined): string | null {

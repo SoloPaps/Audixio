@@ -106,7 +106,7 @@ describe('rapport', () => {
       'Vos pages sont faciles à trouver.',
     );
     expect(scoredDomainCount(items)).toBe(2);
-    expect(items[0]?.href).toContain('domaine=performance');
+    expect(items[0]?.href).toContain('/domaines/performance');
     expect(items[0]?.causes).toBeUndefined();
   });
 

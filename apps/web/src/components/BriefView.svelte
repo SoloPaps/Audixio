@@ -15,6 +15,7 @@ import { gradeForScore } from '../lib/grade.js';
 import { calm, say } from '../lib/motion.js';
 import { detailAllowed } from '../lib/plan-board.js';
 import type { ReportRow } from '../lib/report-model.js';
+import { domainHref, reportHref } from '../lib/report-route.js';
 import { roleColor } from '../lib/theme-role.js';
 import CopyButton from './CopyButton.svelte';
 
@@ -452,7 +453,7 @@ $effect(() => {
 <div class="crumbs-bar">
   <nav class="crumbs" aria-label={t('hub.crumbs')}>
     <ol>
-      <li><a href={`/rapport?id=${encodeURIComponent(auditId)}`}>{t('report.heading')} {host}</a></li>
+      <li><a href={reportHref(auditId)}>{t('report.heading')} {host}</a></li>
       <li>{t('brief.crumb.ai')}</li>
       <li aria-current="page">{t('brief.crumb.here')}</li>
     </ol>
@@ -462,7 +463,7 @@ $effect(() => {
 
 <header class="hero" id="hero" bind:this={hero}>
   <div>
-    <a class="back intro" href={`/rapport?id=${encodeURIComponent(auditId)}`}>{t('brief.back', { host })}</a><br>
+    <a class="back intro" href={reportHref(auditId)}>{t('brief.back', { host })}</a><br>
     <span class="chip intro"><i aria-hidden="true"></i>{t('brief.sync')}</span>
     <h1 id="t-h1"><span class="w"><span>{t('brief.h1.1')}</span></span> <span class="w"><span>{t('brief.h1.2')}</span></span> <span class="w"><span>{t('brief.h1.3')}</span></span> <span class="w"><span class="grad">{t('brief.h1.4')}</span></span></h1>
     <p class="lead intro">{t('brief.lead')}</p>
@@ -515,7 +516,7 @@ $effect(() => {
         <article class="dom dom-off" id={`dom-${domain.id}`}>
           <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{@html ICONS[domain.id]}</svg></span>
           <h3 class="dom-name">{index + 1}. {domain.name}</h3>
-          <a class="btn btn-ghost" href={`/domaine?id=${encodeURIComponent(auditId)}&domaine=${domain.id}`}>{t('brief.launch')}</a>
+          <a class="btn btn-ghost" href={domainHref(auditId, domain.id)}>{t('brief.launch')}</a>
         </article>
       {:else}
         {@const dots = domainDots(domain.id)}
@@ -578,7 +579,7 @@ $effect(() => {
       <CopyButton class="btn btn-primary" label={t('brief.copy')} run={copyPrompt} />
       <button class="btn btn-ghost" type="button" onclick={download}>{t('brief.dl')}</button>
       <button class="btn btn-ghost" type="button" onclick={() => window.print()}>{t('brief.pdf')}</button>
-      <a class="btn btn-ghost" href={`/plan?id=${encodeURIComponent(auditId)}`}>{t('brief.plan')}</a>
+      <a class="btn btn-ghost" href={reportHref(auditId, 'plan')}>{t('brief.plan')}</a>
     </div>
     <p class="md-foot">{t('brief.foot')}</p>
   </div>

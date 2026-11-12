@@ -150,7 +150,7 @@ test('Inscription de la fenêtre sans compte : même primaire bureau et 330 px',
   );
   for (const width of [1280, 330]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(`/rapport?id=${id}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`/rapport/${id}`, { waitUntil: 'domcontentloaded' });
     await page.locator('#domaine-securite').click();
     const button = page
       .getByRole('dialog')

@@ -146,7 +146,7 @@ async function open(
       body: 'PROMPT-OK\n',
     }),
   );
-  await page.goto(`/brief?id=${AUDIT_ID}&theme=${theme}`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief?theme=${theme}`);
 }
 
 for (const theme of ['light', 'dark']) {

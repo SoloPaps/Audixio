@@ -169,7 +169,7 @@ test('M5 : « Tout ignorer » est encore là après rechargement', async ({
 }) => {
   const store: Row[] = [];
   await install(page, store);
-  await page.goto(`/brief?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief`);
   await hydrated(page);
   const fix = page.locator('.stat-fix b');
   const check = page.locator('.stat-check b');
@@ -193,7 +193,7 @@ test('M2 (bug_3f731721) : le domaine reprend le choix « Corriger » du brief', 
 }) => {
   const store: Row[] = [];
   await install(page, store);
-  await page.goto(`/brief?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief`);
   await hydrated(page);
   await page.locator('#btn-ecologie').click();
   await page.locator('#panel-ecologie label', { hasText: 'Corriger' }).click();
@@ -209,7 +209,7 @@ test('M2 (bug_3f731721) : le domaine reprend le choix « Corriger » du brief', 
     page.locator('input[name="ecologie.hebergeur"][value="fix"]'),
   ).toBeChecked();
 
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=ecologie`);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/ecologie`);
   await hydrated(page);
   const sum = page.locator('#prompt .sum');
   await expect(sum).toHaveText(
@@ -233,7 +233,7 @@ test('M2 (bug_3f731721) : le domaine reprend le choix « Corriger » du brief', 
   expect(store.map((row) => row.finding_id).sort()).toEqual([
     'ecologie.hebergeur',
   ]);
-  await page.goto(`/brief?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}/brief`);
   await hydrated(page);
   await expect(
     page.locator('input[name="ecologie.hebergeur"][value="check"]'),

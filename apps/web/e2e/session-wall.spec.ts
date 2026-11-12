@@ -17,13 +17,13 @@ const WALLS = [
     title: 'Prouver que le site est à vous',
   },
   {
-    path: '/brief?id=00000000-0000-4000-8000-000000000099',
-    next: '%2Fbrief%3Fid%3D00000000-0000-4000-8000-000000000099',
+    path: '/rapport/00000000-0000-4000-8000-000000000099/brief',
+    next: '%2Frapport%2F00000000-0000-4000-8000-000000000099%2Fbrief',
     title: 'Connectez-vous ou inscrivez-vous',
   },
   {
-    path: '/brief',
-    next: '%2Fbrief',
+    path: '/rapport/brief',
+    next: '%2Frapport%2Fbrief',
     title: 'Connectez-vous ou inscrivez-vous',
   },
   {
@@ -126,8 +126,8 @@ test.describe('mur hors session', () => {
   }
 });
 
-test('/badge sans id exige la connexion', async ({ page }) => {
-  await page.goto('/badge');
+test('/rapport/badge sans id exige la connexion', async ({ page }) => {
+  await page.goto('/rapport/badge');
   const card = page.locator('.session-wall');
   await expect(card).toBeVisible();
   await expect(card.getByRole('heading', { level: 1 })).toHaveText(
@@ -135,7 +135,7 @@ test('/badge sans id exige la connexion', async ({ page }) => {
   );
   await expect(card.getByRole('link', { name: 'Connexion' })).toHaveAttribute(
     'href',
-    '/connexion?next=%2Fbadge',
+    '/connexion?next=%2Frapport%2Fbadge',
   );
   await expect(page.getByText('Ce rapport est introuvable')).toHaveCount(0);
 });

@@ -205,7 +205,7 @@ async function expectGuestThroughProgression(page: Page): Promise<void> {
   );
   if (previous) await page.setViewportSize(previous);
   await report.click();
-  await expect(page).toHaveURL(/\/rapport\?id=/);
+  await expect(page).toHaveURL(/\/rapport\/[0-9a-f-]{36}/);
 }
 
 async function installMocks(
@@ -386,7 +386,7 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
   await expect(page.getByText('72/100').first()).toBeVisible();
   await expect(page.getByRole('link', { name: /^Sécurité/ })).toBeVisible();
   await page.getByRole('link', { name: /^Sécurité/ }).click();
-  await expect(page).toHaveURL(/domaine=securite/);
+  await expect(page).toHaveURL(/\/domaines\/securite/);
   await expect(
     page.getByRole('heading', { name: "Forcer l'adresse chiffrée" }),
   ).toBeVisible();
@@ -568,16 +568,16 @@ test('le rapport donne la note, trois priorités et le pont vers le brief', asyn
     ).localStorage;
     storage.setItem('audigy-auth', JSON.stringify(value));
   }, session);
-  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}`);
   await expect(page.getByText('72/100').first()).toBeVisible();
   const section = page.getByRole('region', { name: 'Priorités' });
   await expect(section).toBeVisible();
   await expect(section.getByRole('listitem')).toHaveCount(2);
   await expect(
     page.getByRole('link', { name: 'Ouvrir le brief IA' }),
-  ).toHaveAttribute('href', new RegExp(`/brief\\?id=${AUDIT_ID}`));
+  ).toHaveAttribute('href', new RegExp(`/rapport/${AUDIT_ID}/brief`));
   await section.getByRole('link').first().click();
-  await expect(page).toHaveURL(/domaine=securite#finding-/);
+  await expect(page).toHaveURL(/\/domaines\/securite#finding-/);
   await page.getByRole('button', { name: 'Détails' }).first().click();
   await expect(
     page.getByText('Activez le certificat de votre hébergeur.'),
@@ -595,7 +595,7 @@ test('rapport sombre sans violation', async ({ page }) => {
     ).localStorage;
     storage.setItem('audigy-auth', JSON.stringify(value));
   }, session);
-  await page.goto(`/rapport?id=${AUDIT_ID}&theme=dark`);
+  await page.goto(`/rapport/${AUDIT_ID}?theme=dark`);
   await expect(
     page.getByRole('heading', {
       level: 1,

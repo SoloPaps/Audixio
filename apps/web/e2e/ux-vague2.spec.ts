@@ -123,11 +123,11 @@ async function install(page: Page): Promise<void> {
 test('markdown local et limite repliée', async ({ page }) => {
   await install(page);
   const calls: string[] = [];
-  await page.goto(`/rapport?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}`);
   await expect(
     page.getByRole('link', { name: 'Exporter en PDF' }),
   ).toHaveAttribute('href', new RegExp(`/rapport/${AUDIT_ID}/imprimer`));
-  await page.goto(`/plan?id=${AUDIT_ID}`);
+  await page.goto(`/rapport/${AUDIT_ID}/plan`);
   await expect(
     page.getByRole('link', { name: 'Télécharger en Markdown' }),
   ).toBeVisible();
@@ -158,8 +158,8 @@ test('markdown local et limite repliée', async ({ page }) => {
     page.getByRole('link', { name: 'Télécharger en Markdown' }),
   ).toBeVisible();
 
-  await page.goto(`/domaine?id=${AUDIT_ID}&domaine=ecologie`);
-  await expect(page).toHaveURL(/domaine=ecologie/);
+  await page.goto(`/rapport/${AUDIT_ID}/domaines/ecologie`);
+  await expect(page).toHaveURL(/\/domaines\/ecologie/);
   const limit = page.locator('details.finding-limit');
   await expect(limit).toHaveCount(1);
   await expect(limit).not.toHaveJSProperty('open', true);
@@ -304,7 +304,7 @@ test('captures clair et sombre', async ({ page }) => {
         page.getByRole('button', { name: 'Imprimer / enregistrer en PDF' }),
       ).toBeVisible();
     } else {
-      await page.goto(`/rapport?id=${AUDIT_ID}&theme=${shot.theme}`);
+      await page.goto(`/rapport/${AUDIT_ID}?theme=${shot.theme}`);
       await expect(
         page.getByRole('heading', { name: /Audit de/ }),
       ).toBeVisible();

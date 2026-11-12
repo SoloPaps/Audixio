@@ -17,6 +17,7 @@ import {
   quadrant,
 } from '../lib/plan-board.js';
 import type { ReportRow } from '../lib/report-model.js';
+import { domainHref, reportHref } from '../lib/report-route.js';
 
 interface Props {
   auditId: string;
@@ -169,7 +170,7 @@ onMount(() => {
   <nav class="crumbs" aria-label={t('hub.crumbs')}>
     <ol>
       <li><a href="/sites">{t('plan.sites')}</a></li>
-      <li><a href={`/rapport?id=${encodeURIComponent(auditId)}`}>{host}</a></li>
+      <li><a href={reportHref(auditId)}>{host}</a></li>
       <li><span aria-current="page">{t('plan.crumb')}</span></li>
     </ol>
   </nav>
@@ -228,7 +229,7 @@ onMount(() => {
             <p>{task.row.why}</p>
             <div class="links">
               <a class="lk-pill" href={detailHref(auditId, task.row.checkId)}>{t('plan.detail')}</a>
-              <a class="lk-pill" href={`/domaine?id=${encodeURIComponent(auditId)}&domaine=${encodeURIComponent(task.row.domain ?? '')}`}>{t('plan.domain', { name: domainPager(task.row.domain ?? '') })}</a>
+              <a class="lk-pill" href={domainHref(auditId, task.row.domain ?? '')}>{t('plan.domain', { name: domainPager(task.row.domain ?? '') })}</a>
             </div>
           </div>
           <div class="stsel">
@@ -248,10 +249,10 @@ onMount(() => {
     <h2 id="hl" class="h2">{t('plan.more')}</h2>
     <ul class="lk-grid">
       <li><a class="lk" href={briefHref(auditId)}><span class="lk-tx"><span class="lk-t">{t('plan.brief')}</span><span class="lk-d">{t('plan.brief.d')}</span></span></a></li>
-      <li><a class="lk" href={`/rapport?id=${encodeURIComponent(auditId)}`}><span class="lk-tx"><span class="lk-t">{t('plan.report')}</span><span class="lk-d">{t('plan.report.d')}</span></span></a></li>
+      <li><a class="lk" href={reportHref(auditId)}><span class="lk-tx"><span class="lk-t">{t('plan.report')}</span><span class="lk-d">{t('plan.report.d')}</span></span></a></li>
       <li><a class="lk" href={`/rapport/${auditId}/imprimer`}><span class="lk-tx"><span class="lk-t">{t('plan.pdf')}</span><span class="lk-d">{t('plan.pdf.d')}</span></span></a></li>
     </ul>
-    <p class="acts"><a class="lk-pill" href={`/rapport?id=${encodeURIComponent(auditId)}`} download={downloadName} onclick={onDownload}>{t('export.markdown')}</a></p>
+    <p class="acts"><a class="lk-pill" href={reportHref(auditId)} download={downloadName} onclick={onDownload}>{t('export.markdown')}</a></p>
     <details>
       <summary>{t('verify.how')}</summary>
       <p>{t('verify.lead')}</p>
