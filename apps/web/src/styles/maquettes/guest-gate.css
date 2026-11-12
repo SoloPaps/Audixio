@@ -4,7 +4,8 @@ html.gg-lock {
   overflow: hidden;
 }
 
-html.gg-lock[data-vue] body {
+html.gg-lock[data-vue] body,
+html.gg-lock[data-v6] body {
   overflow: hidden;
 }
 
