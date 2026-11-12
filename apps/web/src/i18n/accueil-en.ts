@@ -10,13 +10,11 @@ export const accueilEn: { [K in keyof typeof accueilFr]: string } = {
     'Audixio puts your site through the scanner. You get a grade from A to F and the list of what to fix first, in plain English.',
   'ac.006': 'Your site address',
   'ac.007': 'Scan my site, free',
-  'ac.008': 'Enter an address, for example mysite.com',
   'ac.009': 'No account',
   'ac.010': 'Passive read: nothing is submitted',
   'ac.011': 'Report computed without AI',
   'ac.012': 'Scan in progress…',
   'ac.013': 'Simple solutions for your business',
-  'ac.014': 'We have helped local craftspeople and shops for several years.',
   'ac.015': 'Logo',
   'ac.016': 'named',
   'ac.017': 'Menu',
@@ -210,7 +208,6 @@ export const accueilEn: { [K in keyof typeof accueilFr]: string } = {
   'ac.195': 'Problem 3: the button',
   'ac.196': 'Problem 4: the image',
   'ac.197': 'X-rays',
-  'ac.198': '0 / 4 found',
   'ac.199': 'Show all',
   'ac.200': 'The heading is not one',
   'ac.201':
@@ -314,4 +311,5 @@ export const accueilEn: { [K in keyof typeof accueilFr]: string } = {
   'ac.292': 'Scan complete',
   'ac.293': 'found',
   'ac.294': '4 / 4: well done, just like the scanner',
+  'ac.295': 'X-ray  |  visitor',
 };

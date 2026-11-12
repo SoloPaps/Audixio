@@ -30,6 +30,8 @@ export const slim = {
   'nav.example': 'Exemple de rapport',
   'nav.mysites': 'Mes sites',
   'nav.scan': 'Scanner mon site',
+  'v6.dock.label': 'Sections de la page',
+  'v6.dock.top': 'Revenir en haut',
   'nav.backtop': 'Remonter en haut',
   'nav.bottom': 'Navigation principale',
   'nav.open': 'Ouvrir le menu',

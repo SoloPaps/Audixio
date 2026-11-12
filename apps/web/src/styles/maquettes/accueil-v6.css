@@ -4,7 +4,7 @@
  * Couleurs : jetons de tokens.css ; le sombre passe par theme-dark.css.
  */
 
-/* Faux site, radiographie et scanner : mêmes couleurs en clair et en sombre (le scanner reste sombre). */
+/* Faux site, radiographie et scanner. Le scanner reste sombre ; le faux site passe en sombre dans theme-dark.css. */
 .ac {
   --fs-bg: #ffffff;
   --fs-block: #c9ced6;
@@ -325,7 +325,8 @@
   font: 600 clamp(2.5rem, 1.2rem + 4.2vw, 4.7rem) / 1 var(--sans);
   letter-spacing: -0.045em;
   margin: 1.1rem auto 1rem;
-  max-width: 17ch;
+  /* em et non ch : la largeur ne bouge pas quand Geist remplace la police de repli (CLS). */
+  max-width: 11.5em;
 }
 .ac h1 span {
   color: var(--ink-2);
@@ -429,8 +430,7 @@
   width: 90px;
   background: linear-gradient(90deg, transparent, var(--beam-a));
 }
-.ac .beam::after {
-  content: "rayons X  |  visiteur";
+.ac .beam-tag {
   position: absolute;
   top: 8px;
   left: 50%;
@@ -480,9 +480,23 @@
   color: var(--fs-ink);
 }
 .ac .fs.r .e-txt {
-  font-size: 2cqi;
-  color: var(--fs-pale);
-  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9cqi;
+  padding-top: 0.4cqi;
+}
+/* texte trop pâle, dessiné en lignes : l'illustration montre le défaut sans en être un */
+.ac .fs.r .e-txt i {
+  display: block;
+  height: 1.3cqi;
+  border-radius: 0.3cqi;
+  background: var(--fs-pale);
+}
+.ac .fs.r .e-txt i:nth-child(2) {
+  width: 92%;
+}
+.ac .fs.r .e-txt i:nth-child(3) {
+  width: 64%;
 }
 .ac .fs.r .e-form {
   display: flex;
@@ -926,7 +940,13 @@
 .ac .lyr .more {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s var(--ease);
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.45s var(--ease),
+    visibility 0.45s;
+}
+.ac .lyr li.on .more {
+  visibility: visible;
 }
 .ac .lyr .more > p {
   overflow: hidden;
@@ -2646,9 +2666,6 @@
   right: var(--s-3);
   top: var(--s-3);
 }
-.ac .rp-body[data-hl-on] .rp-a {
-  opacity: 0.55;
-}
 .ac .rp-body[data-hl-on="1"] [data-a="1"],
 .ac .rp-body[data-hl-on="2"] [data-a="2"],
 .ac .rp-body[data-hl-on="3"] [data-a="3"] {
@@ -3416,13 +3433,11 @@
 @media (min-width: 64rem) {
   .ac .lyr .more {
     grid-template-rows: 1fr;
+    visibility: visible;
     transition: none;
   }
   .ac .lyr .more > p {
     padding-bottom: 0.8rem;
-  }
-  .ac .lyr li:not(.on) .more > p {
-    opacity: 0.6;
   }
 }
 @media (max-width: 63.99rem) {
@@ -3531,7 +3546,7 @@
   text-align: right;
 }
 .ac .hero h1 {
-  max-width: 20ch;
+  max-width: 13.6em;
 }
 @media (max-width: 379px) {
   .ac .hero h1 {

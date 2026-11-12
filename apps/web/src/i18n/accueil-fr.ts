@@ -8,14 +8,11 @@ export const accueilFr = {
     'Audixio passe votre site au scanner. Vous obtenez une note de A à F et la liste de ce qu’il faut corriger d’abord, en français simple.',
   'ac.006': 'Adresse de votre site',
   'ac.007': 'Scanner mon site, gratuit',
-  'ac.008': 'Indiquez une adresse, par exemple monsite.fr',
   'ac.009': 'Sans compte',
   'ac.010': 'Lecture passive : rien n’est soumis',
   'ac.011': 'Rapport calculé sans IA',
-  'ac.012': 'Analyse en cours…',
+  'ac.012': 'Scan en cours…',
   'ac.013': 'Des solutions simples pour votre entreprise',
-  'ac.014':
-    'Nous accompagnons les artisans et les commerces de la région depuis plusieurs années.',
   'ac.015': 'Logo',
   'ac.016': 'nommé',
   'ac.017': 'Menu',
@@ -214,7 +211,6 @@ export const accueilFr = {
   'ac.195': 'Problème 3 : le bouton',
   'ac.196': 'Problème 4 : l’image',
   'ac.197': 'Rayons X',
-  'ac.198': '0 / 4 trouvés',
   'ac.199': 'Tout montrer',
   'ac.200': 'Le titre n’en est pas un',
   'ac.201':
@@ -319,7 +315,8 @@ export const accueilFr = {
   'ac.289': 'Calcul sans IA',
   'ac.290': 'Adresse du site à scanner',
   'ac.291': 'Exemple : monsite.fr',
-  'ac.292': 'Analyse terminée',
+  'ac.292': 'Scan terminé',
   'ac.293': 'trouvés',
   'ac.294': '4 / 4 : bravo, comme le scanner',
+  'ac.295': 'rayons X  |  visiteur',
 } as const;

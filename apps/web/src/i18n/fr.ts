@@ -653,6 +653,7 @@ const frCore = {
   'gauge.sample.zero': 'Note de zéro',
   'gauge.sample.full': 'Note pleine',
   'gauge.sample.empty': 'Note absente',
+  'gauge.sample.mid': 'Note moyenne',
   'score.empty': '—',
   'verdict.good': 'Votre site est en bonne santé.',
   'verdict.improve': 'Votre site peut mieux faire.',

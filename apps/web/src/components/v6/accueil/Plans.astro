@@ -1,5 +1,6 @@
 ---
 import { t } from '../../../i18n/index.js';
+import { SCAN_HREF } from '../../../lib/nav-canon.js';
 ---
 
 <section class="sec wrap" id="tarifs" aria-labelledby="h-off">
@@ -8,7 +9,7 @@ import { t } from '../../../i18n/index.js';
   <li class="plan" data-rv style="--i:0">
    <p class="plan-k">{t('ac.009')}</p><p class="plan-p">{t('ac.261')}</p>
    <ul class="plan-f"><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.262')}</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.263')}</li><li><svg aria-hidden="true"><use href="#i-check"/></svg>{t('ac.264')}</li></ul>
-   <a class="btn" href="#scan">{t('ac.265')}<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+   <a class="btn" href={SCAN_HREF}>{t('ac.265')}<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
   </li>
   <li class="plan plan--mid" data-rv style="--i:1">
    <p class="plan-k">{t('ac.241')}</p><p class="plan-p">{t('ac.261')}</p>
