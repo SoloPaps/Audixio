@@ -1,0 +1,59 @@
+---
+import { fr, t } from '../../../i18n/index.js';
+import {
+  CALC_DOMAINS,
+  fill,
+  gradeOf,
+  overall,
+} from '../../../lib/motion/methode-v6-math.js';
+
+/** État de départ de la calculette, rendu ici ; le navigateur le refait. */
+const counted = CALC_DOMAINS.filter((d) => d.on).map((d) => d.score);
+const avg = overall(counted) ?? 0;
+const grade = gradeOf(avg);
+const res = fill(
+  fr['me.js.calc.res'],
+  { sum: counted.join(' + '), n: counted.length, avg },
+  ['avg'],
+);
+const NAMES = {
+  perf: 'me.dm.perf.n',
+  seo: 'me.dm.seo.n',
+  a11y: 'me.dm.a11y.n',
+  eco: 'me.dm.eco.n',
+  tech: 'me.dm.tech.n',
+  sec: 'me.dm.sec.n',
+  priv: 'me.dm.priv.n',
+  dns: 'me.dm.dns.n',
+} as const;
+---
+
+<section class="sec wrap" id="method-repro" aria-labelledby="h-f">
+ <div class="sh" data-rv><p class="eyebrow">{t('me.f.k')}</p><h2 id="h-f">{t('me.f.h')}</h2><p>{t('me.f.lead')}</p></div>
+ <div class="fx-g">
+  <div class="fcard" data-rv>
+   <h3>{t('me.fd.h')}</h3>
+   <p class="formula num" role="img" aria-label={t('me.fd.aria')}><span>{t('me.fd.f')}</span></p>
+   <p>{t('me.fd.ex')}</p>
+   <p class="fcalc num">{t('me.fd.calc.1')}<b>{t('me.fd.calc.2')}</b>{t('me.fd.calc.3')}</p>
+   <p class="fsmall">{t('me.fd.cov')}</p>
+  </div>
+  <div class="fcard" data-rv data-component="Calc">
+   <h3>{t('me.fg.h')}</h3>
+   <p class="formula num" role="img" aria-label={t('me.fg.aria')}><span>{t('me.fg.f')}</span></p>
+   <div class="calc-h"><b>{t('me.calc.h')}</b><span class="sim">{t('me.calc.sim')}</span></div>
+   <p class="fsmall">{t('me.calc.p')}</p>
+   <ul class="calc">
+    {CALC_DOMAINS.map((d) => (
+     <li><button type="button" aria-pressed={d.on ? 'true' : 'false'} data-v={d.score}><span>{t(NAMES[d.key])}</span><b data-i18n-skip>{d.on ? d.score : t('me.js.calc.off')}</b></button></li>
+    ))}
+   </ul>
+   <div class="calc-r"><p class="fcalc num" data-calc-res data-i18n-skip>{res.map((p) => (p.bold ? <b>{p.text}</b> : p.text))}</p><span class={`g g-${grade}`} data-calc-g aria-hidden="true">{grade}</span></div>
+   <p class="sr" aria-live="polite" data-calc-live data-i18n-skip></p>
+  </div>
+ </div>
+ <ul class="minis">
+  <li data-rv><span class="ib"><svg aria-hidden="true"><use href="#i-copy"/></svg></span><div><h3>{t('me.repro.h')}</h3><p>{t('me.repro.p')}</p></div></li>
+  <li data-rv><span class="ib"><svg aria-hidden="true"><use href="#i-doc"/></svg></span><div><h3>{t('me.ver.h')}</h3><p>{t('me.ver.p')}</p></div></li>
+ </ul>
+</section>

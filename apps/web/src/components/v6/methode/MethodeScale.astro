@@ -1,0 +1,48 @@
+---
+import { fr, t } from '../../../i18n/index.js';
+import { fill, gradeOf, levelOf } from '../../../lib/motion/methode-v6-math.js';
+
+/** Score de départ du curseur ; le texte est rendu ici, le navigateur le refait. */
+const START = 72;
+const grade = gradeOf(START);
+const out = fill(
+  fr['me.js.try.out'],
+  { n: START, g: grade, l: fr[`me.js.l.${levelOf(grade)}`].toLowerCase() },
+  ['g'],
+);
+const ROWS = [
+  ['A', 'me.g.A', 'me.l.A'],
+  ['B', 'me.g.B', 'me.l.B'],
+  ['C', 'me.g.C', 'me.l.C'],
+  ['D', 'me.g.D', 'me.l.P'],
+  ['E', 'me.g.E', 'me.l.P'],
+  ['F', 'me.g.F', 'me.l.P'],
+] as const;
+---
+
+<section class="sec wrap" id="bareme" aria-labelledby="h-b">
+ <div class="sh" data-rv><p class="eyebrow">{t('me.b.k')}</p><h2 id="h-b">{t('me.b.h')}</h2><p>{t('me.b.lead')}</p></div>
+ <div class="scale" data-rv data-component="GradeScale">
+  <div class="scale-bar" aria-hidden="true">
+   <span class="sg g-F" style="--w:35"><b>F</b></span><span class="sg g-E" style="--w:15"><b>E</b></span><span class="sg g-D" style="--w:15"><b>D</b></span><span class="sg g-C on" style="--w:15"><b>C</b></span><span class="sg g-B" style="--w:10"><b>B</b></span><span class="sg g-A" style="--w:10"><b>A</b></span>
+   <span class="scale-pin num" data-pin style={`--p:${START}`}>{START}</span>
+  </div>
+  <div class="scale-ax num" aria-hidden="true"><span style="--p:0">0</span><span style="--p:35">35</span><span style="--p:50">50</span><span style="--p:65">65</span><span style="--p:80">80</span><span style="--p:90">90</span><span style="--p:100">100</span></div>
+  <div class="scale-try">
+   <label for="try">{t('me.try.l')}</label>
+   <input id="try" type="range" min="0" max="100" step="1" value={START} aria-valuetext={`${START}, ${grade}`} data-try />
+   <output for="try" class="scale-out" data-try-out data-i18n-skip aria-live="polite">{out.map((p) => (p.bold ? <b>{p.text}</b> : p.text))}</output>
+  </div>
+ </div>
+ <table class="gt" data-rv>
+  <caption class="sr">{t('me.b.tbl')}</caption>
+  <thead><tr><th scope="col">{t('me.b.c1')}</th><th scope="col">{t('me.b.c2')}</th><th scope="col">{t('me.b.c3')}</th></tr></thead>
+  <tbody>
+   {ROWS.map(([g, range, level]) => (
+     <tr data-g={g} class={g === grade ? 'on' : undefined}><th scope="row"><span class={`g g-${g}`}>{g}</span></th><td class="num">{t(range)}</td><td>{t(level)}</td></tr>
+   ))}
+   <tr class="gt-nt"><th scope="row"><span class="g g-N">–</span></th><td>{t('me.g.ntv')}</td><td>{t('me.g.ntl')}</td></tr>
+  </tbody>
+ </table>
+ <p class="note" data-rv>{t('me.b.note')}</p>
+</section>

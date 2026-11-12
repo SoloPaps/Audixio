@@ -1,0 +1,11 @@
+---
+import { t } from '../../../i18n/index.js';
+import { SCAN_HREF } from '../../../lib/nav-canon.js';
+---
+
+<section class="sec wrap" id="fin" data-dock-hide aria-labelledby="h-fin">
+ <div class="final m-final">
+  <div class="final-t"><p class="eyebrow">{t('me.e.k')}</p><h2 id="h-fin">{t('me.e.h')}</h2><p>{t('me.e.p')}</p></div>
+  <div class="m-ctas"><a class="btn" href={SCAN_HREF}><span>{t('me.e.b1')}</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a><a class="btn btn--ghost" href="/exemple-rapport"><span>{t('me.e.b2')}</span><svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+ </div>
+</section>

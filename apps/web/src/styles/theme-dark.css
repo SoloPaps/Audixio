@@ -231,6 +231,16 @@ html[data-theme="dark"] {
     --fs-pale-2: var(--d-vfspale2);
   }
 
+  /* Formules de /methode : l’encart radiographie, comme dans la maquette. */
+  html[data-theme="dark"][data-v6] .me {
+    --d-vmxbg: #081420;
+    --d-vmxln: #3a6e9c;
+    --d-vmxink: #b5daff;
+    --mx-bg: var(--d-vmxbg);
+    --mx-line: var(--d-vmxln);
+    --mx-ink: var(--d-vmxink);
+  }
+
   html[data-theme="dark"][data-v6] .v6-logo img {
     filter: brightness(0) invert(1);
   }
