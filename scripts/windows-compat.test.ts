@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { commande } from './commande.mjs';
+import { supabaseTests } from './tests-supabase.mjs';
 
 // Sous Windows, `new URL(import.meta.url).pathname` donne « /C:/… » : joint
 // à un chemin, il devient « C:\C:\… » (ENOENT). Les fichiers de code passent
@@ -76,5 +77,15 @@ describe('compatibilité Windows', () => {
       direct.test(readFileSync(file, 'utf8')),
     );
     expect(offenders).toEqual([]);
+  });
+
+  it('AUDIGY_SANS_SUPABASE écarte seulement les tests de base locale', () => {
+    const skipped = supabaseTests(process.cwd());
+    expect(skipped).toContain(
+      'packages/orchestrator/test/schedule-alerts.e2e.test.ts',
+    );
+    expect(skipped).toContain('packages/db/test/rls.test.ts');
+    expect(skipped).not.toContain('packages/db/test/local-absent.test.ts');
+    expect(skipped.every((file) => !file.includes('\\'))).toBe(true);
   });
 });

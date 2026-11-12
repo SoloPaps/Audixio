@@ -2,7 +2,7 @@ import { execFileSync, spawn } from 'node:child_process';
 
 /**
  * Lancer pnpm, npx ou tsx depuis Node sur tous les systèmes. Sous Windows ce
- * sont des scripts `.cmd` : `spawn('pnpm', …)` y échoue (ENOENT) et Node
+ * sont des scripts `.cmd` : les lancer sans shell y échoue (ENOENT) et Node
  * refuse un `.cmd` sans shell. On passe alors par le shell, avec une seule
  * ligne de commande dont les arguments sont cités.
  */
