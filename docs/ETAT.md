@@ -1,6 +1,6 @@
 # État du projet (mis à jour à chaque PR)
 
-Dernière mise à jour : 12/11/2026, PR « /pro v6 » (lot 3b, pages publiques).
+Dernière mise à jour : 12/11/2026, PR « transparence v6 » (lot 4, pages publiques).
 
 ## Lots de la refonte v6
 
@@ -11,19 +11,21 @@ Dernière mise à jour : 12/11/2026, PR « /pro v6 » (lot 3b, pages publiques).
 | 2. Accueil | accueil v6 en composants (`components/v6/accueil/`), barre visiteur et connecté, pied en 3 colonnes, boutons Pro vers `/pro` | fusionné (#205, `96f324b`) |
 | 2 bis. Méthode | `/methode` v6, histoire v2 (`components/v6/methode/`, clés `me.*`, `lib/motion/methode-v6.ts`) | fusionné (#206, `72fb162`) |
 | 3a. Exemple de rapport | `/exemple-rapport` sur V6Page, feuille portée sous `.ex` (`exemple-v6.css`), couleurs sur les jetons v6, Geist | fusionné (#207, `7354922`) |
-| 3b. Tarifs | `/pro` sur V6Page (`pro-v6.css`, `.pr6`), panneau toujours sombre `.v6-nuit` (palette nuit fixe dans `pro-v6.css` ; `theme-dark.css` reste réservé au thème sombre), `/passer-pro` réduite à son renvoi vers `/pro` (requête et ancre gardées) | cette PR |
+| 3b. Tarifs | `/pro` sur V6Page (`pro-v6.css`, `.pr6`), panneau toujours sombre `.v6-nuit` (palette nuit fixe dans `pro-v6.css` ; `theme-dark.css` reste réservé au thème sombre), `/passer-pro` réduite à son renvoi vers `/pro` (requête et ancre gardées) | fusionné (#208, `f156f6c`) |
+| 4a. Transparence | `/robot`, `/ecoconception`, `/accessibilite` sur V6Page (`.rb`, `.eco`, `.acc`), texte `--cta-fg` sur `--cta`, bandeau final en panneau `.v6-nuit` (palette dans la feuille de page) | cette PR |
 | 3. Rapport | `/rapport/:id` à onglets, feuille « Partager », redirections R1–R10 et R13 | à faire |
 | 4. Sites et compte | `/sites/:host`, compte en sections, redirections R11, R12 et R15 | à faire |
 | 5. Légales et erreurs | gabarits v6 | à faire |
 
 ## Reprise rapide (si le travail est interrompu)
 
-- Branches restantes : `main`, `design/v6-reference`, `cursor/maquette-accueil-1bc6` (PR #200 ouverte), `feat/methode-v6`.
+- Branches restantes : `main`, `design/v6-reference` (#200 fermée, branches fusionnées supprimées ; chaque branche est supprimée juste après son squash).
 - Local vert : lint, typecheck, vitest (136 fichiers), e2e UI hors tests qui demandent l'API invitée (`guest-audit`, `qa-momentic`, vérifiés en CI).
 - PR #205 : correctifs CI (jauge lue par `page.request`, légende du scanner hors `<figcaption>` pour `qualite.html`, défilement bloqué sous la fenêtre visiteur v6, `toEnglish` attend le rechargement, e2e-reel sur « Scanner mon site, gratuit », Geist préchargée avec replis recalés : CLS 0,43 → 0,002 avec DejaVu Sans).
-- `main` = `7354922` (#207 /exemple-rapport v6), après `72fb162` (#206) et `96f324b` (#205). Worktree de travail : `/workspace/audixio-methode` (branche de la page en cours). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
+- `main` = `f156f6c` (#208 /pro v6), après `7354922` (#207), `72fb162` (#206) et `96f324b` (#205). Worktree de travail : `/workspace/audixio-methode` (branche de la page en cours). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
 - Outil de portage d’une feuille v2 vers v6 : `/workspace/port-exemple/scope.py` (portée sous une classe, `--d-*` → jetons v6, noms locaux préfixés `--x-`, animations préfixées) ; `port_page.py` (Canon → V6Page), `fix_inline.py` (variables en ligne), `port_mobile.py` (règles `html[data-vue]` de `mobile-fit.css`, que V6Page ne pose plus), `ctafg.py` (texte blanc sur `--cta` → `--cta-fg`).
-- Étapes suivantes : robot, écoconception, accessibilité (lot 4 transparence), autres pages publiques ; puis espace connecté, légales et erreurs.
+- Étapes suivantes : correctif barre v6 (focus mobile, `.vdock`), demande d’accès et vérifier, puis espace connecté (R1–R17), légales et erreurs.
+- Tranches téléphone (390 px FR clair, 780 × 1200) : `/workspace/port-accueil/tools/tel.mjs` puis `tel.py`, dans `/workspace/boards/tel/`.
 - Après une coupure de la machine : `pnpm install --frozen-lockfile` puis `pnpm --filter @audigy/web exec playwright install chromium`.
 
 ## Règles
