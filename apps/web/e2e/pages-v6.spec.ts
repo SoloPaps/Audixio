@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * /robot, /ecoconception, /accessibilite en v6 : gabarit V6Page, Geist,
+ * Pages publiques portées en v6 (robot, écoconception, accessibilité,
+ * demande d’accès, vérifier) : gabarit V6Page, Geist,
  * jetons v6 dans les deux thèmes, bandeau final lisible (texte --cta-fg sur
  * --cta), 390 px sans débordement, liens internes réels.
  */
@@ -9,11 +10,23 @@ const PAGES = [
   { path: '/robot', vue: 'robot', sc: 'rb' },
   { path: '/ecoconception', vue: 'ecologie', sc: 'eco' },
   { path: '/accessibilite', vue: 'accessibilite', sc: 'acc' },
+  { path: '/demande-acces', vue: 'demande', sc: 'dem' },
+  { path: '/verifier', vue: 'preuve', sc: 'pv' },
+  {
+    path: '/verifier/00000000-0000-4000-8000-000000000019',
+    vue: 'verifier',
+    sc: 'vf',
+  },
 ] as const;
 
 type Mesure = { font: string; ink: string; worst: number; n: number };
 
+/** Textes posés sur un fond plein (boutons, bandeau final, pastilles). */
+const CIBLES =
+  'main .btn-primary, main .end h2, main .end p, main .end .rel, main .end .rel a, main .callout .ico, main .skip, main .button, main .vcard button, main .drop label, main .session-wall a.btn-primary';
+
 const mesurer = `(() => {
+  const SEL = '${CIBLES}';
   const L = (c) => {
     const [r, g, b] = (c.match(/[\\d.]+/g) || []).slice(0, 3).map((v) => {
       const x = Number(v) / 255;
@@ -35,14 +48,14 @@ const mesurer = `(() => {
     return 'rgb(255, 255, 255)';
   };
   let worst = 99, n = 0;
-  for (const el of document.querySelectorAll('main .btn-primary, main .end h2, main .end p, main .end .rel, main .end .rel a, main .callout .ico, main .skip')) {
+  for (const el of document.querySelectorAll(SEL)) {
     const r = el.getBoundingClientRect();
     if (!r.width || getComputedStyle(el).visibility === 'hidden') continue;
     const a = L(getComputedStyle(el).color), b = L(fond(el));
     const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
     worst = Math.min(worst, ratio); n++;
   }
-  const h1 = document.querySelector('h1');
+  const h1 = document.querySelector('main h1');
   return { font: getComputedStyle(h1).fontFamily, ink: getComputedStyle(document.querySelector('main')).color, worst, n };
 })()`;
 
@@ -52,12 +65,17 @@ for (const p of PAGES) {
       test(`gabarit, Geist et contraste (${theme})`, async ({ page }) => {
         await page.goto(`${p.path}?theme=${theme}`);
         await expect(page.locator(`main.${p.sc}`)).toBeVisible();
+        await expect(page.locator('main h1').first()).toBeVisible();
         const html = page.locator('html');
         await expect(html).toHaveAttribute('data-v6', '');
         await expect(html).toHaveAttribute('data-page', p.vue);
         await expect(
           page.locator('footer[data-dock-hide] .cols'),
         ).toBeVisible();
+        // Îlots hydratés (rendus après coup) : on attend qu’une cible soit mesurée.
+        await expect
+          .poll(async () => (await page.evaluate<Mesure>(mesurer)).n)
+          .toBeGreaterThan(0);
         const m = await page.evaluate<Mesure>(mesurer);
         expect(m.font).toMatch(/^"?Geist/);
         // Plus l'encre v2 #1e2a55.
@@ -73,6 +91,7 @@ for (const p of PAGES) {
     }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.goto(p.path);
+      await expect(page.locator('main h1').first()).toBeVisible();
       const over = await page.evaluate<number>(
         '(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)()',
       );

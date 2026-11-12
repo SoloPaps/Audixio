@@ -1,11 +1,10 @@
 ---
-import '../../styles/maquettes/liens.css';
 import { EXEMPLE_DOSSIER_ID } from '@audigy/evidence/browser';
 import PreuveMentions from '../../components/PreuveMentions.svelte';
 import VerifierPanel from '../../components/VerifierPanel.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
-import '../../styles/maquettes/verifier-page.css';
+import V6Page from '../../layouts/V6Page.astro';
+import '../../styles/maquettes/verifier-page-v6.css';
 
 export function getStaticPaths() {
   return [{ params: { id: EXEMPLE_DOSSIER_ID } }];
@@ -14,12 +13,12 @@ export function getStaticPaths() {
 void Astro.params.id;
 ---
 
-<Canon
+<V6Page
   vue="verifier"
   title={t('meta.verifier.title')}
   description={t('meta.verifier.description')}
 >
-  <main id="contenu" class="verifier-page">
+  <main id="contenu" class="vf verifier-page" tabindex="-1">
     <nav class="crumbs" aria-label={t('nav.pages')}>
       <ol>
         <li><a href="/">{t('nav.home')}</a></li>
@@ -33,4 +32,4 @@ void Astro.params.id;
       <VerifierPanel client:load />
     </section>
   </main>
-</Canon>
+</V6Page>

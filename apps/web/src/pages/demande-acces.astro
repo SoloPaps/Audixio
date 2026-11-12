@@ -1,11 +1,10 @@
 ---
-import '../styles/maquettes/liens.css';
-import '../styles/maquettes/demande.css';
+import '../styles/maquettes/demande-v6.css';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
+import V6Page from '../layouts/V6Page.astro';
 ---
 
-<Canon vue="demande" title={t('mq.demande.meta.title')} description={t('mq.demande.meta.desc')} robots="noindex, nofollow">
+<V6Page vue="demande" title={t('mq.demande.meta.title')} description={t('mq.demande.meta.desc')} robots="noindex, nofollow">
 <p hidden id="mq.dm.copied">{t('mq.dm.copied')}</p><p hidden id="mq.dm.copied.long">{t('mq.dm.copied.long')}</p><p hidden id="copy.failed">{t('copy.failed')}</p><p hidden id="mq.dm.refresh">{t('mq.dm.refresh')}</p><p hidden id="mq.dm.need">{t('mq.dm.need')}</p><p hidden id="mq.dm.sent">{t('mq.dm.sent')}</p><p hidden id="mq.dm.limited">{t('mq.dm.limited')}</p><p hidden id="mq.dm.error">{t('mq.dm.error')}</p>
 
 
@@ -16,7 +15,7 @@ import Canon from '../layouts/Canon.astro';
 
 
 
-<main id="contenu" tabindex="-1">
+<main id="contenu" class="dem" tabindex="-1">
   <nav class="crumbs" aria-label={t('mq.demande.001')}>
     <ol>
       <li><a href="/exemple-rapport">{t('mq.demande.002')}</a></li>
@@ -358,4 +357,4 @@ function tr(key){var pack=globalThis.__audigy_en;var line=pack&&pack[key];if(typ
   }
 })();
 </script>
-</Canon>
+</V6Page>
