@@ -23,7 +23,6 @@ Mise à jour du 01/11/2026. Source des décisions : [00-DECISIONS.md](../00-DECI
 ## C. Design (voir `design/REFONTE-DESIGN-SOBRE.md`)
 Ordre : shell (en-tête, pied) → rapport d'audit → accueil → connexion / compte / demande d'accès → méthode, tarifs, sites suivis → pages légales.
 - Héberger soi-même les polices (Source Serif 4, Inter, JetBrains Mono).
-- Rétablir les ressources manquantes du dossier `design/` : `maquettes/chrome/`, `logos/…/out/`, `assets/` (fichiers binaires à ajouter depuis le poste local).
 
 ## D. Tests et lancement
 1. Recette locale par le propriétaire sur 1 à 2 de ses sites ([RECETTE.md](RECETTE.md)).

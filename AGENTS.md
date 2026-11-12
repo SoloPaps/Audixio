@@ -5,7 +5,7 @@ Lire ce fichier. Ensuite seulement la PART demandée dans `docs/dev/PLAN.md`, ou
 Produit décidé : `docs/produit/FONCTIONNEMENT.md` (26 oct. 2026, **soft-gate PARTIEL + lock-components** 28 oct. 2026 soir). Canon : `SOFT-GATE-PARTIEL-CANON.md` + **SSOT** `MATRICE-STATUT-DROITS-CANON.md` + `docs/archive/2026-10-28-prune/_spec-soft-gate-2026-10-28/` (historique).
 Décisions owner soir : `docs/00-DECISIONS.md` + `docs/etapes/00-LISEZ-MOI.md`.
 
-Chrome / logos Audixio (local pack) : `docs/design/05-LOGO.md`, `05-LOGO.md`, `couleurs-palette-et-phrases-Cursor.md`, `06-BACKLOG.md`, `workflow-Cursor-shell-pages-motion.md`, `NAV-CANON-desktop-et-mobile.md` (shell → 1 page → motion ; PNG officiels ; tokens pétrole/pêche ; nits copy dans l’agent page).
+Design v6 : `docs/design/01-REGLES-STRICTES.md`, `docs/design/v6/INTEGRATION-v6.md`, `docs/design/v6/STRUCTURE.md`. État des lots : `docs/ETAT.md`.
 
 
 ---
@@ -35,20 +35,15 @@ Chrome / logos Audixio (local pack) : `docs/design/05-LOGO.md`, `05-LOGO.md`, `c
 
 ## Design (obligatoire)
 
-- Charte clair : `docs/design/DESIGN.md` (fusion MonScore × Arc Soft, PR #66). Sombre gelé : §2.4.
-- Avant toute UI (chrome, nav, logo, thème) : `docs/design/01-REGLES-STRICTES.md`. En conflit avec une maquette Stitch, ce fichier **gagne**.
-- Index pack : `docs/design/00-LISEZ-MOI.md`.
-- Mode implémentation Cursor (agents, pixel-perfect body, anims) : `docs/design/workflow-Cursor-shell-pages-motion.md`.
-- **Stitch est gelé.** Ne pas le relancer. Body = pixel-perfect HTML+PNG maquette ; chrome = `01-REGLES-STRICTES.md` + `workflow-Cursor-shell-pages-motion.md`.
-- **Maquettes (images lisibles).** Les PNG `docs/design/maquettes/**/screen.png` et les `code.html` sont la référence **body pixel-perfect** (ouvrir PNG + HTML ensemble). On implémente les fonctionnalités de `docs/produit/FONCTIONNEMENT.md` et `docs/etapes/` sur le code existant. En conflit, `01-REGLES-STRICTES.md` gagne. Ignorer les PNG invalides ou ≤ 100 octets (`maquettes/README.md`, `SCREEN-INVALID.txt`).
+- Avant toute UI : `docs/design/01-REGLES-STRICTES.md` (v6). Charte : `docs/design/DESIGN.md`. Jetons et composants : `docs/design/v6/INTEGRATION-v6.md`.
+- Pages, adresses, redirections 301, barre et pied : `docs/design/v6/STRUCTURE.md`.
+- Clair : jetons `[data-v6]` de `tokens.css`. Sombre : seulement `theme-dark.css` (`--d-*`). Police Geist / Geist Mono. Plus de palette v2, d’Inter ni de maquettes Stitch (archivées hors du dépôt le 12/11/2026).
+- Une page passe en v6 lot par lot ; ses anciennes CSS de maquette partent avec elle.
 - **Règles produit** : 2 sites / 1 lien, soft-gate PARTIEL, **matrice statut→droits**, lock-components, hub TOP 10, brief matrice, sélection sync, Comment corriger générique ouvert / branché site après vérif, Pro plus tard (~9 €, 10 sites), vie privée **tests partiels** HTTP/HTML (pas Tracker Radar / pas navigateur d'audit requis en bêta), A11y lettre A–F + « mesure automatique / partielle ». Source : `FONCTIONNEMENT.md` + `SOFT-GATE-PARTIEL-CANON.md` + `MATRICE-STATUT-DROITS-CANON.md`.
-- Chrome : `AppHeader` desktop (encadré) + mobile top/bottom sticky (`NAV-CANON-desktop-et-mobile.md`) ; un seul jeu de destinations. Libellés : **Accueil · Méthode · Sites suivis · Documentation** | **FR/EN** · **thème** · **Connexion** (ou **Compte** si session). Pas de drawer hamburger pour la nav principale (bottom sticky = les 4 destinations). Défaut non connecté = Connexion.
-- INTERDIT en nav : Audit actif, Historique, Générateur Brief (famille B), item Progression, Blog/Actu, bottom-bar Diagnostic · Méthode · Sites · Compte.
-- Logo uniquement : `docs/design/logos/audixio-logos/out/`. INTERDIT : JPG legacy `assets/logo-*.jpg` ; Material `vital_signs`, `ecg_heart`, `graphic_eq`, `shield`, `verified` ; lettre A isolée ; SVG « ECG » inventés.
-- Thème : clair par défaut, suit `prefers-color-scheme`, choix manuel prioritaire ; sombre complet = plus tard (29/10). Couleurs : palette **v2** depuis le 29/10/2026 (`docs/design/design-elements/palette-foundations-v2.*`, voir `docs/00-DECISIONS.md`) ; l'ancienne palette pétrole/pêche est remplacée.
-- Sombre (ancien gel, à recaler sur la palette v2) : `04-THEME-DARK.md` + PNG `assets/dark-ref-*.png`. Fond `#0B1021`→`#1E2A55`, surface `#161E2C`, encre `#F0F2F5`/`#9AA3B2`, CTA `#7091E6`. Pas de violet AI-slop, pas de `#000` plein écran.
-- Backlog chrome : `06-BACKLOG.md` (P0→P2). Ne pas implémenter `07-PLUS-TARD.md` en passant.
-- Corrections promesse (8 domaines, passif par défaut, horodaté, jargon, assistant IA) = **dans le code**, pas Stitch. Voir `docs/produit/FONCTIONNEMENT.md` §10 et `docs/etapes/04-promesse-et-copie.md`.
+- Barre : `CanonBar`, entrées dans `apps/web/src/lib/nav-canon.ts` (voir `STRUCTURE.md`). Page active : texte plus gras, `aria-current="page"`.
+- Logo uniquement : `docs/design/logos/`. INTERDIT : Material `vital_signs`, `ecg_heart`, `graphic_eq`, `shield`, `verified` ; lettre A isolée ; SVG « ECG ».
+- Thème : clair par défaut, suit `prefers-color-scheme`, choix manuel prioritaire. Pas de violet « IA », pas de `#000` plein écran.
+- Corrections promesse (8 domaines, passif par défaut, horodaté, jargon, assistant IA) : `docs/produit/FONCTIONNEMENT.md` §10.
 - Refonte UI ordonnée : `docs/etapes/`.
 
 ---

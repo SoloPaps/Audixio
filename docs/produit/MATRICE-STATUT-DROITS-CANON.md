@@ -120,5 +120,5 @@ Sans droits : mêmes emplacements ; cartes / slots sensibles = **Verrouillé** +
 
 - Soft-gate : `SOFT-GATE-PARTIEL-CANON.md`  
 - Produit : `docs/produit/FONCTIONNEMENT.md`  
-- Pages : `02-PAGES.md`, `maquettes/INDEX.md`  
+- Pages : `docs/design/v6/STRUCTURE.md`  
 - Specs : `docs/archive/2026-10-28-prune/_spec-soft-gate-2026-10-28/`

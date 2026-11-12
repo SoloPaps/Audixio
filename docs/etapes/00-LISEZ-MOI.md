@@ -124,8 +124,8 @@ Ordre global pour modifier le site **comme décidé** le 26 octobre 2026. Une é
 | # | Fichier | Sujet |
 |---|---|---|
 | 01 | [`01-fondations-docs.md`](../archive/etapes-refonte/01-fondations-docs.md) | Merger ce pack docs (**fait**, archivé) |
-| 02 | `02-chrome-ui.md` | AppHeader, logo, i18n, drawer |
-| 03 | `03-theme-dark.md` | Tokens dark gelés |
+| 02 | (archivée, `docs/archive/design-2026-11-12/`) | AppHeader, logo, i18n, drawer — remplacée par la v6 |
+| 03 | (archivée) | Tokens dark — remplacés par `theme-dark.css` v6 |
 | 04 | `04-promesse-et-copie.md` | 5 corrections + 8 domaines |
 | 05 | `05-rapport-deux-couches.md` | Verdict / technique ; bugs |
 | 06 | `06-compte-et-plafonds.md` | Connexion e-mail + mot de passe / Google / GitHub, 2 sites, 1 lien |

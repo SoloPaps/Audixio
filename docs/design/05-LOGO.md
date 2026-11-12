@@ -1,7 +1,5 @@
 # Audixio — Logo officiel (validé owner 2026-10-28)
 
-> **Mise à jour du 29/10/2026 (réorganisation des docs)** — ces décisions priment sur le texte ci-dessous (détail : [00-DECISIONS.md](../00-DECISIONS.md)) :
-> - Palette **v2** = référence couleurs (`design/design-elements/palette-foundations-v2.*` : boutons `#3D52A0` survol `#1E2A55`, accent `#7091E6`, secondaire `#8697C4`, bordures `#ADBBDA`, surfaces `#EDE8F5`, texte `#1E2A55` / `#4A5585`). Les couleurs pétrole / pêche (teal) de ce fichier sont **remplacées**.
 
 Marque produit : **Audixio**. Assets = détourages owner (alpha propre).
 **Ne pas régénérer, recolorer, recadrer serré, ni remplacer par du texte / Material / SVG inventé.**
@@ -46,9 +44,7 @@ Alt : **« Audixio »** (pas « logo » seul).
 ## Charte couleurs (liée au logo)
 
 - Accent pétrole / teal-cyan du ruban A + accent **pêche** du trait.
-- Le site **calibre sa palette sur le logo** (tokens palette v2 depuis le 29/10).
-- HTML Stitch = **emplacements / structure** des blocs — **pas** la source absolue des couleurs.
-- Étapes agents (couleurs + phrases) : [`couleurs-palette-et-phrases-Cursor.md`](couleurs-palette-et-phrases-Cursor.md).
+- Couleurs du site : charte v6 (`01-REGLES-STRICTES.md`).
 
 ## INTERDIT
 
@@ -57,48 +53,3 @@ Alt : **« Audixio »** (pas « logo » seul).
 - Recadrer jusqu’à couper le ruban ou la barre pêche
 - Remplir les trous des lettres / triangle du mark
 - Utiliser les JPG `assets/logo-*.jpg` pour le chrome
-
-
----
-
-## Mode d'emploi logos pour Cursor (gelé 2026-10-28)
-
-*(Fusionné depuis `logos-Audixio-mode-emploi-Cursor.md` le 29/10/2026.)*
-
-Complète `workflow-Cursor-shell-pages-motion.md`. Owner validé.
-Couleurs + phrases : [`couleurs-palette-et-phrases-Cursor.md`](couleurs-palette-et-phrases-Cursor.md). Nits page : [`06-BACKLOG.md`](06-BACKLOG.md).
-
-### Ordre obligatoire
-
-1. **Agent shell (une fois)**
-   - `AppHeader` + footer partagés, Inter, thème light/dark + toggle.
-   - Logo = fichiers officiels `logos/audixio-logos/out/` (PC clair/sombre selon thème ; mark pour compact/favicon).
-   - Tokens couleur = **palette v2** (29/10 ; avant : pétrole + pêche du logo) (`05-LOGO.md`, `DESIGN.md`) — **poser ici**, pas page par page.
-   - Titre marque UI : **Audixio**.
-   - **Figer** le shell avant toute page.
-
-2. **Un agent par page**
-   - Body = `maquettes/<dossier>/code.html` + `screen.png` pixel-perfect (**structure**).
-   - Couleurs = tokens shell (Stitch ≠ source absolue des hex).
-   - Remplacer header/footer Stitch par le shell partagé — **ne pas redessiner ni retoucher le logo**.
-   - Nits **copy** de la page uniquement (même agent).
-
-3. **Agent motion (après les pages)**
-   - Anims légères ciblées (Accueil/hero, jauge).
-   - **Ne pas toucher** aux PNG logo ni aux tokens couleur.
-
-### Ne jamais
-
-- Régénérer / « améliorer » les PNG logo
-- Remplacer le lockup PNG par du texte « Audixio » stylé
-- Copier les hex Stitch hors charte sans remap
-- Un agent « toutes les pages » ou un agent « textes seuls » en parallèle du shell
-
-### États
-
-Maquette Stitch = souvent démo connectée/Pro. **Défaut produit : non connecté.** Voir `couleurs-palette-et-phrases-Cursor.md`.
-
-### Header layout (owner)
-
-Référence structure : [chrome-header-canon-light.png](maquettes/chrome/chrome-header-canon-light.png) + [NAV-CANON-desktop-et-mobile.md](maquettes/chrome/NAV-CANON-desktop-et-mobile.md).
-Brancher le **lockup** Audixio_PC_clair_h*.png / Audixio_PC_sombre_h*.png (pas un wordmark re-dessiné d’après le PNG).
