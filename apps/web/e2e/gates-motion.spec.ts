@@ -18,7 +18,8 @@ test.describe('animations Pro et accès', () => {
     await open(page, '/pro?theme=light', 'no-preference');
     await expect(page.locator('#hero')).toBeVisible();
     const dot = page.locator('.eyebrow .dot');
-    await expect(dot).toHaveCSS('animation-name', 'dot');
+    // Animations de la page préfixées par sa portée v6 (.pr6).
+    await expect(dot).toHaveCSS('animation-name', 'pr6-dot');
     const card = page.locator('#pz');
     await card.scrollIntoViewIfNeeded();
     await expect(card).toHaveClass(/play/);
