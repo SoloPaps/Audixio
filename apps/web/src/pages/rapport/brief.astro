@@ -1,8 +1,9 @@
 ---
-import '../../styles/maquettes/brief-v6.css';
 import ReportView from '../../components/ReportView.svelte';
 import { t } from '../../i18n/index.js';
 import V6Page from '../../layouts/V6Page.astro';
+// Feuilles de page après le gabarit : elles passent devant v6.css à spécificité égale.
+import '../../styles/maquettes/brief-v6.css';
 ---
 
 <V6Page vue="brief" title={t('mq.ui.meta.brief.title')} description={t('brief.lead')}>

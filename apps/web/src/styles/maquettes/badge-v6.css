@@ -22,7 +22,7 @@
   --x-pill: color-mix(in oklab, var(--beam) 6%, transparent);
   --x-shadow:
     0 30px 60px -30px rgba(61, 82, 160, 0.3), 0 1px 0 transparent inset;
-  --x-crit: var(--find);
+  --x-crit: color-mix(in oklab, var(--find) 85%, var(--ink));
   --x-crit-bg: var(--find-a);
   --x-crit-bd: color-mix(in oklab, var(--find) 35%, transparent);
   --x-fix: color-mix(in oklab, var(--gD) 80%, var(--ink));
@@ -1158,4 +1158,10 @@
     display: flex;
     flex-wrap: wrap;
   }
+}
+
+/* La fenêtre du badge occupe l’écran : barre et pied du gabarit masqués, comme avant le passage en v6. */
+html:has(.r6-badge) :is(.axn, .axn-top),
+html:has(.r6-badge) body > footer {
+  display: none;
 }

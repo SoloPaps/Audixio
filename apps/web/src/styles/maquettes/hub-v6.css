@@ -861,7 +861,7 @@ html.js .r6-hub .pin {
   }
 }
 .r6-hub {
-  --x-crit: var(--find);
+  --x-crit: color-mix(in oklab, var(--find) 85%, var(--ink));
   --x-crit-bg: var(--find-a);
   --x-crit-bd: color-mix(in oklab, var(--find) 35%, transparent);
   --x-fix: color-mix(in oklab, var(--gD) 80%, var(--ink));

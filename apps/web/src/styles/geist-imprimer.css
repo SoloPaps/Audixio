@@ -1,0 +1,60 @@
+/* Geist en graisses fixes, pour la page à imprimer seulement. Chromium
+ * n’embarque pas une police variable dans un PDF (glyphes Type 3, sans
+ * fichier de police) : ces instances statiques, tirées des mêmes fichiers
+ * Geist (SIL OFL, voir OFL-geist.txt), gardent un texte réel dans le PDF. */
+@font-face {
+  font-family: "Geist Fixe";
+  font-weight: 100 450;
+  font-display: swap;
+  src: url("/fonts/geist-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Fixe";
+  font-weight: 451 550;
+  font-display: swap;
+  src: url("/fonts/geist-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Fixe";
+  font-weight: 551 650;
+  font-display: swap;
+  src: url("/fonts/geist-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Fixe";
+  font-weight: 651 750;
+  font-display: swap;
+  src: url("/fonts/geist-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Fixe";
+  font-weight: 751 900;
+  font-display: swap;
+  src: url("/fonts/geist-800.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono Fixe";
+  font-weight: 100 500;
+  font-display: swap;
+  src: url("/fonts/geist-mono-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono Fixe";
+  font-weight: 501 900;
+  font-display: swap;
+  src: url("/fonts/geist-mono-600.woff2") format("woff2");
+}
+
+.r6-pdf {
+  --sans:
+    "Geist Fixe", "Geist", "Geist Repli", "Geist Repli DV", system-ui,
+    sans-serif;
+  --mono:
+    "Geist Mono Fixe", "Geist Mono", "Geist Mono Repli", ui-monospace, monospace;
+}

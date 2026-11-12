@@ -22,7 +22,7 @@
   --x-s6: 72px;
   --x-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --x-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --x-crit: var(--find);
+  --x-crit: color-mix(in oklab, var(--find) 85%, var(--ink));
   --x-crit-bg: var(--find-a);
   --x-crit-bd: color-mix(in oklab, var(--find) 35%, transparent);
   --x-fix: color-mix(in oklab, var(--gD) 80%, var(--ink));
@@ -805,5 +805,17 @@ html.js .r6-pdf .rv.in {
     min-width: 0;
     flex: 1 1 100%;
     white-space: normal;
+  }
+}
+
+/* Hors de .r6-pdf : le corps et le pied de page du gabarit v6, à l’impression. */
+@media print {
+  html:has(.r6-pdf) body {
+    background: #fff !important;
+    color: #1e2a55 !important;
+  }
+  html:has(.r6-pdf) :is(.axn, .axn-top, .skip),
+  html:has(.r6-pdf) body > footer {
+    display: none !important;
   }
 }

@@ -171,3 +171,55 @@ test('R13 : /badge ouvre la feuille Partager sur le badge', async ({
   await expect(sheet).toBeHidden();
   await expect(page).toHaveURL(`/rapport/${AUDIT}`);
 });
+
+// Lot 3c : le résumé explique en trois étapes comment lire le rapport, en FR et en EN.
+for (const [lang, title, steps] of [
+  ['fr', 'Comment lire ce rapport', ['La note', 'Les priorités', 'Le détail']],
+  [
+    'en',
+    'How to read this report',
+    ['The grade', 'The priorities', 'The detail'],
+  ],
+] as const) {
+  test(`narration du résumé (${lang}) : trois étapes, visibles sans animation`, async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await storeGuest(page);
+    await page.goto(`/rapport/${AUDIT}?lang=${lang}`);
+    const guide = page.getByRole('region', { name: title });
+    await expect(guide).toBeVisible();
+    const items = guide.getByRole('listitem');
+    await expect(items).toHaveCount(3);
+    for (const [index, step] of steps.entries()) {
+      await expect(
+        items.nth(index).getByRole('heading', { level: 3 }),
+      ).toHaveText(step);
+      await expect(items.nth(index)).toHaveCSS('opacity', '1');
+    }
+  });
+}
+
+test('narration du résumé à 390 px : étapes en colonne, sans débordement', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await storeGuest(page);
+  await page.goto(`/rapport/${AUDIT}`);
+  const items = page
+    .getByRole('region', { name: 'Comment lire ce rapport' })
+    .getByRole('listitem');
+  await items.last().scrollIntoViewIfNeeded();
+  await expect(items.last()).toHaveCSS('opacity', '1');
+  const boxes = await items.evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const box = node.getBoundingClientRect();
+      return { left: box.left, right: box.right, top: box.top };
+    }),
+  );
+  for (const box of boxes) {
+    expect(box.left).toBeGreaterThanOrEqual(0);
+    expect(box.right).toBeLessThanOrEqual(390);
+  }
+  expect(boxes[1]?.top ?? 0).toBeGreaterThan(boxes[0]?.top ?? 0);
+});
