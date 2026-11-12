@@ -253,7 +253,12 @@ test('page de preuve, bureau et 330 px', async ({ page }) => {
   await expect(
     page.getByText('Connectez-vous pour vérifier un site.'),
   ).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Tarifs' })).toBeVisible();
+  // La barre et le pied v6 ont chacun un lien « Tarifs » : on vise la barre.
+  await expect(
+    page
+      .getByRole('navigation', { name: 'Navigation principale' })
+      .getByRole('link', { name: 'Tarifs' }),
+  ).toBeVisible();
   await page.screenshot({
     path: '/opt/cursor/artifacts/preuve-desktop.png',
     fullPage: true,
