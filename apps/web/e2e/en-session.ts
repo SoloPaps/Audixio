@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { ORIGIN } from './origin.js';
 
 const USER = '11111111-1111-4111-8111-111111111111';
@@ -57,15 +57,39 @@ export async function stubSession(
 }
 
 // Bascule la page en anglais par le sélecteur de langue.
+// Le choix recharge la page (location.reload, ou ?lang=en avant l’hydratation) :
+// on attend un document neuf, sinon le goto suivant est coupé par ce rechargement.
 export async function toEnglish(page: Page): Promise<void> {
   const link = page
     .locator('.axn-tools')
     .getByRole('link', { name: 'EN — English' });
   await link.waitFor();
   await page.waitForLoadState('networkidle');
+  await page.evaluate(() => {
+    (globalThis as Record<string, unknown>).__avantLangue = true;
+  });
   await link.click();
-  await page.waitForFunction(
-    () => localStorage.getItem('audigy-locale') === 'en',
-  );
+  await expect
+    .poll(
+      () =>
+        page
+          .evaluate(() => {
+            const view = globalThis as unknown as {
+              __avantLangue?: boolean;
+              document: { readyState: string };
+              location: { href: string };
+              localStorage: { getItem: (key: string) => string | null };
+            };
+            return (
+              !view.__avantLangue &&
+              view.document.readyState === 'complete' &&
+              !new URL(view.location.href).searchParams.has('lang') &&
+              view.localStorage.getItem('audigy-locale') === 'en'
+            );
+          })
+          .catch(() => false),
+      { timeout: 15_000 },
+    )
+    .toBe(true);
   await page.waitForLoadState('networkidle');
 }
