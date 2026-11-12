@@ -932,6 +932,16 @@
 .r6-badge .cp:has(textarea) {
   align-items: flex-start;
 }
+/* En colonne (téléphone), le code prend toute la largeur au lieu de se réduire à son contenu. */
+@media (max-width: 560px) {
+  .r6-badge .cp:has(textarea) {
+    align-items: stretch;
+  }
+  .r6-badge .cp textarea {
+    flex: none;
+    width: 100%;
+  }
+}
 .r6-badge .foot p {
   font-size: 13.5px;
   color: var(--x-muted);

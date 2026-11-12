@@ -223,3 +223,18 @@ test('narration du résumé à 390 px : étapes en colonne, sans débordement', 
   }
   expect(boxes[1]?.top ?? 0).toBeGreaterThan(boxes[0]?.top ?? 0);
 });
+
+test('badge à 390 px : le code à coller occupe la largeur de la fenêtre', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await storeGuest(page);
+  await page.goto(`/rapport/${AUDIT}/badge`);
+  const code = page.locator('.cp textarea');
+  await expect(code).toBeVisible();
+  const [codeBox, rowBox] = await Promise.all([
+    code.boundingBox(),
+    page.locator('.cp:has(textarea)').boundingBox(),
+  ]);
+  expect(Math.round(codeBox?.width ?? 0)).toBe(Math.round(rowBox?.width ?? 1));
+});
