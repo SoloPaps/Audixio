@@ -297,6 +297,30 @@ export function hoistIslandStyle(html: string): string {
   return `${without.slice(0, at)}${ISLAND_STYLE}${without.slice(at)}`;
 }
 
+/**
+ * Pages servies aussi sous des adresses réécrites (200) : `/rapport/:id/…`
+ * (apps/web/src/lib/redirects.ts), `/partage/:jeton`, `/score/:x`,
+ * `/verifier/:id` (netlify.toml). Netlify applique `_headers` à l’adresse
+ * demandée, pas à la page servie : chaque famille reçoit une seule CSP,
+ * union des empreintes de ses pages, sous `/famille` et `/famille/*`. Une
+ * adresse qui correspond à plusieurs règles reçoit donc toujours la même
+ * politique.
+ */
+export const REWRITE_FAMILIES = [
+  '/rapport',
+  '/partage',
+  '/score',
+  '/verifier',
+] as const;
+
+export function familyOf(urlPath: string): string | null {
+  return (
+    REWRITE_FAMILIES.find(
+      (family) => urlPath === family || urlPath.startsWith(`${family}/`),
+    ) ?? null
+  );
+}
+
 export async function publish(
   dist: string,
   env: Readonly<Record<string, string | undefined>> = process.env,
@@ -310,6 +334,7 @@ export async function publish(
       file.endsWith('.html') && !file.includes(`${path.sep}dev${path.sep}`),
   );
   const rules: HeaderRule[] = [{ path: '/*', headers: { ...COMMON_HEADERS } }];
+  const families = new Map<string, { scripts: string[]; styles: string[] }>();
   const locs: string[] = [];
   for (const file of html.sort()) {
     const rel = path.relative(dist, file);
@@ -317,6 +342,15 @@ export async function publish(
     const source = hoistIslandStyle(raw);
     if (source !== raw) await writeFile(file, source, 'utf8');
     const hashes = inlineHashes(source);
+    locs.push(publicPath(rel));
+    const family = familyOf(publicPath(rel));
+    if (family) {
+      const bag = families.get(family) ?? { scripts: [], styles: [] };
+      bag.scripts.push(...hashes.scripts);
+      bag.styles.push(...hashes.styles);
+      families.set(family, bag);
+      continue;
+    }
     const policy = contentSecurityPolicy(
       hashes.scripts,
       hashes.styles,
@@ -328,7 +362,19 @@ export async function publish(
         headers: { 'Content-Security-Policy': policy },
       });
     }
-    locs.push(publicPath(rel));
+  }
+  for (const [family, bag] of families) {
+    const policy = contentSecurityPolicy(
+      unique(bag.scripts),
+      unique(bag.styles),
+      connect,
+    );
+    for (const urlPath of [family, `${family}/*`]) {
+      rules.push({
+        path: urlPath,
+        headers: { 'Content-Security-Policy': policy },
+      });
+    }
   }
   await writeFile(path.join(dist, '_headers'), renderHeaders(rules), 'utf8');
   await writeFile(path.join(dist, 'sitemap.xml'), renderSitemap(locs), 'utf8');

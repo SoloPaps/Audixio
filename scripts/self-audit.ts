@@ -17,6 +17,7 @@ import type {
   TlsProbe,
 } from '@audigy/net';
 import { createRequestBudget } from '@audigy/net';
+import { resolveRewrite } from '../apps/web/src/lib/redirects.js';
 import {
   type CheckOutcome,
   createSharedArtifacts,
@@ -127,8 +128,8 @@ function fallbackFile(pathname: string): string | null {
   }
   if (/^\/score\/.+/u.test(pathname)) return 'score/index.html';
   if (/^\/partage\/.+/u.test(pathname)) return 'partage/index.html';
-  const print = pathname.match(/^\/rapport\/([^/]+)\/imprimer\/?$/u);
-  if (print && print[1] !== 'imprimer') return 'rapport/imprimer/index.html';
+  const tab = resolveRewrite(pathname);
+  if (tab) return tab.slice(1);
   return null;
 }
 
