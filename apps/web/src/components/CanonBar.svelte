@@ -86,12 +86,11 @@ function setMenu(next: boolean, back: boolean): void {
     }, 50);
   } else {
     root.style.overflow = '';
-    if (shell !== 'v6') {
-      document.body.style.overflow = '';
-      // Certaines pages repartent en haut pendant le verrou : on rend la position.
-      if (window.scrollY !== menuScroll)
-        window.scrollTo({ top: menuScroll, behavior: 'instant' });
-    }
+    if (shell !== 'v6') document.body.style.overflow = '';
+    // Certaines pages bougent pendant le verrou (v2 comme v6, où seul <html>
+    // est verrouillé) : on rend la position.
+    if (window.scrollY !== menuScroll)
+      window.scrollTo({ top: menuScroll, behavior: 'instant' });
     if (back) burger?.focus({ preventScroll: true });
   }
 }
