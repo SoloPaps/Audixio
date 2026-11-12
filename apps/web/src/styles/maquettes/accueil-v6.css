@@ -285,10 +285,14 @@
   position: relative;
   overflow: hidden;
 }
+/* Halo du héros : décalage fixe. En pourcentage, il suivait la hauteur du
+ * héros ; quand le premier rendu arrive avant la fin de l’analyse du HTML
+ * (CPU chargé en CI), le héros grandit ensuite et le halo remontait de 10 %
+ * de cette croissance : décalage de mise en page de 0,117 à 390 px. */
 .ac .hero::before {
   content: "";
   position: absolute;
-  inset: -10% 0 auto;
+  inset: -6rem 0 auto;
   height: 56rem;
   background: radial-gradient(
     44rem 24rem at 50% 24%,

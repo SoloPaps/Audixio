@@ -26,11 +26,12 @@ test('/compte EN : « Coming soon » sans pluriel fautif', async ({ page }) => {
   await expect(page.locator('main')).not.toContainText('Coming soons');
 });
 
-test('/compte/alertes EN : titre entièrement anglais', async ({ page }) => {
+test('/compte#alertes EN : titre entièrement anglais', async ({ page }) => {
+  // R15 : /compte/alertes est la section #alertes de /compte (titre de niveau 2).
   await stubSession(page);
-  await page.goto('/compte/alertes?theme=light');
+  await page.goto('/compte?theme=light#alertes');
   await toEnglish(page);
-  await expect(page.locator('h1')).toHaveText('Settings for alerts');
+  await expect(page.locator('#alertes h2#t')).toHaveText('Settings for alerts');
 });
 
 test('/accessibilite EN : Défenseur des droits et Libre réponse sont traduits', async ({

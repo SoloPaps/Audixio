@@ -1,0 +1,3203 @@
+/* Compte en v6 : feuille de la page portée sous .co (sauf la section Alertes, .al), couleurs
+ * sur les jetons v6 (le sombre suit theme-dark.css), police Geist. */
+@scope (.co) to (.al) {
+  :scope {
+    box-sizing: border-box;
+    color: var(--x-text);
+    font-family: var(--sans);
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+  :scope {
+    --x-bg: var(--bg);
+    --x-surface: color-mix(in oklab, var(--surf) 88%, transparent);
+    --x-solid: var(--surf);
+    --x-line: var(--line);
+    --x-soft: var(--beam-a);
+    --x-primary: var(--beam);
+    --x-accent: var(--beam);
+    --x-lav: var(--beam);
+    --x-text: var(--ink);
+    --x-muted: var(--ink-2);
+    --x-tint: color-mix(in oklab, var(--beam) 6%, transparent);
+    --x-pill: color-mix(in oklab, var(--beam) 6%, transparent);
+    --x-shadow:
+      0 30px 60px -30px rgba(61, 82, 160, 0.3), 0 1px 0 transparent inset;
+    --x-crit: var(--find);
+    --x-crit-bg: var(--find-a);
+    --x-crit-bd: color-mix(in oklab, var(--find) 35%, transparent);
+    --x-fix: color-mix(in oklab, var(--gD) 80%, var(--ink));
+    --x-fix-bg: color-mix(in oklab, var(--gD) 9%, var(--surf));
+    --x-fix-bd: color-mix(in oklab, var(--gD) 45%, transparent);
+    --x-chk: color-mix(in oklab, var(--gC) 80%, var(--ink));
+    --x-chk-bg: color-mix(in oklab, var(--gC) 9%, var(--surf));
+    --x-chk-bd: color-mix(in oklab, var(--gC) 45%, transparent);
+    --x-minor: var(--ink-2);
+    --x-ok: var(--ok);
+    --x-ok-bg: var(--ok-a);
+    --x-ok-bd: color-mix(in oklab, var(--ok) 35%, transparent);
+    --x-own: var(--beam);
+    --x-own-bg: var(--beam-a);
+    --x-own-bd: var(--beam-b);
+    --x-nt: var(--ink-2);
+    --x-nt-bg: var(--surf-2);
+    --x-nt-bd: var(--line-2);
+    --x-s1: 8px;
+    --x-s2: 16px;
+    --x-s3: 24px;
+    --x-s4: 32px;
+    --x-s5: 48px;
+    --x-s6: 72px;
+    --x-s7: 112px;
+    --x-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --x-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  :scope main,
+  :scope main *,
+  :scope main *::before,
+  :scope main *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  :scope main a {
+    color: var(--x-primary);
+  }
+  :scope:focus-visible {
+    outline: 3px solid var(--x-primary);
+    outline-offset: 3px;
+    border-radius: 10px;
+  }
+  :scope .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  :scope .skip {
+    position: absolute;
+    left: 16px;
+    top: -60px;
+    z-index: 2000;
+    background: var(--cta);
+    color: var(--cta-fg);
+    padding: 10px 16px;
+    border-radius: 99px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+  :scope .skip:focus {
+    top: 12px;
+  }
+  :scope [hidden] {
+    display: none !important;
+  }
+  :scope main {
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: var(--x-s6) 32px var(--x-s5);
+    flex: 1;
+  }
+  @media (max-width: 600px) {
+    :scope main {
+      padding: var(--x-s5) 20px var(--x-s4);
+    }
+  }
+  :scope #search-console {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1160px;
+    margin-inline: auto;
+    padding: 0 32px var(--x-s5);
+  }
+  @media (max-width: 600px) {
+    :scope #search-console {
+      padding-inline: 20px;
+    }
+  }
+  @media (max-width: 360px) {
+    :scope #search-console {
+      padding-inline: 16px;
+    }
+  }
+  :scope .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--x-muted);
+  }
+  :scope .crumbs li + li::before {
+    content: "/";
+    margin-right: 8px;
+    opacity: 0.55;
+  }
+  :scope .crumbs a {
+    color: var(--x-muted);
+    text-decoration: none;
+  }
+  :scope .crumbs a:hover {
+    color: var(--x-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  :scope .crumbs [aria-current] {
+    color: var(--x-text);
+    font-weight: 600;
+  }
+  :scope .hero {
+    margin: var(--x-s4) 0 var(--x-s6);
+  }
+  :scope .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--x-primary);
+  }
+  :scope .eyebrow .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cta-h);
+    animation: co-codot 2.4s ease-out infinite;
+  }
+  :scope h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    font-weight: 800;
+    margin: var(--x-s2) 0 var(--x-s3);
+    max-width: 20ch;
+  }
+  :scope .lede {
+    max-width: 62ch;
+    color: var(--x-muted);
+    font-size: 18px;
+    line-height: 1.7;
+  }
+  :scope .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: var(--x-s3);
+  }
+  :scope .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid var(--x-line);
+    background: var(--x-surface);
+    color: var(--x-text);
+  }
+  :scope .chip svg,
+  :scope .badge svg {
+    width: 15px;
+    height: 15px;
+    flex: none;
+  }
+  :scope .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 11px;
+    border-radius: 99px;
+    font-size: 12.5px;
+    font-weight: 700;
+    border: 1px solid;
+  }
+  :scope .b-crit {
+    color: var(--x-crit);
+    background: var(--x-crit-bg);
+    border-color: var(--x-crit-bd);
+  }
+  :scope .b-fix {
+    color: var(--x-fix);
+    background: var(--x-fix-bg);
+    border-color: var(--x-fix-bd);
+  }
+  :scope .b-chk {
+    color: var(--x-chk);
+    background: var(--x-chk-bg);
+    border-color: var(--x-chk-bd);
+  }
+  :scope .b-ok {
+    color: var(--x-ok);
+    background: var(--x-ok-bg);
+    border-color: var(--x-ok-bd);
+  }
+  :scope .b-own {
+    color: var(--x-own);
+    background: var(--x-own-bg);
+    border-color: var(--x-own-bd);
+  }
+  :scope .b-nt {
+    color: var(--x-nt);
+    background: var(--x-nt-bg);
+    border-color: var(--x-nt-bd);
+  }
+  :scope .b-minor {
+    color: var(--x-minor);
+    background: var(--surf);
+    border-color: var(--line-2);
+  }
+  :scope section.block {
+    margin-top: var(--x-s7);
+  }
+  @media (max-width: 600px) {
+    :scope section.block {
+      margin-top: var(--x-s6);
+    }
+    :scope .hero {
+      margin-bottom: var(--x-s5);
+    }
+  }
+  :scope .kicker {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--x-accent);
+    filter: saturate(1.1);
+  }
+  :scope .kicker {
+    color: var(--beam);
+  }
+  :scope h2.sec {
+    font-size: clamp(24px, 3vw, 32px);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+    font-weight: 800;
+    margin: 10px 0 14px;
+    max-width: 28ch;
+  }
+  :scope .sec-lede {
+    color: var(--x-muted);
+    max-width: 65ch;
+    font-size: 16.5px;
+    margin-bottom: var(--x-s5);
+  }
+  :scope .card {
+    position: relative;
+    background: var(--x-surface);
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    border: 1px solid var(--x-soft);
+    border-radius: 28px;
+    box-shadow: var(--x-shadow);
+    overflow: hidden;
+  }
+  :scope .card.sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      color-mix(in oklab, var(--surf) 88%, transparent) 50%,
+      transparent 65%
+    );
+    transform: translateX(-120%);
+    pointer-events: none;
+  }
+  :scope .card.sheen.in::after {
+    animation: co-cosheen 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.35s 1;
+  }
+  :scope .pad {
+    padding: var(--x-s5);
+  }
+  @media (max-width: 600px) {
+    :scope .pad {
+      padding: var(--x-s3);
+    }
+  }
+  :scope .tilt {
+    transition:
+      transform 0.5s var(--x-out),
+      box-shadow 0.5s var(--x-out);
+    will-change: transform;
+  }
+  :scope .tilt:hover {
+    box-shadow:
+      0 40px 70px -30px rgba(61, 82, 160, 0.4),
+      0 1px 0 transparent inset;
+  }
+  :scope .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 50px;
+    padding: 0 24px;
+    border-radius: 99px;
+    font: 600 15px var(--sans);
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    text-decoration: none;
+    transition:
+      transform 0.4s var(--x-spring),
+      box-shadow 0.3s,
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  :scope .btn svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+  :scope .btn:active {
+    transform: scale(0.96);
+  }
+  :scope .btn-primary {
+    background: var(--cta);
+    color: var(--cta-fg);
+    box-shadow: 0 12px 26px -12px rgba(61, 82, 160, 0.75);
+  }
+  :scope .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 32px -14px rgba(61, 82, 160, 0.8);
+  }
+  :scope .btn-ghost {
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+    color: var(--x-primary);
+    border-color: var(--x-line);
+  }
+  :scope .btn-ghost:hover {
+    background: var(--surf);
+    transform: translateY(-2px);
+  }
+  :scope .btn .arrow {
+    transition: transform 0.4s var(--x-spring);
+  }
+  :scope .btn:hover .arrow {
+    transform: translateX(4px);
+  }
+  :scope .g-a {
+    --g: #2fa36b;
+    --gt: var(--ok-a);
+    --gi: var(--ok);
+    --gr: 47, 163, 107;
+  }
+  :scope .g-b {
+    --g: #7091e6;
+    --gt: var(--surf-2);
+    --gi: var(--beam);
+    --gr: 112, 145, 230;
+  }
+  :scope .g-c {
+    --g: #e0a63a;
+    --gt: color-mix(in oklab, var(--gC) 9%, var(--surf));
+    --gi: color-mix(in oklab, var(--gC) 80%, var(--ink));
+    --gr: 224, 166, 58;
+  }
+  :scope .g-d {
+    --g: #e1763f;
+    --gt: color-mix(in oklab, var(--gD) 9%, var(--surf));
+    --gi: color-mix(in oklab, var(--gD) 80%, var(--ink));
+    --gr: 225, 118, 63;
+  }
+  :scope .gchip {
+    display: inline-grid;
+    place-items: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border-radius: 11px;
+    background: var(--gt);
+    color: var(--gi);
+    font-weight: 800;
+    font-size: 16px;
+  }
+  :scope .gbar {
+    height: 8px;
+    border-radius: 99px;
+    background: var(--beam-a);
+    overflow: hidden;
+  }
+  :scope .gbar i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: var(--g);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 1.4s var(--x-out) 0.2s;
+  }
+  :scope .in .gbar i,
+  :scope .gbar.in i {
+    transform: scaleX(var(--v));
+  }
+  :scope .glass {
+    background:
+      radial-gradient(
+        130% 80% at 28% -10%,
+        color-mix(in oklab, var(--surf) 88%, transparent),
+        rgba(255, 255, 255, 0) 55%
+      ),
+      linear-gradient(150deg, rgba(var(--gr), 0.4), rgba(var(--gr), 0.2));
+    color: var(--gi);
+    border: 1px solid rgba(var(--gr), 0.38);
+    box-shadow:
+      inset 0 1px 0 transparent,
+      inset 0 -6px 12px -6px rgba(var(--gr), 0.3),
+      0 10px 22px -10px rgba(var(--gr), 0.65),
+      0 2px 6px -2px rgba(var(--gr), 0.25);
+    backdrop-filter: blur(12px) saturate(1.5);
+  }
+  html.js .co .rv {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.9s var(--x-out),
+      transform 1s var(--x-spring);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  html.js .co .rv.in {
+    opacity: 1;
+    transform: none;
+  }
+  @media print {
+    html.js .co .rv {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+  :scope .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: 1500;
+    transform: translate(-50%, 30px);
+    opacity: 0;
+    background: #0b1220;
+    color: #fff;
+    padding: 14px 22px;
+    border-radius: 99px;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 20px 40px -15px rgba(30, 42, 85, 0.6);
+    transition:
+      opacity 0.35s,
+      transform 0.5s var(--x-spring);
+    pointer-events: none;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  :scope .toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :scope *,
+    :scope *::before,
+    :scope *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+    }
+    html.js .co .rv {
+      opacity: 1;
+      transform: none;
+    }
+    :scope .card.sheen::after {
+      display: none;
+    }
+  }
+  :scope {
+    overflow-x: clip;
+  }
+  :scope .khero .eyebrow {
+    padding: 6px 14px 6px 12px;
+    border-radius: 99px;
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+    border: 1px solid var(--line);
+  }
+  :scope .aurora {
+    position: absolute;
+    top: -120px;
+    left: calc(50% - 50vw);
+    width: 100vw;
+    height: 760px;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    -webkit-mask: linear-gradient(#000 55%, transparent);
+    mask: linear-gradient(#000 55%, transparent);
+  }
+  :scope .aurora i {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+  :scope .aurora i:nth-child(1) {
+    width: 520px;
+    height: 520px;
+    left: 4%;
+    top: 40px;
+    background: var(--surf-2);
+    animation: co-coau1 18s ease-in-out infinite alternate;
+  }
+  :scope .aurora i:nth-child(2) {
+    width: 460px;
+    height: 460px;
+    right: 6%;
+    top: 0;
+    background: #0b1220;
+    opacity: 0.75;
+    animation: co-coau2 22s ease-in-out infinite alternate;
+  }
+  :scope .aurora i:nth-child(3) {
+    width: 380px;
+    height: 380px;
+    left: 42%;
+    top: 180px;
+    background: #0b1220;
+    opacity: 0.45;
+    animation: co-coau3 16s ease-in-out infinite alternate;
+  }
+  :scope .aurora i:nth-child(4) {
+    width: 300px;
+    height: 300px;
+    right: 30%;
+    top: -60px;
+    background: var(--surf-2);
+    opacity: 0.9;
+    animation: co-coau1 20s ease-in-out infinite alternate-reverse;
+  }
+  :scope .aurora::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(var(--beam-a) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+    -webkit-mask: radial-gradient(60% 70% at 50% 30%, #000, transparent);
+    mask: radial-gradient(60% 70% at 50% 30%, #000, transparent);
+  }
+  :scope .khero {
+    position: relative;
+    isolation: isolate;
+    margin: var(--x-s3) 0 var(--x-s7);
+  }
+  :scope .layer {
+    transition: transform 0.9s var(--x-out);
+    will-change: transform;
+  }
+  :scope .gpanel {
+    position: relative;
+    border-radius: 32px;
+    padding: var(--x-s5);
+    background: linear-gradient(
+      160deg,
+      color-mix(in oklab, var(--surf) 88%, transparent),
+      color-mix(in oklab, var(--surf) 88%, transparent)
+    );
+    border: 1px solid var(--line);
+    box-shadow:
+      0 50px 90px -40px rgba(61, 82, 160, 0.45),
+      0 0 0 1px rgba(61, 82, 160, 0.08),
+      inset 0 1px 0 transparent;
+    backdrop-filter: blur(22px) saturate(1.4);
+    -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  }
+  :scope .gpanel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--ang, 0deg),
+      rgba(112, 145, 230, 0),
+      rgba(112, 145, 230, 0.7),
+      rgba(173, 187, 218, 0) 30%,
+      rgba(61, 82, 160, 0.5) 60%,
+      rgba(112, 145, 230, 0)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: co-cospinb 9s linear infinite;
+    pointer-events: none;
+  }
+  :scope .grad-txt {
+    background: linear-gradient(
+      100deg,
+      var(--beam) 10%,
+      var(--beam) 55%,
+      var(--beam) 90%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: co-cogt 7s ease-in-out infinite alternate;
+  }
+  :scope .btn {
+    overflow: hidden;
+  }
+  :scope .btn .rip {
+    position: absolute;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+    transform: scale(0);
+    animation: co-corip 0.7s var(--x-out) forwards;
+    pointer-events: none;
+  }
+  :scope .btn-ghost .rip {
+    background: var(--beam-a);
+  }
+  :scope .btn:active {
+    transform: scale(0.97);
+  }
+  :scope .btn[aria-busy="true"] {
+    pointer-events: none;
+  }
+  :scope .btn[aria-busy="true"] .bl {
+    opacity: 0;
+  }
+  :scope .btn .spin {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2.5px solid currentColor;
+    border-right-color: transparent;
+    opacity: 0;
+    animation: co-corot 0.8s linear infinite;
+  }
+  :scope .btn[aria-busy="true"] .spin {
+    opacity: 1;
+  }
+  :scope .btn-danger {
+    background: #b42318;
+    color: #fff;
+    box-shadow: 0 14px 30px -14px rgba(180, 35, 24, 0.7);
+  }
+  :scope .btn-danger:hover {
+    background: #912018;
+  }
+  :scope .btn-danger[disabled] {
+    background: var(--surf-2);
+    color: var(--ink-2);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+  :scope .btn-sm {
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 14px;
+  }
+  :scope .sk {
+    position: relative;
+    overflow: hidden;
+    background: var(--surf-2);
+    border-radius: 10px;
+    color: transparent !important;
+  }
+  :scope .sk * {
+    visibility: hidden;
+  }
+  :scope .sk::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--surf) 88%, transparent),
+      transparent
+    );
+    animation: co-coshim 1.2s infinite;
+  }
+  :scope .pulse {
+    position: relative;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #2fa36b;
+  }
+  :scope .pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: inherit;
+    animation: co-copls 2s var(--x-out) infinite;
+  }
+  :scope .cp {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  :scope .cp svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.4s var(--x-spring);
+  }
+  :scope .cp.ok svg {
+    transform: scale(1.2);
+  }
+  :scope:focus-visible {
+    outline: 3px solid var(--beam);
+    outline-offset: 3px;
+  }
+  :scope .qnav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: var(--x-s4);
+  }
+  :scope .qnav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 99px;
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+    border: 1px solid var(--x-soft);
+    color: var(--x-primary);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition:
+      transform 0.4s var(--x-spring),
+      background 0.3s,
+      box-shadow 0.3s;
+  }
+  :scope .qnav a:hover {
+    transform: translateY(-3px);
+    background: var(--surf);
+    box-shadow: 0 12px 24px -14px rgba(61, 82, 160, 0.5);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :scope .aurora i,
+    :scope .gpanel::before,
+    :scope .grad-txt,
+    :scope .pulse::after,
+    :scope .sk::after {
+      animation: none !important;
+    }
+    :scope .layer {
+      transform: none !important;
+    }
+  }
+  :scope .pz {
+    position: relative;
+    isolation: isolate;
+    border-radius: 36px;
+    padding: 2px;
+    background: conic-gradient(
+      from var(--pa),
+      var(--beam-a) 0 70%,
+      var(--cta-h) 82%,
+      var(--surf) 88%,
+      #e8c77a 91%,
+      var(--beam-a) 96%
+    );
+    animation: co-copbeam 6s linear infinite paused;
+    box-shadow: 0 60px 120px -50px rgba(30, 42, 85, 0.75);
+  }
+  :scope .pz::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    z-index: -1;
+    border-radius: inherit;
+    background: inherit;
+    filter: blur(26px);
+    opacity: 0.55;
+  }
+  :scope .play .pz,
+  :scope .play.pz {
+    animation-play-state: running;
+  }
+  :scope .pin {
+    position: relative;
+    overflow: hidden;
+    border-radius: 34px;
+    background: radial-gradient(
+      120% 90% at 0% 0%,
+      #0b1220 0%,
+      #0b1220 45%,
+      #0b1220 100%
+    );
+    color: #fff;
+    padding: clamp(28px, 5vw, 64px);
+  }
+  :scope .pau {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+  :scope .pau i {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.55;
+    animation: co-copa1 14s ease-in-out infinite alternate paused;
+  }
+  :scope .pau i:nth-child(1) {
+    width: 420px;
+    height: 420px;
+    left: -80px;
+    top: -120px;
+    background: var(--surf-2);
+  }
+  :scope .pau i:nth-child(2) {
+    width: 360px;
+    height: 360px;
+    right: -60px;
+    top: 20%;
+    background: var(--cta-h);
+    opacity: 0.38;
+    animation-name: co-copa2;
+    animation-duration: 18s;
+  }
+  :scope .pau i:nth-child(3) {
+    width: 300px;
+    height: 300px;
+    left: 40%;
+    bottom: -140px;
+    background: #8697c4;
+    opacity: 0.3;
+    animation-duration: 20s;
+  }
+  :scope .play .pau i {
+    animation-play-state: running;
+  }
+  :scope .pin::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask: radial-gradient(70% 60% at 30% 10%, #000, transparent);
+    mask: radial-gradient(70% 60% at 30% 10%, #000, transparent);
+  }
+  :scope .pin > * {
+    position: relative;
+    z-index: 1;
+  }
+  :scope .ptop {
+    display: grid;
+    grid-template-columns: 1.25fr 0.75fr;
+    gap: var(--x-s5);
+    align-items: end;
+    margin-bottom: var(--x-s5);
+  }
+  @media (max-width: 900px) {
+    :scope .ptop {
+      grid-template-columns: 1fr;
+      gap: var(--x-s4);
+    }
+  }
+  :scope .pbadge {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    background: linear-gradient(135deg, #f3dfa8, #d9b25f);
+    background-color: #d9b25f;
+    color: #3a2a05;
+    font: 800 12.5px var(--sans);
+    letter-spacing: 0.14em;
+  }
+  :scope .pbadge::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      color-mix(in oklab, var(--surf) 88%, transparent) 50%,
+      transparent 65%
+    );
+    transform: translateX(-120%);
+    animation: co-coshine 3.6s ease-in-out infinite paused;
+  }
+  :scope .play .pbadge::after {
+    animation-play-state: running;
+  }
+  :scope .psoon {
+    display: inline-flex;
+    margin-left: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #dde4f8;
+    vertical-align: middle;
+  }
+  :scope .pin h2 {
+    font-size: clamp(30px, 4.4vw, 50px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+    margin: var(--x-s3) 0 var(--x-s2);
+    max-width: 18ch;
+    color: #fff;
+  }
+  :scope .pin h2 em {
+    font-style: normal;
+    background: linear-gradient(
+      100deg,
+      var(--ink-2),
+      var(--ink) 40%,
+      var(--beam) 70%,
+      var(--ink-2)
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: co-cogt 6s ease-in-out infinite alternate;
+  }
+  :scope .pin .pl {
+    color: #d5dcf2;
+    font-size: 17px;
+    max-width: 54ch;
+  }
+  :scope .pcta {
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+  }
+  @media (min-width: 901px) {
+    :scope .pcta {
+      justify-items: end;
+      text-align: right;
+    }
+  }
+  :scope .pcta small {
+    color: #c9d2f0;
+    font-size: 13.5px;
+    max-width: 34ch;
+  }
+  :scope .pbtn {
+    position: relative;
+    overflow: visible;
+    min-height: 56px;
+    padding: 0 28px;
+    border-radius: 99px;
+    border: 0;
+    background: var(--surf);
+    color: var(--ink);
+    font: 700 16px var(--sans);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow:
+      0 0 0 6px rgba(255, 255, 255, 0.08),
+      0 20px 40px -16px rgba(112, 145, 230, 0.9);
+    transition:
+      transform 0.45s var(--x-spring),
+      box-shadow 0.4s,
+      background 0.4s,
+      color 0.4s;
+  }
+  :scope .pbtn:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 8px rgba(255, 255, 255, 0.12),
+      0 26px 50px -16px rgba(112, 145, 230, 1);
+  }
+  :scope .pbtn:active {
+    transform: scale(0.96);
+  }
+  :scope .pbtn .bel {
+    width: 20px;
+    height: 20px;
+    transform-origin: 50% 10%;
+  }
+  :scope .pbtn:hover .bel {
+    animation: co-coring 0.9s var(--x-out);
+  }
+  :scope .pbtn[aria-pressed="true"] {
+    background: var(--ok-a);
+    color: var(--ok);
+  }
+  :scope .pbtn[aria-busy="true"] {
+    pointer-events: none;
+    opacity: 0.85;
+  }
+  :scope .cf {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    pointer-events: none;
+    animation: co-cocf 0.9s var(--x-out) forwards;
+  }
+  :scope .pgrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--x-s3);
+  }
+  @media (max-width: 760px) {
+    :scope .pgrid {
+      grid-template-columns: 1fr;
+    }
+  }
+  :scope .pf {
+    position: relative;
+    overflow: hidden;
+    border-radius: 26px;
+    padding: var(--x-s4);
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0.03)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    transition:
+      transform 0.5s var(--x-spring),
+      border-color 0.4s;
+  }
+  :scope .pf:hover {
+    transform: translateY(-4px);
+    border-color: var(--line);
+  }
+  :scope .pf::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      260px circle at var(--x, 50%) var(--y, 0%),
+      var(--beam-a),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  :scope .pf:hover::before {
+    opacity: 1;
+  }
+  :scope .ill {
+    position: relative;
+    height: 168px;
+    border-radius: 18px;
+    background: rgba(8, 12, 34, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    margin-bottom: var(--x-s3);
+  }
+  :scope .pf h3 {
+    font-size: 19px;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  :scope .pf h3 b {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--bg);
+    background: var(--beam);
+    padding: 2px 10px;
+    border-radius: 99px;
+  }
+  :scope .pf p {
+    color: #c9d2f0;
+    font-size: 15px;
+    max-width: 44ch;
+  }
+  :scope .pz * {
+    animation-play-state: paused;
+  }
+  :scope .play .pz * {
+    animation-play-state: running;
+  }
+  :scope .tl1 {
+    position: absolute;
+    left: 28px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: linear-gradient(var(--cta-h), var(--beam-a));
+  }
+  :scope .hc {
+    position: absolute;
+    left: 46px;
+    right: 18px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    font-size: 12px;
+    color: #dde4f8;
+    opacity: 0;
+    animation: co-cohs 7s var(--x-out) infinite;
+  }
+  :scope .hc::before {
+    content: "";
+    position: absolute;
+    left: -23px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cta-h);
+    box-shadow: 0 0 0 4px rgba(112, 145, 230, 0.25);
+  }
+  :scope .hc .gk {
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 11.5px;
+  }
+  :scope .hc .ln {
+    flex: 1;
+    height: 6px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.14);
+  }
+  :scope .h0 {
+    top: 114px;
+    animation-delay: 0s;
+  }
+  :scope .h1 {
+    top: 66px;
+    animation-delay: 0.6s;
+  }
+  :scope .h2 {
+    top: 18px;
+    animation-delay: 1.2s;
+  }
+  :scope .ch {
+    position: absolute;
+    inset: 14px 16px 26px;
+  }
+  :scope .ch svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  :scope .ch .gl {
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 1;
+  }
+  :scope .ch .tr {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: co-codr 6s var(--x-out) infinite;
+  }
+  :scope .ch .tr:nth-of-type(2) {
+    animation-delay: 0.35s;
+  }
+  :scope .ch .tr:nth-of-type(3) {
+    animation-delay: 0.7s;
+  }
+  :scope .ch .ar {
+    fill: url(#par);
+    opacity: 0;
+    animation: co-cofa 6s ease infinite;
+  }
+  :scope .lg2 {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 8px;
+    display: flex;
+    gap: 14px;
+    font-size: 11px;
+    color: #c9d2f0;
+  }
+  :scope .lg2 span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  :scope .lg2 i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  :scope .env {
+    position: absolute;
+    left: 22px;
+    top: 50%;
+    width: 64px;
+    height: 48px;
+    margin-top: -24px;
+    border-radius: 10px;
+    background: linear-gradient(150deg, var(--cta-h), var(--cta));
+    box-shadow: 0 16px 30px -12px rgba(0, 0, 0, 0.6);
+    animation: co-cobob 3.5s ease-in-out infinite;
+  }
+  :scope .env::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        to bottom right,
+        transparent 49%,
+        rgba(255, 255, 255, 0.35) 50%,
+        transparent 52%
+      ),
+      linear-gradient(
+        to bottom left,
+        transparent 49%,
+        rgba(255, 255, 255, 0.35) 50%,
+        transparent 52%
+      );
+    background-size: 50% 60%;
+    background-repeat: no-repeat;
+    background-position:
+      left top,
+      right top;
+  }
+  :scope .env b {
+    position: absolute;
+    right: -7px;
+    top: -7px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e8c77a;
+    color: #3a2a05;
+    font-size: 11px;
+    display: grid;
+    place-items: center;
+    animation: co-copop 7.5s var(--x-spring) infinite;
+  }
+  :scope .tst {
+    position: absolute;
+    left: 104px;
+    right: 14px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--surf);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 14px 28px -14px rgba(0, 0, 0, 0.7);
+    opacity: 0;
+    animation: co-cots 7.5s var(--x-spring) infinite;
+  }
+  :scope .tst i {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  :scope .tst span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  :scope .t1 {
+    top: 16px;
+  }
+  :scope .t2 {
+    top: 64px;
+    animation-delay: 0.6s;
+  }
+  :scope .t3 {
+    top: 112px;
+    animation-delay: 1.2s;
+  }
+  :scope .mt {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  :scope .mt .tk {
+    position: relative;
+    height: 16px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+  :scope .mt .fl {
+    position: absolute;
+    inset: 0;
+    transform-origin: left;
+    transform: scaleX(0.42);
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      var(--cta-h),
+      var(--line-2) 60%,
+      #e8c77a
+    );
+    animation: co-cofill 6s var(--x-out) infinite;
+  }
+  :scope .mt .fl::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--surf) 88%, transparent),
+      transparent
+    );
+    background-size: 40% 100%;
+    background-repeat: no-repeat;
+    animation: co-cosh2 1.6s linear infinite;
+  }
+  :scope .mt .cap {
+    position: absolute;
+    left: 42%;
+    top: -30px;
+    bottom: -30px;
+    width: 0;
+    border-left: 2px dashed rgba(232, 199, 122, 0.85);
+  }
+  :scope .mt .cap span {
+    position: absolute;
+    top: 0;
+    left: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #e8c77a;
+    white-space: nowrap;
+  }
+  :scope .mt .mpro {
+    position: absolute;
+    right: 0;
+    top: -30px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.06em;
+  }
+  :scope .mt .sc {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #c9d2f0;
+    margin-top: 14px;
+  }
+  :scope .ptr {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 24px;
+    margin-top: var(--x-s4);
+    padding-top: var(--x-s4);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 14px;
+    color: #c9d2f0;
+  }
+  :scope .ptr span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  :scope .ptr svg {
+    width: 16px;
+    height: 16px;
+    color: #9ee6bf;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :scope .pz,
+    :scope .pz *,
+    :scope .pz *::before,
+    :scope .pz *::after {
+      animation: none !important;
+    }
+    :scope .hc {
+      opacity: 1;
+    }
+    :scope .ch .tr {
+      stroke-dashoffset: 0;
+    }
+    :scope .ch .ar {
+      opacity: 1;
+    }
+    :scope .tst {
+      opacity: 1;
+    }
+    :scope .env b {
+      transform: none;
+    }
+    :scope .mt .fl {
+      transform: scaleX(0.96);
+    }
+  }
+  :scope .lg2 span {
+    white-space: nowrap;
+  }
+  @media (max-width: 480px) {
+    :scope .lg2 {
+      gap: 10px;
+      font-size: 10.5px;
+    }
+    :scope .env {
+      left: 12px;
+      width: 48px;
+      height: 38px;
+      margin-top: -19px;
+    }
+    :scope .tst {
+      left: 72px;
+      right: 10px;
+      font-size: 11.5px;
+      padding: 0 10px;
+    }
+    :scope .pf {
+      padding: var(--x-s3);
+    }
+  }
+  :scope h1 {
+    font-size: clamp(36px, 5.2vw, 60px);
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+    font-weight: 800;
+    margin: var(--x-s2) 0 var(--x-s3);
+  }
+  :scope .hgrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--x-s6);
+    align-items: center;
+  }
+  @media (max-width: 980px) {
+    :scope .hgrid {
+      grid-template-columns: 1fr;
+      gap: var(--x-s5);
+    }
+  }
+  :scope .idc {
+    display: grid;
+    gap: var(--x-s4);
+  }
+  :scope .who {
+    display: flex;
+    gap: var(--x-s3);
+    align-items: center;
+  }
+  :scope .av {
+    position: relative;
+    flex: none;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+  :scope .av::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from var(--ang),
+      var(--cta),
+      var(--cta-h),
+      var(--line-2),
+      var(--cta)
+    );
+    animation: co-cospinb 6s linear infinite;
+  }
+  :scope .av span {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(150deg, var(--surf), var(--surf-2));
+    display: grid;
+    place-items: center;
+    font: 800 26px var(--sans);
+    color: var(--beam);
+    border: 3px solid var(--line);
+  }
+  :scope .who .em {
+    font-weight: 700;
+    font-size: clamp(16px, 2vw, 19px);
+    overflow-wrap: anywhere;
+    color: var(--x-text);
+  }
+  :scope .who .st {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--x-muted);
+  }
+  :scope .ok-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 12px 3px 10px;
+    border-radius: 99px;
+    background: var(--ok-a);
+    border: 1px solid color-mix(in oklab, var(--ok) 35%, transparent);
+    color: var(--ok);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  :scope .ok-chip .pulse {
+    width: 8px;
+    height: 8px;
+  }
+  :scope .gz {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--x-s4);
+    align-items: center;
+    padding: var(--x-s3);
+    border-radius: 24px;
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+    border: 1px solid var(--line);
+  }
+  @media (max-width: 420px) {
+    :scope .gz {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+  }
+  :scope .ring {
+    position: relative;
+    width: 132px;
+    height: 132px;
+  }
+  :scope .ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  :scope .ring .bg {
+    fill: none;
+    stroke: var(--surf-2);
+    stroke-width: 12;
+  }
+  :scope .ring .fg {
+    fill: none;
+    stroke: url(#rg);
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 339.3;
+    stroke-dashoffset: 339.3;
+    transition: stroke-dashoffset 1.6s var(--x-out) 0.3s;
+    filter: drop-shadow(0 6px 10px rgba(61, 82, 160, 0.35));
+  }
+  :scope .in .ring .fg,
+  :scope .ring.in .fg {
+    stroke-dashoffset: calc(339.3 * (1 - var(--v)));
+  }
+  :scope .ring .n {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    text-align: center;
+  }
+  :scope .ring .n b {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--x-text);
+    line-height: 1;
+  }
+  :scope .ring .n small {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--x-muted);
+    margin-top: 4px;
+  }
+  :scope .chk {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+    font-size: 14.5px;
+  }
+  :scope .chk li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  :scope .chk i {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--ok-a);
+    color: var(--ok);
+    border: 1px solid color-mix(in oklab, var(--ok) 35%, transparent);
+  }
+  :scope .chk i svg {
+    width: 13px;
+    height: 13px;
+  }
+  :scope .chk li.todo i {
+    background: var(--surf);
+    border: 1.5px dashed var(--line-2);
+    color: var(--beam);
+  }
+  :scope .chk a {
+    color: var(--x-primary);
+    font-weight: 600;
+  }
+  :scope .idf {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13.5px;
+    color: var(--x-muted);
+  }
+  :scope .blk {
+    margin-top: var(--x-s7);
+    scroll-margin-top: 110px;
+  }
+  :scope .bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--x-s3);
+  }
+  :scope .bento > * {
+    grid-column: span 12;
+  }
+  @media (min-width: 900px) {
+    :scope .c7 {
+      grid-column: span 7 !important;
+    }
+    :scope .c5 {
+      grid-column: span 5 !important;
+    }
+    :scope .c6 {
+      grid-column: span 6 !important;
+    }
+  }
+  :scope .box {
+    padding: var(--x-s5);
+  }
+  @media (max-width: 600px) {
+    :scope .box {
+      padding: var(--x-s4) var(--x-s3);
+    }
+  }
+  :scope .box h3 {
+    font-size: 21px;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  :scope .box .sub {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--x-primary);
+    margin-bottom: var(--x-s2);
+  }
+  :scope .box p {
+    color: var(--x-muted);
+    max-width: 60ch;
+  }
+  :scope .hic {
+    width: 52px;
+    height: 52px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(150deg, var(--surf-2), var(--surf));
+    color: var(--beam);
+    border: 1px solid var(--line);
+    margin-bottom: var(--x-s3);
+    transition: transform 0.6s var(--x-spring);
+  }
+  :scope .box:hover .hic {
+    transform: rotate(-8deg) scale(1.06);
+  }
+  :scope .hic svg {
+    width: 24px;
+    height: 24px;
+  }
+  :scope .gsc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--x-s3);
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--x-s4);
+    padding: var(--x-s3);
+    border-radius: 20px;
+    background: var(--surf);
+    border: 1px solid var(--x-soft);
+  }
+  :scope .gsc .l {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  :scope .gsc .gl {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    background: var(--surf-2);
+    border: 1px solid var(--x-soft);
+  }
+  :scope .gsc .gl svg {
+    width: 22px;
+    height: 22px;
+  }
+  :scope .gsc b {
+    display: block;
+  }
+  :scope .gsc small {
+    display: inline-block;
+    color: var(--x-muted);
+    font-size: 13.5px;
+    margin-top: 2px;
+  }
+  :scope .fine {
+    font-size: 13px;
+    color: var(--x-muted);
+    margin-top: 12px;
+  }
+  :scope .cms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-top: var(--x-s4);
+  }
+  :scope .cm {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 14px;
+    border-radius: 18px;
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+    border: 1px solid var(--x-soft);
+    transition:
+      transform 0.45s var(--x-spring),
+      box-shadow 0.4s,
+      background 0.3s;
+  }
+  :scope .cm:hover {
+    transform: translateY(-3px);
+    background: var(--surf);
+    box-shadow: 0 18px 30px -20px rgba(61, 82, 160, 0.55);
+  }
+  :scope .cm .lg {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font: 800 14px var(--sans);
+  }
+  :scope .cm b {
+    font-size: 15px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  :scope .cm small {
+    display: block;
+    font-size: 13px;
+    color: var(--x-muted);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+  :scope .soon {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-2);
+    background: var(--surf-2);
+    border: 1px solid var(--line-2);
+    border-radius: 99px;
+    padding: 1px 8px;
+  }
+  :scope .static {
+    margin-top: var(--x-s3);
+    display: flex;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 16px;
+    background: color-mix(in oklab, var(--beam) 6%, transparent);
+    border: 1px dashed var(--line);
+    font-size: 14.5px;
+    color: var(--x-muted);
+  }
+  :scope .static b {
+    color: var(--x-text);
+  }
+  :scope .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: var(--x-s3) 0;
+  }
+  :scope .mc {
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--surf);
+    border: 1px solid var(--x-soft);
+    font-size: 14px;
+  }
+  :scope .mc b {
+    font-family: ui-monospace, monospace;
+  }
+  :scope .sw {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin: var(--x-s3) 0;
+    padding: var(--x-s3);
+    border-radius: 18px;
+    background: var(--surf);
+    border: 1px solid var(--x-soft);
+    cursor: pointer;
+  }
+  :scope .sw input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  :scope .sw .tg {
+    flex: none;
+    position: relative;
+    width: 48px;
+    height: 28px;
+    border-radius: 99px;
+    background: var(--surf-2);
+    transition: background 0.35s;
+    margin-top: 2px;
+  }
+  :scope .sw .tg::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--surf);
+    box-shadow: 0 2px 6px rgba(30, 42, 85, 0.3);
+    transition: transform 0.45s var(--x-spring);
+  }
+  :scope .sw input:checked + .tg {
+    background: var(--cta);
+  }
+  :scope .sw input:checked + .tg::after {
+    transform: translateX(20px);
+  }
+  :scope .sw input:focus-visible + .tg {
+    outline: 3px solid var(--beam);
+    outline-offset: 3px;
+  }
+  :scope .sw span.t {
+    font-size: 15px;
+    color: var(--x-text);
+  }
+  :scope .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  :scope .lnk {
+    color: var(--x-primary);
+    font-weight: 600;
+  }
+  :scope .done {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    color: var(--ok);
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+  :scope .done.on {
+    display: inline-flex;
+    animation: co-copin 0.5s var(--x-out);
+  }
+  :scope .done svg {
+    width: 16px;
+    height: 16px;
+  }
+  :scope .jf {
+    display: flex;
+    gap: var(--x-s3);
+    align-items: center;
+    margin: var(--x-s4) 0 var(--x-s3);
+    padding: var(--x-s3);
+    border-radius: 20px;
+    background: #0b1220;
+    color: #e6eaf8;
+  }
+  :scope .jf .br {
+    font:
+      800 28px ui-monospace,
+      monospace;
+    color: #9fb4ff;
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.07);
+    flex: none;
+  }
+  :scope .jf b {
+    display: block;
+    color: #fff;
+  }
+  :scope .jf small {
+    color: #c9d2f0;
+    font-size: 13.5px;
+    font-family: ui-monospace, monospace;
+  }
+  :scope .pbar {
+    height: 6px;
+    border-radius: 99px;
+    background: var(--surf-2);
+    overflow: hidden;
+    margin-top: var(--x-s2);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  :scope .pbar.on {
+    opacity: 1;
+  }
+  :scope .pbar i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    transform-origin: left;
+    transform: scaleX(0);
+    background: linear-gradient(90deg, var(--cta), var(--cta-h));
+    border-radius: inherit;
+  }
+  :scope .pbar.run i {
+    transition: transform 1.4s var(--x-out);
+    transform: scaleX(1);
+  }
+  :scope .pro {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(155deg, var(--cta), #5b71c9 60%, var(--cta-h));
+    color: var(--cta-fg);
+    border: 0;
+  }
+  :scope .pro::after {
+    content: "";
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    right: -120px;
+    top: -120px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.35),
+      transparent 65%
+    );
+  }
+  :scope .pro .sub,
+  :scope .pro p,
+  :scope .pro h3 {
+    color: var(--cta-fg);
+  }
+  :scope .pro p {
+    opacity: 0.92;
+  }
+  :scope .pro .hic {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: var(--cta-fg);
+  }
+  :scope .pro .bd {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    margin-bottom: var(--x-s2);
+  }
+  :scope .prg {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--x-s5);
+    align-items: center;
+  }
+  @media (max-width: 800px) {
+    :scope .prg {
+      grid-template-columns: 1fr;
+    }
+  }
+  :scope .pfe {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  :scope .pfe li {
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    font-size: 14px;
+    color: var(--cta-fg);
+  }
+  :scope .pfe b {
+    display: block;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-bottom: 2px;
+  }
+  :scope .pro .btn {
+    background: var(--surf);
+    color: var(--beam);
+    margin-top: var(--x-s4);
+  }
+  :scope .pro .btn[aria-pressed="true"] {
+    background: var(--ok-a);
+    color: var(--ok);
+  }
+  :scope .cgrid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: var(--x-s3);
+  }
+  @media (max-width: 900px) {
+    :scope .cgrid {
+      grid-template-columns: 1fr;
+    }
+  }
+  :scope .rt {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ok);
+    background: var(--ok-a);
+    border: 1px solid color-mix(in oklab, var(--ok) 35%, transparent);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: var(--x-s3);
+  }
+  :scope .mcard {
+    margin-top: var(--x-s4);
+    padding: var(--x-s3);
+    border-radius: 20px;
+    background: var(--surf);
+    border: 1px solid var(--x-soft);
+    display: grid;
+    gap: 12px;
+  }
+  :scope .mcard small {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--x-muted);
+  }
+  :scope .mcard a {
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--x-primary);
+    word-break: break-all;
+  }
+  :scope .f {
+    display: grid;
+    gap: var(--x-s3);
+  }
+  :scope .fld label {
+    display: block;
+    font-weight: 600;
+    font-size: 14.5px;
+    margin-bottom: 8px;
+  }
+  :scope .fld select,
+  :scope .fld textarea {
+    width: 100%;
+    font: 500 15px var(--sans);
+    color: var(--x-text);
+    background: var(--surf);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    transition:
+      border-color 0.25s,
+      box-shadow 0.25s;
+  }
+  :scope .fld select {
+    min-height: 50px;
+    appearance: none;
+    background: var(--surf)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%233D52A0' stroke-width='2'/%3E%3C/svg%3E")
+      no-repeat right 16px center;
+    padding-right: 40px;
+  }
+  :scope .fld textarea {
+    min-height: 140px;
+    resize: vertical;
+  }
+  :scope .fld select:focus,
+  :scope .fld textarea:focus {
+    outline: none;
+    border-color: var(--beam);
+    box-shadow: 0 0 0 4px rgba(112, 145, 230, 0.25);
+  }
+  :scope .fld .hint {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--x-muted);
+    margin-top: 6px;
+  }
+  :scope .fld [aria-invalid="true"] {
+    border-color: var(--find);
+    box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.12);
+  }
+  :scope .err {
+    color: var(--find);
+    font-weight: 600;
+  }
+  :scope .sent {
+    display: none;
+    text-align: center;
+    padding: var(--x-s5) var(--x-s3);
+  }
+  :scope .sent.on {
+    display: block;
+    animation: co-copin 0.6s var(--x-out);
+  }
+  :scope .sent .bub {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto var(--x-s3);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--ok-a);
+    color: var(--ok);
+    border: 1px solid color-mix(in oklab, var(--ok) 35%, transparent);
+  }
+  :scope .sent .bub svg {
+    width: 32px;
+    height: 32px;
+  }
+  :scope .sent h3 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  :scope .qa {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--x-s3);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--x-s5);
+    border-radius: 32px;
+    text-decoration: none;
+    color: var(--x-text);
+    background: linear-gradient(
+      120deg,
+      color-mix(in oklab, var(--surf) 88%, transparent),
+      var(--surf-2)
+    );
+    border: 1px solid var(--line);
+    box-shadow: var(--x-shadow);
+    transition:
+      transform 0.5s var(--x-spring),
+      box-shadow 0.4s;
+  }
+  :scope .qa:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 40px 70px -35px rgba(61, 82, 160, 0.6);
+  }
+  :scope .qa h2 {
+    font-size: clamp(22px, 2.6vw, 28px);
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+  }
+  :scope .qa p {
+    color: var(--x-muted);
+    max-width: 56ch;
+  }
+  :scope .qa .go {
+    flex: none;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--cta);
+    color: var(--cta-fg);
+    box-shadow: 0 16px 30px -14px rgba(61, 82, 160, 0.9);
+    transition: transform 0.5s var(--x-spring);
+  }
+  :scope .qa:hover .go {
+    transform: translateX(6px);
+  }
+  :scope .qa .go svg {
+    width: 26px;
+    height: 26px;
+  }
+  :scope .dz {
+    border: 1.5px solid color-mix(in oklab, var(--find) 35%, transparent);
+    background: linear-gradient(160deg, var(--surf), var(--find-a));
+  }
+  :scope .dz .hic {
+    background: var(--find-a);
+    border-color: color-mix(in oklab, var(--find) 35%, transparent);
+    color: var(--find);
+  }
+  :scope .dz .sub {
+    color: var(--find);
+  }
+  :scope .dz .row {
+    margin-top: var(--x-s4);
+  }
+  :scope dialog {
+    margin: auto;
+    border: 0;
+    border-radius: 28px;
+    padding: var(--x-s5);
+    max-width: min(480px, calc(100vw - 32px));
+    box-shadow: 0 40px 90px -30px rgba(30, 42, 85, 0.6);
+    color: var(--x-text);
+  }
+  :scope dialog::backdrop {
+    background: rgba(30, 42, 85, 0.35);
+    backdrop-filter: blur(6px);
+  }
+  :scope dialog[open] {
+    animation: co-codg 0.5s var(--x-spring);
+  }
+  :scope dialog h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+  :scope dialog p {
+    color: var(--x-muted);
+    margin-bottom: var(--x-s3);
+  }
+  :scope dialog input {
+    width: 100%;
+    min-height: 50px;
+    font:
+      600 16px ui-monospace,
+      monospace;
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    padding: 0 14px;
+    letter-spacing: 0.05em;
+  }
+  :scope dialog input:focus {
+    outline: none;
+    border-color: var(--find);
+    box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.15);
+  }
+  :scope dialog .row {
+    margin-top: var(--x-s4);
+    justify-content: flex-end;
+  }
+  :scope #acces-partages .card {
+    padding: var(--x-s5);
+  }
+  @media (max-width: 600px) {
+    :scope #acces-partages .card {
+      padding: var(--x-s3);
+    }
+  }
+  :scope .ap-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--x-s3);
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: var(--x-s4);
+  }
+  :scope .ap-cap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 16px;
+    background: var(--surf);
+    border: 1px solid var(--x-soft);
+    font-size: 14px;
+    color: var(--x-muted);
+  }
+  :scope .ap-cap b {
+    color: var(--x-text);
+    font-variant-numeric: tabular-nums;
+  }
+  :scope .ap-meter {
+    width: 72px;
+    height: 8px;
+    border-radius: 99px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  :scope .ap-meter i {
+    display: block;
+    height: 100%;
+    background: var(--cta);
+    border-radius: inherit;
+    transform-origin: left;
+    transform: scaleX(var(--v, 1));
+    transition: transform 0.8s var(--x-out);
+  }
+  :scope .ap-types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 var(--x-s3);
+    list-style: none;
+  }
+  :scope .ap-types li {
+    font-size: 13px;
+    color: var(--x-muted);
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+    border: 1px solid var(--x-soft);
+  }
+  :scope .ap-types b {
+    color: var(--x-text);
+  }
+  :scope .ap-list {
+    list-style: none;
+    display: grid;
+    gap: 12px;
+  }
+  :scope .ap-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 16px 20px;
+    align-items: center;
+    padding: 20px 22px;
+    border-radius: 22px;
+    background: var(--surf);
+    border: 1px solid var(--x-soft);
+    transition:
+      transform 0.4s var(--x-spring),
+      box-shadow 0.4s var(--x-out),
+      border-color 0.3s;
+    transform-origin: center top;
+  }
+  :scope .ap-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px -22px rgba(61, 82, 160, 0.55);
+    border-color: var(--line);
+  }
+  :scope .ap-av {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    color: var(--beam);
+    font-weight: 800;
+    font-size: 18px;
+    border: 1px solid var(--line);
+  }
+  :scope .ap-who b {
+    display: block;
+    font-size: 16px;
+    word-break: break-all;
+  }
+  :scope .ap-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: var(--x-muted);
+  }
+  :scope .ap-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  :scope .ap-meta svg {
+    width: 15px;
+    height: 15px;
+    flex: none;
+  }
+  :scope .ap-tag {
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 99px;
+    background: var(--bg);
+    color: var(--beam);
+    border: 1px solid var(--line);
+  }
+  :scope .ap-act {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  :scope .btn-revoke {
+    background: var(--surf);
+    color: var(--find);
+    border-color: color-mix(in oklab, var(--find) 35%, transparent);
+  }
+  :scope .btn-revoke:hover {
+    background: var(--find-a);
+    border-color: var(--find);
+    transform: translateY(-2px);
+  }
+  :scope .btn-copy.ok {
+    color: var(--ok);
+    border-color: color-mix(in oklab, var(--ok) 35%, transparent);
+    background: var(--ok-a);
+  }
+  @media (max-width: 760px) {
+    :scope .ap-row {
+      grid-template-columns: auto 1fr;
+    }
+    :scope .ap-act {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+  }
+  :scope .ap-row.out {
+    animation: co-coapOut 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    pointer-events: none;
+  }
+  :scope .ap-empty {
+    text-align: center;
+    padding: var(--x-s5) var(--x-s3);
+    border: 1.5px dashed var(--line);
+    border-radius: 22px;
+    background: color-mix(in oklab, var(--surf) 88%, transparent);
+  }
+  :scope .ap-empty.on {
+    animation: co-coapIn 0.7s var(--x-spring);
+  }
+  :scope .ap-empty .hic {
+    margin: 0 auto var(--x-s2);
+  }
+  :scope .ap-empty h3 {
+    font-size: 19px;
+    margin-bottom: 6px;
+  }
+  :scope .ap-empty h3:focus {
+    outline: none;
+  }
+  :scope .ap-empty p {
+    color: var(--x-muted);
+    max-width: 52ch;
+    margin: 0 auto;
+  }
+  :scope .ap-note {
+    margin-top: var(--x-s3);
+    font-size: 13.5px;
+    color: var(--x-muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  :scope .ap-note svg {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    margin-top: 3px;
+    color: var(--beam);
+  }
+  html.js .co .rv2 {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.8s var(--x-out),
+      transform 0.9s var(--x-spring);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  html.js .co .rv2.in {
+    opacity: 1;
+    transform: none;
+  }
+  :scope #dlgr .ap-site {
+    font-weight: 700;
+    color: var(--x-text);
+  }
+  @media print {
+    html.js .co .rv2 {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html.js .co .rv2 {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    :scope .ap-row,
+    :scope .ap-row:hover {
+      transition: none;
+      transform: none;
+    }
+    :scope .ap-row.out {
+      animation: none;
+      opacity: 0;
+    }
+    :scope .ap-empty.on {
+      animation: none;
+    }
+    :scope .ap-meter i {
+      transition: none;
+    }
+  }
+  :scope .khero .lede {
+    color: var(--x-text);
+  }
+  @media (max-width: 900px) {
+    :scope .lnk,
+    :scope .mcard a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
+    :scope .idc .lnk,
+    :scope .idc a {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+  @media (max-width: 480px) {
+    :scope .gpanel {
+      padding: var(--x-s3);
+    }
+    :scope .who {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    :scope .ap-row {
+      grid-template-columns: 1fr;
+      padding: 16px;
+    }
+    :scope .jf {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    :scope .jf small {
+      overflow-wrap: anywhere;
+    }
+  }
+  @media (max-width: 360px) {
+    :scope main {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+  :scope {
+    --x-ax-edge: clamp(12px, 3vw, 32px);
+    --x-ax-r: 28px;
+    --x-ax-max: 1240px;
+    --x-ax-bd: var(--line);
+    --x-ax-sf: var(--bg);
+  }
+  :scope main {
+    padding-top: var(--x-s4);
+  }
+  @media (max-width: 900px) {
+    :scope main {
+      padding-top: var(--x-s3);
+    }
+  }
+  :scope .crumbs {
+    margin-bottom: var(--x-s3);
+  }
+  :scope .khero {
+    position: relative;
+    isolation: isolate;
+    margin: 0 0 var(--x-s5);
+    padding: clamp(24px, 5vw, 48px);
+    border-radius: var(--x-ax-r);
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(60% 80% at 15% 0%, var(--beam-a), transparent 70%),
+      radial-gradient(50% 70% at 95% 0%, var(--beam-a), transparent 70%),
+      linear-gradient(180deg, var(--bg), var(--surf-2));
+    box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
+  }
+  :scope .khero {
+    margin-bottom: var(--x-s5);
+  }
+  :scope .aurora {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    -webkit-mask: none;
+    mask: none;
+  }
+  @media (max-width: 600px) {
+    :scope .khero {
+      padding: 16px;
+    }
+    :scope .khero .gpanel {
+      padding: 24px 20px;
+    }
+  }
+  :scope .axf-links a {
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
+  }
+  :scope .axn-logo,
+  :scope .axf-logo {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  :scope .lk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 16px;
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0;
+  }
+  :scope .lk-grid li {
+    display: flex;
+    min-width: 0;
+  }
+  :scope .lk {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 44px;
+    padding: 16px 16px 16px 16px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surf);
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--sans);
+    box-shadow: 0 1px 2px rgba(30, 42, 85, 0.04);
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.25s,
+      border-color 0.25s;
+  }
+  :scope .lk:hover,
+  :scope .lk:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--beam);
+    box-shadow: 0 16px 32px -16px rgba(61, 82, 160, 0.45);
+  }
+  :scope .lk:focus-visible {
+    outline: 2px solid var(--beam);
+    outline-offset: 3px;
+  }
+  :scope .lk-ico {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--bg);
+    color: var(--beam);
+    display: grid;
+    place-items: center;
+  }
+  :scope .lk-ico svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  :scope .lk-tx {
+    min-width: 0;
+    flex: 1;
+  }
+  :scope .lk-t {
+    display: block;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  :scope .lk-d {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.45;
+    font-weight: 400;
+    color: var(--ink-2);
+  }
+  :scope .lk-ar {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    color: var(--beam);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  :scope .lk:hover .lk-ar,
+  :scope .lk:focus-visible .lk-ar {
+    transform: translateX(4px);
+    color: var(--ink);
+  }
+  :scope .lk-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 16px 8px 18px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surf);
+    color: var(--beam);
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.25s,
+      border-color 0.25s,
+      background 0.25s;
+  }
+  :scope .lk-pill:hover,
+  :scope .lk-pill:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--beam);
+    background: var(--bg);
+    color: var(--ink);
+    box-shadow: 0 10px 24px -14px rgba(61, 82, 160, 0.5);
+    text-decoration: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :scope .lk,
+    :scope .lk-ar,
+    :scope .lk-pill {
+      transition: none;
+    }
+    :scope .lk:hover,
+    :scope .lk:focus-visible,
+    :scope .lk-pill:hover,
+    :scope .lk-pill:focus-visible {
+      transform: none;
+    }
+  }
+  :scope .grad-txt,
+  :scope h1 .grad,
+  :scope h1 .u,
+  :scope .pin h2 em,
+  :scope .lvn {
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  :scope .hero h1 {
+    line-height: 1.1;
+  }
+  :scope .hero h1 .w {
+    padding-bottom: 0.16em;
+    margin-bottom: -0.16em;
+  }
+  :scope .four {
+    padding-bottom: 0.1em;
+  }
+  :scope .pau i {
+    display: none !important;
+  }
+  :scope .aurora i,
+  :scope .blobs i,
+  :scope .vault-halo,
+  :scope .floating-orb {
+    display: none !important;
+  }
+  :scope .aurora,
+  :scope .blobs {
+    background:
+      radial-gradient(
+        42% 60% at 0% 0%,
+        color-mix(in oklab, var(--beam) 6%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        36% 55% at 100% 100%,
+        color-mix(in oklab, var(--beam) 6%, transparent),
+        transparent 72%
+      ),
+      linear-gradient(180deg, transparent, transparent) !important;
+  }
+  :scope .khero {
+    background:
+      radial-gradient(40% 70% at 0% 0%, var(--beam-a), transparent 70%),
+      radial-gradient(
+        34% 60% at 100% 100%,
+        color-mix(in oklab, var(--beam) 6%, transparent),
+        transparent 72%
+      ),
+      linear-gradient(180deg, var(--surf), var(--surf-2)) !important;
+  }
+  :scope #dlgd b {
+    text-transform: uppercase;
+  }
+  :scope a.login-out {
+    font-weight: 600;
+    border-top: 1px solid transparent;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  @media (max-width: 480px) {
+    :scope .mt .cap span {
+      left: auto;
+      right: 6px;
+    }
+    :scope .mt .sc {
+      flex-wrap: wrap;
+      gap: 4px 12px;
+    }
+  }
+  @media (max-width: 480px) {
+    :scope .lg2 {
+      flex-wrap: wrap;
+      row-gap: 4px;
+    }
+    :scope .mt .cap span {
+      top: 18px;
+      left: 6px;
+      right: auto;
+    }
+    :scope .tst {
+      gap: 8px;
+      padding: 0 8px;
+    }
+    :scope .tst span {
+      white-space: normal;
+      line-height: 1.15;
+    }
+  }
+}
+@keyframes co-codot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(112, 145, 230, 0.6);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 9px rgba(112, 145, 230, 0);
+  }
+}
+@keyframes co-cosheen {
+  to {
+    transform: translateX(120%);
+  }
+}
+@keyframes co-coau1 {
+  to {
+    transform: translate3d(120px, 60px, 0) scale(1.15);
+  }
+}
+@keyframes co-coau2 {
+  to {
+    transform: translate3d(-140px, 90px, 0) scale(0.9);
+  }
+}
+@keyframes co-coau3 {
+  to {
+    transform: translate3d(-80px, -50px, 0) scale(1.2);
+  }
+}
+@property --ang {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes co-cospinb {
+  to {
+    --ang: 360deg;
+  }
+}
+@keyframes co-cogt {
+  to {
+    background-position: 100% 0;
+  }
+}
+@keyframes co-corip {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+@keyframes co-corot {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes co-coshim {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes co-copls {
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+@property --pa {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+@keyframes co-copbeam {
+  to {
+    --pa: 360deg;
+  }
+}
+@keyframes co-copa1 {
+  to {
+    transform: translate3d(90px, 60px, 0) scale(1.15);
+  }
+}
+@keyframes co-copa2 {
+  to {
+    transform: translate3d(-110px, -40px, 0) scale(0.9);
+  }
+}
+@keyframes co-coshine {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  85%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+@keyframes co-coring {
+  20% {
+    transform: rotate(16deg);
+  }
+  40% {
+    transform: rotate(-12deg);
+  }
+  60% {
+    transform: rotate(8deg);
+  }
+  80% {
+    transform: rotate(-4deg);
+  }
+}
+@keyframes co-cocf {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y)))
+      rotate(var(--r)) scale(1);
+    opacity: 0;
+  }
+}
+@keyframes co-cohs {
+  0% {
+    opacity: 0;
+    transform: translateY(-26px) scale(0.96);
+  }
+  10%,
+  80% {
+    opacity: 1;
+    transform: none;
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+@keyframes co-codr {
+  0% {
+    stroke-dashoffset: 1;
+  }
+  45%,
+  85% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+@keyframes co-cofa {
+  30%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes co-cobob {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes co-copop {
+  0%,
+  8% {
+    transform: scale(0);
+  }
+  14%,
+  90% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes co-cots {
+  0%,
+  6% {
+    opacity: 0;
+    transform: translateX(30px) scale(0.9);
+  }
+  14%,
+  82% {
+    opacity: 1;
+    transform: none;
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+}
+@keyframes co-cosh2 {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+@keyframes co-cofill {
+  0%,
+  12% {
+    transform: scaleX(0.42);
+  }
+  30% {
+    transform: scaleX(0.44);
+  }
+  60%,
+  85% {
+    transform: scaleX(0.96);
+  }
+  100% {
+    transform: scaleX(0.42);
+  }
+}
+@keyframes co-copin {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes co-codg {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+}
+@keyframes co-coapOut {
+  30% {
+    opacity: 1;
+    transform: translateX(0) scale(0.99);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(40px) scaleY(0.4);
+  }
+}
+@keyframes co-coapIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+}

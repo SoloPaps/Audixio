@@ -5,7 +5,7 @@ import {
 } from '@audigy/orchestrator/mail-templates';
 
 const LOGO = '/marque/logo-pc.svg';
-const PREFS = '/compte/alertes';
+const PREFS = '/compte#alertes';
 const LEGAL = '/mentions-legales';
 const REPORT = '/rapport';
 

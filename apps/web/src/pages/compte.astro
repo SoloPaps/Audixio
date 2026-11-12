@@ -1,20 +1,18 @@
 ---
-import '../styles/maquettes/liens.css';
 import AccountBoard from '../components/AccountBoard.svelte';
 import SearchConsolePanel from '../components/SearchConsolePanel.svelte';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
-import '../styles/maquettes/compte.css';
+import V6Page from '../layouts/V6Page.astro';
+import '../styles/maquettes/compte-v6.css';
+import '../styles/maquettes/alertes-v6.css';
+import '../styles/maquettes/site-v6.css';
 ---
 
-<Canon
-  vue="compte"
-  title={t('meta.account.title')}
-  description={t('meta.account.description')}
-  robots="noindex, nofollow"
->
-  <AccountBoard client:load />
-  <section class="blk" id="search-console" aria-label={t('gsc.connect')}>
-    <SearchConsolePanel client:load />
-  </section>
-</Canon>
+<V6Page vue="compte" title={t('meta.account.title')} description={t('meta.account.description')}>
+  <div class="co">
+    <AccountBoard client:load />
+    <section class="blk" id="search-console" aria-label={t('gsc.connect')}>
+      <SearchConsolePanel client:load />
+    </section>
+  </div>
+</V6Page>

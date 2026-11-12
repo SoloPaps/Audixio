@@ -118,6 +118,9 @@ export function bindMotion(root: ParentNode): () => void {
     if (!(target instanceof Element)) return;
     const button = target.closest<HTMLElement>('.btn');
     if (!button || !root.contains(button)) return;
+    // Un espace intégré (Alertes dans /compte) a sa propre onde : pas deux.
+    const owner = button.closest('[data-mode]');
+    if (owner && owner !== root && root.contains(owner)) return;
     const box = button.getBoundingClientRect();
     const size = Math.max(box.width, box.height);
     const ink = document.createElement('span');

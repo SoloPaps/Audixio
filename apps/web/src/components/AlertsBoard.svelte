@@ -4,6 +4,13 @@ import { t } from '../i18n/index.js';
 import { bootEspace } from '../lib/espace-boot.js';
 import SessionWall from './SessionWall.svelte';
 
+interface Props {
+  /** Section #alertes de /compte : pas de <main>, titre de niveau 2, sans fil d’Ariane ni liens vers le compte. */
+  embedded?: boolean;
+}
+
+let { embedded = false }: Props = $props();
+
 let mode = $state<
   'pending' | 'out' | 'empty' | 'list' | 'ready' | 'live' | 'error'
 >('pending');
@@ -22,13 +29,13 @@ onMount(() => {
 </script>
 
 <div bind:this={root} data-mode={mode}>
-{#if mode === 'pending'}<main id="contenu" class="wrap" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{:else if mode === 'out'}<main id="contenu" class="wrap"><SessionWall title={`${t('mq.al.005')} ${t('mq.al.006')}`} status={t('sites.need_login')} next="/compte/alertes" /></main>{:else}
-<main id="contenu" class="wrap">
-<nav class="crumbs fade" aria-label={t('mq.al.001')}><ol><li><a href="/">{t('mq.al.002')}</a></li><li><a href="/compte">{t('mq.al.003')}</a></li><li aria-current="page">{t('mq.al.004')}</li></ol></nav>
+{#if mode === 'pending'}{#if embedded}<p class="sr-only" role="status">{t('sites.loading')}</p>{:else}<main id="contenu" class="wrap" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{/if}{:else if mode === 'out'}{#if !embedded}<main id="contenu" class="wrap"><SessionWall title={`${t('mq.al.005')} ${t('mq.al.006')}`} status={t('sites.need_login')} next="/compte#alertes" /></main>{/if}{:else}
+<svelte:element this={embedded ? 'div' : 'main'} id={embedded ? undefined : 'contenu'} class="wrap">
+{#if !embedded}<nav class="crumbs fade" aria-label={t('mq.al.001')}><ol><li><a href="/">{t('mq.al.002')}</a></li><li><a href="/compte">{t('mq.al.003')}</a></li><li aria-current="page">{t('mq.al.004')}</li></ol></nav>{/if}
 <section class="hero" aria-labelledby="t">
 
 <div class="badge-ic"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21h4"/></svg></div>
-<h1 id="t" class="fade" style="--d:.1s">{t('mq.al.005')} <span class="grad">{t('mq.al.006')}</span></h1>
+<svelte:element this={embedded ? 'h2' : 'h1'} id="t" class="fade al-t" style="--d:.1s">{t('mq.al.005')} <span class="grad">{t('mq.al.006')}</span></svelte:element>
 <p class="lead fade" style="--d:.2s">{t('mq.al.007')} <b>{t('mq.al.008')}</b>{t('mq.al.009')}</p>
 </section>
 
@@ -53,11 +60,11 @@ onMount(() => {
 <div class="gate-cta" id="gateCta"><div class="badge-ic" style="width:56px;height:56px;margin-bottom:12px"><svg viewBox="0 0 24 24" focusable="false"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div><h3>{t('mq.al.041')}</h3><p>{t('mq.al.042')}</p><a class="btn btn-primary" href="/pro">{t('mq.al.043')} <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 </div></section>
 
-<section class="sec" aria-labelledby="h-l"><h2 id="h-l">{t('mq.al.044')}</h2><ul class="lk-grid">
+{#if !embedded}<section class="sec" aria-labelledby="h-l"><h2 id="h-l">{t('mq.al.044')}</h2><ul class="lk-grid">
 <li><a class="lk" href="/sites"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.al.045')}</span><span class="lk-d">{t('mq.al.046')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
 <li><a class="lk" href="/compte"><span class="lk-ico" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><span class="lk-tx"><span class="lk-t">{t('mq.al.047')}</span><span class="lk-d">{t('mq.al.048')}</span></span><svg class="lk-ar" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
-</ul></section>
-</main>
-<div class="toast" id="toast" aria-hidden="true"></div><p class="sr-only" id="live" role="status" aria-live="polite"></p>
+</ul></section>{/if}
+</svelte:element>
+{#if !embedded}<div class="toast" id="toast" aria-hidden="true"></div><p class="sr-only" id="live" role="status" aria-live="polite"></p>{/if}
 {/if}
 </div>

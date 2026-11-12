@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { openHistory } from './h-history.js';
+import { englishUrl, openHistory } from './h-history.js';
 
 // U1 : choix du format d’export sur /historique, selon la matrice des droits.
 
@@ -80,7 +80,7 @@ test('U1 : en anglais, le menu d’export ne garde aucun français', async ({
   page,
 }) => {
   await openHistory(page, [72, 88]);
-  await page.goto(`${page.url()}&lang=en`);
+  await page.goto(englishUrl(page.url()));
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await page.waitForLoadState('networkidle');
   await expect(page.locator('table tbody')).toContainText('88', {

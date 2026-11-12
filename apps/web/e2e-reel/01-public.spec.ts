@@ -80,3 +80,22 @@ test('pages légales, 404, 500, cookies et Pro', async ({ page, browser }) => {
   await expect(narrow.getByText('Erreur serveur').first()).toBeVisible();
   await narrow.context().close();
 });
+
+// Lot 4 : R11, R12, R15 servies par Netlify (dist/_redirects), ancre comprise.
+test('redirections R11, R12, R15 : 301 avec l’ancre de la section', async ({
+  page,
+}) => {
+  const site = '00000000-0000-4000-8000-0000000000bb';
+  const cases = [
+    [`/historique?site=${site}`, `/sites/id/${site}#historique`],
+    [`/verifier?site=${site}`, `/sites/id/${site}#verification`],
+    ['/compte/alertes', '/compte#alertes'],
+  ] as const;
+  for (const [from, to] of cases) {
+    const response = await page.request.get(from, { maxRedirects: 0 });
+    expect(response.status(), from).toBe(301);
+    // Netlify peut rendre l’adresse absolue : on compare chemin et ancre.
+    const target = new URL(response.headers().location ?? '', 'http://x');
+    expect(`${target.pathname}${target.hash}`, from).toBe(to);
+  }
+});

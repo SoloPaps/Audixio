@@ -8,7 +8,7 @@ import {
 
 const ID = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10';
 
-// Un cas par ligne de STRUCTURE.md §4 (R11, R12 et R15 arrivent au lot 4).
+// Un cas par ligne de STRUCTURE.md §7.
 const CASES: [string, string, string | null][] = [
   ['R1', `/rapport?id=${ID}`, `/rapport/${ID}`],
   ['R2', `/rapport?id=${ID}&domaine=seo`, `/rapport/${ID}/domaines/seo`],
@@ -25,6 +25,11 @@ const CASES: [string, string, string | null][] = [
   ['R9', `/brief?id=${ID}`, `/rapport/${ID}/brief`],
   ['R10', `/rapport/imprimer?id=${ID}`, `/rapport/${ID}/imprimer`],
   ['R13', `/badge?id=${ID}`, `/rapport/${ID}?partager=badge`],
+  ['R11', `/historique?site=${ID}`, `/sites/id/${ID}#historique`],
+  ['R12', `/verifier?site=${ID}`, `/sites/id/${ID}#verification`],
+  ['R15', '/compte/alertes', '/compte#alertes'],
+  ['R11 sans site', '/historique', null],
+  ['R12 sans site', '/verifier', null],
   ['R4–R9 sans id', '/domaine?domaine=seo', '/rapport/domaines?domaine=seo'],
   ['R6–R7 sans id', '/constat', '/rapport/constats'],
   ['R8 sans id', '/plan', '/rapport/plan'],
@@ -93,6 +98,26 @@ describe('table des redirections', () => {
     expect(resolveRewrite('/sites')).toBeNull();
   });
 
+  it('garde l’ancre après la requête conservée (R11, R12, R15)', () => {
+    expect(resolveRedirect('/historique', `?site=${ID}&theme=dark`)).toBe(
+      `/sites/id/${ID}?theme=dark#historique`,
+    );
+    expect(resolveRedirect('/compte/alertes/', '?lang=en')).toBe(
+      '/compte?lang=en#alertes',
+    );
+  });
+
+  it('sert la page d’un site et son résolveur sans changer l’adresse', () => {
+    expect(resolveRewrite('/sites/exemple.fr')).toBe('/sites/fiche/index.html');
+    expect(resolveRewrite('/sites/exemple.fr/')).toBe(
+      '/sites/fiche/index.html',
+    );
+    expect(resolveRewrite(`/sites/id/${ID}`)).toBe('/sites/id/index.html');
+    expect(resolveRewrite('/sites/id')).toBeNull();
+    expect(resolveRewrite('/sites/fiche')).toBeNull();
+    expect(resolveRewrite('/sites/exemple.fr/demandes/req_1')).toBeNull();
+  });
+
   it('écrit le fichier Netlify, 301 forcés avant les réécritures', () => {
     const text = renderRedirects();
     const lines = text.trim().split('\n').slice(1);
@@ -102,6 +127,11 @@ describe('table des redirections', () => {
     expect(lines).toContain('/badge id=:id /rapport/:id?partager=badge 301!');
     expect(lines).toContain('/rapport/:id /rapport/index.html 200');
     expect(lines).toContain('/plan /rapport/plan 301!');
+    expect(lines).toContain(
+      '/historique site=:site /sites/id/:site#historique 301!',
+    );
+    expect(lines).toContain('/compte/alertes /compte#alertes 301!');
+    expect(lines).toContain('/sites/:host /sites/fiche/index.html 200');
     const firstRewrite = lines.findIndex((line) => line.endsWith(' 200'));
     expect(lines.slice(firstRewrite).every((l) => l.endsWith(' 200'))).toBe(
       true,

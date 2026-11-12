@@ -209,9 +209,9 @@ export function supabaseSignupTemplate(siteUrl: string): {
   const mail = renderSignupMail({
     confirmUrl: '{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=signup',
     code: '{{ .Token }}',
-    prefsUrl: `${origin}/compte/alertes`,
+    prefsUrl: `${origin}/compte#alertes`,
     legalUrl: `${origin}/mentions-legales`,
-    unsubscribeUrl: `${origin}/compte/alertes`,
+    unsubscribeUrl: `${origin}/compte#alertes`,
     logoUrl: `${origin}/marque/logo-pc.svg`,
   });
   return { html: mail.html, text: mail.text };

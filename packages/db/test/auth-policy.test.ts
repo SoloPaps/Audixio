@@ -44,6 +44,12 @@ describe('politique de connexion', () => {
     expect(protectedPath('/compte/')).toBe(true);
     expect(protectedPath('/bienvenue')).toBe(true);
     expect(protectedPath('/compte/retour')).toBe(false);
+    expect(protectedPath('/sites/exemple.fr')).toBe(true);
+    expect(
+      protectedPath('/sites/id/00000000-0000-4000-8000-0000000000bb'),
+    ).toBe(true);
+    expect(protectedPath('/sites/exemple.fr/demandes/req_1')).toBe(false);
+    expect(protectedPath('/sites-vitrine')).toBe(false);
     expect(protectedPath('/connexion')).toBe(false);
   });
 

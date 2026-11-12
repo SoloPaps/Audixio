@@ -5,6 +5,15 @@ import { t } from '../i18n/index.js';
 import { bootEspace } from '../lib/espace-boot.js';
 import SessionWall from './SessionWall.svelte';
 
+interface Props {
+  /** Page d’un site : le site vient de l’adresse, pas de `?site=`. */
+  siteId?: string;
+  /** Section de /sites/:host : pas de <main>, titre de niveau 2, sans fil d’Ariane. */
+  embedded?: boolean;
+}
+
+let { siteId, embedded = false }: Props = $props();
+
 let mode = $state<
   'pending' | 'out' | 'empty' | 'list' | 'ready' | 'live' | 'error'
 >('pending');
@@ -17,20 +26,21 @@ onMount(() => {
       mode = next.mode;
     },
     () => root,
+    siteId === undefined ? {} : { siteId },
   );
   return () => stop();
 });
 </script>
 
 <div bind:this={root} data-mode={mode}>
-{#if mode === 'pending'}<main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{:else if mode === 'out'}<main id="contenu"><SessionWall title={t('sites.need_login')} next="/historique" /></main>{:else}
-<main id="contenu" tabindex="-1">
+{#if mode === 'pending'}{#if embedded}<p class="sr-only" role="status">{t('sites.loading')}</p>{:else}<main id="contenu" hidden><p class="sr-only" role="status">{t('sites.loading')}</p></main>{/if}{:else if mode === 'out'}{#if embedded}<SessionWall title={t('sites.need_login')} next={`${location.pathname}#historique`} />{:else}<main id="contenu"><SessionWall title={t('sites.need_login')} next="/historique" /></main>{/if}{:else}
+<svelte:element this={embedded ? 'div' : 'main'} id={embedded ? undefined : 'contenu'} class:hist-embed={embedded} tabindex={embedded ? undefined : -1}>
 <section class="khero" aria-labelledby="t">
 <div class="aurora" aria-hidden="true"><i data-depth=".6"></i><i data-depth="-.4"></i><i data-depth=".3"></i><i data-depth="-.7"></i></div>
 <div class="th"><div data-stagger>
-<nav aria-label={t('mq.hi.001')} class="rv"><ol class="crumbs"><li><a href="/sites">{t('mq.hi.002')}</a></li><li><a href="/sites">{t('mq.hi.003')}</a></li><li><span aria-current="page">{t('mq.hi.004')}</span></li></ol></nav>
+{#if !embedded}<nav aria-label={t('mq.hi.001')} class="rv"><ol class="crumbs"><li><a href="/sites">{t('mq.hi.002')}</a></li><li><a href="/sites">{t('mq.hi.003')}</a></li><li><span aria-current="page">{t('mq.hi.004')}</span></li></ol></nav>{/if}
 <p class="eyebrow rv"><span class="dot" aria-hidden="true"></span>{t('mq.hi.005')} <span class="pb">{t('mq.hi.006')}</span></p>
-<h1 class="rv" id="t"><span class="grad-txt">{t('mq.hi.003')}</span></h1>
+{#if embedded}<h2 class="rv hist-t" id="t">{t('st.hist.title')}</h2>{:else}<h1 class="rv" id="t"><span class="grad-txt">{t('mq.hi.003')}</span></h1>{/if}
 <div class="chips rv"><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span>{t('mq.hi.007')} <time datetime="2026-05-18T09:15+02:00">{t('mq.hi.008')}</time></span></span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0 0 14.3 4.9L20 16M20 20v-4h-4"/></svg><span>{t('mq.hi.009')}</span></span></div>
 </div>
 <div class="gpanel rv sum g-b" aria-label={t('mq.hi.010')}>
@@ -78,7 +88,7 @@ onMount(() => {
 <nav aria-label={t('mq.hi.144')}><ul class="pag"><li><button type="button" aria-current="page">{t('mq.hi.145')}</button></li><li><button type="button">{t('mq.hi.146')}</button></li><li><button type="button">{t('mq.hi.147')}</button></li></ul></nav></div>
 </div>
 </section>
-</main>
+</svelte:element>
 <div class="toast" id="toast" aria-hidden="true"></div><p class="sr-only" id="live" role="status" aria-live="polite"></p>
 {/if}
 </div>

@@ -37,9 +37,10 @@ const WALLS = [
     title: 'Vos sites',
   },
   {
-    path: '/compte/alertes',
-    next: '%2Fcompte%2Falertes',
-    title: 'Réglages des alertes',
+    // Page d’un site (lot 4) ; /compte/alertes est devenue /compte#alertes (R15).
+    path: '/sites/exemple.fr',
+    next: '%2Fsites%2Fexemple.fr',
+    title: 'Connectez-vous pour ouvrir ce site.',
   },
 ];
 

@@ -12,6 +12,7 @@ import { mqGatesFr } from './mq-gates-fr.js';
 import { mqLegalFr } from './mq-legal-fr.js';
 import { pdfFr } from './pdf-fr.js';
 import { rapport6Fr } from './rapport6-fr.js';
+import { site6Fr } from './site6-fr.js';
 import { v6Fr } from './v6-fr.js';
 
 const frCore = {
@@ -2913,6 +2914,7 @@ export const fr = {
   ...accueilFr,
   ...methodeFr,
   ...rapport6Fr,
+  ...site6Fr,
 };
 
 export type MessageKey = keyof typeof fr;

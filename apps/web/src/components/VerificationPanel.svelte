@@ -31,6 +31,15 @@ interface StoredVerification {
   found: boolean | null;
 }
 
+interface Props {
+  /** Page d’un site : le site vient de l’adresse, pas de `?site=`. */
+  siteId?: string;
+  /** Section de /sites/:host : titres d’un niveau plus bas, sans fil d’Ariane. */
+  embedded?: boolean;
+}
+
+let { siteId: givenSite, embedded = false }: Props = $props();
+
 const METHODS = [
   'meta',
   'html_file',
@@ -108,8 +117,7 @@ async function load(): Promise<void> {
     needLogin = true;
     return;
   }
-  const params = new URLSearchParams(location.search);
-  const siteId = params.get('site');
+  const siteId = givenSite ?? new URLSearchParams(location.search).get('site');
   if (!siteId) {
     loading = false;
     missing = true;
@@ -244,7 +252,7 @@ async function onCopy(value: string): Promise<void> {
     title={t('verify.title')}
     lead={t('verify.consent')}
     status={t('verify.need_login')}
-    next={`${location.pathname}${location.search}`}
+    next={embedded ? `${location.pathname}#verification` : `${location.pathname}${location.search}`}
   />
 {:else if missing}
   <h1>{t('verify.missing')}</h1>
@@ -257,13 +265,13 @@ async function onCopy(value: string): Promise<void> {
   {@const token = sharedToken()}
   {@const challenge = token ? localChallenge(site, token) : null}
   {@const phase = pending ? 'checking' : phaseOf(proof)}
-  <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={reportHref(reportId ?? '')}>{site.label || site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>
+{#if !embedded}  <nav class="crumbs" aria-label={t('hub.crumbs')}><ol><li><a href="/sites">{t('nav.sites.long')}</a></li><li><a href={reportHref(reportId ?? '')}>{site.label || site.host}</a></li><li><span aria-current="page">{t('preuve.crumb')}</span></li></ol></nav>{/if}
   <section class="khero" id="st" data-st={phase === 'checking' ? 'scan' : phase} aria-labelledby="h1">
     <div class="aurora" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
     <div class="hgrid">
       <div>
         <p class="eyebrow">{t('preuve.eyebrow')}</p>
-        <h1 id="h1">{t('preuve.h1')} <span class="grad-txt">{site.host}</span></h1>
+        <svelte:element this={embedded ? 'h2' : 'h1'} id="h1" class="pv-t">{t('preuve.h1')} <span class="grad-txt" data-i18n-skip>{site.host}</span></svelte:element>
         <p class="lede">{t('preuve.lede')}</p>
         <div class="acts"><a class="btn btn-primary" href="#methodes">{t('preuve.choose')}</a>{#if reportId}<a class="btn btn-ghost" href={reportHref(reportId)}>{t('preuve.report')}</a>{/if}</div>
       </div>
@@ -406,7 +414,7 @@ async function onCopy(value: string): Promise<void> {
   <div class="vdock" role="region" aria-label={t('preuve.choose')}>
     <p>{t('preuve.dock', { host: site.host, method: methodLabel(method) })}</p>
     <div class="r">
-      <a class="btn btn-ghost btn-sm" href="/sites">{t('verify.back')}</a>
+      {#if !embedded}<a class="btn btn-ghost btn-sm" href="/sites">{t('verify.back')}</a>{/if}
       {#if challenge && method !== 'search_console'}
         <button class="btn btn-primary btn-sm" type="button" disabled={pending} onclick={onCheck}>{pending ? t('verify.checking') : t('verify.now')}</button>
       {/if}

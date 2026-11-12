@@ -61,6 +61,7 @@ import type { PlaceSummary, PlacesState } from './places-api.js';
 import { parsePlacesState } from './places-api.js';
 import { reportHref } from './report-route.js';
 import { loadSiteHistory } from './site-history.js';
+import { siteHref } from './site-route.js';
 import { latestAuditBySite } from './site-tiles.js';
 import { InvalidSiteUrl, normalizeSiteUrl } from './site-url.js';
 import { sslSelectValue, sslWarnDays } from './ssl-days.js';
@@ -220,7 +221,7 @@ async function loadSites(session: Session): Promise<EspaceNext> {
       href: mark
         ? reportHref(mark.auditId)
         : `/progression?site=${encodeURIComponent(row.id)}`,
-      verify: `/verifier?site=${encodeURIComponent(row.id)}`,
+      verify: siteHref(row.host, 'verification'),
       when: mark ? formatDate(new Date(mark.at)) : '',
       score: carte?.score ?? null,
       grade: carte?.grade ?? null,
@@ -283,10 +284,21 @@ async function prepare(
   };
 }
 
+/** Options d’une page de l’espace. `siteId` remplace `?site=` (page d’un site). */
+export interface EspaceOptions {
+  siteId?: string;
+}
+
+function askedSiteParam(options: EspaceOptions): string {
+  if (options.siteId !== undefined) return options.siteId.trim();
+  return new URLSearchParams(location.search).get('site')?.trim() ?? '';
+}
+
 export function bootEspace(
   page: EspacePage,
   set: (next: EspaceNext) => void,
   getRoot: () => HTMLElement | undefined,
+  options: EspaceOptions = {},
 ): () => void {
   let stop = (): void => {};
   let dead = false;
@@ -308,7 +320,7 @@ export function bootEspace(
     if (dead) return;
     const node = getRoot();
     if (!node) return;
-    stop = bindPage(page, node, next, set);
+    stop = bindPage(page, node, next, set, options);
   })();
   return () => {
     dead = true;
@@ -321,10 +333,11 @@ function bindPage(
   root: HTMLElement,
   next: EspaceNext,
   set: (value: EspaceNext) => void,
+  options: EspaceOptions,
 ): () => void {
   const stops = [bindMotion(root)];
   if (page === 'sites') stops.push(bindSites(root, next, set));
-  if (page === 'historique') stops.push(bindHistory(root));
+  if (page === 'historique') stops.push(bindHistory(root, options));
   if (page === 'compte') stops.push(bindAccount(root, next));
   if (page === 'alertes') stops.push(bindAlerts(root, next));
   if (page === 'bienvenue') stops.push(bindWelcome(root, next));
@@ -590,7 +603,7 @@ async function addSite(
     id: data.id,
     host: data.host,
     href: `/progression?site=${encodeURIComponent(data.id)}`,
-    verify: `/verifier?site=${encodeURIComponent(data.id)}`,
+    verify: siteHref(data.host, 'verification'),
     when: '',
     score: null,
     grade: null,
@@ -811,8 +824,10 @@ function paintHistoryEmpty(
   host: string | null,
   plan: string | null,
 ): void {
-  const main = root.querySelector('main');
+  // Section de /sites/:host : pas de <main>, et le titre de la page est déjà l’hôte.
+  const main = root.querySelector<HTMLElement>('main, .hist-embed');
   if (!main) return;
+  const embedded = main.localName !== 'main';
   const upgrade = root.querySelector<HTMLElement>('#history-upgrade');
   main.replaceChildren();
   const section = document.createElement('section');
@@ -820,9 +835,11 @@ function paintHistoryEmpty(
   const eyebrow = document.createElement('p');
   eyebrow.className = 'eyebrow';
   eyebrow.textContent = t('mq.hi.005').trim();
-  const heading = document.createElement('h1');
+  const heading = document.createElement(embedded ? 'h2' : 'h1');
   heading.id = 't';
-  heading.textContent = host ?? t('mq.hi.004');
+  heading.textContent = embedded
+    ? t('st.hist.title')
+    : (host ?? t('mq.hi.004'));
   const lead = document.createElement('p');
   lead.textContent = host ? t('score.public.empty') : t('sites.empty');
   section.append(eyebrow, heading, lead);
@@ -869,7 +886,7 @@ function paintHistoryLive(
   plan: string | null,
 ): void {
   const title = root.querySelector('#t');
-  if (title) {
+  if (title && !title.closest('.hist-embed')) {
     // Coupure permise seulement après un point : pas de « …te / st ».
     title.replaceChildren();
     host.split('.').forEach((part, index, parts) => {
@@ -953,7 +970,7 @@ function rangeFullNote(view: HistoryView | null): string {
   return since ? t('mq.ui.range.full', { since }) : t('mq.ui.range.all');
 }
 
-function bindHistory(root: HTMLElement): () => void {
+function bindHistory(root: HTMLElement, options: EspaceOptions): () => void {
   const off: (() => void)[] = [];
   let dead = false;
   const chart = root.querySelector<HTMLElement>('#chart');
@@ -1118,8 +1135,7 @@ function bindHistory(root: HTMLElement): () => void {
       .limit(8);
     if (dead) return;
     const source = historySource(owned);
-    const asked =
-      new URLSearchParams(location.search).get('site')?.trim() ?? '';
+    const asked = askedSiteParam(options);
     const askedSite =
       asked === ''
         ? null
@@ -1139,6 +1155,11 @@ function bindHistory(root: HTMLElement): () => void {
           );
     if (dead) return;
     if (asked !== '' && !askedSite) {
+      // Section de /sites/:host : la page a déjà lu le site, elle ne quitte pas l’adresse.
+      if (options.siteId !== undefined) {
+        paintHistoryEmpty(root, null, latestPlan);
+        return;
+      }
       // Retest C2 : site inconnu, d’un autre compte ou mal formé.
       location.replace('/sites');
       return;

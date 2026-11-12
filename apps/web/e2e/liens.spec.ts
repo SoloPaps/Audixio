@@ -139,13 +139,7 @@ test('aucun lien interne mort ni ancre absente', async ({ request }) => {
   ]) {
     expect(methode, id).toContain(`id="${id}"`);
   }
-  for (const path of [
-    '/rapport/badge',
-    '/compte',
-    '/compte/alertes',
-    '/historique',
-    '/sites',
-  ]) {
+  for (const path of ['/rapport/badge', '/compte', '/historique', '/sites']) {
     expect(htmlOf.get(path) ?? '', path).toContain('id="contenu"');
   }
   expect(htmlOf.get('/compte') ?? '').toContain('id="contact"');

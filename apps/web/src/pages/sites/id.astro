@@ -1,0 +1,10 @@
+---
+import SiteResolver from '../../components/SiteResolver.svelte';
+import { t } from '../../i18n/index.js';
+import V6Page from '../../layouts/V6Page.astro';
+import '../../styles/maquettes/site-v6.css';
+---
+
+<V6Page vue="site-id" title={t('st.meta.resolve.title')} description={t('st.meta.description')}>
+  <SiteResolver client:load />
+</V6Page>

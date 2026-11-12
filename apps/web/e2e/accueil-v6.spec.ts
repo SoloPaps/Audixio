@@ -225,6 +225,34 @@ test.describe('accueil v6', () => {
     }
   });
 
+  // CI 12/11, CLS 0,117 à 390 px : le halo du héros (inset: -10 %) suivait la
+  // hauteur du héros ; un premier rendu avant la fin du HTML le faisait remonter.
+  test('halo du héros : sa position ne dépend pas de la hauteur du héros', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await open(page);
+    const hero = page.locator('#top');
+    const top = () =>
+      hero.evaluate((node) =>
+        Number.parseFloat(
+          (
+            globalThis as unknown as {
+              getComputedStyle: (
+                el: unknown,
+                pseudo: string,
+              ) => { top: string };
+            }
+          ).getComputedStyle(node, '::before').top,
+        ),
+      );
+    const before = await top();
+    await hero.evaluate((node) => {
+      node.style.minHeight = `${node.offsetHeight * 2}px`;
+    });
+    expect(await top()).toBe(before);
+  });
+
   // Le premier rendu (police de repli) et le rendu final (Geist) ont la même géométrie.
   for (const width of [1440, 390]) {
     test(`mise en page stable au chargement, ${width} px (CLS < 0,1)`, async ({

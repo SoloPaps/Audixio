@@ -185,7 +185,8 @@ test('330 px : le nom de domaine ne se coupe qu’après un point', async ({
   await page.setViewportSize({ width: 330, height: 900 });
   const host = 'gratuit.audixioexemple.test';
   await openHistory(page, [72, 88], 'light', host);
-  const title = page.locator('#t');
+  // Lot 4 : l’historique est une section de /sites/:host, dont le titre est l’hôte.
+  const title = page.locator('h1');
   await expect(title).toHaveText(host, { timeout: 15_000 });
   const breaks = await title.evaluate((node) => {
     const view = globalThis as unknown as {
@@ -279,12 +280,16 @@ test('« Historique et tendances » ouvre l’historique du site de la carte', a
   await expect(page.getByText('bon.audigy.test').first()).toBeVisible({
     timeout: 15_000,
   });
-  const links = page.locator('main a[href^="/historique"]');
+  // Lot 4 : la section #historique de la page du site (R11).
+  const links = page.locator('main a[href$="#historique"]');
   await expect(links).toHaveCount(2);
-  await expect(links.nth(0)).toHaveAttribute('href', `/historique?site=${BON}`);
+  await expect(links.nth(0)).toHaveAttribute(
+    'href',
+    '/sites/bon.audigy.test#historique',
+  );
   await expect(links.nth(1)).toHaveAttribute(
     'href',
-    `/historique?site=${EXAMPLE}`,
+    '/sites/example.com#historique',
   );
 });
 

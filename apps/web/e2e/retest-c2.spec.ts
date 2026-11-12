@@ -69,11 +69,13 @@ for (const site of [OTHER, UNKNOWN, 'zzz']) {
   });
 }
 
-test('C2 /historique?site=<site du compte> reste sur l’historique', async ({
+test('C2 /historique?site=<site du compte> ouvre l’historique de ce site', async ({
   page,
 }) => {
+  // R11 (lot 4) : /sites/id/:site puis /sites/:host#historique, sans repasser par /sites.
   await signedIn(page);
   await page.goto(`/historique?site=${MINE}`);
+  await page.waitForURL(/\/sites\/[^/]+#historique$/u, { timeout: 15_000 });
   await page.waitForTimeout(2_000);
-  expect(new URL(page.url()).pathname).toMatch(/^\/historique/u);
+  expect(new URL(page.url()).pathname).toMatch(/^\/sites\/[^/]+$/u);
 });

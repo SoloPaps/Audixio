@@ -7,6 +7,7 @@ import {
   domainHref,
   reportHref,
 } from './report-route.js';
+import { siteIdHref } from './site-route.js';
 
 const SENSITIVE = new Set(['securite', 'vie_privee', 'dns_email']);
 
@@ -55,7 +56,7 @@ export function badgeHref(auditId: string): string {
 }
 
 export function verifyHref(siteId: string): string {
-  return `/verifier?site=${encodeURIComponent(siteId)}`;
+  return siteIdHref(siteId, 'verification');
 }
 
 /**

@@ -15,4 +15,4 @@ Code : {{ .Token }}
 Vous recevez cet e-mail car un compte Audixio vient d’être créé avec cette adresse.
 
 Se désabonner
-{{ .SiteURL }}/compte/alertes
+{{ .SiteURL }}/compte#alertes

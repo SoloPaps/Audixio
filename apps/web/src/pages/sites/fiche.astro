@@ -1,0 +1,12 @@
+---
+import SitePage from '../../components/SitePage.svelte';
+import { t } from '../../i18n/index.js';
+import V6Page from '../../layouts/V6Page.astro';
+import '../../styles/maquettes/historique-v6.css';
+import '../../styles/maquettes/preuve-v6.css';
+import '../../styles/maquettes/site-v6.css';
+---
+
+<V6Page vue="site" title={t('st.meta.title')} description={t('st.meta.description')}>
+  <SitePage client:load />
+</V6Page>

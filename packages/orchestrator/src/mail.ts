@@ -406,7 +406,7 @@ function renderDigestBody(input: {
       : 'steady',
     cards,
     reportUrl: input.appUrl,
-    prefsUrl: `${origin}/compte/alertes`,
+    prefsUrl: `${origin}/compte#alertes`,
     legalUrl: `${origin}/mentions-legales`,
     unsubscribeUrl: input.unsubscribeUrl,
     logoUrl: `${origin}/marque/logo-pc.svg`,
