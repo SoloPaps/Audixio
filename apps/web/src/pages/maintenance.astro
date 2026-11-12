@@ -17,7 +17,7 @@ const messages = {
 ---
 
 <V6Page vue="maintenance" title={t('mq.meta.maintenance.title')} description={t('mq.meta.maintenance.desc')} robots="noindex">
-  <div class="mnt">
+  <div class="mnt" data-port>
 <main id="contenu" class="wrap" >
   <nav class="crumbs" aria-label={t('mq.lg.497')}><ol><li><a href="/">{t('mq.lg.002')}</a></li><li aria-current="page">{t('mq.lg.559')}</li></ol></nav>
 
@@ -140,8 +140,8 @@ var st=$('#rstate'),arc=$('.prog');
 if(reduce)return;
 var LAB=[[0,MSG['mq.lg.576']],[.4,MSG['mq.lg.649']],[.85,MSG['mq.lg.577']]],T=0;
 st.textContent=MSG['mq.lg.576'];
-arc.addEventListener('animationstart',function(e){if(e.animationName==='tune')T=performance.now();});
-arc.addEventListener('animationiteration',function(e){if(e.animationName==='tune')T=performance.now();});
+arc.addEventListener('animationstart',function(e){if(e.animationName==='mnt-tune')T=performance.now();});
+arc.addEventListener('animationiteration',function(e){if(e.animationName==='mnt-tune')T=performance.now();});
 var last='';
 (function tick(now){requestAnimationFrame(tick);if(!T)return;var p=((now-T)/5000)%1,t=LAB[0][1];
   for(var i=0;i<LAB.length;i++)if(p>=LAB[i][0])t=LAB[i][1];if(t!==last){st.textContent=t;last=t;}})(0);
