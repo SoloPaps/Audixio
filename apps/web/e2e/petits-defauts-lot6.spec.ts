@@ -70,3 +70,35 @@ test('/historique à 1440 px : le journal reste un tableau à en-têtes', async 
   );
   await expect(page.locator('.hs thead th').first()).toBeVisible();
 });
+
+test('/audit-echoue : « L’audit » n’apparaît qu’une fois dans le titre', async ({
+  page,
+}) => {
+  await page.goto('/audit-echoue');
+  await expect(page.locator('h1')).toHaveText('L’audit n’a pas abouti');
+  const id = '00000000-0000-4000-8000-0000000000e1';
+  await page.evaluate(
+    ([key, auditId]) => {
+      const payload = {
+        audit: {
+          id: auditId,
+          status: 'failed',
+          createdAt: '2026-11-12T10:00:00.000Z',
+          finishedAt: '2026-11-12T10:01:00.000Z',
+          error: '',
+          site: { url: 'https://absent.audigy.test/' },
+        },
+        findings: [],
+        domains: [],
+      };
+      sessionStorage.setItem(key, JSON.stringify({ [auditId]: payload }));
+    },
+    ['audixio-guest-audit', id] as const,
+  );
+  await page.goto(`/audit-echoue?id=${id}`);
+  await expect(page.locator('h1')).toHaveText(
+    'L’audit de absent.audigy.test n’a pas abouti',
+  );
+  const text = await page.locator('h1').evaluate((h) => h.textContent ?? '');
+  expect(text.match(/L’audit/g)?.length).toBe(1);
+});
