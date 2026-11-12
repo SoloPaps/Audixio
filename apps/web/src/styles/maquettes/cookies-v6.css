@@ -43,8 +43,10 @@
 
   align-items: flex-start;
   padding: 16px;
-  max-height: 100%;
+  /* Jamais sous la barre de menu : la boîte défile dans l’espace libre. */
+  max-height: calc(100% - var(--scroll-pad));
   overflow: auto;
+  overscroll-behavior: contain;
 }
 .cks .bn {
   position: relative;
