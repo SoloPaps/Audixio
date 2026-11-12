@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 // Retour owner du 11 nov. : « le bouton copier ne marche pas ». En http sur
 // une adresse du réseau local (http://192.168.x.x:8888), navigator.clipboard
@@ -144,7 +145,7 @@ async function install(page: Page): Promise<void> {
     storage.setItem('audigy-auth', JSON.stringify(value));
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
-    const origin = route.request().headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = route.request().headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

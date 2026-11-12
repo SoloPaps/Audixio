@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 // Historique simulé d’un site : audits de janvier et mai 2026.
 const SITE = '00000000-0000-4000-8000-0000000000bb';
@@ -50,7 +51,7 @@ export async function openHistory(
   });
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

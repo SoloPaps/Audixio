@@ -75,7 +75,7 @@ const astro = spawn(
     '--host',
     '127.0.0.1',
     '--port',
-    '4321',
+    process.env.E2E_PORT || '4321',
   ],
   {
     cwd: root,

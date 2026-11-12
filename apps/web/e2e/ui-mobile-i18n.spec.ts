@@ -1,8 +1,9 @@
 import { expect, type Page, test } from '@playwright/test';
 import { stubSession, toEnglish } from './en-session.js';
+import { ORIGIN } from './origin.js';
 
 const CORS = {
-  'access-control-allow-origin': 'http://127.0.0.1:4321',
+  'access-control-allow-origin': ORIGIN,
   'access-control-allow-headers': '*',
   'access-control-allow-methods': '*',
   'content-type': 'application/json',

@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
+import { HOST, ORIGIN } from './origin.js';
 
 const USER_ID = '11111111-1111-4111-8111-111111111111';
 const AUDIT_ID = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10';
@@ -216,7 +217,7 @@ async function installMocks(
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
     const url = new URL(request.url());
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       ...cors(origin),
       'content-type': 'application/json',
@@ -651,7 +652,7 @@ test('accueil sous 500 Ko, sans tiers, et sans défilement à 320 px', async ({
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto('/');
   await page.waitForLoadState('networkidle');
-  expect([...hosts].filter((host) => host !== '127.0.0.1:4321')).toEqual([]);
+  expect([...hosts].filter((host) => host !== HOST)).toEqual([]);
   for (const width of [320, 640, 768, 1280]) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto('/');

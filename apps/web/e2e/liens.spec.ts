@@ -1,9 +1,9 @@
 import { readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { expect, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 const PAGES = join(import.meta.dirname, '../src/pages');
-const ORIGIN = 'http://127.0.0.1:4321';
 
 function routesFrom(dir: string): string[] {
   const found: string[] = [];

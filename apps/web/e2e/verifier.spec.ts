@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 const ID = '00000000-0000-4000-8000-000000000019';
 const fixtures = path.resolve(
@@ -220,7 +221,7 @@ async function installMocks(page: Page): Promise<void> {
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
     const url = new URL(request.url());
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       ...cors(origin),
       'content-type': 'application/json',

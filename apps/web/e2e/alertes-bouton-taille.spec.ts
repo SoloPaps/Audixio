@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 // Retour owner du 11 nov. : « Enregistrer les réglages » devenait un énorme
 // bloc au clic. L'onde du clic (span .rip, carré du côté du bouton) entrait
@@ -49,7 +50,7 @@ async function openAlerts(
   });
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

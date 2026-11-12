@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import { stubSession, toEnglish } from './en-session.js';
+import { ORIGIN } from './origin.js';
 
 /**
  * Flash de navigation (option a, décision owner) : avant la lecture de
@@ -228,7 +229,7 @@ test('connecté (drapeau de cookie) : pas de redirection depuis <head>', async (
   context,
 }) => {
   await context.addCookies([
-    { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4321' },
+    { name: 'audixio_connecte', value: '1', url: ORIGIN },
     { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4400' },
   ]);
   await withoutApp(page);

@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import { toEnglish } from './en-session.js';
+import { ORIGIN } from './origin.js';
 
 // Retour owner du 11 nov. : aucun retour visible quand on copie le prompt IA.
 // Le bouton affiche « Copié » avec une coche tracée, garde sa taille, revient
@@ -94,7 +95,7 @@ async function install(page: Page): Promise<void> {
     storage.setItem('audigy-auth', JSON.stringify(value));
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
-    const origin = route.request().headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = route.request().headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

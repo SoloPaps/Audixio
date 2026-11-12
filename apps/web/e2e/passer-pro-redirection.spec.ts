@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { E2E_PORT, ORIGIN } from './origin.js';
 
 /**
  * Décision #38 : un compte Pro qui ouvre /passer-pro arrive sur /compte.
@@ -33,7 +34,7 @@ async function signIn(page: Page, plan: 'free' | 'pro'): Promise<void> {
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',
@@ -70,16 +71,16 @@ test('un compte gratuit est redirigé de /passer-pro vers /pro (question 1)', as
 }) => {
   await signIn(page, 'free');
   await page.goto('/passer-pro');
-  await expect(page).toHaveURL(/:4321\/pro$/);
+  await expect(page).toHaveURL(new RegExp(`:${E2E_PORT}/pro$`));
   await page.waitForTimeout(1500);
-  await expect(page).toHaveURL(/:4321\/pro$/);
+  await expect(page).toHaveURL(new RegExp(`:${E2E_PORT}/pro$`));
 });
 
 test('un visiteur est redirigé de /passer-pro vers /pro (question 1)', async ({
   page,
 }) => {
   await page.goto('/passer-pro');
-  await expect(page).toHaveURL(/:4321\/pro$/);
+  await expect(page).toHaveURL(new RegExp(`:${E2E_PORT}/pro$`));
   await expect(page.locator('h1')).toBeVisible();
 });
 
@@ -87,7 +88,9 @@ test('la redirection vers /pro garde la requête et l’ancre (question 1)', asy
   page,
 }) => {
   await page.goto('/passer-pro?theme=dark#pro-liens');
-  await expect(page).toHaveURL(/:4321\/pro\?theme=dark#pro-liens$/);
+  await expect(page).toHaveURL(
+    new RegExp(`:${E2E_PORT}/pro\\?theme=dark#pro-liens$`),
+  );
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });
 
@@ -102,11 +105,11 @@ async function signInByCookie(page: Page, plan: 'free' | 'pro'): Promise<void> {
       name: 'sb-127-auth-token',
       value:
         'base64-eyJhY2Nlc3NfdG9rZW4iOiJoZWFkZXIucGF5bG9hZC5zaWduYXR1cmUifQ',
-      url: 'http://127.0.0.1:4321',
+      url: ORIGIN,
       httpOnly: true,
       sameSite: 'Lax',
     },
-    { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4321' },
+    { name: 'audixio_connecte', value: '1', url: ORIGIN },
   ]);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({
@@ -126,7 +129,7 @@ async function signInByCookie(page: Page, plan: 'free' | 'pro'): Promise<void> {
   });
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',
@@ -166,5 +169,7 @@ test('C1 : un gratuit connecté par cookie va sur /pro avec la requête', async 
 }) => {
   await signInByCookie(page, 'free');
   await page.goto('/passer-pro?from=sites#offre');
-  await expect(page).toHaveURL(/:4321\/pro\?from=sites#offre$/);
+  await expect(page).toHaveURL(
+    new RegExp(`:${E2E_PORT}/pro\\?from=sites#offre$`),
+  );
 });

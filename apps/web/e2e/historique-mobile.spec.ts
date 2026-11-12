@@ -1,5 +1,6 @@
 // U5 : les assertions multi-audits/courbes ci-dessous utilisent désormais Pro.
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 // Retest C5 et C11 : graphique d’historique d’un site avec N audits.
 const SITE = '00000000-0000-4000-8000-0000000000bd';
@@ -55,8 +56,7 @@ async function openHistory(page: Page, scores: readonly number[]) {
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
     const headers = {
-      'access-control-allow-origin':
-        request.headers().origin ?? 'http://127.0.0.1:4321',
+      'access-control-allow-origin': request.headers().origin ?? ORIGIN,
       'access-control-allow-headers': '*',
       'access-control-allow-methods': '*',
       'content-type': 'application/json',
