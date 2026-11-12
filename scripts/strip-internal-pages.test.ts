@@ -6,6 +6,7 @@ import {
   assertInternalPagesAbsent,
   exists,
   listInternalPages,
+  relativePosix,
   stripInternalPages,
 } from './strip-internal-pages.mjs';
 
@@ -62,5 +63,14 @@ describe('pages internes retirées du build de production', () => {
     expect(
       await exists(path.join(root, 'courriel/fin-audit-echec-en.html')),
     ).toBe(false);
+  });
+  it('rend des chemins en « / » même sous Windows', () => {
+    expect(
+      relativePosix(
+        'C:\\Projets\\Audixio\\dist',
+        'C:\\Projets\\Audixio\\dist\\courriel\\fin-audit-echec-en.html',
+        path.win32,
+      ),
+    ).toBe('courriel/fin-audit-echec-en.html');
   });
 });
