@@ -9,12 +9,12 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   await expect(
     page.getByRole('link', { name: 'mauvais.audigy.test', exact: true }),
   ).toBeVisible();
-  const verify = page.locator('a[href*="/verifier?site="]').first();
+  // La vérification d’un site vit dans sa page (R12) : /sites/id/:site#verification.
+  const verify = page.locator('a[href*="/sites/id/"]').first();
   const href = await verify.getAttribute('href');
-  const siteId = new URL(href ?? '', 'http://127.0.0.1:8888').searchParams.get(
-    'site',
-  );
-  expect(siteId).toBeTruthy();
+  const siteId =
+    new URL(href ?? '', 'http://127.0.0.1:8888').pathname.split('/')[3] ?? '';
+  expect(siteId).toMatch(/^[0-9a-f-]{36}$/);
 
   await page.locator('#url').fill('https://bon.audigy.test/');
   await page.getByRole('button', { name: 'Ajouter un site' }).click();
@@ -29,16 +29,20 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
     page.getByRole('link', { name: 'troisieme.audigy.test', exact: true }),
   ).toHaveCount(0);
 
-  await page.goto(`/historique?site=${encodeURIComponent(siteId ?? '')}`);
-  await expect(page.getByText(/Historique/).first()).toBeVisible();
+  // R11 : l’ancien historique d’un site mène à sa page, section historique.
+  await page.goto(`/historique?site=${encodeURIComponent(siteId)}`);
+  await page.waitForURL(/\/sites\/mauvais\.audigy\.test(\?[^#]*)?#historique$/);
+  await expect(page.locator('#historique h2')).toBeVisible();
 
+  // R15 : les alertes sont une section de /compte.
   await page.goto('/compte/alertes');
-  await expect(page.getByText('Disponible avec Audixio Pro')).toBeVisible();
-  await expect(page.getByRole('link', { name: /Audixio Pro/ })).toHaveAttribute(
-    'href',
-    '/pro',
-  );
+  await page.waitForURL(/\/compte#alertes$/);
+  const alerts = page.locator('#alertes');
+  await expect(alerts.getByText('Disponible avec Audixio Pro')).toBeVisible();
+  await expect(
+    alerts.getByRole('link', { name: /Audixio Pro/ }),
+  ).toHaveAttribute('href', '/pro');
 
   const state = await readState();
-  await writeState({ ...state, siteId: siteId ?? '' });
+  await writeState({ ...state, siteId });
 });
