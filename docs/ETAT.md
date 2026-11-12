@@ -11,7 +11,7 @@ Dernière mise à jour : 12/11/2026, PR « /pro v6 » (lot 3b, pages publiques).
 | 2. Accueil | accueil v6 en composants (`components/v6/accueil/`), barre visiteur et connecté, pied en 3 colonnes, boutons Pro vers `/pro` | fusionné (#205, `96f324b`) |
 | 2 bis. Méthode | `/methode` v6, histoire v2 (`components/v6/methode/`, clés `me.*`, `lib/motion/methode-v6.ts`) | fusionné (#206, `72fb162`) |
 | 3a. Exemple de rapport | `/exemple-rapport` sur V6Page, feuille portée sous `.ex` (`exemple-v6.css`), couleurs sur les jetons v6, Geist | fusionné (#207, `7354922`) |
-| 3b. Tarifs | `/pro` sur V6Page (`pro-v6.css`, `.pr6`), panneau toujours sombre `.v6-nuit` (jetons sombres posés par `theme-dark.css`), `/passer-pro` réduite à son renvoi vers `/pro` (requête et ancre gardées) | cette PR |
+| 3b. Tarifs | `/pro` sur V6Page (`pro-v6.css`, `.pr6`), panneau toujours sombre `.v6-nuit` (palette nuit fixe dans `pro-v6.css` ; `theme-dark.css` reste réservé au thème sombre), `/passer-pro` réduite à son renvoi vers `/pro` (requête et ancre gardées) | cette PR |
 | 3. Rapport | `/rapport/:id` à onglets, feuille « Partager », redirections R1–R10 et R13 | à faire |
 | 4. Sites et compte | `/sites/:host`, compte en sections, redirections R11, R12 et R15 | à faire |
 | 5. Légales et erreurs | gabarits v6 | à faire |
