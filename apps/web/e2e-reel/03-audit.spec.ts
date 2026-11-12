@@ -13,7 +13,7 @@ test('visiteur non connecté voit le hub et la fenêtre de compte', async ({
   const page = await context.newPage();
   await page.goto('/');
   await page.locator('#url-input').fill(LAB);
-  await page.getByRole('button', { name: "Lancer l'audit gratuit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(
     page.getByText('Votre diagnostic est prêt pour').first(),
   ).toBeVisible({ timeout: 90_000 });
@@ -37,7 +37,7 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
 }) => {
   await page.goto('/');
   await page.locator('#url-input').fill(LAB);
-  await page.getByRole('button', { name: "Lancer l'audit gratuit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await page.waitForURL(/\/progression\?id=/, { timeout: 60_000 });
   const auditId = new URL(page.url()).searchParams.get('id') ?? '';
   expect(auditId).not.toBe('');
@@ -96,7 +96,7 @@ test('audit, hub, domaine ouvert, domaine verrouillé, constat, brief, plan, imp
 test('un second audit du même site répond 429', async ({ page }) => {
   await page.goto(`/?rien=${Date.now()}`);
   await page.locator('#url-input').fill(LAB);
-  await page.getByRole('button', { name: "Lancer l'audit gratuit" }).click();
+  await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(
     page.getByText(
       'Ce site a été audité il y a moins de 15 minutes. Réessayez plus tard.',
