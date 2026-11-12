@@ -1,20 +1,20 @@
 ---
-import '../../styles/maquettes/liens.css';
 import PublicScore from '../../components/PublicScore.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
-import '../../styles/maquettes/score-public.css';
-import '../../styles/maquettes/hub.css';
-import '../../styles/maquettes/public-hub.css';
+import V6Page from '../../layouts/V6Page.astro';
+import '../../styles/maquettes/score-public-v6.css';
+import '../../styles/maquettes/public-hub-v6.css';
 ---
 
-<Canon
+<V6Page
   vue="partage"
   title={t('meta.share.title')}
   description={t('meta.share.description')}
   robots="noindex"
 >
+  <div class="sp">
   <main id="contenu" class="score-page">
     <PublicScore mode="share" client:load />
   </main>
-</Canon>
+  </div>
+</V6Page>

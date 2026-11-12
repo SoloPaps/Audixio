@@ -2,7 +2,7 @@
  * sur les jetons v6 (le sombre suit theme-dark.css), police Geist. */
 .dmd {
   box-sizing: border-box;
-  color: var(--x-text);
+  color: var(--ink);
   font-family: var(--sans);
   line-height: 1.6;
   overflow-x: clip;
