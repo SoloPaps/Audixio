@@ -1,0 +1,1148 @@
+/* Brief en v6 : feuille de la page portée sous .r6-brief, couleurs
+ * sur les jetons v6 (le sombre suit theme-dark.css), police Geist. */
+.r6-brief {
+  box-sizing: border-box;
+  color: var(--x-text);
+  font-family: var(--sans);
+  line-height: 1.6;
+  overflow-x: clip;
+}
+.r6-brief {
+  --x-bg1: var(--bg);
+  --x-bg2: var(--line-2);
+  --x-surface: color-mix(in oklab, var(--surf) 88%, transparent);
+  --x-solid: var(--surf);
+  --x-text: var(--ink);
+  --x-muted: var(--ink-2);
+  --x-primary: var(--beam);
+  --x-primary-hover: var(--ink);
+  --x-teal: var(--beam);
+  --x-focus: var(--beam);
+  --x-peach: var(--line-2);
+  --x-peach2: var(--beam);
+  --x-warn: color-mix(in oklab, var(--gD) 80%, var(--ink));
+  --x-line: var(--line);
+  --x-shadow:
+    0 1px 2px rgba(30, 42, 85, 0.05), 0 14px 36px -14px rgba(61, 82, 160, 0.24);
+}
+.r6-brief * {
+  box-sizing: border-box;
+}
+.r6-brief {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+.r6-brief a {
+  color: var(--x-primary);
+}
+.r6-brief:focus-visible {
+  outline: 3px solid var(--x-focus);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.r6-brief .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.r6-brief .skip {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  background: var(--cta);
+  color: var(--cta-fg);
+  padding: 0.7rem 1.1rem;
+  border-radius: 12px;
+  z-index: 100;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.r6-brief .skip:focus {
+  top: 1rem;
+}
+.r6-brief.wrap,
+.r6-brief .wrap {
+  width: min(1120px, 100% - 2.5rem);
+  margin-inline: auto;
+}
+.r6-brief .mono {
+  font-family: var(--mono);
+}
+.r6-brief .crumbs {
+  font-size: 0.85rem;
+  color: var(--x-muted);
+  display: none;
+  min-width: 0;
+}
+.r6-brief .crumbs ol {
+  list-style: none;
+  display: flex;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.r6-brief .crumbs li + li::before {
+  content: "›";
+  margin-right: 0.45rem;
+  opacity: 0.6;
+}
+.r6-brief .crumbs [aria-current] {
+  color: var(--x-primary);
+  font-weight: 700;
+}
+.r6-brief .verified {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--beam);
+  background: var(--beam-a);
+  border: 1.5px solid var(--beam-b);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+}
+.r6-brief .verified i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+@media (min-width: 900px) {
+  .r6-brief .crumbs {
+    display: block;
+  }
+  .r6-brief .verified {
+    display: inline-flex;
+  }
+}
+.r6-brief .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.3rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+  min-height: 46px;
+}
+.r6-brief .btn-primary {
+  background: var(--cta);
+  color: var(--cta-fg);
+  box-shadow: 0 10px 22px -10px var(--x-primary);
+}
+.r6-brief .btn-primary:hover {
+  background: var(--cta-h);
+  transform: translateY(-2px);
+}
+.r6-brief .btn-ghost {
+  background: var(--x-solid);
+  color: var(--x-text);
+  border-color: var(--x-line);
+}
+.r6-brief .btn-ghost:hover {
+  background: var(--x-peach);
+  transform: translateY(-2px);
+}
+.r6-brief .chipbtn {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--x-line);
+  background: var(--x-solid);
+  color: var(--x-text);
+  cursor: pointer;
+  min-height: 42px;
+  transition: all 0.2s;
+}
+.r6-brief .chipbtn:hover {
+  background: var(--x-peach);
+  border-color: var(--x-peach2);
+  transform: translateY(-1px);
+}
+.r6-brief {
+  padding-bottom: 7rem;
+}
+.r6-brief .hero {
+  position: relative;
+  margin-top: 3rem;
+  border-radius: 36px;
+  padding: clamp(2rem, 5vw, 4.5rem);
+  background: var(--x-surface);
+  border: 1px solid var(--x-line);
+  box-shadow: var(--x-shadow);
+  display: grid;
+  gap: 3rem;
+  grid-template-columns: 1fr;
+  align-items: center;
+  overflow: hidden;
+}
+@media (min-width: 980px) {
+  .r6-brief .hero {
+    grid-template-columns: 1.02fr 0.98fr;
+  }
+}
+.r6-brief .back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--x-muted);
+  text-decoration: none;
+  margin-bottom: 1.75rem;
+}
+.r6-brief .back:hover {
+  color: var(--x-primary);
+}
+.r6-brief .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: var(--mono);
+  background: var(--x-solid);
+  border: 1px solid var(--x-line);
+  color: var(--x-muted);
+  margin-bottom: 1.5rem;
+}
+.r6-brief .chip i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cta-h);
+  animation: r6-brief-blink 2.2s infinite;
+}
+@keyframes r6-brief-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+.r6-brief h1 {
+  font-size: clamp(2.1rem, 4.6vw, 3.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  margin: 0 0 1.5rem;
+  font-weight: 800;
+}
+.r6-brief h1 .w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+}
+.r6-brief h1 .w > span {
+  display: inline-block;
+}
+.r6-brief h1 .grad {
+  background: linear-gradient(100deg, var(--beam), var(--beam));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.r6-brief .lead {
+  color: var(--x-muted);
+  font-size: 1.1rem;
+  max-width: 52ch;
+  margin: 0 0 2.25rem;
+}
+.r6-brief .stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+.r6-brief .stat {
+  background: var(--x-solid);
+  border: 1px solid var(--x-line);
+  border-radius: 18px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.r6-brief .stat b {
+  font-family: var(--mono);
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+.r6-brief .stat span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--x-muted);
+}
+.r6-brief .stat-fix {
+  background: color-mix(in oklab, var(--gD) 9%, var(--surf));
+  border-color: color-mix(in oklab, var(--gD) 45%, transparent);
+}
+.r6-brief .stat-fix b {
+  color: color-mix(in oklab, var(--gD) 80%, var(--ink));
+}
+.r6-brief .stat-check {
+  background: var(--bg);
+  border-color: var(--line);
+}
+.r6-brief .stat-check b {
+  color: var(--x-primary);
+}
+.r6-brief .presets-l {
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--x-muted);
+  margin: 0 0 0.8rem;
+}
+.r6-brief .presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.r6-brief .orbit-wrap {
+  position: relative;
+  width: min(100%, 540px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+.r6-brief #orbit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+.r6-brief .legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  justify-content: center;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--x-muted);
+}
+.r6-brief .legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.r6-brief .legend i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.r6-brief .hint {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--x-muted);
+  margin: 0.5rem 0 0;
+}
+.r6-brief .block-h {
+  margin: 5rem 0 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem 2rem;
+}
+.r6-brief .eyebrow {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--x-primary);
+  margin: 0 0 0.8rem;
+}
+.r6-brief h2 {
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-weight: 800;
+}
+.r6-brief .sub {
+  color: var(--x-muted);
+  margin: 0.9rem 0 0;
+  max-width: 60ch;
+}
+.r6-brief .dom {
+  background: var(--x-surface);
+  border: 1px solid var(--x-line);
+  border-radius: 28px;
+  box-shadow: var(--x-shadow);
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.r6-brief .dom + .dom {
+  margin-top: 1.25rem;
+}
+.r6-brief .dom.open {
+  border-color: var(--line);
+}
+.r6-brief .dom.pulse {
+  animation: r6-brief-domPulse 1.2s;
+}
+@keyframes r6-brief-domPulse {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(112, 145, 230, 0.8),
+      var(--x-shadow);
+  }
+  100% {
+    box-shadow:
+      0 0 0 22px rgba(112, 145, 230, 0),
+      var(--x-shadow);
+  }
+}
+.r6-brief .dom-h {
+  margin: 0;
+}
+.r6-brief .dom-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem 1.1rem;
+  padding: 1.5rem 1.75rem;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  flex-wrap: wrap;
+}
+.r6-brief .dom-btn:hover .tile {
+  transform: scale(1.06) rotate(-4deg);
+}
+.r6-brief .tile {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background: var(--x-bg2);
+  color: var(--x-primary);
+  display: grid;
+  place-items: center;
+  flex: none;
+  transition:
+    transform 0.3s,
+    background 0.3s,
+    color 0.3s;
+}
+.r6-brief .dom.open .tile {
+  background: var(--cta);
+  color: var(--cta-fg);
+}
+.r6-brief .dom-name {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+.r6-brief .grade {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-family: var(--mono);
+}
+.r6-brief .g-A {
+  background: var(--ok-a);
+  color: var(--ok);
+  box-shadow: inset 0 0 0 1px #2fa36b55;
+}
+.r6-brief .g-B {
+  background: var(--surf-2);
+  color: var(--beam);
+  box-shadow: inset 0 0 0 1px #7091e655;
+}
+.r6-brief .g-C {
+  background: color-mix(in oklab, var(--gC) 9%, var(--surf));
+  color: color-mix(in oklab, var(--gC) 80%, var(--ink));
+  box-shadow: inset 0 0 0 1px #e0a63a55;
+}
+.r6-brief .g-D {
+  background: color-mix(in oklab, var(--gD) 9%, var(--surf));
+  color: color-mix(in oklab, var(--gD) 80%, var(--ink));
+  box-shadow: inset 0 0 0 1px #e1763f55;
+}
+.r6-brief .g-F {
+  background: var(--find-a);
+  color: var(--find);
+  box-shadow: inset 0 0 0 1px #d6454555;
+}
+.r6-brief .dom-count {
+  font-size: 0.85rem;
+  color: var(--x-muted);
+}
+.r6-brief .grow {
+  flex: 1;
+}
+.r6-brief .dom-sum {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+.r6-brief .dot {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+.r6-brief .dot-fix {
+  background: color-mix(in oklab, var(--gD) 9%, var(--surf));
+  color: color-mix(in oklab, var(--gD) 80%, var(--ink));
+}
+.r6-brief .dot-check {
+  background: color-mix(in oklab, var(--gC) 9%, var(--surf));
+  color: color-mix(in oklab, var(--gC) 80%, var(--ink));
+}
+.r6-brief .dot-skip {
+  background: var(--surf-2);
+  color: var(--ink-2);
+}
+.r6-brief .chev {
+  flex: none;
+  color: var(--x-muted);
+  transition: transform 0.4s;
+}
+.r6-brief .dom.open .chev {
+  transform: rotate(180deg);
+}
+.r6-brief .panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.r6-brief .dom.open .panel {
+  grid-template-rows: 1fr;
+}
+.r6-brief .panel-in {
+  overflow: hidden;
+  min-height: 0;
+  visibility: hidden;
+  transition: visibility 0s 0.5s;
+}
+.r6-brief .dom.open .panel-in {
+  visibility: visible;
+  transition-delay: 0s;
+}
+.r6-brief .issues {
+  display: grid;
+  gap: 1.1rem;
+  padding: 0.25rem 1.75rem 1.9rem;
+}
+.r6-brief .issue {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--x-solid);
+  border: 1px solid var(--x-line);
+  border-radius: 20px;
+  padding: 1.4rem 1.5rem;
+}
+.r6-brief .issue-txt {
+  flex: 1 1 320px;
+  max-width: 560px;
+}
+.r6-brief .issue-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 0.8rem;
+}
+.r6-brief .issue h4 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.r6-brief .issue p {
+  margin: 0.45rem 0 0;
+  color: var(--x-muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.r6-brief .sev {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+}
+.r6-brief .sev-crit {
+  background: var(--find-a);
+  color: var(--find);
+}
+.r6-brief .sev-imp {
+  background: color-mix(in oklab, var(--gD) 9%, var(--surf));
+  color: color-mix(in oklab, var(--gD) 80%, var(--ink));
+}
+.r6-brief .sev-mod {
+  background: var(--surf);
+  color: var(--ink-2);
+}
+.r6-brief .seg3 {
+  display: inline-flex;
+  border: 0;
+  margin: 0;
+  padding: 4px;
+  gap: 2px;
+  background: var(--x-bg2);
+  border-radius: 15px;
+  min-width: 0;
+}
+.r6-brief .seg3 label {
+  position: relative;
+  display: block;
+}
+.r6-brief .seg3 input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.r6-brief .seg3 span {
+  display: grid;
+  place-items: center;
+  min-height: 40px;
+  padding: 0.4rem 1rem;
+  border-radius: 11px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--x-muted);
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.r6-brief .seg3 input:focus-visible + span {
+  outline: 3px solid var(--x-focus);
+  outline-offset: 2px;
+}
+.r6-brief .seg3 input:not(:checked) + span:hover {
+  color: var(--x-text);
+  background: color-mix(in oklab, var(--surf) 88%, transparent);
+}
+.r6-brief .seg3 input[value="skip"]:checked + span {
+  background: var(--surf);
+  color: var(--x-text);
+  box-shadow: 0 2px 8px rgba(30, 42, 85, 0.12);
+}
+.r6-brief .seg3 input[value="check"]:checked + span {
+  background: var(--surf);
+  color: var(--x-primary);
+  box-shadow:
+    0 0 0 2px var(--x-teal),
+    0 4px 10px rgba(112, 145, 230, 0.25);
+}
+.r6-brief .seg3 input[value="fix"]:checked + span {
+  background: var(--cta);
+  color: var(--cta-fg);
+  box-shadow: 0 6px 14px -6px var(--x-primary);
+}
+.r6-brief .dom-off {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 1.75rem;
+  background: color-mix(in oklab, var(--surf) 88%, transparent);
+}
+.r6-brief .dom-off .dom-name {
+  flex: 1;
+}
+.r6-brief .mdwin {
+  background: var(--x-solid);
+  border: 1px solid var(--x-line);
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: var(--x-shadow);
+}
+.r6-brief .md-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.75rem;
+  background: var(--surf);
+  border-bottom: 1px solid var(--x-line);
+}
+.r6-brief .md-file {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--x-muted);
+}
+.r6-brief .lights {
+  display: flex;
+  gap: 0.4rem;
+}
+.r6-brief .lights i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.r6-brief .lights i:nth-child(1) {
+  background: var(--cta-h);
+}
+.r6-brief .lights i:nth-child(2) {
+  background: var(--x-peach);
+}
+.r6-brief .lights i:nth-child(3) {
+  background: var(--cta-h);
+}
+.r6-brief .md-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--x-primary);
+}
+.r6-brief .md-meta span {
+  background: var(--beam-a);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+}
+.r6-brief .mdbody {
+  padding: 2rem 1.75rem;
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  line-height: 1.85;
+  max-height: 660px;
+  overflow: auto;
+  color: var(--x-text);
+}
+.r6-brief .l {
+  padding: 0.1rem 0;
+}
+.r6-brief .l-h1 {
+  font-size: 1.02rem;
+  font-weight: 700;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--x-line);
+  margin-bottom: 1rem;
+}
+.r6-brief .l-i {
+  font-style: italic;
+  color: var(--x-muted);
+  font-size: 0.8rem;
+}
+.r6-brief .l-p {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  margin: 0.9rem 0 0;
+}
+.r6-brief .l-p b {
+  font-family: var(--mono);
+  color: var(--x-primary);
+}
+.r6-brief .l-h2 {
+  margin-top: 2rem;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--x-teal);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--x-primary);
+  font-size: 0.82rem;
+}
+.r6-brief .l-h3 {
+  margin-top: 1rem;
+  font-weight: 700;
+  color: var(--x-muted);
+  font-size: 0.8rem;
+}
+.r6-brief .l-li {
+  margin: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  background: var(--surf);
+  border: 1px solid var(--x-line);
+  font-family: var(--sans);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.r6-brief .l-li b {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+.r6-brief .l-li.fix b {
+  color: var(--x-warn);
+}
+.r6-brief .l-li.check b {
+  color: var(--x-primary);
+}
+.r6-brief .l code {
+  font-family: var(--mono);
+  font-size: 0.82em;
+  background: var(--beam-a);
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+}
+.r6-brief .l-n {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--x-muted);
+  margin-top: 0.6rem;
+}
+.r6-brief .mdbody {
+  --pv-title: var(--ink);
+  --pv-sec: var(--beam);
+  --pv-bar: var(--beam);
+  --pv-mark: var(--beam);
+  --pv-text: var(--ink);
+  --pv-key: var(--beam);
+  --pv-note: var(--ink-2);
+  --pv-fix: color-mix(in oklab, var(--gD) 80%, var(--ink));
+  --pv-fix-bg: color-mix(in oklab, var(--gC) 9%, var(--surf));
+  --pv-check: var(--beam);
+  --pv-check-bg: var(--surf-2);
+}
+.r6-brief .mdbody .l-gap {
+  height: 0.6rem;
+  padding: 0;
+}
+.r6-brief .mdbody .l-h1 {
+  color: var(--pv-title);
+}
+.r6-brief .mdbody .l-h2 {
+  margin-top: 0.4rem;
+  color: var(--pv-sec);
+  border-left-color: var(--pv-bar);
+}
+.r6-brief .mdbody .l-b {
+  color: var(--pv-text);
+  font-weight: 600;
+  padding-left: 0.9rem;
+}
+.r6-brief .mdbody .l-d {
+  color: var(--pv-text);
+  padding-left: 2.2rem;
+}
+.r6-brief .mdbody .l-m {
+  color: var(--pv-mark);
+  white-space: pre;
+}
+.r6-brief .mdbody .l-k {
+  color: var(--pv-key);
+  font-weight: 700;
+}
+.r6-brief .mdbody .l-tag {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.r6-brief .mdbody .l-tag.fix {
+  color: var(--pv-fix);
+  background: var(--pv-fix-bg);
+}
+.r6-brief .mdbody .l-tag.check {
+  color: var(--pv-check);
+  background: var(--pv-check-bg);
+}
+.r6-brief .mdbody .l-n {
+  color: var(--pv-note);
+}
+.r6-brief .l-empty {
+  padding: 2rem;
+  text-align: center;
+  color: var(--x-muted);
+  font-family: var(--sans);
+}
+.r6-brief .flash {
+  animation: r6-brief-flash 1.8s ease-out;
+}
+@keyframes r6-brief-flash {
+  0% {
+    box-shadow: inset 0 0 0 999px rgba(112, 145, 230, 0.5);
+  }
+  100% {
+    box-shadow: inset 0 0 0 999px rgba(112, 145, 230, 0);
+  }
+}
+.r6-brief .md-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  padding: 1.5rem 1.75rem 1.75rem;
+  border-top: 1px solid var(--x-line);
+}
+.r6-brief .md-actions .btn-primary {
+  flex: 1 1 280px;
+}
+.r6-brief .md-foot {
+  padding: 0 1.75rem 1.5rem;
+  font-size: 0.82rem;
+  color: var(--x-muted);
+}
+.r6-brief .dock {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  z-index: 60;
+  transform: translate(-50%, 180%);
+  opacity: 0;
+  transition:
+    transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.4s;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.6rem 0.6rem 0.6rem 1.4rem;
+  border-radius: 999px;
+  background: var(--x-surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--x-line);
+  box-shadow: 0 20px 50px -18px rgba(61, 82, 160, 0.5);
+  max-width: calc(100% - 1.5rem);
+}
+.r6-brief .dock.show {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+.r6-brief .dock-t {
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.r6-brief .dock-t em {
+  font-style: normal;
+  color: var(--x-warn);
+}
+.r6-brief .dock-t u {
+  text-decoration: none;
+  color: var(--x-primary);
+}
+@media (max-width: 520px) {
+  .r6-brief .dock-t {
+    display: none;
+  }
+  .r6-brief .dock {
+    padding: 0.5rem;
+  }
+}
+.r6-brief .toast {
+  position: fixed;
+  left: 50%;
+  bottom: 5.5rem;
+  transform: translate(-50%, 200%);
+  background: var(--cta);
+  color: #fff;
+  padding: 0.8rem 1.3rem;
+  border-radius: 14px;
+  font-weight: 700;
+  box-shadow: var(--x-shadow);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 90;
+}
+.r6-brief .toast.show {
+  transform: translate(-50%, 0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .r6-brief *,
+  .r6-brief *::before,
+  .r6-brief *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media print {
+  .r6-brief .hero,
+  .r6-brief #domains-sec,
+  .r6-brief .dock,
+  .r6-brief .toast,
+  .r6-brief .md-actions,
+  .r6-brief .skip,
+  .r6-brief .no-print {
+    display: none !important;
+  }
+  .r6-brief {
+    padding: 0;
+  }
+  .r6-brief .mdwin {
+    box-shadow: none;
+    border: 0;
+  }
+  .r6-brief .mdbody {
+    max-height: none;
+    overflow: visible;
+  }
+}
+.r6-brief {
+  --x-ax-edge: clamp(12px, 3vw, 32px);
+  --x-ax-r: 28px;
+  --x-ax-max: 1240px;
+  --x-ax-bd: var(--line);
+  --x-ax-sf: var(--bg);
+}
+.r6-brief .crumbs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-top: 8px;
+}
+.r6-brief .crumbs {
+  display: block;
+}
+.r6-brief .crumbs ol {
+  flex-wrap: wrap;
+  white-space: normal;
+  align-items: center;
+  row-gap: 0;
+}
+.r6-brief .crumbs a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--x-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.r6-brief .crumbs a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.r6-brief .crumbs li {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+.r6-brief .verified {
+  display: inline-flex;
+}
+.r6-brief .hero {
+  margin-top: 0.5rem;
+}
+.r6-brief .back {
+  min-height: 44px;
+}
+.r6-brief .chipbtn {
+  min-height: 44px;
+}
+.r6-brief .toast {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.25s,
+    visibility 0s 0.35s;
+}
+.r6-brief .toast.show {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.25s,
+    visibility 0s;
+}
+.r6-brief .dock .btn {
+  white-space: nowrap;
+}
+.r6-brief .seg3 span {
+  min-height: 44px;
+}
+.r6-brief .seg3 input:not(:checked) + span {
+  color: var(--x-text);
+}
+@media (max-width: 560px) {
+  .r6-brief .issues {
+    padding: 0.25rem 0.9rem 1.2rem;
+  }
+  .r6-brief .issue {
+    padding: 1.1rem 1rem;
+    gap: 1rem;
+  }
+  .r6-brief .issue-txt {
+    flex-basis: 100%;
+  }
+  .r6-brief .seg3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+  .r6-brief .seg3 span {
+    padding: 0.4rem 0.35rem;
+    font-size: 0.8rem;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+}
+.r6-brief .dock {
+  background: color-mix(in oklab, var(--surf) 88%, transparent);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-color: var(--line);
+}
+@media print {
+  .r6-brief .axf,
+  .r6-brief .crumbs-bar {
+    display: none !important;
+  }
+}
+.r6-brief .grad-txt,
+.r6-brief h1 .grad,
+.r6-brief h1 .u,
+.r6-brief .pin h2 em,
+.r6-brief .lvn {
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.r6-brief .hero h1 {
+  line-height: 1.1;
+}
+.r6-brief .hero h1 .w {
+  padding-bottom: 0.16em;
+  margin-bottom: -0.16em;
+}
+.r6-brief .four {
+  padding-bottom: 0.1em;
+}
+@media (max-width: 600px) {
+  .r6-brief .hero figure.intro {
+    margin-inline: 0;
+  }
+}

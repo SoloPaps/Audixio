@@ -79,7 +79,8 @@ function onCopy(): void {
 }
 
 onMount(() => {
-  document.documentElement.dataset.vue = 'restreint';
+  // Feuille « réservé » (restreint-v6.css, .r6-res) au lieu de celle du domaine.
+  document.getElementById('contenu')?.classList.replace('r6-dom', 'r6-res');
   let stop = (): void => {};
   void tick().then(() => {
     if (root) stop = revealAll(root);

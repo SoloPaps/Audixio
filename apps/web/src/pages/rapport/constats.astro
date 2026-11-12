@@ -1,15 +1,14 @@
 ---
-import '../../styles/maquettes/liens.css';
-import '../../styles/maquettes/constat.css';
+import '../../styles/maquettes/constat-v6.css';
 import GuestReportRedirect from '../../components/GuestReportRedirect.astro';
 import ReportView from '../../components/ReportView.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
+import V6Page from '../../layouts/V6Page.astro';
 ---
 
-<Canon vue="constat" title={t('mq.ui.meta.constat.title')} description={t('meta.domain.description')}>
+<V6Page vue="constat" title={t('mq.ui.meta.constat.title')} description={t('meta.domain.description')}>
   <GuestReportRedirect slot="head" mode="detail" />
-  <main id="contenu" tabindex="-1">
+  <main id="contenu" class="r6-con" tabindex="-1">
     <ReportView mode="detail" client:load />
   </main>
-</Canon>
+</V6Page>

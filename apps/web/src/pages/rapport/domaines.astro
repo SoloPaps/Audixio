@@ -1,16 +1,15 @@
 ---
-import '../../styles/maquettes/liens.css';
-import '../../styles/maquettes/domaine.css';
-import '../../styles/maquettes/restreint.css';
+import '../../styles/maquettes/domaine-v6.css';
+import '../../styles/maquettes/restreint-v6.css';
 import GuestReportRedirect from '../../components/GuestReportRedirect.astro';
 import ReportView from '../../components/ReportView.svelte';
 import { t } from '../../i18n/index.js';
-import Canon from '../../layouts/Canon.astro';
+import V6Page from '../../layouts/V6Page.astro';
 ---
 
-<Canon vue="domaine" title={t('meta.domain.title')} description={t('meta.domain.description')}>
+<V6Page vue="domaine" title={t('meta.domain.title')} description={t('meta.domain.description')}>
   <GuestReportRedirect slot="head" mode="domain" />
-  <main id="contenu" tabindex="-1">
+  <main id="contenu" class="r6-dom" tabindex="-1">
     <ReportView mode="domain" client:load />
   </main>
-</Canon>
+</V6Page>

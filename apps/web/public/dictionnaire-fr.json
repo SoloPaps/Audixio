@@ -4933,5 +4933,13 @@
   "rp.share.choices": "Que voulez-vous partager ?",
   "rp.share.link.hint": "Une page en lecture seule, sans compte, que vous pouvez retirer.",
   "rp.share.pdf": "Exporter en PDF",
-  "rp.share.pdf.hint": "La version imprimable du rapport, à enregistrer en PDF."
+  "rp.share.pdf.hint": "La version imprimable du rapport, à enregistrer en PDF.",
+  "rp.guide.eyebrow": "En quelques minutes",
+  "rp.guide.title": "Comment lire ce rapport",
+  "rp.guide.note.title": "La note",
+  "rp.guide.note.text": "Chaque domaine testé reçoit une lettre de A à F. La note globale en fait la moyenne.",
+  "rp.guide.prio.title": "Les priorités",
+  "rp.guide.prio.text": "Les points à corriger sont classés du plus urgent au moins urgent. Commencez par le premier.",
+  "rp.guide.detail.title": "Le détail",
+  "rp.guide.detail.text": "Chaque constat dit ce qui a été mesuré, pourquoi ça compte et comment le corriger."
 }

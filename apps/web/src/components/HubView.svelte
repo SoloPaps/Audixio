@@ -227,6 +227,7 @@ onMount(() => {
     stopPins?.();
   };
 });
+const GUIDE_STEPS = ['note', 'prio', 'detail'] as const;
 </script>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -322,6 +323,18 @@ onMount(() => {
         <p class="note-p">{letter ? headline : t('hub.note.missing')}</p>
       </div>
     </div>
+  </section>
+
+  <section class="guide" aria-labelledby="t-guide">
+    <div class="sec-h rv">
+      <p class="eyebrow">{t('rp.guide.eyebrow')}</p>
+      <h2 id="t-guide">{t('rp.guide.title')}</h2>
+    </div>
+    <ol class="guide-steps rv">
+      {#each GUIDE_STEPS as step, index (step)}
+        <li style={`--i:${index}`}><span class="guide-n mono" aria-hidden="true">{index + 1}</span><h3>{t(`rp.guide.${step}.title`)}</h3><p>{t(`rp.guide.${step}.text`)}</p></li>
+      {/each}
+    </ol>
   </section>
 
   <section aria-labelledby="t-prio">
