@@ -1,6 +1,6 @@
 # État du projet (mis à jour à chaque PR)
 
-Dernière mise à jour : 12/11/2026, PR #206 « /methode v6 » (lot 2 bis).
+Dernière mise à jour : 12/11/2026, PR « /exemple-rapport v6 » (lot 3, pages publiques).
 
 ## Lots de la refonte v6
 
@@ -9,7 +9,8 @@ Dernière mise à jour : 12/11/2026, PR #206 « /methode v6 » (lot 2 bis).
 | 1. Fondations | jetons v6, composants, i18n, barre nav6, « Tarifs » | fusionné (#203, `f8572f8`) |
 | Ménage | maquettes Stitch archivées, docs v6, tests regroupés, CI en parallèle, port e2e configurable | fusionné (#204) |
 | 2. Accueil | accueil v6 en composants (`components/v6/accueil/`), barre visiteur et connecté, pied en 3 colonnes, boutons Pro vers `/pro` | fusionné (#205, `96f324b`) |
-| 2 bis. Méthode | `/methode` v6, histoire v2 (`components/v6/methode/`, clés `me.*`, `lib/motion/methode-v6.ts`) | PR #206 |
+| 2 bis. Méthode | `/methode` v6, histoire v2 (`components/v6/methode/`, clés `me.*`, `lib/motion/methode-v6.ts`) | fusionné (#206, `72fb162`) |
+| 3a. Exemple de rapport | `/exemple-rapport` sur V6Page, feuille portée sous `.ex` (`exemple-v6.css`), couleurs sur les jetons v6, Geist | cette PR |
 | 3. Rapport | `/rapport/:id` à onglets, feuille « Partager », redirections R1–R10 et R13 | à faire |
 | 4. Sites et compte | `/sites/:host`, compte en sections, redirections R11, R12 et R15 | à faire |
 | 5. Légales et erreurs | gabarits v6 | à faire |
@@ -19,8 +20,9 @@ Dernière mise à jour : 12/11/2026, PR #206 « /methode v6 » (lot 2 bis).
 - Branches restantes : `main`, `design/v6-reference`, `cursor/maquette-accueil-1bc6` (PR #200 ouverte), `feat/methode-v6`.
 - Local vert : lint, typecheck, vitest (136 fichiers), e2e UI hors tests qui demandent l'API invitée (`guest-audit`, `qa-momentic`, vérifiés en CI).
 - PR #205 : correctifs CI (jauge lue par `page.request`, légende du scanner hors `<figcaption>` pour `qualite.html`, défilement bloqué sous la fenêtre visiteur v6, `toEnglish` attend le rechargement, e2e-reel sur « Scanner mon site, gratuit », Geist préchargée avec replis recalés : CLS 0,43 → 0,002 avec DejaVu Sans).
-- `main` = `96f324b` (#205 accueil v6). `/methode` v6 en PR #206 (`feat/methode-v6`, worktree `/workspace/audixio-methode`). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
-- Étapes suivantes : squash de #206 ; puis `/methode`, pages publiques, espace connecté, légales et erreurs, robot.
+- `main` = `96f324b` (#205 accueil v6). `main` = `72fb162` (#206 /methode v6). Worktree de travail : `/workspace/audixio-methode` (branche de la page en cours). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
+- Outil de portage d’une feuille v2 vers v6 : `/workspace/port-exemple/scope.py` (portée sous une classe, `--d-*` → jetons v6, noms locaux préfixés `--x-`, animations préfixées).
+- Étapes suivantes : /pro (avec /passer-pro), robot et autres pages publiques ; puis `/methode`, pages publiques, espace connecté, légales et erreurs, robot.
 - Après une coupure de la machine : `pnpm install --frozen-lockfile` puis `pnpm --filter @audigy/web exec playwright install chromium`.
 
 ## Règles
@@ -58,6 +60,7 @@ pnpm --filter @audigy/web exec playwright test --shard=1/4   # une part des e2e
   - l'absence de débordement à 390 px.
 - `e2e/liens.spec.ts` : aucun lien interne mort ni ancre absente.
 - `e2e/accueil-v6.spec.ts` : clavier (onglets, FAQ), jeu, mouvement réduit, liens réels, dock, CLS, anglais.
+- `e2e/exemple-v6.spec.ts` : gabarit v6, jetons v6 clair et sombre, 390 px, liens et ancres.
 - `e2e/methode-v6.spec.ts` : histoire épinglée, barème (E et F), calculette, FAQ, dock 1440/390, liens et ancres, CLS, anglais.
 - `e2e/mobile-debordement.spec.ts` : largeurs de 320 à 414 px, parcours invité et connecté.
 

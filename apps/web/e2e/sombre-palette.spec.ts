@@ -10,9 +10,7 @@ type View = {
   getComputedStyle: (node: unknown) => Record<string, string>;
 };
 
-const CARD = 'rgb(27, 35, 71)';
 const LINE = 'rgb(56, 70, 124)';
-const RAISED = 'rgb(46, 58, 104)';
 
 async function css(locator: Locator, prop: string): Promise<string> {
   await locator.scrollIntoViewIfNeeded();
@@ -109,6 +107,7 @@ test('sombre : méthode, exemple et demande d’accès suivent le modèle de car
     ).getComputedStyle(node);
     return {
       surf: style.getPropertyValue('--d-vsf').trim(),
+      surf2: style.getPropertyValue('--d-vsf2').trim(),
       line: style.getPropertyValue('--d-vln').trim(),
     };
   });
@@ -116,12 +115,17 @@ test('sombre : méthode, exemple et demande d’accès suivent le modèle de car
   expect(await css(dom, 'backgroundColor')).toBe(hexToRgb(tokens.surf));
   expect(await css(dom, 'borderTopColor')).toBe(hexToRgb(tokens.line));
 
+  // /exemple-rapport v6 : mêmes jetons v6 sombres (surface, surface 2, trait).
   await open(page, '/exemple-rapport?theme=dark');
   expect(await css(page.locator('.cst .seg').first(), 'backgroundColor')).toBe(
-    RAISED,
+    hexToRgb(tokens.surf2),
   );
-  expect(await css(page.locator('.fin2-viz'), 'backgroundColor')).toBe(CARD);
-  expect(await css(page.locator('.fin2'), 'borderTopColor')).toBe(LINE);
+  expect(await css(page.locator('.fin2-viz'), 'backgroundColor')).toBe(
+    hexToRgb(tokens.surf),
+  );
+  expect(await css(page.locator('.fin2'), 'borderTopColor')).toBe(
+    hexToRgb(tokens.line),
+  );
 
   await open(page, '/demande-acces?theme=dark');
   expect(await css(page.locator('.request-card'), 'borderTopColor')).toBe(LINE);
