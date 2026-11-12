@@ -90,6 +90,45 @@ test.describe('accueil v6', () => {
     await expect(first.locator('summary')).toBeFocused();
   });
 
+  test('HTML valide : chaque légende est l’enfant direct de sa figure', async ({
+    page,
+  }) => {
+    // qualite.html (self-audit) refuse une figcaption hors de <figure>.
+    await page.goto('/');
+    const stray = await page
+      .locator('figcaption')
+      .evaluateAll(
+        (nodes) =>
+          nodes.filter((node) => node.parentElement?.tagName !== 'FIGURE')
+            .length,
+      );
+    expect(stray).toBe(0);
+    await expect(page.locator('figure.scanner')).toHaveAttribute(
+      'aria-labelledby',
+      'scan-cap',
+    );
+    await expect(page.locator('#scan-cap')).toBeVisible();
+  });
+
+  test('fenêtre visiteur ouverte : la page v6 ne défile plus derrière', async ({
+    page,
+  }) => {
+    // guest-gate.css visait html[data-vue] (Canon) ; V6Page n’a que data-v6.
+    await page.goto('/');
+    await page
+      .locator('html')
+      .evaluate((html) => html.classList.add('gg-lock'));
+    const body = await page.locator('body').evaluate(
+      (node) =>
+        (
+          globalThis as unknown as {
+            getComputedStyle: (el: unknown) => { overflow: string };
+          }
+        ).getComputedStyle(node).overflow,
+    );
+    expect(body).toBe('hidden');
+  });
+
   test('« Scanner mon site » mène au formulaire du héros', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await open(page);
