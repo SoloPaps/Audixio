@@ -856,20 +856,27 @@ function historyRow(point: HistoryPoint, latest: boolean): HTMLTableRowElement {
   const numeric = typeof score === 'number' ? Math.round(score) : null;
   const grade = gradeForScore(numeric);
   const date = document.createElement('td');
+  date.className = 'c-date';
   const time = document.createElement('time');
   time.dateTime = point.at;
   time.textContent = formatDate(new Date(point.at));
   date.append(time);
   const ref = document.createElement('td');
+  ref.className = 'c-ref';
+  // Libellé de colonne repris en tête de cellule sur téléphone (en-tête masqué).
+  ref.dataset.l = t('mq.hi.087');
   const code = document.createElement('code');
   code.textContent = point.id.slice(-6);
   ref.append(code);
   const note = document.createElement('td');
+  note.className = 'c-note';
   note.textContent =
     grade && numeric !== null ? `${grade} · ${numeric}` : t('mq.co.086');
   const kind = document.createElement('td');
+  kind.className = 'c-kind';
   kind.textContent = latest ? t('mq.hi.094') : t('mq.hi.101');
   const act = document.createElement('td');
+  act.className = 'ta';
   const link = document.createElement('a');
   link.className = 'btn btn-ghost btn-sm';
   link.href = point.href;
