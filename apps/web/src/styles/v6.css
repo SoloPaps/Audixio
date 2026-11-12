@@ -224,7 +224,7 @@
 [data-v6] .card-l,
 /* `.card` des composants v6. Les pages portées (racine `[data-port]`) ont
  * leurs propres cartes du même nom : ces règles ne s’y appliquent pas. */
-[data-v6] .card:where(:not([data-port] *)) {
+[data-v6] :where(:not([data-port] *)).card {
   display: grid;
   gap: var(--s-4);
   align-items: center;
@@ -251,13 +251,13 @@
 }
 
 [data-v6] .card-l b,
-[data-v6] .card:where(:not([data-port] *)) h2 {
+[data-v6] :where(:not([data-port] *)).card h2 {
   display: block;
   font-weight: 600;
 }
 
 [data-v6] .card-l small,
-[data-v6] .card:where(:not([data-port] *)) p {
+[data-v6] :where(:not([data-port] *)).card p {
   display: block;
   margin: 0;
   color: var(--ink-2);
@@ -265,7 +265,7 @@
 }
 
 [data-v6] .card-l:hover:not([aria-disabled="true"]),
-[data-v6] .card:where(:not([data-port] *)):hover:not([aria-disabled="true"]) {
+[data-v6] :where(:not([data-port] *)).card:hover:not([aria-disabled="true"]) {
   border-color: var(--beam);
   background: var(--c-hover);
   box-shadow: var(--sh-lift);
@@ -273,7 +273,7 @@
 }
 
 [data-v6] .card-l:active:not([aria-disabled="true"]),
-[data-v6] .card:where(:not([data-port] *)):active:not([aria-disabled="true"]) {
+[data-v6] :where(:not([data-port] *)).card:active:not([aria-disabled="true"]) {
   background: var(--c-active);
   transform: translateY(0);
 }
