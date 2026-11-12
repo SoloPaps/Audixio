@@ -553,7 +553,8 @@
 
 [data-v6] .dock .num {
   font: 500 var(--t-xs) var(--mono);
-  color: var(--ink-3);
+  /* --ink-3 restait sous 4,5:1 sur le fond du dock (3,76 clair, 3,33 sombre). */
+  color: var(--ink-2);
 }
 
 [data-v6] .dock svg {
