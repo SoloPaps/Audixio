@@ -1,8 +1,7 @@
 ---
-import '../styles/maquettes/liens.css';
-import '../styles/maquettes/cookies.css';
+import '../styles/maquettes/cookies-v6.css';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
+import V6Page from '../layouts/V6Page.astro';
 
 const messages = {
   'mq.lg.591': t('mq.lg.591'),
@@ -12,7 +11,8 @@ const messages = {
 const closeLabel = t('mq.lg.650');
 ---
 
-<Canon vue="cookies" title={t('mq.meta.cookies.title')} description={t('mq.meta.cookies.title')} robots="noindex">
+<V6Page vue="cookies" title={t('mq.meta.cookies.title')} description={t('mq.meta.cookies.title')} robots="noindex">
+  <div class="cks">
 <div class="backdrop" aria-hidden="true"></div>
 <div class="veil" aria-hidden="true"></div>
 <div class="wrap" id="contenu" >
@@ -75,4 +75,5 @@ if(langBtn)langBtn.addEventListener('click',function(){
 })();
 
 </script>
-</Canon>
+  </div>
+</V6Page>
