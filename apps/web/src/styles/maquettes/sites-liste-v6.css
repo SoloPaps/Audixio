@@ -2696,3 +2696,22 @@ html[data-board="liste"] .msl .up {
     width: min(35rem, calc(100% - 0.5rem));
   }
 }
+/* Repris de mobile-fit.css (règles communes à /passer-pro et à la liste). */
+html[data-board="liste"] body.noscroll {
+  overflow-x: clip;
+  overflow-y: hidden;
+}
+@media (max-width: 480px) {
+  html[data-board="liste"] .msl .pm {
+    top: 4.75rem;
+    overflow: hidden;
+  }
+  html[data-board="liste"] .msl .pm-dlg {
+    max-height: calc(100dvh - 6rem);
+  }
+}
+/* « Plus tard » garde sa largeur de texte (Geist est plus large que l’ancienne police). */
+html[data-board="liste"] .msl .pm .btn-text {
+  flex: none;
+  white-space: nowrap;
+}
