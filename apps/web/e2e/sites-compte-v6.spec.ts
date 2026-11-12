@@ -88,11 +88,9 @@ test('page d’un site : l’ancre #historique est rejouée après le chargement
   await expect(page.locator('#historique h2#t')).toBeVisible();
   await expect
     .poll(() =>
-      page.evaluate(
-        () =>
-          document.getElementById('historique')?.getBoundingClientRect().top ??
-          9999,
-      ),
+      page
+        .locator('#historique')
+        .evaluate((el) => el.getBoundingClientRect().top),
     )
     .toBeLessThan(200);
 });
@@ -135,9 +133,7 @@ for (const theme of ['light', 'dark'] as const) {
     await stubSiteAccount(page);
     await page.goto(`/sites/${SITE_HOST}?theme=${theme}`);
     await expect(page.locator('#partage fieldset')).toBeVisible();
-    const width = await page.evaluate(
-      () => document.documentElement.scrollWidth,
-    );
+    const width = await page.locator('html').evaluate((el) => el.scrollWidth);
     expect(width).toBeLessThanOrEqual(390);
   });
 }
