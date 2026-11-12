@@ -23,7 +23,7 @@ const closeLabel = t('mq.lg.650');
  <div class="tools"><button type="button" class="ck-lang" id="ck-lang" lang="en">{t('locale.en.short')}</button>
  <button type="button" class="ck-close" id="ck-close" aria-label={closeLabel} title={closeLabel}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
  </div>
- <div class="panel" id="pn"><div>
+ <div class="panel" id="pn" inert><div>
   <div class="opt"><div><h2>{t('mq.lg.581')}</h2><p>{t('mq.lg.582')}</p></div><label class="sw"><input type="checkbox" checked disabled aria-label={t('mq.lg.583')}><span></span></label></div>
   <div class="opt"><div><h2>{t('mq.lg.584')}</h2><p>{t('mq.lg.585')}</p></div><label class="sw"><input type="checkbox" id="pref" aria-label={t('mq.lg.584')}><span></span></label></div>
   <button type="button" class="btn b-gh save" id="sv">{t('mq.lg.586')}</button>
@@ -57,7 +57,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!e.defaultP
 document.getElementById('ac').onclick=function(){pref.checked=true;save(true,MSG['mq.lg.591'])};
 document.getElementById('rf').onclick=function(){pref.checked=false;save(false,MSG['mq.lg.592'])};
 document.getElementById('sv').onclick=function(){save(pref.checked,MSG['mq.lg.593'])};
-ps.onclick=function(){var o=pn.classList.toggle('open');ps.setAttribute('aria-expanded',o);if(o)setTimeout(function(){pref.focus()},350)};
+ps.onclick=function(){var o=pn.classList.toggle('open');pn.inert=!o;ps.setAttribute('aria-expanded',o);if(o)setTimeout(function(){pref.focus()},350)};
 document.getElementById('ac').focus({preventScroll:true});
 var langBtn=document.getElementById('ck-lang');
 function langIsEn(){try{return localStorage.getItem('audigy-locale')==='en'}catch(e){return false}}
