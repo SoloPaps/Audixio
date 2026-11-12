@@ -336,14 +336,43 @@ test('B-9 : /robot en sombre, l’exemple robots.txt n’est plus lavande clair'
   await page.goto('/robot?theme=dark');
   const box = page.locator('#robots pre');
   await expect(box).toContainText('User-agent');
-  const colors = await page.evaluate<{ bg: string; fg: string }>(`(() => {
+  // v6 : le bloc suit le jeton --surf (sombre en nuit), texte lisible.
+  const lire = () =>
+    page.evaluate<{
+      bg: string;
+      fg: string;
+      surf: string;
+      lum: number;
+      ratio: number;
+    }>(`(() => {
     const pre = document.querySelector('#robots pre');
     const code = pre.querySelector('code') || pre;
-    return { bg: getComputedStyle(pre).backgroundColor, fg: getComputedStyle(code).color };
+    const t = document.createElement('i');
+    t.style.background = 'var(--surf)';
+    pre.parentElement.appendChild(t);
+    const surf = getComputedStyle(t).backgroundColor;
+    t.remove();
+    const L = (c) => {
+      const [r, g, b] = c.match(/[\\d.]+/g).slice(0, 3).map((v) => {
+        const x = Number(v) / 255;
+        return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const bg = getComputedStyle(pre).backgroundColor;
+    const fg = getComputedStyle(code).color;
+    const [a, b] = [L(bg), L(fg)].sort((x, y) => y - x);
+    return { bg, fg, surf, lum: L(bg), ratio: (a + 0.05) / (b + 0.05) };
   })()`);
-  expect(colors.bg).toBe('rgb(27, 35, 71)');
-  expect(colors.fg).toBe('rgb(169, 189, 246)');
+  const nuit = await lire();
+  expect(nuit.bg).toBe(nuit.surf);
+  expect(nuit.lum).toBeLessThan(0.05);
+  expect(nuit.ratio).toBeGreaterThanOrEqual(4.5);
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/robot?theme=light');
-  await expect(box).toHaveCSS('background-color', 'rgb(237, 232, 245)');
+  await expect(box).toContainText('User-agent');
+  const jour = await lire();
+  expect(jour.bg).toBe(jour.surf);
+  expect(jour.lum).toBeGreaterThan(0.8);
+  expect(jour.ratio).toBeGreaterThanOrEqual(4.5);
 });
