@@ -1,6 +1,6 @@
 # État du projet (mis à jour à chaque PR)
 
-Dernière mise à jour : 12/11/2026, PR « /exemple-rapport v6 » (lot 3, pages publiques).
+Dernière mise à jour : 12/11/2026, PR « /pro v6 » (lot 3b, pages publiques).
 
 ## Lots de la refonte v6
 
@@ -10,7 +10,8 @@ Dernière mise à jour : 12/11/2026, PR « /exemple-rapport v6 » (lot 3, pages 
 | Ménage | maquettes Stitch archivées, docs v6, tests regroupés, CI en parallèle, port e2e configurable | fusionné (#204) |
 | 2. Accueil | accueil v6 en composants (`components/v6/accueil/`), barre visiteur et connecté, pied en 3 colonnes, boutons Pro vers `/pro` | fusionné (#205, `96f324b`) |
 | 2 bis. Méthode | `/methode` v6, histoire v2 (`components/v6/methode/`, clés `me.*`, `lib/motion/methode-v6.ts`) | fusionné (#206, `72fb162`) |
-| 3a. Exemple de rapport | `/exemple-rapport` sur V6Page, feuille portée sous `.ex` (`exemple-v6.css`), couleurs sur les jetons v6, Geist | cette PR |
+| 3a. Exemple de rapport | `/exemple-rapport` sur V6Page, feuille portée sous `.ex` (`exemple-v6.css`), couleurs sur les jetons v6, Geist | fusionné (#207, `7354922`) |
+| 3b. Tarifs | `/pro` sur V6Page (`pro-v6.css`, `.pr6`), panneau toujours sombre `.v6-nuit` (jetons sombres posés par `theme-dark.css`), `/passer-pro` réduite à son renvoi vers `/pro` (requête et ancre gardées) | cette PR |
 | 3. Rapport | `/rapport/:id` à onglets, feuille « Partager », redirections R1–R10 et R13 | à faire |
 | 4. Sites et compte | `/sites/:host`, compte en sections, redirections R11, R12 et R15 | à faire |
 | 5. Légales et erreurs | gabarits v6 | à faire |
@@ -20,9 +21,9 @@ Dernière mise à jour : 12/11/2026, PR « /exemple-rapport v6 » (lot 3, pages 
 - Branches restantes : `main`, `design/v6-reference`, `cursor/maquette-accueil-1bc6` (PR #200 ouverte), `feat/methode-v6`.
 - Local vert : lint, typecheck, vitest (136 fichiers), e2e UI hors tests qui demandent l'API invitée (`guest-audit`, `qa-momentic`, vérifiés en CI).
 - PR #205 : correctifs CI (jauge lue par `page.request`, légende du scanner hors `<figcaption>` pour `qualite.html`, défilement bloqué sous la fenêtre visiteur v6, `toEnglish` attend le rechargement, e2e-reel sur « Scanner mon site, gratuit », Geist préchargée avec replis recalés : CLS 0,43 → 0,002 avec DejaVu Sans).
-- `main` = `96f324b` (#205 accueil v6). `main` = `72fb162` (#206 /methode v6). Worktree de travail : `/workspace/audixio-methode` (branche de la page en cours). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
-- Outil de portage d’une feuille v2 vers v6 : `/workspace/port-exemple/scope.py` (portée sous une classe, `--d-*` → jetons v6, noms locaux préfixés `--x-`, animations préfixées).
-- Étapes suivantes : /pro (avec /passer-pro), robot et autres pages publiques ; puis `/methode`, pages publiques, espace connecté, légales et erreurs, robot.
+- `main` = `7354922` (#207 /exemple-rapport v6), après `72fb162` (#206) et `96f324b` (#205). Worktree de travail : `/workspace/audixio-methode` (branche de la page en cours). Outils de clés : `/workspace/port-methode` (`final.json` → `regen.py`).
+- Outil de portage d’une feuille v2 vers v6 : `/workspace/port-exemple/scope.py` (portée sous une classe, `--d-*` → jetons v6, noms locaux préfixés `--x-`, animations préfixées) ; `port_page.py` (Canon → V6Page), `fix_inline.py` (variables en ligne), `port_mobile.py` (règles `html[data-vue]` de `mobile-fit.css`, que V6Page ne pose plus), `ctafg.py` (texte blanc sur `--cta` → `--cta-fg`).
+- Étapes suivantes : robot, écoconception, accessibilité (lot 4 transparence), autres pages publiques ; puis espace connecté, légales et erreurs.
 - Après une coupure de la machine : `pnpm install --frozen-lockfile` puis `pnpm --filter @audigy/web exec playwright install chromium`.
 
 ## Règles
