@@ -500,6 +500,8 @@
   border: var(--bw) solid var(--line-2);
   box-shadow: var(--sh-dock);
   translate: -50% 0;
+  /* left: 50% laisse une demi-largeur : sans max-content, les libellés passent à la ligne. */
+  width: max-content;
   max-width: calc(100% - var(--dock-gap) * 2);
   transition:
     transform var(--dur-slow) var(--ease),
@@ -525,6 +527,7 @@
   background: transparent;
   color: var(--ink-2);
   font: 500 var(--t-sm) var(--sans);
+  white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
   transition:
@@ -559,8 +562,19 @@
   flex: none;
 }
 
-[data-v6] .dock-btn {
+/* Plus fort que « .dock button » : au large, seul le fil des sections s’affiche. */
+[data-v6] .dock .dock-btn {
   display: none;
+}
+
+@media (min-width: 85rem) {
+  [data-v6] .dock-l .num {
+    display: none;
+  }
+
+  [data-v6] .dock-l a {
+    padding: 0 var(--s-3);
+  }
 }
 
 [data-v6] .dock-l {
@@ -603,7 +617,7 @@
     translate: none;
   }
 
-  [data-v6] .dock-btn {
+  [data-v6] .dock .dock-btn {
     display: inline-flex;
     color: var(--ink);
     max-width: var(--w-dock);
@@ -632,6 +646,14 @@
   [data-v6] .dock {
     left: var(--dock-gap);
     right: var(--dock-gap);
+    width: auto;
+    justify-content: space-between;
+  }
+
+  [data-v6] .dock .dock-btn {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
   }
 }
 
