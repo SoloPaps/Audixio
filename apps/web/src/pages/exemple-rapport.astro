@@ -1,8 +1,7 @@
 ---
-import '../styles/maquettes/liens.css';
-import '../styles/maquettes/exemple.css';
+import '../styles/maquettes/exemple-v6.css';
 import { t } from '../i18n/index.js';
-import Canon from '../layouts/Canon.astro';
+import V6Page from '../layouts/V6Page.astro';
 import { gradeForScore } from '../lib/grade.js';
 
 // Textes des scripts inline (rosace, copie) : catalogue FR, EN lu à l’exécution.
@@ -62,9 +61,9 @@ for (let score = 100; score >= 0; score -= 1) {
 }
 ---
 
-<Canon vue="exemple" title={t('mq.meta.exemple.title')} description={t('mq.meta.exemple.desc')} robots="index, follow">
+<V6Page vue="exemple" title={t('mq.meta.exemple.title')} description={t('mq.meta.exemple.desc')} robots="index, follow">
 
-<main id="contenu" tabindex="-1">
+<main id="contenu" class="ex" tabindex="-1">
 <script type="application/json" id="i18n-msg" set:html={JSON.stringify(messages)}></script>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="i-perf" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
@@ -94,7 +93,7 @@ for (let score = 100; score >= 0; score -= 1) {
 <path class="dr z2" d="M372 191 C 400 170,405 160,410 150" fill="none" stroke="#7091E6" stroke-width="2"/>
 <rect class="hl dr z2 hb" x="244" y="176" width="132" height="30" rx="10"/>
 <g class="fd z3"><rect class="fr" x="410" y="100" width="140" height="160" rx="18"/><text x="426" y="128">{t('mq.e.014')}</text><text class="s" x="426" y="148">{t('mq.e.015')}</text><text class="s" x="426" y="164">{t('mq.e.016')}</text>
-<rect x="426" y="182" width="108" height="9" rx="4" fill="#adbbda" style="fill:var(--d-ln2, #adbbda)"/><rect x="426" y="182" width="30" height="9" rx="4" fill="#3D52A0" style="fill:var(--d-ic, #3D52A0)"/><rect class="ln2" x="426" y="204" width="90" height="9" rx="4"/><rect class="ln2" x="426" y="222" width="70" height="9" rx="4"/></g>
+<rect x="426" y="182" width="108" height="9" rx="4" fill="#adbbda" style="fill:var(--line-2)"/><rect x="426" y="182" width="30" height="9" rx="4" fill="#3D52A0" style="fill:var(--beam)"/><rect class="ln2" x="426" y="204" width="90" height="9" rx="4"/><rect class="ln2" x="426" y="222" width="70" height="9" rx="4"/></g>
 </svg></header>
 <div class="jr"><aside class="stp" aria-label={t('mq.e.017')}><p class="stp-t">{t('mq.e.018')}</p><div class="stp-in"><span class="stp-tr" aria-hidden="true"><i></i></span><ol>
 <li><a href="#n1" data-l="n1"><span class="sd">1</span><span class="sl"><b>{t('mq.e.019')}</b><small>{t('mq.e.020')}</small></span></a></li>
@@ -244,7 +243,7 @@ AX.fzSend=function(b,msg){if(b.classList.contains('go'))return;b.classList.add('
     var head=th-Math.PI/2,trail=1.3;
 
     /* couleur de rôle du thème sombre (styles/theme-dark.css), sinon la claire */
-    function RC(r,l){return getComputedStyle(document.documentElement).getPropertyValue('--d-'+r).trim()||l;}
+    function RC(r,l){var v={tx:'--ink',ic:'--beam',sf:'--surf'}[r];return (v&&getComputedStyle(document.documentElement).getPropertyValue(v).trim())||l;}
     /* halo de fond */
     var bg=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
     bg.addColorStop(0,'rgba(61,82,160,.10)');bg.addColorStop(.7,'rgba(61,82,160,.04)');bg.addColorStop(1,'rgba(61,82,160,0)');
@@ -377,8 +376,8 @@ var NS='http://www.w3.org/2000/svg';
 /* ---------- données (lues dans les cartes) ---------- */
 var FLOOR=JSON.parse(document.getElementById('rose').getAttribute('data-grades'));
 function gradeOf(s){var L=['A','B','C','D','E'];for(var i=0;i<L.length;i++){if(s>=FLOOR[L[i]])return L[i];}return 'F';}
-var GRGB={A:'47,163,107',B:'112,145,230',C:'224,166,58',D:'225,118,63',F:'214,69,69'};var PETAL={A:'#2FA36B',B:'#7091E6',C:'#E0A63A',D:'#E1763F',F:'#D64545'};
-function D(r,l){return 'var(--d-'+r+', '+l+')';}
+var GRGB={A:'15,122,85',B:'63,127,20',C:'143,99,0',D:'185,82,15',F:'138,21,56'};var PETAL={A:'#0F7A55',B:'#3F7F14',C:'#8F6300',D:'#B9520F',F:'#8A1538'};
+var V6={"bg": "var(--bg)", "gl": "color-mix(in oklab, var(--surf) 88%, transparent)", "sf": "var(--surf)", "sf2": "var(--surf-2)", "sf3": "var(--surf-2)", "ln": "var(--line)", "ln2": "var(--line-2)", "t1": "color-mix(in oklab, var(--beam) 6%, transparent)", "t2": "var(--beam-a)", "ac": "var(--beam)", "ic": "var(--beam)", "tx": "var(--ink)", "mu": "var(--ink-2)", "hl": "transparent", "cta": "var(--cta)", "cta2": "var(--cta-h)", "inv": "var(--cta-fg)", "ok": "var(--ok)", "okb": "var(--ok-a)", "okd": "color-mix(in oklab, var(--ok) 35%, transparent)", "er": "var(--find)", "erb": "var(--find-a)", "erd": "color-mix(in oklab, var(--find) 35%, transparent)", "or": "var(--gD)", "orb": "color-mix(in oklab, var(--gD) 9%, var(--surf))", "ord": "color-mix(in oklab, var(--gD) 45%, transparent)", "wa": "var(--gC)", "wab": "color-mix(in oklab, var(--gC) 9%, var(--surf))", "wad": "color-mix(in oklab, var(--gC) 45%, transparent)", "in": "var(--beam)", "inb": "var(--beam-a)", "ind": "var(--beam-b)"};function D(r,l){return V6[r]||l;}
 var INK={A:D('ok','#065F3A'),B:D('ac','#2B3B85'),C:D('wa','#8A4B08'),D:D('or','#A23B0A')};
 var LET={A:D('ok','#065F3A'),B:D('ac','#2B3B85'),C:D('wa','#8A4B08'),D:D('or','#A23B0A'),F:D('er','#9B1C1C')};
 var cards=$$('.dom').map(function(el){
@@ -663,4 +662,4 @@ addEventListener('beforeprint',function(){T.forEach(function(e){e.classList.remo
 })();
 
 </script>
-</Canon>
+</V6Page>
