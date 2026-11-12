@@ -1,12 +1,13 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { GRADE_THRESHOLDS } from '@audigy/db';
 import { METHOD_VERSION } from '@audigy/engine';
 import { describe, expect, it } from 'vitest';
 import { methodeEn } from './methode-en.js';
 import { methodeFr } from './methode-fr.js';
 
-const here = path.dirname(new URL(import.meta.url).pathname);
+const here = path.dirname(fileURLToPath(import.meta.url));
 const dir = path.join(here, '../components/v6/methode');
 const sources = [
   ...readdirSync(dir).map((name) => path.join(dir, name)),

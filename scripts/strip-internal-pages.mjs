@@ -19,8 +19,12 @@ async function walk(dir) {
   return found;
 }
 
-function isInternal(rel) {
-  const normalized = rel.split(path.sep).join('/');
+/** Chemin relatif au `dist`, toujours en « / » (Windows rend des « \\ »). */
+export function relativePosix(dist, file, paths = path) {
+  return paths.relative(dist, file).split(paths.sep).join('/');
+}
+
+function isInternal(normalized) {
   return (
     normalized === 'dev' ||
     normalized.startsWith('dev/') ||
@@ -31,7 +35,7 @@ function isInternal(rel) {
 export async function listInternalPages(dist) {
   const files = await walk(dist);
   return files
-    .map((file) => path.relative(dist, file))
+    .map((file) => relativePosix(dist, file))
     .filter((rel) => isInternal(rel))
     .sort();
 }

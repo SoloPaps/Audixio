@@ -107,6 +107,40 @@ jobs:
       - name: test
         run: pnpm test
 
+  # Le propriétaire lance la suite sous Windows : tests unitaires sans
+  # Supabase local (pas de Docker sur l’hôte Windows), Chromium compris.
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    name: unitaires (Windows)
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Chromium
+        run: pnpm --filter @audigy/web exec playwright install chromium
+
+      - name: test
+        env:
+          AUDIGY_SANS_SUPABASE: '1'
+        run: pnpm test
+
   publication:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -207,7 +241,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     name: check
-    needs: [statique, unitaires, publication, ui]
+    needs: [statique, unitaires, windows, publication, ui]
     if: ${{ always() }}
     permissions:
       contents: write # pousser knip et Biome ; le jeton par défaut ne relance pas les workflows
@@ -286,6 +320,7 @@ jobs:
           RESULTS: >-
             statique=${{ needs.statique.result }}
             unitaires=${{ needs.unitaires.result }}
+            windows=${{ needs.windows.result }}
             publication=${{ needs.publication.result }}
             ui=${{ needs.ui.result }}
         run: |
