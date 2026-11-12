@@ -9,11 +9,14 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   await expect(
     page.getByRole('link', { name: 'mauvais.audigy.test', exact: true }),
   ).toBeVisible();
-  // La vérification d’un site vit dans sa page (R12) : /sites/id/:site#verification.
-  const verify = page.locator('a[href*="/sites/id/"]').first();
-  const href = await verify.getAttribute('href');
+  // La vérification d’un site vit dans sa page (R12), ses alertes dans /compte.
+  await expect(
+    page.locator('a[href="/sites/mauvais.audigy.test#verification"]').first(),
+  ).toBeVisible();
+  const alertsLink = page.locator('a[href*="/compte?site="]').first();
+  const href = await alertsLink.getAttribute('href');
   const siteId =
-    new URL(href ?? '', 'http://127.0.0.1:8888').pathname.split('/')[3] ?? '';
+    new URL(href ?? '', 'http://127.0.0.1:8888').searchParams.get('site') ?? '';
   expect(siteId).toMatch(/^[0-9a-f-]{36}$/);
 
   await page.locator('#url').fill('https://bon.audigy.test/');
