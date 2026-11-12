@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import { stubSession } from './en-session.js';
+import { ORIGIN } from './origin.js';
 
 // QA Mo 05/11 : affichage à 330 px et thème sombre.
 
@@ -160,7 +161,7 @@ test('M13 : badge Complet et Compact affichent le libellé et la note', async ({
     route.fulfill({
       status: 200,
       headers: {
-        'access-control-allow-origin': 'http://127.0.0.1:4321',
+        'access-control-allow-origin': ORIGIN,
         'access-control-allow-headers': '*',
         'access-control-allow-methods': '*',
         'content-type': 'application/json',

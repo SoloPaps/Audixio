@@ -39,7 +39,7 @@ Originaux conservés tels quels dans [`archive/fusionnes-2026-10-29/`](archive/f
 ### Thème et couleurs
 - Thème **clair par défaut** ; suit `prefers-color-scheme` ; le **choix manuel** de la personne gagne.
 - Thème sombre complet : **plus tard**.
-- **Palette v2** = palette actuelle : `design/design-elements/palette-foundations-v2.html` / `.png`.
+- **Palette v2** : remplacée par la charte v6 le 12/11/2026 (`design/01-REGLES-STRICTES.md`).
   Boutons `#3D52A0` (survol `#1E2A55`), accent `#7091E6`, secondaire `#8697C4`, bordures `#ADBBDA`, surfaces `#EDE8F5`, texte `#1E2A55` / `#4A5585`.
 - L'ancienne palette pétrole / pêche (teal) est **remplacée** (les docs qui la citent portent un bandeau).
 

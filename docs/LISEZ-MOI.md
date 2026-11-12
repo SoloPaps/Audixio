@@ -16,7 +16,7 @@ Ce dossier contient toute la documentation d'Audixio, rangée par sujet. Réorga
 | `agents/` | Le pack d'instructions pour les agents (règles communes + un fichier par rôle). |
 | `produit/` | Ce que fait Audixio : fonctionnement, méthode de notation, droits (matrice), soft-gate, questions encore ouvertes. |
 | `design/` | Règles visuelles, thèmes, couleurs, logo, pages, backlog design, éléments, logos. |
-| `design/maquettes/` | Les maquettes : `finales/` (référence), `stitch/`, `chrome/` (nav, header, footer), `archive/`. Liste complète et statut de chaque écran : [`design/maquettes/INDEX.md`](design/maquettes/INDEX.md). |
+| `design/v6/` | Charte v6, maquette de l’accueil, `STRUCTURE.md` (pages, adresses, redirections). Les maquettes Stitch sont archivées hors du dépôt. |
 | `dev/` | Pour coder : plan technique, lancer en local, recette. |
 | `etapes/` | Les étapes de la refonte, une par fichier, dans l'ordre. |
 | `legal/` | Le registre des traitements (RGPD). |

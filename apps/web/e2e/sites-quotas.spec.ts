@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 const USER = '11111111-1111-4111-8111-111111111111';
 const SITE = '00000000-0000-4000-8000-0000000000cc';
@@ -23,9 +24,7 @@ async function openSites(
   }, session);
   await page
     .context()
-    .addCookies([
-      { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4321' },
-    ]);
+    .addCookies([{ name: 'audixio_connecte', value: '1', url: ORIGIN }]);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({
       status: 200,
@@ -48,7 +47,7 @@ async function openSites(
   });
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

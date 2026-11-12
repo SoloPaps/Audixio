@@ -15,10 +15,200 @@ concurrency:
 permissions: {}
 
 jobs:
+  # Les vérifications tournent en parallèle ; « check » (check requis) les attend
+  # toutes, applique les corrections automatiques et échoue si une seule échoue.
+  statique:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: statique
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: guard
+        run: pnpm guard
+
+      - name: lint
+        if: ${{ !cancelled() }}
+        run: pnpm lint
+
+      - name: copy-lint
+        if: ${{ !cancelled() }}
+        run: pnpm copy-lint
+
+      - name: typecheck
+        if: ${{ !cancelled() }}
+        run: pnpm typecheck
+
+      - name: Deno
+        if: ${{ !cancelled() }}
+        run: |
+          curl -fsSL -o /tmp/deno.zip https://github.com/denoland/deno/releases/download/v2.5.6/deno-x86_64-unknown-linux-gnu.zip
+          sudo unzip -o /tmp/deno.zip -d /usr/local/bin
+
+      - name: edge
+        if: ${{ !cancelled() }}
+        run: |
+          deno check --sloppy-imports --no-lock netlify/edge-functions/auth-guard.ts
+          deno bundle --sloppy-imports --no-lock netlify/edge-functions/auth-guard.ts -o /tmp/audixio-auth-guard.js
+
+  unitaires:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    name: unitaires
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Supabase CLI
+        run: |
+          curl -fsSL -o /tmp/supabase.tar.gz https://github.com/supabase/cli/releases/download/v2.122.0/supabase_linux_amd64.tar.gz
+          sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
+
+      - name: Supabase local
+        run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      # browser-runner et la CLI lancent Chromium dans leurs tests unitaires.
+      - name: Chromium
+        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
+
+      - name: test
+        run: pnpm test
+
+  publication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    name: publication
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Supabase CLI
+        run: |
+          curl -fsSL -o /tmp/supabase.tar.gz https://github.com/supabase/cli/releases/download/v2.122.0/supabase_linux_amd64.tar.gz
+          sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
+
+      - name: Supabase local
+        run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: Chromium
+        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
+
+      - name: build
+        run: pnpm build
+
+      - name: self-audit
+        if: ${{ !cancelled() }}
+        run: pnpm self-audit
+
+      - name: test:a11y
+        if: ${{ !cancelled() }}
+        run: pnpm test:a11y
+
+  ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    name: ui (${{ matrix.shard }}/4)
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: pnpm
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - name: Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Supabase CLI
+        run: |
+          curl -fsSL -o /tmp/supabase.tar.gz https://github.com/supabase/cli/releases/download/v2.122.0/supabase_linux_amd64.tar.gz
+          sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
+
+      - name: Supabase local
+        run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
+      - name: Chromium
+        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
+
+      # Certains tests UI lisent dist/ (poids de l’accueil, cadran).
+      - name: build
+        run: pnpm build
+
+      - name: test:ui (web, part ${{ matrix.shard }}/4)
+        run: pnpm --filter @audigy/web exec playwright test --shard=${{ matrix.shard }}/4
+
+      - name: test:ui (browser-runner)
+        if: ${{ matrix.shard == 1 && !cancelled() }}
+        run: pnpm --filter @audigy/browser-runner run test:ui
+
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     name: check
+    needs: [statique, unitaires, publication, ui]
+    if: ${{ always() }}
     permissions:
       contents: write # pousser knip et Biome ; le jeton par défaut ne relance pas les workflows
     steps:
@@ -90,94 +280,19 @@ jobs:
           echo "::error title=Check requis absent::Un commit automatique a été poussé avec le jeton par défaut. Ce jeton ne relance pas les workflows : le check requis « check » n'est pas posé sur le nouveau commit. Poussez à nouveau pour le lancer (git commit --allow-empty -m 'ci: relance les checks' && git push). Aucun secret n'est requis. Jeton d'application facultatif : docs/dev/GITHUB-SETUP.md."
           exit 1
 
-      - name: Supabase CLI
-        run: |
-          curl -fsSL -o /tmp/supabase.tar.gz https://github.com/supabase/cli/releases/download/v2.122.0/supabase_linux_amd64.tar.gz
-          sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
-
-      - name: Supabase local
-        run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
-
-      - name: Chromium
-        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
-
-      # Chaque vérification s'exécute même si une précédente échoue.
-      - name: guard
-        id: guard
-        continue-on-error: true
-        run: pnpm guard
-
-      - name: lint
-        id: lint
-        continue-on-error: true
-        run: pnpm lint
-
-      - name: copy-lint
-        id: copy_lint
-        continue-on-error: true
-        run: pnpm copy-lint
-
-      - name: typecheck
-        id: typecheck
-        continue-on-error: true
-        run: pnpm typecheck
-
-      - name: test
-        id: test
-        continue-on-error: true
-        run: pnpm test
-
-      - name: build
-        id: build
-        continue-on-error: true
-        run: pnpm build
-
-      - name: self-audit
-        id: self_audit
-        continue-on-error: true
-        run: pnpm self-audit
-
-      - name: test:ui
-        id: test_ui
-        continue-on-error: true
-        run: pnpm test:ui
-
-      - name: test:a11y
-        id: test_a11y
-        continue-on-error: true
-        run: pnpm test:a11y
-
-      - name: Deno
-        run: |
-          curl -fsSL -o /tmp/deno.zip https://github.com/denoland/deno/releases/download/v2.5.6/deno-x86_64-unknown-linux-gnu.zip
-          sudo unzip -o /tmp/deno.zip -d /usr/local/bin
-
-      - name: edge
-        id: edge
-        continue-on-error: true
-        run: |
-          deno check --sloppy-imports --no-lock netlify/edge-functions/auth-guard.ts
-          deno bundle --sloppy-imports --no-lock netlify/edge-functions/auth-guard.ts -o /tmp/audixio-auth-guard.js
-
       - name: Résumé
         if: always()
         env:
           RESULTS: >-
-            guard=${{ steps.guard.outcome }}
-            lint=${{ steps.lint.outcome }}
-            copy-lint=${{ steps.copy_lint.outcome }}
-            typecheck=${{ steps.typecheck.outcome }}
-            test=${{ steps.test.outcome }}
-            build=${{ steps.build.outcome }}
-            self-audit=${{ steps.self_audit.outcome }}
-            test:ui=${{ steps.test_ui.outcome }}
-            test:a11y=${{ steps.test_a11y.outcome }}
-            edge=${{ steps.edge.outcome }}
+            statique=${{ needs.statique.result }}
+            unitaires=${{ needs.unitaires.result }}
+            publication=${{ needs.publication.result }}
+            ui=${{ needs.ui.result }}
         run: |
           failed=0
           for r in $RESULTS; do
             echo "$r"
-            case "$r" in *=failure) failed=1 ;; esac
+            case "$r" in *=success) ;; *) failed=1 ;; esac
           done
           exit $failed
 

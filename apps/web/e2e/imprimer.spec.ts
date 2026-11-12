@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 const AUDIT_ID = '6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10';
 const HASH = 'ab'.repeat(32);
@@ -124,7 +125,7 @@ async function install(page: Page): Promise<void> {
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

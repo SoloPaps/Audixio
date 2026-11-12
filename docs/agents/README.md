@@ -11,8 +11,6 @@ Dans **chaque** conversation, joindre **2 fichiers** : `@00-REGLES-COMMUNES.md` 
 | Schéma Supabase, migrations, RLS | `01-architecte-bdd.md` | Grok 4.7 → revue Opus 5.5 | 1 |
 | Capabilities, auth e-mail+mdp+Google/GitHub, preuves, liens | `02-securite-droits.md` | Opus 5.5 plan → Grok 4.7 | 2 |
 | Checks, notes A–F, vie privée partielle | `03-moteur-audit.md` | Grok 4.7 | 3 |
-| Header, footer, tokens, thèmes (une fois) | `04-shell-ui.md` | Grok 4.7 | 4 (début) |
-| Une page (accueil → rapport → compte → sites suivis) | `05-integration-pages.md` | Grok 4.7 + DeepSeek | 4 |
 | Tests, fixtures, scripts | `06-tests-scripts.md` | DeepSeek V4.1 Flash | 5 |
 | Stripe / Pro (**gelé**) | `07-paiements.md` | Opus 5.5 → Grok 4.7 | 5, après feu vert owner |
 | Relecture / sécurité finale | `08-relecteur.md` | Opus 5.5 | fin de phase + 5 |
@@ -21,7 +19,7 @@ Secours général : Composer 2.5 (jamais pour une décision sécurité).
 
 ## Ordre des agents
 `01 → (revue Opus) → 02 → 03 → 04 → 05 (une page par conversation) → motion → 06 → 08 → owner`. `07` seulement après le go-live / feu vert owner.
-Phase 0 (design figé, maquettes) = owner, déjà faite : `docs/design/maquettes/`.
+Design : charte v6, voir `docs/design/01-REGLES-STRICTES.md` et `docs/ETAT.md`.
 
 ## Résolues — décision owner 2026-10-29
 - ✅ **Stack** : on garde Astro + Svelte + Netlify Functions + Supabase, pas Next.js ; extension du projet et des 7 migrations (ex-point 1).
@@ -46,7 +44,7 @@ Phase 0 (design figé, maquettes) = owner, déjà faite : `docs/design/maquettes
 14. `etapes/00-LISEZ-MOI.md` : note quota Cursor « ~1 %, privilégier Gemini » — obsolète vs le routage de modèles actuel.
 15. Export lien équipe : « NON (masqué) sauf règle owner contraire » — non tranché (`MATRICE`).
 16. `User-Agent: AudixioBot` (`security.mdc`) — renommé le 29/10 ; le code doit suivre.
-17. « Audit rapide » pastille dans la nav : optionnelle, pas canon (`00-core.mdc`, `maquettes/INDEX.md`).
+17. « Audit rapide » pastille dans la nav : optionnelle, pas canon (`00-core.mdc`).
 
 ## Ce qui manque
 - Pas de fichier d'étapes **par phase 0–5** dans le dépôt (seulement `etapes/01–10` et les PART de `PLAN.md`) : à créer si l'owner garde le découpage en phases.

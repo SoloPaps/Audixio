@@ -273,7 +273,7 @@ Les clés Supabase locales viennent de `supabase status` et **ne vont pas** dans
 
 - Pack gelé : `docs/design/` (règles, pages, light/dark, logos, backlog).  
 - Canon soft-gate : `SOFT-GATE-PARTIEL-CANON.md` + **SSOT** `MATRICE-STATUT-DROITS-CANON.md`.  
-- **Stitch = structure** (rapport 5 écrans 28 oct sous `maquettes/page_rapport_hub` etc.). **Un design COMPLET** ; pas de hub PARTIEL Stitch séparé — Cursor code les états **Verrouillé**.  
+- **Stitch = structure** (rapport 5 écrans 28 oct (archivées)). **Un design COMPLET** ; pas de hub PARTIEL Stitch séparé — Cursor code les états **Verrouillé**.  
 - Serveur = capabilities ; jamais de findings sensibles dans le client locked.  
 - Corrections texte / promesse (8 domaines, passif par défaut, horodaté, jargon, assistant IA, lettres A–F) = **dans le code**.
 
@@ -372,7 +372,7 @@ Stack conservée : **Astro statique + îlots Svelte** (pas Next.js, donc **pas**
 
 ### Maquettes
 
-- Les maquettes (`docs/design/maquettes/finales/`) restent **en français uniquement**. Le lien **EN** de leur nav = la **même page sous `/en/`** dans le vrai site ; on ne crée pas de maquette anglaise.
+- Les maquettes (archivées hors du dépôt le 12/11/2026) restent **en français uniquement**. Le lien **EN** de leur nav = la **même page sous `/en/`** dans le vrai site ; on ne crée pas de maquette anglaise.
 
 ### Checklist Cursor (critères de fin)
 
@@ -459,7 +459,7 @@ Alertes **uniquement** pour les sites à **propriété prouvée** (cf. §6).
 
 ## 15. Robot Audixio et opt-out (ajout 30 oct 2026)
 
-> Maquette : `design/maquettes/finales/page_robot_audixio/page_robot_audixio.html` (liée depuis le pied de page, les pages légales et les mentions légales).
+> Maquette : maquette archivée (liée depuis le pied de page, les pages légales et les mentions légales).
 
 ### En clair
 - Page publique **`/robot`** qui explique ce que fait le robot, comment le reconnaître et comment l’exclure.
@@ -476,7 +476,7 @@ Alertes **uniquement** pour les sites à **propriété prouvée** (cf. §6).
 
 ## 16. Cookies, stockage local et durées de conservation (ajout 30 oct 2026)
 
-> Maquettes : bandeau `design/maquettes/finales/interface_bandeau_cookies/interface_bandeau_cookies.html` ; liste dans `page_politique_confidentialite` (chapitre 6 « Cookies & stockage »).
+> Maquettes : bandeau maquette archivée ; liste dans `page_politique_confidentialite` (chapitre 6 « Cookies & stockage »).
 
 | Élément | Type | Finalité | Consentement | Durée |
 |---|---|---|---|---|

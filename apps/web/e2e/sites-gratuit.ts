@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 /**
  * Compte gratuit connecté avec deux sites suivis : la fenêtre Pro de /sites
@@ -92,9 +93,7 @@ export async function stubFreeSites(page: Page): Promise<void> {
   }, session);
   await page
     .context()
-    .addCookies([
-      { name: 'audixio_connecte', value: '1', url: 'http://127.0.0.1:4321' },
-    ]);
+    .addCookies([{ name: 'audixio_connecte', value: '1', url: ORIGIN }]);
 }
 
 /** Ouvre la fenêtre Pro de /sites sur le plafond voulu. */

@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 const SITE = '00000000-0000-4000-8000-0000000000be';
 const session = {
@@ -57,8 +58,7 @@ async function openEnglishHistory(page: Page): Promise<void> {
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
     const headers = {
-      'access-control-allow-origin':
-        request.headers().origin ?? 'http://127.0.0.1:4321',
+      'access-control-allow-origin': request.headers().origin ?? ORIGIN,
       'access-control-allow-headers': '*',
       'access-control-allow-methods': '*',
       'content-type': 'application/json',

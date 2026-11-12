@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 // QA Mo 05/11 M2 : /compte/alertes sans ?site= enregistre vraiment.
 
@@ -47,7 +48,7 @@ async function openAlerts(
   });
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

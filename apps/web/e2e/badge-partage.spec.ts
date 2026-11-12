@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test';
 import { stubSession, toEnglish } from './en-session.js';
+import { escapeRe, ORIGIN } from './origin.js';
 
 // QA Mo 05/11, thème badge-partage : M3, B1, B2, B4.
 
@@ -55,7 +56,7 @@ test('M3 (bug_5db3cab6, bug_6de9c2d4) : badge visiteur sans lien public ni lien 
     const value = await code.inputValue();
     expect(value).not.toContain('/rapport');
     expect(value).not.toContain(GUEST_ID);
-    expect(value).toContain('href="http://127.0.0.1:4321/"');
+    expect(value).toContain(`href="${ORIGIN}/"`);
   }
   // Pas de champ « Lien public » vide ni de bouton « Copier le lien » inerte.
   await expect(page.locator('#lnk')).toHaveCount(0);
@@ -241,7 +242,7 @@ test('badge connecté sans lien public : créer le lien d’abord, jamais de cod
   await page.getByRole('button', { name: 'Créer le lien public' }).click();
   const code = page.locator('#code');
   await expect(code).toHaveValue(
-    /href="http:\/\/127\.0\.0\.1:4321\/partage\/jeton-public-1"/,
+    new RegExp(`href="${escapeRe(ORIGIN)}/partage/jeton-public-1"`),
   );
   expect(posted).toHaveLength(1);
   expect(JSON.parse(posted[0] ?? '{}')).toEqual({
@@ -253,7 +254,7 @@ test('badge connecté sans lien public : créer le lien d’abord, jamais de cod
     expect(await code.inputValue()).not.toContain('/rapport');
   }
   await expect(page.locator('#lnk')).toHaveValue(
-    'http://127.0.0.1:4321/partage/jeton-public-1',
+    `${ORIGIN}/partage/jeton-public-1`,
   );
   await expect(
     page.getByRole('link', { name: 'Voir la page publique' }),
@@ -277,7 +278,7 @@ test('badge connecté avec lien public : le code vise /partage', async ({
       await route.fulfill({
         status: 200,
         headers: {
-          'access-control-allow-origin': 'http://127.0.0.1:4321',
+          'access-control-allow-origin': ORIGIN,
           'access-control-allow-headers': '*',
           'access-control-allow-methods': '*',
           'content-type': 'application/json',
@@ -294,7 +295,7 @@ test('badge connecté avec lien public : le code vise /partage', async ({
   );
   await page.goto(`/badge?id=${GUEST_ID}&theme=light`);
   await expect(page.locator('#code')).toHaveValue(
-    /href="http:\/\/127\.0\.0\.1:4321\/partage\/deja-public"/,
+    new RegExp(`href="${escapeRe(ORIGIN)}/partage/deja-public"`),
     { timeout: 15_000 },
   );
   await expect(page.getByText('Créez d’abord le lien public')).toHaveCount(0);

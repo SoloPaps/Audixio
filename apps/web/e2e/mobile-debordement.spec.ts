@@ -1,5 +1,6 @@
 import { mkdirSync } from 'node:fs';
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 /**
  * Débordement horizontal mobile.
@@ -581,7 +582,7 @@ async function install(page: Page, scene: Scene): Promise<void> {
       {
         name: 'audixio_connecte',
         value: '1',
-        url: 'http://127.0.0.1:4321',
+        url: ORIGIN,
       },
     ]);
   }

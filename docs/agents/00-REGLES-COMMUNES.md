@@ -6,7 +6,7 @@
 ## 0. Décisions owner 2026-10-29 (canon, priment sur TOUS les docs du dépôt)
 
 - **Notes = lettres A à F.**
-- **Thème** : clair par défaut ; dès l'entrée sur une page, adapté automatiquement à la préférence navigateur (`prefers-color-scheme`) → le thème sombre existe (tokens `04-THEME-DARK.md`), sans flash (anti-FOUC). Toggle manuel conservé : **le choix manuel mémorisé prime sur la préférence navigateur** (décidé owner 2026-10-29).
+- **Thème** : clair par défaut ; dès l'entrée sur une page, adapté automatiquement à la préférence navigateur (`prefers-color-scheme`) → le thème sombre existe (`theme-dark.css`), sans flash (anti-FOUC). Toggle manuel conservé : **le choix manuel mémorisé prime sur la préférence navigateur** (décidé owner 2026-10-29).
 - **Stack conservée** : Astro statique + îlots Svelte + Netlify Functions + Supabase. **Pas Next.js.** On étend le projet existant et ses 7 migrations (`supabase/migrations/`), jamais de réécriture.
 - **Auth** = e-mail + mot de passe + OAuth Google et GitHub (Supabase Auth). **Remplace le magic link** (ancienne décision, corrigée dans les docs le 29/10/2026).
 - **Langues FR/EN** : aucun texte en dur ; tout passe par `messages/fr.json` / `en.json` ; routage Astro FR `/` + EN `/en/`. Détail et checklist : `docs/produit/FONCTIONNEMENT.md` §12bis (30/10/2026).
@@ -19,7 +19,7 @@
 2. `docs/produit/FONCTIONNEMENT.md` — SSOT produit.
 3. `docs/produit/MATRICE-STATUT-DROITS-CANON.md` — SSOT droits (« qui voit quoi »).
 4. `docs/produit/SOFT-GATE-PARTIEL-CANON.md` — soft-gate PARTIEL + lock-components.
-5. `docs/design/01-REGLES-STRICTES.md` — avant toute UI ; gagne sur Stitch pour le chrome. *Source : `AGENTS.md` §Design.*
+5. `docs/design/01-REGLES-STRICTES.md` — avant toute UI . *Source : `AGENTS.md` §Design.*
 6. `docs/etapes/` (une étape) ou `docs/dev/PLAN.md` (une PART) — `PLAN.md` et `QUESTIONS.md` sont **historiques** : ne pas contredire DECISIONS / FONCTIONNEMENT. *Source : `docs/LISEZ-MOI.md` §3–4.*
 - **Jamais** utiliser `docs/archive/**` ni `docs/archive/journal/**` comme source pour coder. *Source : `docs/LISEZ-MOI.md` §6–7, `docs/archive/journal/README.md`.*
 
@@ -32,7 +32,7 @@
 - **Une étape = une conversation Cursor courte** qui pointe vers les docs canon. *Source : routage `audixio-backend-modeles-structure.md` (Méthode) + `AGENTS.md` (« Une PART / une étape »).*
 - Une PR par PART ou par étape ; commits conventionnels `feat:` `fix:` `docs:` `test:` `chore:` `refactor:`. *Source : `AGENTS.md` §Qualité.*
 - **Pas de `git push`** sans demande explicite de l'owner. *Source : `docs/etapes/00-LISEZ-MOI.md`, `etapes/00-LISEZ-MOI.md` §5.*
-- **Ne rien inventer** : pas de feature hors `FONCTIONNEMENT.md`, pas de plugin Cursor inexistant, pas de claim marketing. *Source : `etapes/00-LISEZ-MOI.md`, `AGENTS.md` §Plugins, `couleurs-palette-et-phrases-Cursor.md` §B.6.*
+- **Ne rien inventer** : pas de feature hors `FONCTIONNEMENT.md`, pas de plugin Cursor inexistant, pas de claim marketing. *Source : `etapes/00-LISEZ-MOI.md`, `AGENTS.md` §Plugins§B.6.*
 
 ## 3. Marque, langue, copie
 
@@ -60,11 +60,9 @@ Disponibilité et Réputation **hors** note ; Search Console = une des 5 méthod
 
 ## 6. Design (si l'agent touche l'UI)
 
-- Maquettes `docs/design/maquettes/<dossier>/code.html` + `screen.png` = **références figées** du body (pixel-perfect structure). **Ne jamais modifier** les maquettes, leur design, couleurs ou textes sauf demande explicite de l'owner. *Source : `AGENTS.md` §Design, `01-REGLES-STRICTES.md` §4.*
-- Stitch **gelé** : ne pas le relancer. *Source : `01-REGLES-STRICTES.md` §1.*
-- Couleurs = tokens (`apps/web/src/styles/tokens.css`) **palette v2 (boutons `#3D52A0` survol `#1E2A55`, accent `#7091E6`, secondaire `#8697C4`, bordures `#ADBBDA`, surfaces `#EDE8F5`, texte `#1E2A55` / `#4A5585`)** ; aucun hex inventé ; aucune teinte décorative (accent, secondaire, bordures) ne code un score — seules les couleurs de notes/statuts le font ; pas de violet, pas de `#000` plein écran. *Source : `couleurs-palette-et-phrases-Cursor.md` §A, `design.mdc`.*
-- Charte claire = `docs/design/DESIGN.md` + `03-THEME-LIGHT-ARC-SOFT.md` ; sombre gelé = `04-THEME-DARK.md`. Clair par défaut, puis `prefers-color-scheme` appliqué dès l'entrée (décision owner 2026-10-29). *Source : `design.mdc` + §0.*
-- Police shell = **Inter** (auto-hébergée, zéro Google Fonts) ; JetBrains Mono pour valeurs techniques. *Source : `design.mdc`, `couleurs…` §A.4.*
+- Couleurs = jetons v6 (`[data-v6]` dans `tokens.css`, sombre seulement dans `theme-dark.css`). *Source : `docs/design/01-REGLES-STRICTES.md`.*
+- Charte = `docs/design/DESIGN.md` (v6). Clair par défaut, puis `prefers-color-scheme` appliqué dès l'entrée (décision owner 2026-10-29).
+- Police = **Geist** / **Geist Mono**, auto-hébergées, zéro requête tierce.
 - Logo : uniquement `docs/design/logos/audixio-logos/out/` ; ne jamais régénérer/recolorer. *Source : `01-REGLES-STRICTES.md` §3.*
 - Nav : Accueil · Méthode · Sites suivis · Tarifs | FR/EN · thème · Connexion (ou Compte). Footer compact. *Source : `NAV-CANON-desktop-et-mobile.md`, `FOOTER-CANON-compact.md`.*
 - Statut = forme + libellé + couleur ; contraste AA ; `prefers-reduced-motion`. *Source : `01-REGLES-STRICTES.md` §6.*

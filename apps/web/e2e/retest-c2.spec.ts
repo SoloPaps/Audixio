@@ -1,4 +1,5 @@
 import { expect, type Page, test } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 import { stubSession } from './session-stub.js';
 
 // Retest C2 : /historique avec un site inconnu, d’un autre compte ou mal
@@ -25,7 +26,7 @@ async function signedIn(page: Page): Promise<void> {
   await stubSession(page);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
-    const origin = request.headers().origin ?? 'http://127.0.0.1:4321';
+    const origin = request.headers().origin ?? ORIGIN;
     const headers = {
       'access-control-allow-origin': origin,
       'access-control-allow-headers': '*',

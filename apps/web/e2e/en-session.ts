@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { ORIGIN } from './origin.js';
 
 const USER = '11111111-1111-4111-8111-111111111111';
 
@@ -38,8 +39,7 @@ export async function stubSession(
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
     const headers = {
-      'access-control-allow-origin':
-        request.headers().origin ?? 'http://127.0.0.1:4321',
+      'access-control-allow-origin': request.headers().origin ?? ORIGIN,
       'access-control-allow-headers': '*',
       // Joker CORS (pas de cookies) : comme allow-headers, aucune liste de méthodes.
       'access-control-allow-methods': '*',

@@ -15,7 +15,7 @@ Le site existe en français (référence, à la racine) et en anglais (sous `/en
 ## Fichiers à lire
 
 - `docs/produit/FONCTIONNEMENT.md` §12bis (règles, SEO, rapports, e-mails)
-- `docs/design/maquettes/chrome/NAV-CANON-desktop-et-mobile.md` (bouton FR|EN dans la nav)
+- `apps/web/src/components/CanonBar.svelte` (bouton FR|EN dans la nav)
 - `apps/web/astro.config.mjs`, `apps/web/src/i18n/` (existant : `fr.ts`, `report-fr.ts`, `brief-fr.ts`, `index.ts`, `format.ts`)
 
 ## À faire (dans l'ordre)
@@ -32,7 +32,7 @@ Le site existe en français (référence, à la racine) et en anglais (sous `/en
 
 ## Maquettes
 
-Les maquettes `docs/design/maquettes/finales/` restent **en français uniquement**. Leur lien **EN** correspond, dans le vrai site, à la même page sous `/en/`. On ne crée **pas** de maquette anglaise.
+Les anciennes maquettes (archivées) restaient **en français uniquement**. Leur lien **EN** correspond, dans le vrai site, à la même page sous `/en/`. On ne crée **pas** de maquette anglaise.
 
 ## Critères de fin (checklist)
 

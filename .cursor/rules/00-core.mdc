@@ -11,7 +11,7 @@ alwaysApply: true
 - Never read packages/engine/data/**, pnpm-lock.yaml, node_modules, builds unless user gives exact path.
 - One PART or one étape = AGENTS.md + that section + listed files only. Max 8 files. No repo-wide explore.
 - Before tools: one line listing files to open.
-- UI : lire `docs/design-pack-2026-10-26/01-REGLES-STRICTES.md` avant le chrome. Stitch gelé. Les PNG `docs/design-pack-2026-10-26/maquettes/**/screen.png` sont des modèles visuels à lire avec le code, pas un calque 1:1. Le pack gagne sur les maquettes. Ignorer les PNG ≤ 100 octets. Clair = `docs/DESIGN.md` (PR #66). Sombre = `04-THEME-DARK.md` + PNG `dark-ref-*.png`.
+- UI : lire `docs/design/01-REGLES-STRICTES.md` (v6) avant toute interface. Maquettes Stitch archivées hors du dépôt.
 - Un seul `AppHeader`. Nav : Accueil · Méthode · Sites suivis · Documentation | FR/EN · Connexion. INTERDIT famille B, item Progression, Blog/Actu, bottom Diagnostic·Méthode·Sites·Compte, Material `vital_signs`.
 - Logo unique : `docs/design-pack-2026-10-26/assets/logo-icon.jpg` + `logo-lockup.jpg`.
 - Règles produit : `docs/FONCTIONNEMENT.md` (2 sites / 1 lien, soft-gate, brief IA gratuit avec compte, Pro après go-live, vie privée option C). Pas inventer de features. Les maquettes n’écrasent pas ces règles.

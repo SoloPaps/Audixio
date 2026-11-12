@@ -14,7 +14,7 @@ Développement local. Aucun site de production : le déploiement Netlify n’a p
 Au **26 octobre 2026** :
 
 - PART-00 à PART-26 sont dans le dépôt. PART-26 (durcissement et recette, #36) mesure un build servi en local : [`docs/dev/RECETTE.md`](docs/dev/RECETTE.md).
-- L’interface d’audit est en place (accueil, rapport, sites, historique). L’habillage Arc Soft est sur `main` (#38, #39, #40).
+- L’interface d’audit est en place (accueil, rapport, sites, historique). La refonte v6 avance lot par lot (`docs/ETAT.md`).
 - Clarté de l’interface : Vagues 1, 2 et 3 sur `main` (#45, #46, #53). La suite (axe partiel, disponibilité, questionnaire, anglais) est sur `main` (#59).
 - Le brief agent est dans l’interface : cases cochées, choix Rien / Vérif / Fix, pile reconnue.
 - Pack design gelé : [`docs/design/`](docs/design/00-LISEZ-MOI.md) (PR #67).
@@ -22,21 +22,13 @@ Au **26 octobre 2026** :
 
 Le déploiement Netlify de production est une action manuelle, **une seule fois**, réservée au propriétaire, après PART-26 (**PART-27**). Checklist : [`docs/dev/PLAN.md`](docs/dev/PLAN.md). En développement, seul `netlify dev` est autorisé : pas de `netlify deploy`, pas de liaison Git, pas de deploy preview, pas de branch deploy.
 
-## Design gelé (2026-10-26)
+## Design (v6)
 
-Stitch est gelé. On ne le relance pas pour la navigation, le logo ou le thème sombre. Cursor reste proche des maquettes (hiérarchie, sections, checklists), pas un calque pixel-perfect.
-
-Les PNG [`docs/design/maquettes/`](docs/design/maquettes/INDEX.md) sont des modèles visuels à lire avec le code (`screen.png` par écran). Les règles produit nouvelles — 2 sites / 1 lien, soft-gate **PARTIEL** (28 oct 2026), brief IA selon matrice compte/vérif (aucun / PARTIEL / COMPLET), Pro plus tard, vie privée option C — viennent de [`docs/produit/FONCTIONNEMENT.md`](docs/produit/FONCTIONNEMENT.md) + [`SOFT-GATE-PARTIEL-CANON.md`](docs/produit/SOFT-GATE-PARTIEL-CANON.md), pas des pixels.
-
-Pack : [`docs/design/00-LISEZ-MOI.md`](docs/design/00-LISEZ-MOI.md). Règles non négociables : [`01-REGLES-STRICTES.md`](docs/design/01-REGLES-STRICTES.md). En conflit avec une maquette Stitch, ce fichier gagne.
-
-- **Navigation.** Un seul `AppHeader`. Libellés, dans cet ordre : **Accueil · Méthode · Sites suivis · Documentation** | **FR/EN** · **Connexion**. Le drawer mobile reprend ces cinq items, plus FR/EN.
-- **Interdit en navigation.** Famille B (Audit actif, Historique, Générateur Brief), item Progression, Blog / Actu, bottom-bar « Diagnostic · Méthode · Sites · Compte ».
-- **Logo unique.** Fichiers officiels : [`docs/design/logos/audixio-logos/out/`](docs/design/logos/audixio-logos/out/) (mode d'emploi : [`docs/design/05-LOGO.md`](docs/design/05-LOGO.md) ; les anciens JPG sont archivés). Interdit : Material Symbols `vital_signs`, etc. Détail : [`05-LOGO.md`](docs/design/05-LOGO.md).
-- **Clair.** Arc Soft (PR #66). Tokens : [`docs/design/DESIGN.md`](docs/design/DESIGN.md) et [`03-THEME-LIGHT-ARC-SOFT.md`](docs/design/03-THEME-LIGHT-ARC-SOFT.md).
-- **Sombre figé.** [`04-THEME-DARK.md`](docs/design/04-THEME-DARK.md), refs PNG dans `assets/`.
-- **Maquettes Stitch.** Fichiers extraits dans [`docs/design/maquettes/`](docs/design/maquettes/INDEX.md) (`screen.png` + `code.html`). Pas de ZIP dans le dépôt. Deux écrans sans PNG valide : voir `SCREEN-INVALID.txt`.
-- **Pages et backlog.** [`02-PAGES.md`](docs/design/02-PAGES.md), [`06-BACKLOG.md`](docs/design/06-BACKLOG.md). Hors lot : [`07-PLUS-TARD.md`](docs/archive/audigy-titled-2026-10-28/07-PLUS-TARD.md).
+- Règles : [`docs/design/01-REGLES-STRICTES.md`](docs/design/01-REGLES-STRICTES.md). Charte : [`docs/design/DESIGN.md`](docs/design/DESIGN.md).
+- Jetons, composants, mouvement : [`docs/design/v6/INTEGRATION-v6.md`](docs/design/v6/INTEGRATION-v6.md).
+- Pages, adresses et redirections : [`docs/design/v6/STRUCTURE.md`](docs/design/v6/STRUCTURE.md). État des lots : [`docs/ETAT.md`](docs/ETAT.md).
+- Logo : [`docs/design/05-LOGO.md`](docs/design/05-LOGO.md).
+- Les maquettes Stitch, la palette v2 et Arc Soft sont archivées hors du dépôt (12/11/2026).
 
 ## Démarrage local
 
@@ -94,7 +86,7 @@ Carte complète : [`docs/LISEZ-MOI.md`](docs/LISEZ-MOI.md). Règles agents : [`A
 |---|---|
 | [`docs/produit/FONCTIONNEMENT.md`](docs/produit/FONCTIONNEMENT.md) | Produit : parcours, gratuit/Pro, partage, plafonds, stockage |
 | [`docs/etapes/00-LISEZ-MOI.md`](docs/etapes/00-LISEZ-MOI.md) | Étapes ordonnées pour la modification complète du site |
-| [`docs/design/DESIGN.md`](docs/design/DESIGN.md) | Charte obligatoire (clair + sombre §2.4) |
+| [`docs/design/DESIGN.md`](docs/design/DESIGN.md) | Charte v6 |
 | [`docs/design/00-LISEZ-MOI.md`](docs/design/00-LISEZ-MOI.md) | Pack design gelé |
 | [`docs/produit/METHODE.md`](docs/produit/METHODE.md) | Notation, version 2026.1 |
 | [`docs/dev/PLAN.md`](docs/dev/PLAN.md) | Architecture, PART-00…26, PART-27 owner |

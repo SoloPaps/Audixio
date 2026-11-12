@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { E2E_PORT, HOST } from './origin.js';
 
 async function expectNoViolations(
   page: import('@playwright/test').Page,
@@ -125,7 +126,7 @@ test('aucune requête tierce', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   const third = urls.filter((url) => {
     const host = new URL(url).host;
-    return host !== '127.0.0.1:4321' && host !== 'localhost:4321';
+    return host !== HOST && host !== `localhost:${E2E_PORT}`;
   });
   expect(third).toEqual([]);
 });
