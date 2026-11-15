@@ -1191,7 +1191,7 @@ describe('RLS Supabase local', () => {
       );
       if (hit) {
         expect([
-          'Votre lien de connexion Audigy',
+          'Votre lien de connexion Audixio',
           'Confirmez votre adresse Audixio',
         ]).toContain(hit.Subject);
         const full = await fetch(

@@ -3,7 +3,7 @@ import {
   createSafeFetch,
   type Resolve,
   type SafeFetch,
-} from '@audigy/net';
+} from '@audixio/net';
 
 export const PUBLIC_IP = '93.184.216.34';
 

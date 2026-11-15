@@ -1,4 +1,4 @@
-import { INTAKE, type RateBudget } from '@audigy/db';
+import { INTAKE, type RateBudget } from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import {
   handleAccessRequest,

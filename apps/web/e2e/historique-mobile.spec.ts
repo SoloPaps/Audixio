@@ -25,7 +25,7 @@ function auditId(index: number): string {
 
 async function openHistory(page: Page, scores: readonly number[]) {
   await page.addInitScript((value) => {
-    globalThis.localStorage.setItem('audigy-auth', JSON.stringify(value));
+    globalThis.localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({
@@ -70,7 +70,9 @@ async function openHistory(page: Page, scores: readonly number[]) {
       route.fulfill({ status: 200, headers, body: JSON.stringify(body) });
     if (url.includes('/rest/v1/audits')) return json(audits);
     if (url.includes('/rest/v1/sites'))
-      return json([{ id: SITE, host: 'mobile.audigy.test', hosting: 'other' }]);
+      return json([
+        { id: SITE, host: 'mobile.audixio.test', hosting: 'other' },
+      ]);
     if (url.includes('/rest/v1/profiles')) return json({ plan: 'pro' });
     if (url.includes('read_rapport_apercu')) {
       const raw = request.postData() ?? '';

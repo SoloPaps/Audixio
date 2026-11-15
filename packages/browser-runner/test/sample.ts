@@ -48,7 +48,7 @@ export function sampleResult(): BrowserAuditResult {
     version: 1,
     mode: 'passive',
     runner: {
-      name: 'audigy-browser',
+      name: 'audixio-browser',
       browser: 'chromium 156.0.8078.4',
       axe: '4.14.0',
       fetchUserAgent: 'AudixioBot/1.0',

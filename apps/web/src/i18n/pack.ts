@@ -1,6 +1,6 @@
 /** Dictionnaire anglais posé avant l’hydratation. Absent : le français reste. */
 
-const SLOT = '__audigy_en';
+const SLOT = '__audixio_en';
 
 type Bag = Record<string, string>;
 

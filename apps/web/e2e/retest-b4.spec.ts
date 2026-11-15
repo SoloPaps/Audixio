@@ -15,7 +15,7 @@ for (const theme of ['light', 'dark'] as const) {
     }) => {
       await page.emulateMedia({ colorScheme: theme });
       await page.addInitScript((value) => {
-        localStorage.setItem('audigy-theme', value);
+        localStorage.setItem('audixio-theme', value);
       }, theme);
       await page.goto(path);
       const card = page.locator('.session-wall');

@@ -21,8 +21,8 @@ async function openScore(
           localStorage: { setItem: (key: string, item: string) => void };
         }
       ).localStorage;
-      storage.setItem('audigy-en', dictionary);
-      storage.setItem('audigy-locale', 'en');
+      storage.setItem('audixio-en', dictionary);
+      storage.setItem('audixio-locale', 'en');
     }, pack);
   }
   await page.goto(`${path}?theme=${theme}`);

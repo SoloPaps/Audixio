@@ -36,7 +36,7 @@ Dernière mise à jour : 12/11/2026, PR « lot 6b, robot de fin de lot ».
 - Captures connectées : uniquement avec une session simulée locale (`e2e/en-session.ts`, `e2e/h-history.ts`, `node_modules/.tmp/site-shots.mjs`), jamais un vrai compte.
 - CSP des adresses réécrites : `scripts/publish-policy.ts` donne une seule CSP par famille (`/rapport`, `/partage`, `/score`, `/verifier`), union des empreintes de ses pages, sous `/famille` et `/famille/*` ; une adresse réécrite reçoit donc la politique de la page servie (test « CSP des adresses réécrites »).
 - Tranches téléphone (390 px FR clair, 780 × 1200) : `/workspace/port-accueil/tools/tel.mjs` puis `tel.py`, dans `/workspace/boards/tel/`.
-- Après une coupure de la machine : `pnpm install --frozen-lockfile` puis `pnpm --filter @audigy/web exec playwright install chromium`.
+- Après une coupure de la machine : `pnpm install --frozen-lockfile` puis `pnpm --filter @audixio/web exec playwright install chromium`.
 
 ## Règles
 
@@ -54,7 +54,7 @@ pnpm guard && pnpm lint && pnpm copy-lint && pnpm typecheck
 pnpm test                       # unitaires (Supabase local pour certains)
 pnpm build && pnpm self-audit && pnpm test:a11y
 pnpm test:ui                    # e2e UI ; E2E_PORT=4322 pour changer de port (4321 par défaut)
-pnpm --filter @audigy/web exec playwright test --shard=1/4   # une part des e2e
+pnpm --filter @audixio/web exec playwright test --shard=1/4   # une part des e2e
 ```
 
 ## Gabarits

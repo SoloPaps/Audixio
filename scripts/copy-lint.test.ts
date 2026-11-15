@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { failureCount, lintSource, lintText, scan } from './copy-lint.js';
 
 async function withFixture(run: (dir: string) => Promise<void>): Promise<void> {
-  const dir = await mkdtemp(path.join(tmpdir(), 'audigy-copy-'));
+  const dir = await mkdtemp(path.join(tmpdir(), 'audixio-copy-'));
   try {
     await run(dir);
   } finally {

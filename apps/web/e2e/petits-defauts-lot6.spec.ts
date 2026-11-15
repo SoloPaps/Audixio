@@ -86,7 +86,7 @@ test('/audit-echoue : « L’audit » n’apparaît qu’une fois dans le titre'
           createdAt: '2026-11-12T10:00:00.000Z',
           finishedAt: '2026-11-12T10:01:00.000Z',
           error: '',
-          site: { url: 'https://absent.audigy.test/' },
+          site: { url: 'https://absent.audixio.test/' },
         },
         findings: [],
         domains: [],
@@ -97,7 +97,7 @@ test('/audit-echoue : « L’audit » n’apparaît qu’une fois dans le titre'
   );
   await page.goto(`/audit-echoue?id=${id}`);
   await expect(page.locator('h1')).toHaveText(
-    'L’audit de absent.audigy.test n’a pas abouti',
+    'L’audit de absent.audixio.test n’a pas abouti',
   );
   const text = await page.locator('h1').evaluate((h) => h.textContent ?? '');
   expect(text.match(/L’audit/g)?.length).toBe(1);

@@ -5,7 +5,7 @@ import {
   lienDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Création, liste et révocation des liens de partage. */
 export default async (req: Request): Promise<Response> => {

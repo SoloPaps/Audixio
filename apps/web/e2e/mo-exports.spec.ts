@@ -7,7 +7,7 @@ import { openHistory } from './h-history.js';
 test('M7 : « Exporter » de /historique télécharge l’historique en CSV', async ({
   page,
 }) => {
-  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
+  await openHistory(page, [72, 88], 'light', 'bon.audixio.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('88', {
     timeout: 15_000,
   });
@@ -18,7 +18,7 @@ test('M7 : « Exporter » de /historique télécharge l’historique en CSV', as
     page.locator('#hexpm [data-hfmt="csv"]').click(),
   ]);
   expect(download.suggestedFilename()).toBe(
-    'audixio-historique-bon.audigy.test.csv',
+    'audixio-historique-bon.audixio.test.csv',
   );
   const path = await download.path();
   const text = (await readFile(path, 'utf8')).replace(/^\uFEFF/u, '');

@@ -890,7 +890,7 @@ const frCore = {
   'reputation.avis.error': 'Non testé : les avis n’ont pas répondu.',
   'reputation.avis.absent': 'Non testé : ce lieu est introuvable.',
   'reputation.avis.missing': 'Nous n’avons pas consulté les avis.',
-  'cli.usage': 'Utilisation : audigy audit <adresse> [--json] [--browser]',
+  'cli.usage': 'Utilisation : audixio audit <adresse> [--json] [--browser]',
   'cli.error.command': 'Commande inconnue.',
   'cli.error.url': 'Adresse invalide. Exemple : https://exemple.fr',
   'cli.error.failed': 'L’audit n’a pas pu aboutir.',
@@ -1807,7 +1807,7 @@ const frCore = {
   'vie_privee.elements.fail':
     'Les pages légales n’indiquent ni l’éditeur, ni l’hébergeur, ni un contact.',
   'legal.email': 'Audixio@outlook.fr',
-  'legal.site': 'https://audigyweb.fr',
+  'legal.site': 'https://audixio.fr',
   'legal.review':
     'Le propriétaire doit encore relire ce texte avant l’ouverture.',
   'meta.terms.title': 'Conditions d’utilisation — Audixio',

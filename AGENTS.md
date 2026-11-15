@@ -71,16 +71,16 @@ Ne pas inventer d'outils inexistants. Ce qui est en place :
 
 | Outil | Rôle |
 |---|---|
-| **pnpm** 10 (`packageManager` racine) | Monorepo, filtres `@audigy/*` *(noms packages/lab historiques ; UI = **Audixio**)* |
+| **pnpm** 10 (`packageManager` racine) | Monorepo, filtres `@audixio/*` *(noms packages/lab historiques ; UI = **Audixio**)* |
 | **Node** 22 (`engines`: `>=22 <23`) | Runtime |
 | **Vitest** | Tests unitaires / intégration |
-| **Playwright** | UI + runner navigateur (`@audigy/browser-runner`) |
+| **Playwright** | UI + runner navigateur (`@audixio/browser-runner`) |
 | **Biome** | Lint / format (`pnpm lint`, `pnpm format`) |
 | **Supabase CLI** | `supabase start` en local (Docker) |
 | **Netlify CLI** | **dev only** (`netlify dev --offline`) — jamais deploy |
 | **TypeScript** | `pnpm typecheck` |
 
-Scripts utiles : `pnpm i`, `pnpm check`, `pnpm test`, `pnpm build`. Audit bout-en-bout : `docs/dev/DEV-LOCAL.md` (lab `*.audigy.test` — historique technique ; marque UI = **Audixio**).
+Scripts utiles : `pnpm i`, `pnpm check`, `pnpm test`, `pnpm build`. Audit bout-en-bout : `docs/dev/DEV-LOCAL.md` (lab `*.audixio.test` — historique technique ; marque UI = **Audixio**).
 
 ---
 

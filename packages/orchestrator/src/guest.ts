@@ -4,14 +4,14 @@ import {
   OPEN_DOMAINS,
   partialDomainCount,
   partialLabel,
-} from '@audigy/db';
+} from '@audixio/db';
 import {
   type Check,
   DOMAINS,
   type FixSheet,
   type RunContext,
-} from '@audigy/engine';
-import type { RequestBudgetOptions } from '@audigy/net';
+} from '@audixio/engine';
+import type { RequestBudgetOptions } from '@audixio/net';
 import { createAuditContext, defaultChecks } from './context.js';
 import {
   type ApiDeps,

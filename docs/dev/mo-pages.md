@@ -2,7 +2,7 @@
 
 Liste préparée au lot 6b. **Mo n’est pas lancé** : il demande la clé Momentic et
 l’accord de l’owner avant chaque passe. Données : uniquement le labo local
-(`*.audigy.test`), un compte de test local et des audits invités ; jamais un vrai
+(`*.audixio.test`), un compte de test local et des audits invités ; jamais un vrai
 compte ni un vrai site client.
 
 Chaque page : FR puis EN (sélecteur de langue), clair puis sombre (bouton thème),

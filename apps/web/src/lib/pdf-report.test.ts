@@ -259,13 +259,13 @@ describe('buildPdfReport, site nommé (QA Mo M12)', () => {
         globalScore: 78,
         site: {
           ...base.audit.site,
-          url: 'https://bon.audigy.test/',
+          url: 'https://bon.audixio.test/',
           label: 'Exemple vérifié',
         },
       },
     };
     const view = buildPdfReport(named);
-    expect(view.host).toBe('bon.audigy.test');
+    expect(view.host).toBe('bon.audixio.test');
     expect(JSON.stringify(view)).not.toContain('Exemple vérifié');
   });
 

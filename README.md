@@ -44,9 +44,9 @@ Supabase reste **local** en développement. Les clés viennent de `supabase stat
 
 `pnpm check` enchaîne le garde-fou anti-déploiement, Biome, le copy-lint, le typecheck, Vitest, le build (`apps/web/dist`, `netlify/dist/functions`), l’auto-audit local, puis les tests d’interface et d’accessibilité.
 
-Pour l’application et un audit de bout en bout (labo `*.audigy.test`, `netlify dev --offline --filter @audigy/web`, CLI), suivre [`docs/dev/DEV-LOCAL.md`](docs/dev/DEV-LOCAL.md). N’auditer que le labo, ou un site dont vous êtes propriétaire.
+Pour l’application et un audit de bout en bout (labo `*.audixio.test`, `netlify dev --offline --filter @audixio/web`, CLI), suivre [`docs/dev/DEV-LOCAL.md`](docs/dev/DEV-LOCAL.md). N’auditer que le labo, ou un site dont vous êtes propriétaire.
 
-Chromium du runner, une fois : `pnpm --filter @audigy/browser-runner exec playwright install chromium`.
+Chromium du runner, une fois : `pnpm --filter @audixio/browser-runner exec playwright install chromium`.
 
 ### Interdits en développement
 

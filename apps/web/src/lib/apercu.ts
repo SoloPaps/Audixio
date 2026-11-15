@@ -1,4 +1,4 @@
-import type { Database } from '@audigy/db';
+import type { Database } from '@audixio/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface ApercuDomaine {

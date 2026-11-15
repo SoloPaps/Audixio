@@ -331,8 +331,8 @@ export function bindReadingAids(copyPrefix: string): void {
         // Le préfixe vient d’un data-attribut que la traduction live ne voit pas.
         const english =
           document.documentElement.lang === 'en'
-            ? (globalThis as { __audigy_en?: Record<string, string> })
-                .__audigy_en?.['mq.lg.111']
+            ? (globalThis as { __audixio_en?: Record<string, string> })
+                .__audixio_en?.['mq.lg.111']
             : undefined;
         api?.say(`${english ?? copyPrefix}${value}`, true);
         window.setTimeout(() => button.classList.remove('done'), 2400);

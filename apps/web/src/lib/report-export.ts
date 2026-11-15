@@ -149,7 +149,7 @@ export function parisCivilDay(date: Date): string {
 }
 
 export function markdownFilename(url: string, at: Date): string {
-  return `audigy-${exportHost(url)}-${parisCivilDay(at)}.md`;
+  return `audixio-${exportHost(url)}-${parisCivilDay(at)}.md`;
 }
 
 function scoreLine(score: number | null): string {

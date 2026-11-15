@@ -90,8 +90,8 @@ $effect(() => {
     );
     if (row) checked = { ...checked, [row.id]: true };
   };
-  window.addEventListener('audigy:brief-add', onAdd);
-  return () => window.removeEventListener('audigy:brief-add', onAdd);
+  window.addEventListener('audixio:brief-add', onAdd);
+  return () => window.removeEventListener('audixio:brief-add', onAdd);
 });
 const countsBrief = $derived({
   failCount: briefRows.filter((row) => row.catalogStatus === 'fail').length,

@@ -1,6 +1,6 @@
 /**
  * Calculs de /methode v6, partagés par le rendu serveur et le navigateur.
- * Le barème suit GRADE_THRESHOLDS (@audigy/db) : le test unitaire le vérifie.
+ * Le barème suit GRADE_THRESHOLDS (@audixio/db) : le test unitaire le vérifie.
  */
 
 export type Grade = 'A' | 'B' | 'C' | 'D' | 'E' | 'F';

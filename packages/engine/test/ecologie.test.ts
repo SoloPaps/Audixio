@@ -6,7 +6,7 @@ import {
   type ExternalApi,
   type ExternalRequest,
   GREEN_WEB_HOST,
-} from '@audigy/net';
+} from '@audixio/net';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { fr, type MessageKey } from '../../../apps/web/src/i18n/fr.js';
 import { failureCount, lintText } from '../../../scripts/copy-lint.js';

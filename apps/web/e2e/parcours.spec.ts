@@ -357,8 +357,8 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
           localStorage: { setItem: (key: string, item: string) => void };
         }
       ).localStorage;
-      storage.setItem('audigy-auth', JSON.stringify(value));
-      storage.setItem('audigy-next', next);
+      storage.setItem('audixio-auth', JSON.stringify(value));
+      storage.setItem('audixio-next', next);
     },
     {
       value: session,
@@ -411,7 +411,7 @@ test('parcours accueil, connexion, progression, rapport et sites', async ({
         localStorage: { getItem: (key: string) => string | null };
       }
     ).localStorage;
-    return storage.getItem('audigy-auth');
+    return storage.getItem('audixio-auth');
   });
   await page.unroute('http://127.0.0.1:54321/**');
   const seeded: Record<string, unknown>[] = [
@@ -566,7 +566,7 @@ test('le rapport donne la note, trois priorités et le pont vers le brief', asyn
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.goto(`/rapport/${AUDIT_ID}`);
   await expect(page.getByText('72/100').first()).toBeVisible();
@@ -593,7 +593,7 @@ test('rapport sombre sans violation', async ({ page }) => {
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.goto(`/rapport/${AUDIT_ID}?theme=dark`);
   await expect(

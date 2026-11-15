@@ -14,7 +14,7 @@ export async function stubSession(
     user: { id: USER, email: 'gratuit@exemple.fr' },
   };
   await page.addInitScript((value) => {
-    localStorage.setItem('audigy-auth', JSON.stringify(value));
+    localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', (route) =>
     route.fulfill({
@@ -84,7 +84,7 @@ export async function toEnglish(page: Page): Promise<void> {
               !view.__avantLangue &&
               view.document.readyState === 'complete' &&
               !new URL(view.location.href).searchParams.has('lang') &&
-              view.localStorage.getItem('audigy-locale') === 'en'
+              view.localStorage.getItem('audixio-locale') === 'en'
             );
           })
           .catch(() => false),

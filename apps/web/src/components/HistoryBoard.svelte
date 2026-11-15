@@ -1,5 +1,5 @@
 <script lang="ts">
-import { GRADE_THRESHOLDS } from '@audigy/db';
+import { GRADE_THRESHOLDS } from '@audixio/db';
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { bootEspace } from '../lib/espace-boot.js';

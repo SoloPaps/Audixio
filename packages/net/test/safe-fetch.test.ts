@@ -235,7 +235,7 @@ describe('safeFetch — URLs refusées avant toute connexion', () => {
 
 describe('safeFetch — requêtes', () => {
   it('se connecte à l’IP épinglée, envoie le User-Agent et aucun cookie', async () => {
-    const { safeFetch, dialed } = setup({ botUrl: 'https://audigy.example/' });
+    const { safeFetch, dialed } = setup({ botUrl: 'https://audixio.example/' });
     const res = await safeFetch('http://public.test/to-ok');
     expect(res.status).toBe(200);
     expect(res.text()).toBe('<p>Bonjour</p>');
@@ -246,7 +246,7 @@ describe('safeFetch — requêtes', () => {
     const last = seen.at(-1);
     expect(last?.path).toBe('/ok');
     expect(last?.headers['user-agent']).toBe(
-      'AudixioBot/1.0 (+https://audigy.example/robot)',
+      'AudixioBot/1.0 (+https://audixio.example/robot)',
     );
     expect(last?.headers.host).toBe('public.test');
     expect(last?.headers.cookie).toBeUndefined();
@@ -441,14 +441,14 @@ describe('safeFetch — https', () => {
     try {
       const resolve = async () => [PUBLIC_IP];
       const trusted = createSafeFetch({ resolve, dial, ca: [certs.caCert] });
-      expect((await trusted('https://audigy.test/')).text()).toBe(
-        'sni audigy.test',
+      expect((await trusted('https://audixio.test/')).text()).toBe(
+        'sni audixio.test',
       );
       await expect(trusted('https://autre.test/')).rejects.toMatchObject({
         code: 'NETWORK',
       });
       const untrusted = createSafeFetch({ resolve, dial });
-      await expect(untrusted('https://audigy.test/')).rejects.toMatchObject({
+      await expect(untrusted('https://audixio.test/')).rejects.toMatchObject({
         code: 'NETWORK',
       });
     } finally {

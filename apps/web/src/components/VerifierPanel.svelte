@@ -7,7 +7,7 @@ import {
   signatureCorrespond,
   type VerdictFichier,
   verdictFichier,
-} from '@audigy/evidence/browser';
+} from '@audixio/evidence/browser';
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { formatReportStamp } from '../lib/format-report-stamp.js';
@@ -103,7 +103,7 @@ async function charger(id: string, encore: () => boolean): Promise<void> {
       signature = 'absent';
       return;
     }
-    const cleReponse = await fetch('/.well-known/audigy-signing-key');
+    const cleReponse = await fetch('/.well-known/audixio-signing-key');
     if (!encore()) return;
     if (!cleReponse.ok) {
       signature = 'bad';

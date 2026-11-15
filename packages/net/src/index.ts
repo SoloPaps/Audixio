@@ -1,5 +1,5 @@
 /**
- * @audigy/net — seul point de sortie réseau vers un site audité (PLAN §11).
+ * @audixio/net — seul point de sortie réseau vers un site audité (PLAN §11).
  *
  * API
  * - `createSafeFetch(options?) → safeFetch(url, { method?: 'GET' | 'HEAD', accept?, signal? })`

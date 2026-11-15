@@ -1,14 +1,14 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 /** En-tête signé par `api-audits-create` pour réveiller `audit-run-background`. */
-export const TRIGGER_HEADER = 'x-audigy-trigger';
+export const TRIGGER_HEADER = 'x-audixio-trigger';
 export const TRIGGER_MAX_AGE_MS = 5 * 60_000;
 /** Chemin par défaut de la fonction (pas de `config.path` pour un background). */
 export const RUN_FUNCTION_PATH = '/.netlify/functions/audit-run-background';
 
 function mac(key: string, timestamp: number): string {
   return createHmac('sha256', key)
-    .update(`audigy-trigger:${timestamp}`)
+    .update(`audixio-trigger:${timestamp}`)
     .digest('hex');
 }
 

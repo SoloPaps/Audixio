@@ -10,7 +10,7 @@ const UNAVAILABLE = 'Rapport introuvable ou réservé à son propriétaire.';
 async function signedIn(page: Page, status: number): Promise<void> {
   await page.addInitScript(() => {
     globalThis.localStorage.setItem(
-      'audigy-auth',
+      'audixio-auth',
       JSON.stringify({
         access_token: 'header.payload.signature',
         expires_at: 2_000_000_000,

@@ -120,7 +120,7 @@ export function parseAlertPayload(input: unknown): AlertPayload | null {
 
 export function unsubscribeMac(key: string, userId: string): string {
   return createHmac('sha256', key)
-    .update(`audigy-unsubscribe:${userId}`)
+    .update(`audixio-unsubscribe:${userId}`)
     .digest('hex');
 }
 

@@ -3,7 +3,7 @@ import {
   type Json,
   LOCKED_DOMAINS,
   TERMS_VERSION,
-} from '@audigy/db';
+} from '@audixio/db';
 import { z } from 'zod';
 import { apiError, bearerToken } from './http.js';
 import { errorCode, type Logger } from './log.js';
@@ -322,7 +322,7 @@ async function handleExport(
       await deps.gateway(auth.token, auth.userId).readExport(auth.userId),
     );
     return json(200, data, {
-      'content-disposition': 'attachment; filename="audigy-donnees.json"',
+      'content-disposition': 'attachment; filename="audixio-donnees.json"',
     });
   } catch (error) {
     return fail(deps, error, 'account_export_failed');

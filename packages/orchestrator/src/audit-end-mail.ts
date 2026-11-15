@@ -1,4 +1,4 @@
-import { gradeForScore } from '@audigy/db';
+import { gradeForScore } from '@audixio/db';
 import type { Logger } from './log.js';
 import { createResendMailer, type TransactionalMailer } from './mail.js';
 import { type AuditEndReason, renderAuditEndMail } from './mail-templates.js';

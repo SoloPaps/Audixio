@@ -7,7 +7,7 @@ import {
 
 const SITE = {
   id: '00000000-0000-4000-8000-0000000000b2',
-  host: 'bon.audigy.test',
+  host: 'bon.audixio.test',
   hosting: 'other',
 };
 
@@ -39,7 +39,7 @@ describe('historySource', () => {
 describe('site demandé par ?site= (retest C2)', () => {
   const MINE = {
     id: '00000000-0000-4000-8000-0000000000a2',
-    host: 'gratuit.audigy.test',
+    host: 'gratuit.audixio.test',
     hosting: 'other',
   };
   const OTHER = '00000000-0000-4000-8000-0000000000b2';
@@ -71,7 +71,7 @@ describe('site demandé par ?site= (retest C2)', () => {
   });
 
   it('site du compte hors des 8 premiers : lu par la requête', async () => {
-    const far = { id: OTHER, host: 'loin.audigy.test', hosting: 'netlify' };
+    const far = { id: OTHER, host: 'loin.audixio.test', hosting: 'netlify' };
     expect(await askedHistorySite(OTHER, [MINE], async () => [far])).toEqual(
       far,
     );

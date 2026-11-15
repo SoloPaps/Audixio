@@ -4,7 +4,7 @@ import {
   type ProbeOutcome,
   type ProofRecord,
   scopesMatch,
-} from '@audigy/engine';
+} from '@audixio/engine';
 
 export interface AuditEvent {
   actor: string | null;

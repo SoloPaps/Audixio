@@ -38,8 +38,8 @@ describe('gabarits e-mail', () => {
           openIncident: true,
         },
       ],
-      appUrl: 'https://audigy.test',
-      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+      appUrl: 'https://audixio.test',
+      unsubscribeUrl: 'https://audixio.test/api/unsubscribe?user=1&token=ab',
     });
     expect(mail.subject).toBe('Votre récap du lundi');
     expect(mail.text).toContain('98 %');
@@ -130,11 +130,11 @@ describe('e-mails selon la locale du compte', () => {
           items: ['One new issue'],
         },
       ],
-      reportUrl: 'https://audigy.test',
-      prefsUrl: 'https://audigy.test/compte/alertes',
-      legalUrl: 'https://audigy.test/mentions-legales',
-      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
-      logoUrl: 'https://audigy.test/marque/logo-pc.svg',
+      reportUrl: 'https://audixio.test',
+      prefsUrl: 'https://audixio.test/compte/alertes',
+      legalUrl: 'https://audixio.test/mentions-legales',
+      unsubscribeUrl: 'https://audixio.test/api/unsubscribe?user=1&token=ab',
+      logoUrl: 'https://audixio.test/marque/logo-pc.svg',
       locale: 'en',
     });
     expect(recap.subject).toBe('Your Monday recap');
@@ -144,8 +144,8 @@ describe('e-mails selon la locale du compte', () => {
     const alert = renderAlert({
       kind: 'site_down',
       payload: { dedup: 'd1', site: 'exemple.example' },
-      appUrl: 'https://audigy.test',
-      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+      appUrl: 'https://audixio.test',
+      unsubscribeUrl: 'https://audixio.test/api/unsubscribe?user=1&token=ab',
       locale: 'en',
     });
     expect(alert?.subject).toBe('Your site is not responding');
@@ -163,11 +163,11 @@ describe('e-mails selon la locale du compte', () => {
           items: ['x'],
         },
       ],
-      reportUrl: 'https://audigy.test',
-      prefsUrl: 'https://audigy.test/compte/alertes',
-      legalUrl: 'https://audigy.test/mentions-legales',
-      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
-      logoUrl: 'https://audigy.test/marque/logo-pc.svg',
+      reportUrl: 'https://audixio.test',
+      prefsUrl: 'https://audixio.test/compte/alertes',
+      legalUrl: 'https://audixio.test/mentions-legales',
+      unsubscribeUrl: 'https://audixio.test/api/unsubscribe?user=1&token=ab',
+      logoUrl: 'https://audixio.test/marque/logo-pc.svg',
     });
     expect(again.subject).toBe('Votre récap du lundi');
     expect(again.html).toContain('lang="fr"');

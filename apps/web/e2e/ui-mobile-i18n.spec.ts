@@ -19,9 +19,9 @@ async function oneSite(page: Page): Promise<void> {
           body: JSON.stringify([
             {
               id: '33333333-3333-4333-8333-333333333333',
-              url: 'https://bon.audigy.test',
-              label: 'bon.audigy.test',
-              host: 'bon.audigy.test',
+              url: 'https://bon.audixio.test',
+              label: 'bon.audixio.test',
+              host: 'bon.audixio.test',
               is_public: false,
               public_slug: null,
               expose_security: false,
@@ -159,8 +159,8 @@ function guestPayload(): unknown {
       error: null,
       site: {
         id: '7a2b3c4d-5e6f-4789-a012-bcdef0123457',
-        url: 'https://mauvais.audigy.test',
-        label: 'mauvais.audigy.test',
+        url: 'https://mauvais.audixio.test',
+        label: 'mauvais.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },
@@ -264,8 +264,8 @@ function securityPayload(): unknown {
       error: null,
       site: {
         id: '00000000-0000-4000-8000-0000000000bb',
-        url: 'https://bon.audigy.test',
-        label: 'bon.audigy.test',
+        url: 'https://bon.audixio.test',
+        label: 'bon.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },

@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { gradeForScore as dbGrade, GRADE_THRESHOLDS } from '@audigy/db';
+import { gradeForScore as dbGrade, GRADE_THRESHOLDS } from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import { mailGrade } from '../../../../packages/orchestrator/src/mail-templates.js';
 import { pdfFr } from '../i18n/pdf-fr.js';

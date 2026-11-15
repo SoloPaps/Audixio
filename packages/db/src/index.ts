@@ -1,5 +1,5 @@
 /**
- * @audigy/db — client typé et accès Postgres (PLAN §8, §9).
+ * @audixio/db — client typé et accès Postgres (PLAN §8, §9).
  *
  * API
  * - `createUserClient({ url, anonKey, persistSession? })` : clé anon, RLS.

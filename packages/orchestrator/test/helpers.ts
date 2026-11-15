@@ -1,18 +1,18 @@
-import type { AuditResultsInput } from '@audigy/db';
+import type { AuditResultsInput } from '@audixio/db';
 import {
   BROWSER_SHARED_KEY,
   type Check,
   type CheckResult,
   createSharedArtifacts,
   type RunContext,
-} from '@audigy/engine';
+} from '@audixio/engine';
 import {
   createRequestBudget,
   type DohResolver,
   NetError,
   type SafeFetch,
   type TlsProbe,
-} from '@audigy/net';
+} from '@audixio/net';
 import type {
   AuditContext,
   AuditStore,

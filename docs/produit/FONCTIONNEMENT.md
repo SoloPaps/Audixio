@@ -445,7 +445,7 @@ Alertes **uniquement** pour les sites à **propriété prouvée** (cf. §6).
 
 ### Ce qui existe déjà dans le code (lecture seule, 30 oct 2026)
 
-- `netlify/functions/schedule-tick.ts` : fonction planifiée **toutes les 15 min** (`*/15 * * * *`), budget ~25 s (`TICK_BUDGET_MS`, limite 30 s des fonctions planifiées). Appelle `handleSchedule` (`@audigy/orchestrator`) : audits arrivés à échéance, sondes de disponibilité, création et envoi des alertes en attente, repli des sondes brutes en `uptime_daily` après 30 jours.
+- `netlify/functions/schedule-tick.ts` : fonction planifiée **toutes les 15 min** (`*/15 * * * *`), budget ~25 s (`TICK_BUDGET_MS`, limite 30 s des fonctions planifiées). Appelle `handleSchedule` (`@audixio/orchestrator`) : audits arrivés à échéance, sondes de disponibilité, création et envoi des alertes en attente, repli des sondes brutes en `uptime_daily` après 30 jours.
 - `netlify/functions/digest-weekly.ts` : planifiée `0 6,7 * * 1` (6 h et 7 h UTC le lundi pour couvrir heure d'été / d'hiver) ; `handleDigest` n'agit que si c'est bien **lundi 8 h à Paris** (`isMondayEightParis`) et ignore l'autre déclenchement.
 - Rendu des e-mails : `renderAlert` / `renderDigest` (`orchestrator/src/mail.ts`). Envoi via Brevo, un modèle par langue (§12bis).
 

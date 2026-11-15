@@ -113,7 +113,7 @@ async function install(page: Page): Promise<void> {
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const origin = route.request().headers().origin ?? ORIGIN;
@@ -383,8 +383,8 @@ test('le titre anglais du brief ne répète pas « AI » (bug #25/#86/#144)', as
         localStorage: { setItem(k: string, v: string): void };
       }
     ).localStorage;
-    storage.setItem('audigy-en', text);
-    storage.setItem('audigy-locale', 'en');
+    storage.setItem('audixio-en', text);
+    storage.setItem('audixio-locale', 'en');
   }, pack);
   await page.goto(`/rapport/${AUDIT_ID}`);
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');

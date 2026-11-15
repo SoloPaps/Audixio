@@ -4,9 +4,8 @@ import { briefEn } from './brief-en.js';
 import { briefFr } from './brief-fr.js';
 import { fr, t } from './index.js';
 
-// Retest C8 : l’ancienne marque ne doit plus apparaître dans les textes vus
-// par les visiteurs (titres, descriptions, prompt du brief). Le nom de
-// commande « audigy » et le domaine audigyweb.fr sont des identifiants.
+// Retest C8 : l’ancienne marque (Audigy) ne doit plus apparaître dans les
+// textes vus par les visiteurs (titres, descriptions, prompt du brief).
 function dictionary(name: string): Record<string, string> {
   return JSON.parse(
     readFileSync(new URL(`../../public/${name}`, import.meta.url), 'utf8'),

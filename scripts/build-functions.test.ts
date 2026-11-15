@@ -12,7 +12,7 @@ let names: string[];
 const saved = { ...process.env };
 
 beforeAll(async () => {
-  out = await mkdtemp(path.join(tmpdir(), 'audigy-functions-'));
+  out = await mkdtemp(path.join(tmpdir(), 'audixio-functions-'));
   names = await buildFunctions(process.cwd(), out);
 });
 

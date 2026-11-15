@@ -29,7 +29,7 @@ function run(command, args) {
 }
 
 await loadRootEnv(root);
-await run('pnpm', ['--filter', '@audigy/web', 'build']);
+await run('pnpm', ['--filter', '@audixio/web', 'build']);
 await run('node', ['scripts/build-functions.ts']);
 await stripInternalPages(dist);
 await assertInternalPagesAbsent(dist);
@@ -40,7 +40,7 @@ await access(path.join(dist, 'dictionnaire-en.json'));
 await access(path.join(dist, 'dictionnaire-fr.json'));
 // Anciennes adresses et onglets du rapport (lib/redirects.ts).
 await access(path.join(dist, '_redirects'));
-await access(path.join(dist, '.well-known', 'audigy-signing-key'));
+await access(path.join(dist, '.well-known', 'audixio-signing-key'));
 const preuves = await readdir(path.join(dist, 'preuves'));
 if (!preuves.some((name) => name.endsWith('.json'))) {
   throw new Error('dossier de preuve absent du build');

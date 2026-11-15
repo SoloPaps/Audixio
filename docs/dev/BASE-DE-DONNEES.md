@@ -51,7 +51,7 @@ Alertes : à la création, free = mensuel et certificat 14 j ; pro = hebdomadair
 
 Le plan d’action : le client pose `todo`, `doing` ou `done`. `auto_closed` est réservé au service, quand le constat disparaît au ré-audit (pas encore branché).
 
-Le module TypeScript `@audigy/db` (`packages/db/src/droits.ts`) reprend la même matrice pour les fonctions. Les tests unitaires sont dans `packages/db/test/droits.test.ts`.
+Le module TypeScript `@audixio/db` (`packages/db/src/droits.ts`) reprend la même matrice pour les fonctions. Les tests unitaires sont dans `packages/db/test/droits.test.ts`.
 
 ## Ce qui reste
 

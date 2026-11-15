@@ -1,4 +1,4 @@
-import { createSafeFetch, NetError } from '@audigy/net';
+import { createSafeFetch, NetError } from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { probeOwnership } from '../src/index.js';
 

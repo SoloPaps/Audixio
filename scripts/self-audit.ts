@@ -15,8 +15,8 @@ import type {
   SafeFetch,
   SafeResponse,
   TlsProbe,
-} from '@audigy/net';
-import { createRequestBudget } from '@audigy/net';
+} from '@audixio/net';
+import { createRequestBudget } from '@audixio/net';
 import { resolveRewrite } from '../apps/web/src/lib/redirects.js';
 import {
   type CheckOutcome,

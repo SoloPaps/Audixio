@@ -28,11 +28,11 @@ export const LOCAL_TEST_ACCOUNTS: readonly LocalAccount[] = [
 
 const FREE_SITE = '00000000-0000-4000-8000-0000000000a2';
 const FREE_AUDIT = '00000000-0000-4000-8000-0000000000a3';
-const FREE_URL = 'https://gratuit.audigy.test/';
-const FREE_HOST = 'gratuit.audigy.test';
+const FREE_URL = 'https://gratuit.audixio.test/';
+const FREE_HOST = 'gratuit.audixio.test';
 const PRO_SITE = '00000000-0000-4000-8000-0000000000b2';
-const PRO_URL = 'https://bon.audigy.test/';
-const PRO_HOST = 'bon.audigy.test';
+const PRO_URL = 'https://bon.audixio.test/';
+const PRO_HOST = 'bon.audixio.test';
 const VERIFY_TOKEN = 'AudixioLocalVerifyToken0000000001';
 
 const HISTORY: readonly { id: string; days: number; score: number }[] = [
@@ -181,22 +181,22 @@ export function seedDomainScores(
 export function guestLiftLine(envText: string, local: boolean): string {
   const rows = envText
     .split('\n')
-    .filter((row) => !row.startsWith('AUDIGY_GUEST_UNLIMITED='));
+    .filter((row) => !row.startsWith('AUDIXIO_GUEST_UNLIMITED='));
   while (rows.length > 0 && rows[rows.length - 1] === '') rows.pop();
   if (!local) return rows.length === 0 ? '' : `${rows.join('\n')}\n`;
-  rows.push('AUDIGY_GUEST_UNLIMITED=1');
+  rows.push('AUDIXIO_GUEST_UNLIMITED=1');
   return `${rows.join('\n')}\n`;
 }
 
 export function localAccountsMessage(): string {
   const lines = LOCAL_TEST_ACCOUNTS.map(
     (account) =>
-      `- ${account.email} / ${account.password} (${account.plan === 'pro' ? 'Pro, site https://bon.audigy.test déjà vérifié, 3 audits' : 'gratuit, site https://gratuit.audigy.test déjà vérifié, 1 audit'})`,
+      `- ${account.email} / ${account.password} (${account.plan === 'pro' ? 'Pro, site https://bon.audixio.test déjà vérifié, 3 audits' : 'gratuit, site https://gratuit.audixio.test déjà vérifié, 1 audit'})`,
   );
   return [
     'Comptes de test locaux (impossibles hors Supabase local) :',
     ...lines,
-    'Plafond des 3 audits sans compte levé seulement si SUPABASE_URL est locale et AUDIGY_GUEST_UNLIMITED=1.',
+    'Plafond des 3 audits sans compte levé seulement si SUPABASE_URL est locale et AUDIXIO_GUEST_UNLIMITED=1.',
   ].join('\n');
 }
 

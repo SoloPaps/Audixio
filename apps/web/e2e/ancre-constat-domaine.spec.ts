@@ -42,8 +42,8 @@ function payload(): unknown {
       error: null,
       site: {
         id: '00000000-0000-4000-8000-00000000b602',
-        url: 'https://mauvais.audigy.test',
-        label: 'mauvais.audigy.test',
+        url: 'https://mauvais.audixio.test',
+        label: 'mauvais.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },

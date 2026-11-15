@@ -3,7 +3,7 @@ import path from 'node:path';
 import {
   BrowserAuditResultSchema,
   browserResultsPath,
-} from '@audigy/browser-runner/schema';
+} from '@audixio/browser-runner/schema';
 import {
   AUDIT_IP,
   claimNextAudit,
@@ -21,10 +21,10 @@ import {
   retryAfterSeconds,
   sha256Hex,
   writeAuditResults,
-} from '@audigy/db';
-import { windowStartIso } from '@audigy/db/auth-policy';
-import { type FixSheet, loadFixes, placesApiKey } from '@audigy/engine';
-import { fileFixStore } from '@audigy/engine/fixes-fs';
+} from '@audixio/db';
+import { windowStartIso } from '@audixio/db/auth-policy';
+import { type FixSheet, loadFixes, placesApiKey } from '@audixio/engine';
+import { fileFixStore } from '@audixio/engine/fixes-fs';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { auditEndEmailFns } from './audit-end-db.js';
 import { createAuditContext, defaultChecks } from './context.js';
@@ -473,7 +473,7 @@ export function apiDepsFromEnv(options: FromEnvOptions): ApiDeps {
       const key = await guestAuditKey(clientIp(req));
       const limit = guestAuditLimit({
         supabaseUrl: db.url,
-        lift: env.AUDIGY_GUEST_UNLIMITED === '1',
+        lift: env.AUDIXIO_GUEST_UNLIMITED === '1',
       });
       const { data, error } = await service.rpc('consume_rate_limit', {
         p_key: key,

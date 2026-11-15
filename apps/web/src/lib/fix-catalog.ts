@@ -1,4 +1,4 @@
-import { type FixSheet, parseFix, variantFor } from '@audigy/engine/fixes';
+import { type FixSheet, parseFix, variantFor } from '@audixio/engine/fixes';
 import { packActive, packLine } from '../i18n/pack.js';
 import { stepsFromVariant } from './fix-steps.js';
 import type { FixView } from './report-model.js';

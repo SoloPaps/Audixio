@@ -4,7 +4,7 @@ import {
   rightsFor,
   seesFullReport,
   type Viewer,
-} from '@audigy/db';
+} from '@audixio/db';
 import { z } from 'zod';
 import {
   type AuditView,

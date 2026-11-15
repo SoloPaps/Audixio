@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
-import type { Database } from '@audigy/db';
-import { createServiceClient, createUserClient, dbEnvFrom } from '@audigy/db';
+import type { Database } from '@audixio/db';
+import { createServiceClient, createUserClient, dbEnvFrom } from '@audixio/db';
 import {
   loadPlaceDetails,
   PLACES_CACHE_MS,
@@ -12,8 +12,8 @@ import {
   pointsFromTenths,
   ratingFromTenths,
   searchPlaces,
-} from '@audigy/engine';
-import { createExternalApi } from '@audigy/net';
+} from '@audixio/engine';
+import { createExternalApi } from '@audixio/net';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { apiError, bearerToken } from './http.js';

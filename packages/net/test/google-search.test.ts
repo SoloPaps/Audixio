@@ -47,7 +47,7 @@ describe('OAuth Google', () => {
     const tokens = await client.exchange({
       code: 'code-value',
       verifier: 'verifier-value',
-      redirectUri: 'https://audigy.example/api/oauth/google/callback',
+      redirectUri: 'https://audixio.example/api/oauth/google/callback',
     });
     expect(tokens.refreshToken).toBe(REFRESH);
     expect(calls[0]?.url.hostname).toBe('oauth2.googleapis.com');

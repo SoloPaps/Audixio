@@ -87,14 +87,14 @@ describe('seed local', () => {
 
   it('retire le réglage du fichier env hors local', () => {
     const kept = guestLiftLine(
-      'SUPABASE_URL=https://exemple.supabase.co\nAUDIGY_GUEST_UNLIMITED=1\n',
+      'SUPABASE_URL=https://exemple.supabase.co\nAUDIXIO_GUEST_UNLIMITED=1\n',
       false,
     );
-    expect(kept).not.toContain('AUDIGY_GUEST_UNLIMITED');
+    expect(kept).not.toContain('AUDIXIO_GUEST_UNLIMITED');
     expect(kept).toContain('SUPABASE_URL=https://exemple.supabase.co');
     const added = guestLiftLine('SUPABASE_URL=http://127.0.0.1:54321\n', true);
-    expect(added).toContain('AUDIGY_GUEST_UNLIMITED=1');
-    expect(added.match(/AUDIGY_GUEST_UNLIMITED/g)).toHaveLength(1);
+    expect(added).toContain('AUDIXIO_GUEST_UNLIMITED=1');
+    expect(added.match(/AUDIXIO_GUEST_UNLIMITED/g)).toHaveLength(1);
   });
 
   it('publie des mots de passe locaux d’au moins 10 caractères', () => {

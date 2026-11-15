@@ -12,7 +12,7 @@ const UNKNOWN = '00000000-0000-4000-8000-0000000000ff';
 async function signedIn(page: Page): Promise<void> {
   await page.addInitScript(() => {
     globalThis.localStorage.setItem(
-      'audigy-auth',
+      'audixio-auth',
       JSON.stringify({
         access_token: 'header.payload.signature',
         expires_at: 2_000_000_000,
@@ -41,7 +41,7 @@ async function signedIn(page: Page): Promise<void> {
     if (url.pathname.endsWith('/rest/v1/sites')) {
       const id = url.searchParams.get('id');
       const mine = [
-        { id: MINE, host: 'gratuit.audigy.test', hosting: 'other' },
+        { id: MINE, host: 'gratuit.audixio.test', hosting: 'other' },
       ];
       // Le filtre owner_id fait le tri : un site d’un autre compte est absent.
       const body = id && id !== `eq.${MINE}` ? [] : mine;

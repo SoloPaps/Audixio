@@ -24,8 +24,8 @@ function guestPayload(): unknown {
       error: null,
       site: {
         id: '7a2b3c4d-5e6f-4789-a012-bcdef0123456',
-        url: 'https://bon.audigy.test',
-        label: 'bon.audigy.test',
+        url: 'https://bon.audixio.test',
+        label: 'bon.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },
@@ -108,8 +108,8 @@ async function openShare(page: Page, access: 'public' | 'team'): Promise<void> {
       contentType: 'application/json',
       body: JSON.stringify({
         access,
-        label: 'bon.audigy.test',
-        url: 'https://bon.audigy.test',
+        label: 'bon.audixio.test',
+        url: 'https://bon.audixio.test',
         finishedAt: '2026-11-05T10:03:00.000Z',
         methodVersion: '2026.1',
         auditId: null,

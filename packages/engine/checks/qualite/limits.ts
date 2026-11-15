@@ -6,8 +6,8 @@ export const EXTERNAL_LIMIT = 30;
 export const IMAGE_MAX_BYTES = 200 * 1024;
 /** Le parcours peut attendre le budget (50 × 1 s) avant le délai du check. */
 export const QUALITE_TIMEOUT_MS = 90_000;
-/** Jeton robots.txt du robot Audigy. */
-export const AUDIGY_AGENT = 'audixiobot';
+/** Jeton robots.txt du robot Audixio. */
+export const AUDIXIO_AGENT = 'audixiobot';
 
 export const QUALITY_KEY = 'qualite.crawl';
 

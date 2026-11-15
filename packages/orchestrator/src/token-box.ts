@@ -8,7 +8,7 @@ import {
 const VERSION = 1;
 const IV_LEN = 12;
 const TAG_LEN = 16;
-const AAD = Buffer.from('audigy-oauth-v1');
+const AAD = Buffer.from('audixio-oauth-v1');
 
 export interface OauthCrypto {
   encrypt(plaintext: string): Buffer;

@@ -120,7 +120,7 @@ function auditBody(locked: boolean): unknown {
 
 async function install(page: Page, locked = false): Promise<void> {
   await page.addInitScript((value) => {
-    localStorage.setItem('audigy-auth', JSON.stringify(value));
+    localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/auth/v1/**', async (route) => {
     await route.fulfill({

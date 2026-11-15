@@ -1,10 +1,10 @@
 import { isIP } from 'node:net';
-import type { Hosting, Target } from '@audigy/engine';
-import { isNetError, validateTargetUrl } from '@audigy/net';
+import type { Hosting, Target } from '@audixio/engine';
+import { isNetError, validateTargetUrl } from '@audixio/net';
 import { z } from 'zod';
 
 /** Suffixe des sites du labo local (`.test` est réservé, RFC 6761). */
-export const LAB_SUFFIX = '.audigy.test';
+export const LAB_SUFFIX = '.audixio.test';
 
 const RESERVED_TLDS = ['test', 'localhost', 'invalid', 'example', 'local'];
 const HOST_RE =
@@ -41,7 +41,7 @@ function prefixOf(pathname: string): string {
 /**
  * Normalise une adresse saisie. Sans schéma ou en `http:`, le site est noté en `https:`
  * (le test HTTPS vérifie la version non chiffrée). Refuse identifiants, port, IP,
- * nom local ou réservé. `allowLab` accepte seulement `*.audigy.test`.
+ * nom local ou réservé. `allowLab` accepte seulement `*.audixio.test`.
  */
 export function normalizeSiteUrl(
   raw: string,

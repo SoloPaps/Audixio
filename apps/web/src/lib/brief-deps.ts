@@ -1,11 +1,11 @@
-import { isLockedDomain, seesFullReport } from '@audigy/db';
+import { isLockedDomain, seesFullReport } from '@audixio/db';
 import {
   type AuditView,
   apiDepsFromEnv,
   type BriefExportDeps,
   type FindingView,
   type Logger,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 import enDictionary from '../../public/dictionnaire-en.json' with {
   type: 'json',
 };
@@ -40,7 +40,7 @@ function englishLine(
 
 /** Langue demandée par le navigateur pour le fichier du brief. */
 export function briefLocaleOf(request: Request): BriefLocale {
-  return request.headers.get('x-audigy-locale') === 'en' ? 'en' : 'fr';
+  return request.headers.get('x-audixio-locale') === 'en' ? 'en' : 'fr';
 }
 
 /**

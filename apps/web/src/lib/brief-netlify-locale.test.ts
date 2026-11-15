@@ -1,14 +1,14 @@
-import type { BriefExportDeps, FindingView } from '@audigy/orchestrator';
+import type { BriefExportDeps, FindingView } from '@audixio/orchestrator';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 // QA Mo 05/11 M6 (bug_c604b173) : /brief en anglais, « Download (.md) »
 // donnait un fichier français. La fonction Netlify ignorait la langue
-// envoyée par le navigateur (`x-audigy-locale`).
+// envoyée par le navigateur (`x-audixio-locale`).
 
 const seen: BriefExportDeps[] = [];
 
-vi.mock('@audigy/orchestrator', async (original) => ({
-  ...(await original<typeof import('@audigy/orchestrator')>()),
+vi.mock('@audixio/orchestrator', async (original) => ({
+  ...(await original<typeof import('@audixio/orchestrator')>()),
   apiDepsFromEnv: () => ({
     userFromToken: async () => null,
     readAudit: async () => null,
@@ -40,7 +40,7 @@ async function depsFor(locale: string | null): Promise<BriefExportDeps> {
     '../../../../netlify/functions/api-audits-brief.js'
   );
   const headers = new Headers({ authorization: 'Bearer jeton' });
-  if (locale) headers.set('x-audigy-locale', locale);
+  if (locale) headers.set('x-audixio-locale', locale);
   await handler(
     new Request('http://127.0.0.1:8888/api/audits/a/brief', {
       method: 'POST',
@@ -59,7 +59,7 @@ function rendered(deps: BriefExportDeps): string {
   const label = deps.label(finding, viewer);
   return deps.render({
     level: 'complet',
-    url: 'https://bon.audigy.test',
+    url: 'https://bon.audixio.test',
     at: '2026-11-05T22:00:00.000Z',
     items: [{ checkId: finding.checkId, mode: 'fix', ...label }],
   });

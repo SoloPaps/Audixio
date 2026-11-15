@@ -20,8 +20,8 @@ function payload(): unknown {
       error: null,
       site: {
         id: '7a2b3c4d-5e6f-4789-a012-bcdef0123456',
-        url: 'https://bon.audigy.test',
-        label: 'bon.audigy.test',
+        url: 'https://bon.audixio.test',
+        label: 'bon.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },

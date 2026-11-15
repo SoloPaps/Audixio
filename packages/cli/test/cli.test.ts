@@ -6,8 +6,8 @@ import {
   type Check,
   SECURITE_CHECKS,
   VIE_PRIVEE_CHECKS,
-} from '@audigy/engine';
-import { t } from '@audigy/web/i18n';
+} from '@audixio/engine';
+import { t } from '@audixio/web/i18n';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { type Lab, startLab } from '../../../fixtures/lab.js';
 import { type CliDeps, runCli } from '../src/index.js';
@@ -38,10 +38,10 @@ let env: NodeJS.ProcessEnv;
 
 beforeAll(async () => {
   lab = await startLab();
-  dir = await mkdtemp(path.join(tmpdir(), 'audigy-cli-'));
+  dir = await mkdtemp(path.join(tmpdir(), 'audixio-cli-'));
   const file = path.join(dir, 'lab.json');
   await writeFile(file, JSON.stringify(lab.config));
-  env = { AUDIGY_LAB: file };
+  env = { AUDIXIO_LAB: file };
 });
 
 afterAll(async () => {
@@ -72,12 +72,12 @@ async function cli(
   return { code, out, err };
 }
 
-describe('audigy audit', () => {
+describe('audixio audit', () => {
   it('rapport texte en français sur le labo', async () => {
     const { code, out, err } = await cli(['audit', lab.url('bon')]);
     expect(err).toEqual([]);
     expect(code).toBe(0);
-    expect(out[0]).toBe(t('cli.title', { url: 'https://bon.audigy.test/' }));
+    expect(out[0]).toBe(t('cli.title', { url: 'https://bon.audixio.test/' }));
     expect(out).toContain(t('cli.domains'));
     expect(out.some((l) => l.startsWith('- Sécurité : '))).toBe(true);
     expect(out).toContain(t('cli.browser.skipped'));
@@ -87,10 +87,14 @@ describe('audigy audit', () => {
   });
 
   it('--json : scores, versions, raison explicite', async () => {
-    const { code, out } = await cli(['audit', 'mauvais.audigy.test', '--json']);
+    const { code, out } = await cli([
+      'audit',
+      'mauvais.audixio.test',
+      '--json',
+    ]);
     expect(code).toBe(0);
     const report = JSON.parse(out.join('\n'));
-    expect(report.url).toBe('https://mauvais.audigy.test/');
+    expect(report.url).toBe('https://mauvais.audixio.test/');
     expect(report.browser).toBe('skipped');
     expect(report.methodVersion).toMatch(/^\d{4}\.\d+$/);
     expect(
@@ -134,7 +138,7 @@ describe('audigy audit', () => {
       },
     );
     expect(runner).toHaveBeenCalledWith({
-      url: 'https://bon.audigy.test/',
+      url: 'https://bon.audixio.test/',
       lab: lab.config,
     });
     const report = JSON.parse(out.join('\n'));

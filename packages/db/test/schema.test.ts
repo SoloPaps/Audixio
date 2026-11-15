@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { DOMAINS, levelFor } from '@audigy/engine';
+import { DOMAINS, levelFor } from '@audixio/engine';
 import { describe, expect, it } from 'vitest';
 import { LOCKED_DOMAINS } from '../src/droits.js';
 import { repoRoot } from './local.js';

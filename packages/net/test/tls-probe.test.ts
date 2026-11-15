@@ -55,19 +55,19 @@ describe('probeTls', () => {
       cert: certs.leafCert + certs.caCert,
     });
     const { probe, dialed } = probeFor(port, { ca: [certs.caCert] });
-    const result = await probe('audigy.test');
+    const result = await probe('audixio.test');
     expect(dialed).toEqual([[PUBLIC_IP, 443]]);
     expect(result.ip).toBe(PUBLIC_IP);
     expect(result.authorized).toBe(true);
     expect(result.authorizationError).toBeNull();
     expect(result.hostnameMatches).toBe(true);
     expect(result.certificate.san).toEqual([
-      'DNS:audigy.test',
-      'DNS:www.audigy.test',
+      'DNS:audixio.test',
+      'DNS:www.audixio.test',
     ]);
     expect(result.chain.map((c) => c.subject)).toEqual([
-      'CN=audigy.test',
-      'CN=Audigy Test CA',
+      'CN=audixio.test',
+      'CN=Audixio Test CA',
     ]);
     expect(result.chain[1]?.selfSigned).toBe(true);
     expect(result.certificate.expired).toBe(false);
@@ -79,7 +79,7 @@ describe('probeTls', () => {
       key: certs.leafKey,
       cert: certs.leafCert,
     });
-    const result = await probeFor(port).probe('audigy.test');
+    const result = await probeFor(port).probe('audixio.test');
     expect(result.authorized).toBe(false);
     expect(result.authorizationError).toBe('UNABLE_TO_VERIFY_LEAF_SIGNATURE');
     expect(result.chain).toHaveLength(1);
@@ -91,7 +91,7 @@ describe('probeTls', () => {
       key: certs.selfKey,
       cert: certs.selfCert,
     });
-    const result = await probeFor(port).probe('audigy.test');
+    const result = await probeFor(port).probe('audixio.test');
     expect(result.authorized).toBe(false);
     expect(result.authorizationError).toBe('DEPTH_ZERO_SELF_SIGNED_CERT');
     expect(result.chain[0]?.selfSigned).toBe(true);
@@ -116,13 +116,13 @@ describe('probeTls', () => {
     });
     const later = new Date(Date.now() + 60 * DAY);
     const result = await probeFor(port, { now: () => later }).probe(
-      'audigy.test',
+      'audixio.test',
     );
     expect(result.certificate.expired).toBe(true);
     expect(result.certificate.daysRemaining).toBeLessThan(0);
     const earlier = new Date(Date.now() - 2 * DAY);
     const before = await probeFor(port, { now: () => earlier }).probe(
-      'audigy.test',
+      'audixio.test',
     );
     expect(before.certificate.notYetValid).toBe(true);
   });
@@ -133,7 +133,7 @@ describe('probeTls', () => {
       cert: certs.leafCert,
       maxVersion: 'TLSv1.2',
     });
-    expect((await probeFor(tls12).probe('audigy.test')).protocol).toBe(
+    expect((await probeFor(tls12).probe('audixio.test')).protocol).toBe(
       'TLSv1.2',
     );
     const tls13 = await startServer({
@@ -141,7 +141,7 @@ describe('probeTls', () => {
       cert: certs.leafCert,
       minVersion: 'TLSv1.3',
     });
-    const result = await probeFor(tls13).probe('audigy.test');
+    const result = await probeFor(tls13).probe('audixio.test');
     expect(result.protocol).toBe('TLSv1.3');
     expect(result.cipher).toMatch(/^TLS_/);
   });
@@ -153,7 +153,7 @@ describe('probeTls', () => {
       minVersion: 'TLSv1.3',
     });
     await expect(
-      probeFor(port, { maxVersion: 'TLSv1.2' }).probe('audigy.test'),
+      probeFor(port, { maxVersion: 'TLSv1.2' }).probe('audixio.test'),
     ).rejects.toMatchObject({
       code: 'TLS_HANDSHAKE_FAILED',
     });
@@ -186,9 +186,9 @@ describe('probeTls', () => {
     });
     const { probe } = probeFor(port);
     await expect(
-      probe('audigy.test', { minVersion: 'TLSv1.3', maxVersion: 'TLSv1.3' }),
+      probe('audixio.test', { minVersion: 'TLSv1.3', maxVersion: 'TLSv1.3' }),
     ).rejects.toMatchObject({ code: 'TLS_HANDSHAKE_FAILED' });
-    const ok = await probe('audigy.test', {
+    const ok = await probe('audixio.test', {
       minVersion: 'TLSv1.2',
       maxVersion: 'TLSv1.2',
     });

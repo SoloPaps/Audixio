@@ -20,8 +20,8 @@ function installDocument(): {
   });
   const html = { lang: 'fr' };
   const store = new Map<string, string>([
-    ['audigy-fr', JSON.stringify({ 'meta.home.description': FR })],
-    ['audigy-en', JSON.stringify({ 'meta.home.description': EN })],
+    ['audixio-fr', JSON.stringify({ 'meta.home.description': FR })],
+    ['audixio-en', JSON.stringify({ 'meta.home.description': EN })],
   ]);
   Object.assign(globalThis, {
     NodeFilter: { SHOW_TEXT: 4 },
@@ -45,7 +45,7 @@ function installDocument(): {
       },
     },
   });
-  (globalThis as { __audigy_en?: Record<string, string> }).__audigy_en = {
+  (globalThis as { __audixio_en?: Record<string, string> }).__audixio_en = {
     'meta.home.description': EN,
   };
   return { html, description, og };
@@ -53,7 +53,7 @@ function installDocument(): {
 
 describe('langue du document', () => {
   afterEach(() => {
-    delete (globalThis as { __audigy_en?: unknown }).__audigy_en;
+    delete (globalThis as { __audixio_en?: unknown }).__audixio_en;
   });
 
   it('passe html lang et les métas en anglais, puis revient au français', () => {

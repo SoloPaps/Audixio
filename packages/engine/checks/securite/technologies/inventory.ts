@@ -1,4 +1,4 @@
-import { isNetError, type SafeResponse } from '@audigy/net';
+import { isNetError, type SafeResponse } from '@audixio/net';
 import type { CheckContext } from '../../../src/types.js';
 import { isHtml, loadHome } from '../shared.js';
 import { extractScripts } from './html.js';

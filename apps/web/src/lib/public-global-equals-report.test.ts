@@ -1,5 +1,5 @@
-import { gradeForScore } from '@audigy/db';
-import { type Domain, MAIN_DOMAINS, scoreGlobal } from '@audigy/engine';
+import { gradeForScore } from '@audixio/db';
+import { type Domain, MAIN_DOMAINS, scoreGlobal } from '@audixio/engine';
 import { describe, expect, it } from 'vitest';
 import { presentRow } from './public-score.js';
 

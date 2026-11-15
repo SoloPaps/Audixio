@@ -4,7 +4,7 @@ import {
   recheckDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Background : relecture quotidienne. Pas de `config.path`, appel interne signé. */
 export default async (req: Request): Promise<Response> => {

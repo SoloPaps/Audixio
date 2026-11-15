@@ -1,4 +1,4 @@
-import type { BrowserAuditResult } from '@audigy/browser-runner';
+import type { BrowserAuditResult } from '@audixio/browser-runner';
 import { trackerDomain } from './trackers.js';
 
 /** Hôtes du bandeau lui-même : les retirer du constat de traceurs. */

@@ -4,13 +4,13 @@ import {
   createUserClient,
   type Database,
   dbEnvFrom,
-} from '@audigy/db';
+} from '@audixio/db';
 import {
   createExternalApi,
   createGoogleAuthClient,
   GOOGLE_WEBMASTERS_SCOPE,
   type GoogleAuthClient,
-} from '@audigy/net';
+} from '@audixio/net';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { apiError, bearerToken } from './http.js';
@@ -24,7 +24,7 @@ import {
   sameSecret,
 } from './token-box.js';
 
-const COOKIE = 'audigy_gsc';
+const COOKIE = 'audixio_gsc';
 const COOKIE_PATH = '/';
 /** Ancien chemin : à effacer pour qu’il ne masque pas le cookie `Path=/`. */
 const LEGACY_COOKIE_PATH = '/api/oauth/google';
@@ -414,8 +414,8 @@ function readCookies(header: string | null, name: string): string[] {
 /**
  * En http local, `redirect_uri` et le retour suivent l'en-tête Host
  * (`localhost` ou `127.0.0.1`, même port que `APP_BASE_URL`).
- * Le cookie `audigy_gsc` est limité à cet hôte : un aller sur 127.0.0.1
- * et un retour sur localhost perd la session Supabase (`audigy-auth`)
+ * Le cookie `audixio_gsc` est limité à cet hôte : un aller sur 127.0.0.1
+ * et un retour sur localhost perd la session Supabase (`audixio-auth`)
  * et le state. En https, `APP_BASE_URL` seul — Host est ignoré.
  * Le client Google doit lister les deux URI de redirection locales.
  */

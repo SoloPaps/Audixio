@@ -1,10 +1,10 @@
 import { createHash } from 'node:crypto';
-import { createServiceClient } from '@audigy/db';
+import { createServiceClient } from '@audixio/db';
 import {
   assertArtifactSize,
   buildManifest,
   manifestFile,
-} from '@audigy/evidence';
+} from '@audixio/evidence';
 import { z } from 'zod';
 import { renderPrintHtml } from './print-html.js';
 import type { BrowserAuditOptions, BrowserAuditOutput } from './run.js';
@@ -154,7 +154,7 @@ export async function runJob(
 }
 
 function verifyUrl(origin: string | undefined, auditId: string): string {
-  let base = origin && origin.trim() !== '' ? origin : 'https://audigy.local';
+  let base = origin && origin.trim() !== '' ? origin : 'https://audixio.local';
   while (base.endsWith('/')) base = base.slice(0, -1);
   return `${base}/verifier/${auditId}`;
 }

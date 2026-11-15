@@ -3,7 +3,7 @@ import type { Logger } from './log.js';
 /** Workflow du runner navigateur (PART-13), déclenché à la main (`workflow_dispatch`). */
 export const BROWSER_WORKFLOW = {
   owner: 'SoloPaps',
-  repo: 'Audigy-Web',
+  repo: 'Audixio',
   workflow: 'browser-audit.yml',
   ref: 'main',
 } as const;
@@ -55,7 +55,7 @@ export function createGithubDispatcher(
             authorization: `Bearer ${token}`,
             'content-type': 'application/json',
             'x-github-api-version': '2022-11-28',
-            'user-agent': 'Audigy',
+            'user-agent': 'Audixio',
           },
           body: JSON.stringify({ ref: wf.ref, inputs: { auditId } }),
         });
@@ -78,7 +78,7 @@ export function createGithubDispatcher(
 }
 
 /** Variable de dev (hors §9), lue seulement avec le labo sous `netlify dev`. */
-export const LOCAL_RUNNER_ENV_NAME = 'AUDIGY_LOCAL_RUNNER';
+export const LOCAL_RUNNER_ENV_NAME = 'AUDIXIO_LOCAL_RUNNER';
 
 /** Labo : le runner est lancé à la main en local ; la fonction l'attend sans appeler GitHub. */
 export function createLocalDispatcher(logger: Logger): Dispatcher {

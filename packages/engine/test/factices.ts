@@ -25,7 +25,7 @@ export const facticePassif: Check = {
 };
 
 /** Check actif factice : un chemin non lié ne doit pas être exposé. */
-export const FACTICE_PATH = '/.audigy-factice';
+export const FACTICE_PATH = '/.audixio-factice';
 export const facticeActif: Check = {
   id: 'securite.factice_actif',
   domain: 'securite',

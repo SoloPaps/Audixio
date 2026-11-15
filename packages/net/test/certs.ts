@@ -13,15 +13,15 @@ export interface TestCerts {
 
 /**
  * Génère une AC de test, un certificat feuille signé et un autosigné.
- * Par défaut : SAN audigy.test et www.audigy.test, 30 jours.
+ * Par défaut : SAN audixio.test et www.audixio.test, 30 jours.
  */
 export function generateTestCerts(
   options: { names?: readonly string[]; days?: number } = {},
 ): TestCerts {
-  const names = options.names ?? ['audigy.test', 'www.audigy.test'];
+  const names = options.names ?? ['audixio.test', 'www.audixio.test'];
   const days = String(options.days ?? 30);
-  const first = names[0] ?? 'audigy.test';
-  const dir = mkdtempSync(join(tmpdir(), 'audigy-net-'));
+  const first = names[0] ?? 'audixio.test';
+  const dir = mkdtempSync(join(tmpdir(), 'audixio-net-'));
   const p = (f: string) => join(dir, f);
   const ssl = (...args: string[]) =>
     execFileSync('openssl', args, { stdio: 'pipe' });
@@ -38,7 +38,7 @@ export function generateTestCerts(
       '-days',
       days,
       '-subj',
-      '/CN=Audigy Test CA',
+      '/CN=Audixio Test CA',
       '-addext',
       'basicConstraints=critical,CA:TRUE',
       '-addext',
@@ -87,9 +87,9 @@ export function generateTestCerts(
       '-days',
       days,
       '-subj',
-      '/CN=audigy.test',
+      '/CN=audixio.test',
       '-addext',
-      'subjectAltName=DNS:audigy.test',
+      'subjectAltName=DNS:audixio.test',
     );
     const read = (f: string) => readFileSync(p(f), 'utf8');
     return {

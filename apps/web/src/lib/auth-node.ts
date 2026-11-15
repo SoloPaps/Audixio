@@ -1,6 +1,6 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { anonymousRedirect } from '@audigy/db/auth-guard';
-import { authEnvFrom, handleAuthRequest } from '@audigy/db/auth-http';
+import { anonymousRedirect } from '@audixio/db/auth-guard';
+import { authEnvFrom, handleAuthRequest } from '@audixio/db/auth-http';
 
 function headerValue(value: string | string[] | undefined): string {
   if (typeof value === 'string') return value;

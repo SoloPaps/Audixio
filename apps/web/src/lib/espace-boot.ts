@@ -1,5 +1,5 @@
-import type { Plan } from '@audigy/db';
-import { withinSiteQuota } from '@audigy/db';
+import type { Plan } from '@audixio/db';
+import { withinSiteQuota } from '@audixio/db';
 import type { Session } from '@supabase/supabase-js';
 import { tick } from 'svelte';
 import { formatDate, t } from '../i18n/index.js';
@@ -558,7 +558,7 @@ async function addSite(
   let draft: ReturnType<typeof normalizeSiteUrl>;
   try {
     draft = normalizeSiteUrl(raw, {
-      allowLab: import.meta.env.PUBLIC_AUDIGY_LAB === '1',
+      allowLab: import.meta.env.PUBLIC_AUDIXIO_LAB === '1',
     });
   } catch (caught) {
     if (caught instanceof InvalidSiteUrl) {
@@ -969,7 +969,7 @@ function paintHistoryLive(
 function rangeFullNote(view: HistoryView | null): string {
   let locale: 'fr' | 'en' = 'fr';
   try {
-    if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
+    if (localStorage.getItem('audixio-locale') === 'en') locale = 'en';
   } catch {
     locale = 'fr';
   }

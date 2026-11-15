@@ -24,12 +24,12 @@ async function openSites(
   patches.length = 0;
   let row = {
     id: SITE,
-    url: 'https://gratuit.audigy.test',
-    label: 'gratuit.audigy.test',
-    host: 'gratuit.audigy.test',
+    url: 'https://gratuit.audixio.test',
+    label: 'gratuit.audixio.test',
+    host: 'gratuit.audixio.test',
     is_public: options.published === true,
     public_slug: (options.published
-      ? (options.slug ?? 'gratuit-audigy-01')
+      ? (options.slug ?? 'gratuit-audixio-01')
       : null) as string | null,
     expose_security: false,
     owner_id: USER,
@@ -40,7 +40,7 @@ async function openSites(
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({

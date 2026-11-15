@@ -5,7 +5,7 @@ import {
   createLogger,
   handleGet,
   secretsFromEnv,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 import { localFunctionEnv } from './guest-node.js';
 
 function headerValue(value: string | string[] | undefined): string {

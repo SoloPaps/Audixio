@@ -20,7 +20,7 @@ let locale = $state<'fr' | 'en'>('fr');
 function toggleTheme(): void {
   const next = dark ? 'light' : 'dark';
   dark = next === 'dark';
-  localStorage.setItem('audigy-theme', next);
+  localStorage.setItem('audixio-theme', next);
   document.documentElement.setAttribute('data-theme', next);
 }
 
@@ -36,7 +36,7 @@ async function setLocale(next: 'fr' | 'en'): Promise<void> {
       }
     }
     settleLocaleChoice();
-    localStorage.setItem('audigy-locale', next);
+    localStorage.setItem('audixio-locale', next);
     locale = next;
     applyLocale(next);
     location.reload();
@@ -49,7 +49,7 @@ onMount(() => {
   dark =
     document.documentElement.getAttribute('data-theme') === 'dark' ||
     initial === 'dark';
-  if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
+  if (localStorage.getItem('audixio-locale') === 'en') locale = 'en';
   applyLocale(locale);
   void resumeEnglishChoice().then((resumed) => {
     if (resumed) location.reload();

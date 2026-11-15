@@ -200,7 +200,7 @@ export const BrowserAuditResultSchema = z.strictObject({
   version: z.literal(BROWSER_RESULT_VERSION),
   mode: z.literal('passive'),
   runner: z.strictObject({
-    name: z.literal('audigy-browser'),
+    name: z.literal('audixio-browser'),
     browser: z.string().max(64),
     axe: z.string().max(32),
     /** User-Agent envoyé au site par `safeFetch`. */

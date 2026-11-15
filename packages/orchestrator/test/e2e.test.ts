@@ -2,9 +2,9 @@ import { randomUUID } from 'node:crypto';
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { runJob, supabaseJobStore } from '@audigy/browser-runner';
-import { createServiceClient, createUserClient } from '@audigy/db';
-import { SECURITE_CHECKS, VIE_PRIVEE_CHECKS } from '@audigy/engine';
+import { runJob, supabaseJobStore } from '@audixio/browser-runner';
+import { createServiceClient, createUserClient } from '@audixio/db';
+import { SECURITE_CHECKS, VIE_PRIVEE_CHECKS } from '@audixio/engine';
 import postgres, { type Sql } from 'postgres';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { type Lab, startLab } from '../../../fixtures/lab.js';
@@ -182,14 +182,14 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
     `;
     await admin`delete from public.rate_limits`;
     lab = await startLab();
-    dir = await mkdtemp(path.join(tmpdir(), 'audigy-e2e-'));
+    dir = await mkdtemp(path.join(tmpdir(), 'audixio-e2e-'));
     const labFile = path.join(dir, 'lab.json');
     await writeFile(labFile, JSON.stringify(lab.config));
     env = {
       SUPABASE_URL: local.apiUrl,
       SUPABASE_ANON_KEY: local.anonKey,
       SUPABASE_SERVICE_ROLE_KEY: local.serviceRoleKey,
-      AUDIGY_LAB: labFile,
+      AUDIXIO_LAB: labFile,
       NETLIFY_DEV: 'true',
     };
     await signUp('a');
@@ -214,8 +214,8 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
 
   it('double clic : un seul audit, un seul réveil', async () => {
     const [one, two] = await Promise.all([
-      create('a', { url: 'bon.audigy.test' }),
-      create('a', { url: 'https://bon.audigy.test/' }),
+      create('a', { url: 'bon.audixio.test' }),
+      create('a', { url: 'https://bon.audixio.test/' }),
     ]);
     type Body = { auditId: string };
     const a = (await one.json()) as Body;
@@ -259,7 +259,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
       mode: 'passive',
       trigger: 'manual',
       error: null,
-      site: { url: 'https://bon.audigy.test', scope: 'origin' },
+      site: { url: 'https://bon.audixio.test', scope: 'origin' },
     });
     expect(body.audit.finishedAt).not.toBeNull();
     expectLockedHidden(body);
@@ -289,7 +289,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
   });
 
   it('audit terminé : limite, pas l’ancien id', async () => {
-    const res = await create('a', { url: 'https://bon.audigy.test/' });
+    const res = await create('a', { url: 'https://bon.audixio.test/' });
     expect(res.status).toBe(429);
     const body = (await res.json()) as { error?: string; auditId?: string };
     expect(body.error).toBe('host_limit');
@@ -298,19 +298,19 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
   });
 
   it('audit en cours : le même id de progression', async () => {
-    const created = await create('a', { url: 'encours.audigy.test' });
+    const created = await create('a', { url: 'encours.audixio.test' });
     expect(created.status).toBe(202);
     const { auditId } = (await created.json()) as { auditId: string };
     await admin`
       update public.audits set status = 'running' where id = ${auditId}::uuid
     `;
-    const again = await create('a', { url: 'https://encours.audigy.test/' });
+    const again = await create('a', { url: 'https://encours.audixio.test/' });
     expect(again.status).toBe(200);
     expect(await again.json()).toEqual({ auditId, existing: true });
   });
 
   it('audit failed récent : limite, pas une reprise', async () => {
-    const created = await create('a', { url: 'rate.audigy.test' });
+    const created = await create('a', { url: 'rate.audixio.test' });
     expect(created.status).toBe(202);
     const { auditId } = (await created.json()) as { auditId: string };
     await admin`
@@ -318,7 +318,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
       set status = 'failed', error = 'stale', finished_at = now()
       where id = ${auditId}::uuid
     `;
-    const res = await create('a', { url: 'https://rate.audigy.test/' });
+    const res = await create('a', { url: 'https://rate.audixio.test/' });
     expect(res.status).toBe(429);
     const body = (await res.json()) as { error?: string; auditId?: string };
     expect(body.error).toBe('host_limit');
@@ -333,14 +333,14 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
   });
 
   it('runner présent : sa sortie est fusionnée', async () => {
-    const created = await create('a', { url: 'mauvais.audigy.test' });
+    const created = await create('a', { url: 'mauvais.audixio.test' });
     expect(created.status).toBe(202);
     const { auditId } = (await created.json()) as { auditId: string };
     const service = createServiceClient({
       url: local.apiUrl,
       serviceRoleKey: local.serviceRoleKey,
     });
-    const report = await runnerReport('mauvais.audigy.test');
+    const report = await runnerReport('mauvais.audixio.test');
     const jobs: string[] = [];
     const runner: Dispatcher = {
       async dispatch(id) {
@@ -363,7 +363,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
     expect(await run(runner)).toEqual({ processed: auditId });
     const body = (await (await view('a', auditId)).json()) as AuditView;
     expect(body.audit.status).toBe('done');
-    expect(jobs).toEqual(['https://mauvais.audigy.test']);
+    expect(jobs).toEqual(['https://mauvais.audixio.test']);
     expectLockedHidden(body);
     const engine = await engineView(auditId);
     const browserIds = VIE_PRIVEE_CHECKS.filter((c) =>
@@ -393,7 +393,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
   });
 
   it('limite par hôte : 1 audit / 15 min, tous comptes confondus', async () => {
-    const res = await create('b', { url: 'https://bon.audigy.test/blog/' });
+    const res = await create('b', { url: 'https://bon.audixio.test/blog/' });
     expect(res.status).toBe(429);
     expect(await res.json()).toMatchObject({ error: 'host_limit' });
     const retry = Number(res.headers.get('retry-after'));
@@ -410,7 +410,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
         10
       )
     `;
-    const res = await create('b', { url: 'autre.audigy.test' });
+    const res = await create('b', { url: 'autre.audixio.test' });
     expect(res.status).toBe(429);
     expect(await res.json()).toMatchObject({ error: 'user_limit' });
     const keys = await admin<
@@ -421,7 +421,7 @@ describe('orchestration de bout en bout (Supabase local + labo)', () => {
 
   it('actif sans vérification : refusé', async () => {
     const res = await create('a', {
-      url: 'autre.audigy.test',
+      url: 'autre.audixio.test',
       mode: 'active',
     });
     expect(res.status).toBe(403);

@@ -79,7 +79,7 @@ function client(
   extra: Parameters<typeof createExternalApi>[0] = {},
 ): ExternalApi {
   return createExternalApi({
-    allow: ['audigy.test'],
+    allow: ['audixio.test'],
     resolve: async () => [PUBLIC_IP],
     dial: () => ({ host: '127.0.0.1', port }),
     ca: [certs.caCert],
@@ -112,7 +112,7 @@ describe('createExternalApi', () => {
     const api = client();
     const got = await api.request({
       method: 'GET',
-      url: new URL('https://audigy.test/nvd'),
+      url: new URL('https://audixio.test/nvd'),
       headers: { apiKey: SECRET },
       timeoutMs: 1000,
     });
@@ -130,7 +130,7 @@ describe('createExternalApi', () => {
       const error = await api
         .request({
           method: 'GET',
-          url: new URL('https://audigy.test/nvd'),
+          url: new URL('https://audixio.test/nvd'),
           headers,
           timeoutMs: 1000,
         })
@@ -187,21 +187,21 @@ describe('createExternalApi', () => {
     await expect(
       api.request({
         method: 'GET',
-        url: new URL('http://audigy.test/'),
+        url: new URL('http://audixio.test/'),
         timeoutMs: 1000,
       }),
     ).rejects.toMatchObject({ code: 'BLOCKED_SCHEME' });
     await expect(
       api.request({
         method: 'GET',
-        url: new URL('https://audigy.test:444/'),
+        url: new URL('https://audixio.test:444/'),
         timeoutMs: 1000,
       }),
     ).rejects.toMatchObject({ code: 'BLOCKED_PORT' });
     await expect(
       api.request({
         method: 'GET',
-        url: new URL('https://user:pass@audigy.test/'),
+        url: new URL('https://user:pass@audixio.test/'),
         timeoutMs: 1000,
       }),
     ).rejects.toMatchObject({ code: 'BLOCKED_CREDENTIALS' });
@@ -213,13 +213,13 @@ describe('createExternalApi', () => {
     const api = client({ resolve });
     const got = await api.request({
       method: 'GET',
-      url: new URL(`https://audigy.test/ok?key=${SECRET}`),
+      url: new URL(`https://audixio.test/ok?key=${SECRET}`),
       timeoutMs: 1000,
     });
     expect(got).toEqual({ status: 200, text: '{"ok":true}' });
     const posted = await api.request({
       method: 'POST',
-      url: new URL(`https://audigy.test/crux?key=${SECRET}`),
+      url: new URL(`https://audixio.test/crux?key=${SECRET}`),
       body: '{"url":"https://exemple.test/"}',
       timeoutMs: 1000,
     });
@@ -239,7 +239,7 @@ describe('createExternalApi', () => {
     const api = client();
     const got = await api.request({
       method: 'GET',
-      url: new URL('https://audigy.test/hop'),
+      url: new URL('https://audixio.test/hop'),
       timeoutMs: 1000,
     });
     expect(got).toEqual({ status: 302, text: '' });
@@ -250,7 +250,7 @@ describe('createExternalApi', () => {
     const api = client();
     const got = await api.request({
       method: 'GET',
-      url: new URL('https://audigy.test/gzip'),
+      url: new URL('https://audixio.test/gzip'),
       timeoutMs: 1000,
     });
     expect(got.text).toBe('{"ok":true}');
@@ -258,7 +258,7 @@ describe('createExternalApi', () => {
     await expect(
       small.request({
         method: 'GET',
-        url: new URL('https://audigy.test/big'),
+        url: new URL('https://audixio.test/big'),
         timeoutMs: 1000,
       }),
     ).rejects.toMatchObject({ code: 'RESPONSE_TOO_LARGE' });
@@ -269,7 +269,7 @@ describe('createExternalApi', () => {
     const error = await api
       .request({
         method: 'GET',
-        url: new URL(`https://audigy.test/slow?key=${SECRET}`),
+        url: new URL(`https://audixio.test/slow?key=${SECRET}`),
         timeoutMs: 80,
       })
       .catch((caught: unknown) => caught);
@@ -279,7 +279,7 @@ describe('createExternalApi', () => {
 
   it('masque la clé si la connexion échoue', async () => {
     const api = createExternalApi({
-      allow: ['audigy.test'],
+      allow: ['audixio.test'],
       resolve: async () => [PUBLIC_IP],
       dial: () => {
         throw new Error(`boom ?key=${SECRET}`);
@@ -288,7 +288,7 @@ describe('createExternalApi', () => {
     const error = await api
       .request({
         method: 'GET',
-        url: new URL(`https://audigy.test/?key=${SECRET}`),
+        url: new URL(`https://audixio.test/?key=${SECRET}`),
         timeoutMs: 1000,
       })
       .catch((caught: unknown) => caught);
@@ -304,7 +304,7 @@ describe('createExternalApi', () => {
     const bearer = 'Bearer jeton-test-gsc';
     const got = await api.request({
       method: 'POST',
-      url: new URL('https://audigy.test/token'),
+      url: new URL('https://audixio.test/token'),
       body: 'grant_type=refresh_token',
       contentType: 'application/x-www-form-urlencoded',
       authorization: bearer,
@@ -319,7 +319,7 @@ describe('createExternalApi', () => {
     const error = await api
       .request({
         method: 'GET',
-        url: new URL('https://audigy.test/nvd'),
+        url: new URL('https://audixio.test/nvd'),
         headers: { authorization: bearer },
         timeoutMs: 1000,
       })

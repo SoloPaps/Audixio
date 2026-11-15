@@ -1,4 +1,4 @@
-import type { FindingView } from '@audigy/orchestrator';
+import type { FindingView } from '@audixio/orchestrator';
 import { describe, expect, it } from 'vitest';
 import { briefEn } from '../i18n/brief-en.js';
 import { briefFr } from '../i18n/brief-fr.js';

@@ -21,7 +21,7 @@ const TRACKERS_READ = "readFileSync(FILE, 'utf8')";
  * dans le bundle : on l'inline. Échoue si le moteur change sa façon de la lire.
  */
 export const inlineTrackers: Plugin = {
-  name: 'audigy-inline-trackers',
+  name: 'audixio-inline-trackers',
   setup(b) {
     b.onLoad({ filter: TRACKERS_MODULE }, async (args) => {
       const source = await readFile(args.path, 'utf8');
@@ -61,7 +61,7 @@ export async function buildFunctions(
     target: 'node22',
     outExtension: { '.js': '.mjs' },
     banner: {
-      js: "import { createRequire as __audigyRequire } from 'node:module';\nconst require = __audigyRequire(import.meta.url);",
+      js: "import { createRequire as __audixioRequire } from 'node:module';\nconst require = __audixioRequire(import.meta.url);",
     },
     logLevel: 'warning',
     plugins: [inlineTrackers],

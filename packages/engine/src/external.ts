@@ -1,4 +1,4 @@
-import { createExternalApi, type ExternalApi } from '@audigy/net';
+import { createExternalApi, type ExternalApi } from '@audixio/net';
 import type { RunContext } from './types.js';
 
 /**
