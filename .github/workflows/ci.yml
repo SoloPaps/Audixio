@@ -71,9 +71,13 @@ jobs:
   unitaires:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    name: unitaires
+    name: unitaires (${{ matrix.shard }}/3)
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -105,7 +109,7 @@ jobs:
         run: pnpm --filter @audixio/web exec playwright install --with-deps chromium
 
       - name: test
-        run: pnpm test
+        run: pnpm test --shard=${{ matrix.shard }}/3
 
   publication:
     runs-on: ubuntu-latest

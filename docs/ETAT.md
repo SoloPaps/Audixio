@@ -79,6 +79,6 @@ pnpm --filter @audixio/web exec playwright test --shard=1/4   # une part des e2e
 
 ## CI
 
-- Les jobs `statique`, `unitaires`, `publication` et `ui` (4 parts) tournent en parallèle.
+- Les jobs `statique`, `unitaires` (3 parts), `publication` et `ui` (4 parts) tournent en parallèle.
 - `check`, le check requis, les attend, applique les corrections automatiques et échoue si l'un d'eux échoue.
 - `e2e` : parcours réels avec Netlify CLI.
