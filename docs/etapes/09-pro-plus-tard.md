@@ -10,7 +10,6 @@
 ## Fichiers à lire
 
 - `docs/produit/FONCTIONNEMENT.md` §6
-- `docs/archive/audigy-titled-2026-10-28/07-PLUS-TARD.md`
 
 ## Périmètre Pro (rappel)
 

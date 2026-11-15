@@ -2,7 +2,7 @@
 
 # Questions ouvertes pour le propriétaire
 
-> Réorganisation du 29/10/2026 : seules les questions **encore ouvertes** restent ici. Q4, Q12 et Q15 sont tranchées → [`00-DECISIONS.md`](../00-DECISIONS.md) (numéros gardés pour les renvois). Version complète d'origine : [`archive/fusionnes-2026-10-29/QUESTIONS.md`](../archive/fusionnes-2026-10-29/QUESTIONS.md).
+> Réorganisation du 29/10/2026 : seules les questions **encore ouvertes** restent ici. Q4, Q12 et Q15 sont tranchées → [`00-DECISIONS.md`](../00-DECISIONS.md) (numéros gardés pour les renvois).
 > Q14 (app OAuth Search Console) devient plus importante : Search Console est désormais la méthode de vérification recommandée (29/10).
 > Q27 concerne les modèles **Cursor** ; les modèles **backend** sont fixés dans `00-DECISIONS.md` (29/10).
 

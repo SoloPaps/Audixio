@@ -358,7 +358,7 @@ Format : **Objectif** · Contexte (à lire) · Livrables · Critères d'acceptat
 
 **PART-03 — Réseau sûr (`packages/net`)**
 - Objectif : `safeFetch`, résolveur DoH, sonde TLS, budget de requêtes.
-- Contexte : §11 (anti-SSRF), `.cursor/rules/security.mdc`.
+- Contexte : §11 (anti-SSRF).
 - Livrables : API documentée en tête de fichier, tests.
 - CA : tests refusant 127.0.0.1, 10/8, 172.16/12, 192.168/16, 169.254.169.254, 100.64/10, ::1, fc00::/7, fe80::/10, ::ffff:127.0.0.1, `http://2130706433`, `http://0x7f.1`, redirection vers IP privée, rebinding (2e résolution différente ignorée), port 8080, `file:`, réponse trop grosse, délai dépassé ; sonde TLS sur serveur de test local (expiration, chaîne, SAN, protocole).
 - Modèle : **Fort**. Dépend de : 00.

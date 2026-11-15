@@ -15,7 +15,7 @@ Le site existe en français (référence, à la racine) et en anglais (sous `/en
 ## Fichiers à lire
 
 - `docs/produit/FONCTIONNEMENT.md` §12bis (règles, SEO, rapports, e-mails)
-- `apps/web/src/components/CanonBar.svelte` (bouton FR|EN dans la nav)
+- `apps/web/src/components/v6/SiteHeader.svelte` (bouton FR|EN dans la nav)
 - `apps/web/astro.config.mjs`, `apps/web/src/i18n/` (existant : `fr.ts`, `report-fr.ts`, `brief-fr.ts`, `index.ts`, `format.ts`)
 
 ## À faire (dans l'ordre)

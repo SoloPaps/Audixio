@@ -38,7 +38,3 @@ L'auto-merge Dependabot ne part que pour un **correctif** (toutes dépendances) 
 Sur une PR (hors Dependabot, hors fork), knip et Biome peuvent pousser un commit. Le jeton par défaut **ne relance pas** les workflows : le job échoue alors exprès, avec le message de refaire un push (`git commit --allow-empty -m "ci: relance les checks" && git push`). Aucun secret n'est nécessaire.
 
 Option plus tard, non branchée : une GitHub App limitée à ce dépôt, permission **Contents : Read and write**. Son jeton d'installation relance les workflows, contrairement à `GITHUB_TOKEN`. Ne pas mettre ce jeton dans le dépôt. Le workflow actuel ne lit aucun secret de ce genre.
-
-## Agents cloud
-
-`.cursor/environment.json` installe Node 22 (`.nvmrc`), pnpm via corepack, les dépendances, Chromium et la CLI Supabase ; `start` lance Docker puis Supabase local (hors de l'install, pour rester rapide au snapshot).

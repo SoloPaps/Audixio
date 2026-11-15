@@ -2,7 +2,7 @@
 
 Fichier unique des décisions de l'owner. **La décision la plus récente gagne.**
 Fusion de : `DECISIONS-OWNER-2026-10-28-soir.md` (28/10 soir), des décisions du 29/10/2026 et des questions déjà tranchées de `QUESTIONS.md`.
-Originaux conservés tels quels dans [`archive/fusionnes-2026-10-29/`](archive/fusionnes-2026-10-29/). Questions encore ouvertes : [`produit/QUESTIONS.md`](produit/QUESTIONS.md).
+Les originaux fusionnés sont dans l'historique git. Questions encore ouvertes : [`produit/QUESTIONS.md`](produit/QUESTIONS.md).
 
 ---
 
@@ -88,7 +88,7 @@ Remplace : « GSC ≠ vérification » (27/10) et les vagues de preuves du 28/10
 **Projet :** Audixio — `C:\Projets\Audixio-propre` (OrdiBibi, local).  
 **Pas de commit GitHub** pour cette session.
 
-Voir aussi : `docs/etapes/00-LISEZ-MOI.md`, `docs/archive/journal/journal-corrections-docs-2026-10-28.md`.
+Voir aussi : `docs/etapes/00-LISEZ-MOI.md`.
 
 
 
