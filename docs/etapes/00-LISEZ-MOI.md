@@ -1,6 +1,6 @@
 # Étapes Audixio — lire en premier
 
-Fusion de `RECAP-ETAPES-PROJET-AUDIXIO.md` (récap owner) et `etapes-refonte/00-LISEZ-MOI.md` (ordre des étapes). Originaux : `archive/fusionnes-2026-10-29/`.
+Fusion de `RECAP-ETAPES-PROJET-AUDIXIO.md` (récap owner) et `etapes-refonte/00-LISEZ-MOI.md` (ordre des étapes). Les originaux sont dans l'historique git.
 
 > **Mise à jour du 29/10/2026** — ces décisions priment (détail : [00-DECISIONS.md](../00-DECISIONS.md)) :
 > - Connexion = **e-mail + mot de passe**, ou **Google / GitHub**. Plus de magic link.
@@ -123,8 +123,8 @@ Ordre global pour modifier le site **comme décidé** le 26 octobre 2026. Une é
 
 | # | Fichier | Sujet |
 |---|---|---|
-| 01 | [`01-fondations-docs.md`](../archive/etapes-refonte/01-fondations-docs.md) | Merger ce pack docs (**fait**, archivé) |
-| 02 | (archivée, `docs/archive/design-2026-11-12/`) | AppHeader, logo, i18n, drawer — remplacée par la v6 |
+| 01 | (retirée du dépôt) | Merger ce pack docs (**fait**) |
+| 02 | (retirée du dépôt) | AppHeader, logo, i18n, drawer — remplacée par la v6 |
 | 03 | (archivée) | Tokens dark — remplacés par `theme-dark.css` v6 |
 | 04 | `04-promesse-et-copie.md` | 5 corrections + 8 domaines |
 | 05 | `05-rapport-deux-couches.md` | Verdict / technique ; bugs |

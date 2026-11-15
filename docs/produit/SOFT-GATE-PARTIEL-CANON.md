@@ -15,7 +15,7 @@ Ce fichier = règles soft-gate + **stratégie lock-components** + anti-fuite.
 1. `MATRICE-STATUT-DROITS-CANON.md` — **matrice statut → droits** (SSOT)
 2. `docs/archive/2026-10-28-prune/_spec-soft-gate-2026-10-28/Audixio-spec-officielle-soft-gate.md`
 3. `docs/archive/2026-10-28-prune/_spec-soft-gate-2026-10-28/Audixio-rapport-soft-gate-partiel-COMPLET-2026-10-28.md`
-4. `docs/produit/FONCTIONNEMENT.md`, `AGENTS.md`, `.cursor/rules/00-core.mdc`
+4. `docs/produit/FONCTIONNEMENT.md`, `AGENTS.md`
 
 ---
 
