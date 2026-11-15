@@ -1,4 +1,4 @@
-import { GRADE_THRESHOLDS, gradeForScore } from '@audigy/db';
+import { GRADE_THRESHOLDS, gradeForScore } from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import {
   CALC_DOMAINS,

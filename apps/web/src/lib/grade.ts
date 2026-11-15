@@ -1,9 +1,9 @@
-import { type Grade, gradeForScore as gradeFromDb } from '@audigy/db';
+import { type Grade, gradeForScore as gradeFromDb } from '@audixio/db';
 import { type MessageKey, t } from '../i18n/index.js';
 
-export type { Grade } from '@audigy/db';
+export type { Grade } from '@audixio/db';
 
-/** Barème unique de `@audigy/db` (`GRADE_THRESHOLDS`). */
+/** Barème unique de `@audixio/db` (`GRADE_THRESHOLDS`). */
 export const gradeForScore: (score: number | null) => Grade | null =
   gradeFromDb;
 

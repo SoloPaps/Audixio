@@ -11,7 +11,7 @@ const root = path.resolve(
 
 export const STATE = '/tmp/audixio-e2e-reel.json';
 export const AUTH = '/tmp/audixio-e2e-auth.json';
-export const LAB = 'https://mauvais.audigy.test/';
+export const LAB = 'https://mauvais.audixio.test/';
 const boite = 'http://127.0.0.1:54324';
 
 export interface ReelState {
@@ -57,7 +57,7 @@ function sql(statement: string): void {
     [
       'exec',
       '-i',
-      'supabase_db_audigy',
+      'supabase_db_audixio',
       'psql',
       '-U',
       'postgres',

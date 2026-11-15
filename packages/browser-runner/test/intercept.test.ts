@@ -4,7 +4,7 @@ import {
   NetError,
   type SafeFetch,
   type SafeResponse,
-} from '@audigy/net';
+} from '@audixio/net';
 import { describe, expect, it, vi } from 'vitest';
 import {
   createInterceptor,

@@ -53,8 +53,8 @@ async function english(page: Page): Promise<void> {
         localStorage: { setItem(k: string, v: string): void };
       }
     ).localStorage;
-    storage.setItem('audigy-en', text);
-    storage.setItem('audigy-locale', 'en');
+    storage.setItem('audixio-en', text);
+    storage.setItem('audixio-locale', 'en');
   }, pack);
 }
 

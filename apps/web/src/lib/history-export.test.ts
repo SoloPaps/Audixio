@@ -68,8 +68,8 @@ describe('historyFormats (matrice des droits)', () => {
   });
 
   it('nomme les fichiers d’après le site', () => {
-    expect(historyFileName('Bon.Audigy.test', 'pdf')).toBe(
-      'audixio-historique-bon.audigy.test.pdf',
+    expect(historyFileName('Bon.Audixio.test', 'pdf')).toBe(
+      'audixio-historique-bon.audixio.test.pdf',
     );
     expect(historyFileName('', 'xlsx')).toBe('audixio-historique-site.xlsx');
   });
@@ -78,11 +78,11 @@ describe('historyFormats (matrice des droits)', () => {
 describe('historyPdf', () => {
   it('produit un PDF valide avec le site et les notes', () => {
     const text = latin1(
-      historyPdf(view, 'bon.audigy.test', new Date('2026-11-05T12:00:00Z')),
+      historyPdf(view, 'bon.audixio.test', new Date('2026-11-05T12:00:00Z')),
     );
     expect(text.startsWith('%PDF-1.4')).toBe(true);
     expect(text.trimEnd().endsWith('%%EOF')).toBe(true);
-    expect(text).toContain('bon.audigy.test');
+    expect(text).toContain('bon.audixio.test');
     expect(text).toContain('(Performance)');
     expect(text).toContain('(88)');
     expect(text).toContain('(91)');
@@ -140,14 +140,14 @@ describe('historyJson', () => {
     };
     const text = historyJson(
       shuffled,
-      'bon.audigy.test',
+      'bon.audixio.test',
       new Date('2026-11-05T12:00:00Z'),
     );
     expect(text.endsWith('\n')).toBe(true);
     expect(JSON.parse(text)).toEqual({
       format: 'audixio-historique',
       version: 1,
-      site: 'bon.audigy.test',
+      site: 'bon.audixio.test',
       generatedAt: '2026-11-05T12:00:00.000Z',
       series: [
         { id: 'global', label: 'Note globale' },
@@ -169,8 +169,8 @@ describe('historyJson', () => {
   });
 
   it('nomme le fichier en .json', () => {
-    expect(historyFileName('bon.audigy.test', 'json')).toBe(
-      'audixio-historique-bon.audigy.test.json',
+    expect(historyFileName('bon.audixio.test', 'json')).toBe(
+      'audixio-historique-bon.audixio.test.json',
     );
   });
 });

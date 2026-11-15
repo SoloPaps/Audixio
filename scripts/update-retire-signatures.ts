@@ -120,7 +120,7 @@ async function main(): Promise<void> {
     license: 'Apache-2.0',
     copyright: 'Copyright 2018 Erlend Oftedal',
     changes:
-      'Modifié par Audigy : extracteurs uri, filename, filecontent, filecontentreplace et hashes seulement. Failles, licences et extracteurs func retirés.',
+      'Modifié par Audixio : extracteurs uri, filename, filecontent, filecontentreplace et hashes seulement. Failles, licences et extracteurs func retirés.',
     libraries,
   };
   await mkdir(OUT, { recursive: true });
@@ -129,7 +129,7 @@ async function main(): Promise<void> {
   await writeFile(path.join(OUT, 'LICENSE.md'), license);
   await writeFile(
     path.join(OUT, 'NOTICE.md'),
-    `${notice.trimEnd()}\n\n---\n\nsignatures.json est dérivé de repository/jsrepository-master.json\n(${REPO}, commit ${commit}). Audigy n’en garde que les extracteurs.\n`,
+    `${notice.trimEnd()}\n\n---\n\nsignatures.json est dérivé de repository/jsrepository-master.json\n(${REPO}, commit ${commit}). Audixio n’en garde que les extracteurs.\n`,
   );
   execFileSync('pnpm', ['exec', 'biome', 'format', '--write', target], {
     stdio: 'inherit',

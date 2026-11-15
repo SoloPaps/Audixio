@@ -1,4 +1,4 @@
-import { NetError } from '@audigy/net';
+import { NetError } from '@audixio/net';
 import { describe, expect, it, vi } from 'vitest';
 import { fr } from '../../../apps/web/src/i18n/fr.js';
 import {

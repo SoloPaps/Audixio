@@ -1,4 +1,4 @@
-import { GRADE_THRESHOLDS } from '@audigy/db';
+import { GRADE_THRESHOLDS } from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import { t } from '../i18n/index.js';
 import {

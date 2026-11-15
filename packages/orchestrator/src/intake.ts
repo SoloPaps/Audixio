@@ -7,8 +7,8 @@ import {
   retryAfterSeconds,
   robotBudgets,
   sha256Hex,
-} from '@audigy/db';
-import { validEmail, windowStartIso } from '@audigy/db/auth-policy';
+} from '@audixio/db';
+import { validEmail, windowStartIso } from '@audixio/db/auth-policy';
 import { apiError } from './http.js';
 import { errorCode, type Logger } from './log.js';
 

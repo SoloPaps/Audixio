@@ -4,7 +4,7 @@ import type {
   RequestBudget,
   SafeFetch,
   TlsProbe,
-} from '@audigy/net';
+} from '@audixio/net';
 import type { SearchConsolePort } from './gsc.js';
 
 export const METHOD_VERSION = '2026.1';

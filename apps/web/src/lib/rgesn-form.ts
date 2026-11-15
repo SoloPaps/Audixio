@@ -4,7 +4,7 @@ import {
   type RgesnAnswer,
   type RgesnResponse,
   rgesnProgress,
-} from '@audigy/engine/questionnaire';
+} from '@audixio/engine/questionnaire';
 
 const ANSWERS = new Set<RgesnAnswer>(['oui', 'partiel', 'non', 'na']);
 

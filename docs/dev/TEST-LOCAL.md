@@ -5,13 +5,13 @@
 | Compte | E-mail | Mot de passe | Contenu |
 |---|---|---|---|
 | Gratuit | `gratuit@localhost` | `Audixio-local-gratuit` | Plan gratuit, aucun site |
-| Pro | `pro@localhost` | `Audixio-local-pro` | Plan Pro, site `https://bon.audigy.test` déjà vérifié, trois audits (21 jours, 10 jours, 1 jour) |
+| Pro | `pro@localhost` | `Audixio-local-pro` | Plan Pro, site `https://bon.audixio.test` déjà vérifié, trois audits (21 jours, 10 jours, 1 jour) |
 
 Connexion : e-mail et mot de passe sur `/connexion`, avec `netlify dev` ou l’app locale branchée sur ce Supabase. Les adresses `@localhost` sont acceptées (pas de point dans le domaine). Un ancien dictionnaire anglais gardé par le navigateur (textes de lien magique) est ignoré : la page repasse en français.
 
 ## Plafond des 3 audits sans compte
 
-`pnpm lab` ajoute `AUDIGY_GUEST_UNLIMITED=1` dans le `.env` local. Le serveur n’en tient compte que si `SUPABASE_URL` est locale. Le plafond passe alors à 1000 audits par 24 h : la fonction SQL `consume_rate_limit` refuse un nombre plus grand et répondrait 429 à chaque fois. Sinon la limite reste 3 audits par 24 h. Une URL distante retire aussi la ligne du `.env` si `pnpm lab` voit un Supabase qui n’est pas local.
+`pnpm lab` ajoute `AUDIXIO_GUEST_UNLIMITED=1` dans le `.env` local. Le serveur n’en tient compte que si `SUPABASE_URL` est locale. Le plafond passe alors à 1000 audits par 24 h : la fonction SQL `consume_rate_limit` refuse un nombre plus grand et répondrait 429 à chaque fois. Sinon la limite reste 3 audits par 24 h. Une URL distante retire aussi la ligne du `.env` si `pnpm lab` voit un Supabase qui n’est pas local.
 
 Hors de la machine, le seed refuse avant toute requête (`hors_local`). Aucune migration de production : ce sont des lignes dans la base Docker.
 

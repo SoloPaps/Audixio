@@ -22,8 +22,8 @@ async function english(page: Page): Promise<void> {
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    store.setItem('audigy-en', value);
-    store.setItem('audigy-locale', 'en');
+    store.setItem('audixio-en', value);
+    store.setItem('audixio-locale', 'en');
   }, pack);
 }
 

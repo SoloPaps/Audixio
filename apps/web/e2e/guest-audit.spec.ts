@@ -74,8 +74,8 @@ async function expectGateChrome(page: Page): Promise<void> {
   expect(style.loginDecor).toBe('none');
 }
 
-const REACHABLE = 'https://bon.audigy.test';
-const UNREACHABLE = 'https://absent.audigy.test';
+const REACHABLE = 'https://bon.audixio.test';
+const UNREACHABLE = 'https://absent.audixio.test';
 
 async function launch(page: Page, url = REACHABLE): Promise<void> {
   await page.goto('/');
@@ -307,7 +307,7 @@ test.describe('site vraiment injoignable', () => {
     await launch(page, UNREACHABLE);
     await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
     await expect(page.getByText('Audit interrompu').first()).toBeVisible();
-    await expect(page.getByText('absent.audigy.test').first()).toBeVisible();
+    await expect(page.getByText('absent.audixio.test').first()).toBeVisible();
     await expect(page.getByText('0/100')).toHaveCount(0);
     await expect(page.getByText('Votre diagnostic est prêt pour')).toHaveCount(
       0,

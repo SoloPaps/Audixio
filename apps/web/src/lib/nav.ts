@@ -23,7 +23,7 @@ export function safeNext(
   return raw;
 }
 
-export const NEXT_STORAGE_KEY = 'audigy-next';
+export const NEXT_STORAGE_KEY = 'audixio-next';
 
 export function rememberNext(next: string): void {
   storage().setItem(NEXT_STORAGE_KEY, safeNext(next));

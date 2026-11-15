@@ -1,5 +1,5 @@
 /**
- * @audigy/evidence — preuve d’un rapport (PLAN §12).
+ * @audixio/evidence — preuve d’un rapport (PLAN §12).
  *
  * - `resultatsCanoniques` : `results.json` en JCS (RFC 8785).
  * - `construireManifeste` : {fichier, sha256, octets} + SHA-256 de `results.json`.
@@ -11,7 +11,7 @@
  *   avant acceptation. Le réseau est injecté (`post`) : les tests ne sortent pas.
  * - `verifierJeton` : vérification hors ligne (fixtures, ancre locale).
  * - `signerManifeste` : Ed25519 du manifeste. Clé publique :
- *   `/.well-known/audigy-signing-key`. `SIGNING_PRIVATE_KEY` (PEM PKCS#8).
+ *   `/.well-known/audixio-signing-key`. `SIGNING_PRIVATE_KEY` (PEM PKCS#8).
  * - `verdictFichier` (export `./browser`) : « correspond » ou « ne correspond pas ».
  *   Le hachage du fichier déposé se fait dans le navigateur (WebCrypto).
  */

@@ -5,7 +5,7 @@ import {
   lienDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Acceptation ou refus d’un accès équipe. */
 export default async (req: Request): Promise<Response> => {

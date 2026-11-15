@@ -60,28 +60,28 @@ describe('démarrage de la langue', () => {
       'footer.privacy': 'Privacy',
     });
     const { store, host } = boot({
-      'audigy-locale': 'en',
-      'audigy-en': stale,
+      'audixio-locale': 'en',
+      'audixio-en': stale,
     });
-    expect(host.__audigy_en).toBeUndefined();
-    expect(store.get('audigy-locale')).toBe('fr');
-    expect(store.has('audigy-en')).toBe(false);
+    expect(host.__audixio_en).toBeUndefined();
+    expect(store.get('audixio-locale')).toBe('fr');
+    expect(store.has('audixio-en')).toBe(false);
   });
 
   it('pose le dictionnaire anglais actuel', () => {
     const { store, host } = boot({
-      'audigy-locale': 'en',
-      'audigy-en': current,
+      'audixio-locale': 'en',
+      'audixio-en': current,
     });
-    const pack = host.__audigy_en as Record<string, string>;
+    const pack = host.__audixio_en as Record<string, string>;
     expect(pack['login.submit']).toBe('Sign in');
     expect(pack['login.password']).toBe('Password');
-    expect(store.get('audigy-locale')).toBe('en');
+    expect(store.get('audixio-locale')).toBe('en');
   });
 
   it('laisse le français sans dictionnaire', () => {
     const { host } = boot({});
-    expect(host.__audigy_en).toBeUndefined();
+    expect(host.__audixio_en).toBeUndefined();
   });
 
   it('aligne lang, color-scheme et theme-color sur le choix', () => {
@@ -121,8 +121,8 @@ describe('démarrage de la langue', () => {
       location: { search: '?theme=dark' },
       localStorage: {
         getItem(key: string) {
-          if (key === 'audigy-locale') return 'en';
-          if (key === 'audigy-en') {
+          if (key === 'audixio-locale') return 'en';
+          if (key === 'audixio-en') {
             return JSON.stringify({
               'login.password': 'Password',
               'login.submit': 'Sign in',

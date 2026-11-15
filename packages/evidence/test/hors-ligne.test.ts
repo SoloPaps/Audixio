@@ -18,7 +18,7 @@ const dossierPublic = path.resolve(
 );
 const clePublique = path.resolve(
   ici,
-  '../../../apps/web/public/.well-known/audigy-signing-key',
+  '../../../apps/web/public/.well-known/audixio-signing-key',
 );
 
 interface JetonMeta {

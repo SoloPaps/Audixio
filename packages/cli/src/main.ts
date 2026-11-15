@@ -1,6 +1,6 @@
 import { parseArgs } from 'node:util';
-import type { Check, FixSheet, RunContext } from '@audigy/engine';
-import { createRequestBudget } from '@audigy/net';
+import type { Check, FixSheet, RunContext } from '@audixio/engine';
+import { createRequestBudget } from '@audixio/net';
 import {
   assemble,
   browserPlaceholders,
@@ -17,8 +17,8 @@ import {
   type SiteInput,
   splitChecks,
   targetOf,
-} from '@audigy/orchestrator';
-import { t } from '@audigy/web/i18n';
+} from '@audixio/orchestrator';
+import { t } from '@audixio/web/i18n';
 import { type BrowserState, renderText } from './text.js';
 
 /**
@@ -46,10 +46,10 @@ export interface CliDeps {
   perHostIntervalMs?: number;
 }
 
-/** Chromium via `@audigy/browser-runner` (Playwright chargé seulement avec `--browser`). */
+/** Chromium via `@audixio/browser-runner` (Playwright chargé seulement avec `--browser`). */
 async function defaultBrowserRunner(): Promise<BrowserRunner> {
   const { BROWSER_BUDGET, runBrowserAudit } = await import(
-    '@audigy/browser-runner'
+    '@audixio/browser-runner'
   );
   return async ({ url, lab }) => {
     const fetch = lab
@@ -60,7 +60,7 @@ async function defaultBrowserRunner(): Promise<BrowserRunner> {
   };
 }
 
-/** `audigy audit <url> [--json] [--browser]`. Code de sortie : 0 fini, 1 échec, 2 usage. */
+/** `audixio audit <url> [--json] [--browser]`. Code de sortie : 0 fini, 1 échec, 2 usage. */
 export async function runCli(
   argv: readonly string[],
   io: CliIo,

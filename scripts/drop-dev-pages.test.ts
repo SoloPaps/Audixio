@@ -15,7 +15,7 @@ afterEach(async () => {
 
 describe('build de production', () => {
   it('retire /dev/composants et /dev/fondations, et garde l’accueil', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'audigy-dev-'));
+    const root = await mkdtemp(path.join(tmpdir(), 'audixio-dev-'));
     dirs.push(root);
     for (const rel of [
       'index.html',

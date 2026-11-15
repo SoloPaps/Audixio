@@ -27,7 +27,7 @@
     const query = new URLSearchParams(location.search).get('theme');
     let saved = null;
     try {
-      saved = localStorage.getItem('audigy-theme');
+      saved = localStorage.getItem('audixio-theme');
     } catch {
       saved = null;
     }
@@ -55,31 +55,31 @@
     }
     let locale = 'fr';
     try {
-      if (localStorage.getItem('audigy-locale') !== 'en') {
-        delete globalThis.__audigy_en;
+      if (localStorage.getItem('audixio-locale') !== 'en') {
+        delete globalThis.__audixio_en;
         root.setAttribute('lang', locale);
         return;
       }
       locale = 'en';
-      const raw = localStorage.getItem('audigy-en');
+      const raw = localStorage.getItem('audixio-en');
       const pack = raw ? JSON.parse(raw) : null;
       if (!enPackUsable(pack)) {
-        localStorage.removeItem('audigy-en');
-        localStorage.setItem('audigy-locale', 'fr');
-        delete globalThis.__audigy_en;
+        localStorage.removeItem('audixio-en');
+        localStorage.setItem('audixio-locale', 'fr');
+        delete globalThis.__audixio_en;
         locale = 'fr';
         root.setAttribute('lang', locale);
         return;
       }
-      globalThis.__audigy_en = pack;
+      globalThis.__audixio_en = pack;
     } catch {
       try {
-        localStorage.removeItem('audigy-en');
-        localStorage.setItem('audigy-locale', 'fr');
+        localStorage.removeItem('audixio-en');
+        localStorage.setItem('audixio-locale', 'fr');
       } catch {
         /* stockage indisponible */
       }
-      delete globalThis.__audigy_en;
+      delete globalThis.__audixio_en;
       locale = 'fr';
     }
     root.setAttribute('lang', locale);
@@ -91,7 +91,7 @@
       () => {
         let saved = null;
         try {
-          saved = localStorage.getItem('audigy-theme');
+          saved = localStorage.getItem('audixio-theme');
         } catch {
           saved = null;
         }

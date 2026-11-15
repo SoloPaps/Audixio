@@ -4,7 +4,7 @@ import {
   handleGet,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 export default async (
   req: Request,

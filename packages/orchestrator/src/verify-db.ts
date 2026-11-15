@@ -4,7 +4,7 @@ import {
   type Database,
   dbEnvFrom,
   type Json,
-} from '@audigy/db';
+} from '@audixio/db';
 import {
   type OwnershipSite,
   type ProofRecord,
@@ -12,14 +12,14 @@ import {
   scopesMatch,
   VERIFICATION_METHODS,
   type VerificationMethod,
-} from '@audigy/engine';
+} from '@audixio/engine';
 import {
   createDohResolver,
   createRequestBudget,
   createSafeFetch,
   type DohResolver,
   type SafeFetch,
-} from '@audigy/net';
+} from '@audixio/net';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { createAuditContext } from './context.js';
 import {

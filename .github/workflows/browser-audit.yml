@@ -54,7 +54,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Chromium
-        run: pnpm --filter @audigy/browser-runner exec playwright install --with-deps chromium
+        run: pnpm --filter @audixio/browser-runner exec playwright install --with-deps chromium
 
       - name: Runner
         env:
@@ -62,4 +62,4 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           APP_BASE_URL: ${{ vars.APP_BASE_URL }}
           WARC: ${{ inputs.warc }}
-        run: pnpm --filter @audigy/browser-runner run job "$AUDIT_ID"
+        run: pnpm --filter @audixio/browser-runner run job "$AUDIT_ID"

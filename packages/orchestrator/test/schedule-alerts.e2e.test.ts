@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { createServiceClient, createUserClient } from '@audigy/db';
+import { createServiceClient, createUserClient } from '@audixio/db';
 import postgres, { type Sql } from 'postgres';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {

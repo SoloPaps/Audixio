@@ -3,7 +3,7 @@
   "commit": "e5e228659bbcaea7ba85536a2ef8d4fb97b366e9",
   "license": "Apache-2.0",
   "copyright": "Copyright 2018 Erlend Oftedal",
-  "changes": "Modifié par Audigy : extracteurs uri, filename, filecontent, filecontentreplace et hashes seulement. Failles, licences et extracteurs func retirés.",
+  "changes": "Modifié par Audixio : extracteurs uri, filename, filecontent, filecontentreplace et hashes seulement. Failles, licences et extracteurs func retirés.",
   "libraries": {
     "@angular/core": {
       "uri": ["@angular/core@(§§version§§)/"],

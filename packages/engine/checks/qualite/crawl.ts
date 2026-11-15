@@ -1,4 +1,4 @@
-import { isNetError, type SafeResponse } from '@audigy/net';
+import { isNetError, type SafeResponse } from '@audixio/net';
 import type { CheckContext } from '../../src/types.js';
 import { loadHome } from '../securite/shared.js';
 import { crawlerAllowed, parseRobots } from '../seo/robots-parse.js';
@@ -6,7 +6,7 @@ import { isPageHtml, loadRobots, looksLikeHtml } from '../seo/shared.js';
 import { extractDocument, type ImageFact } from './extract.js';
 import type { CrawlData, LinkHit, LinkOutcome, QualityFacts } from './facts.js';
 import {
-  AUDIGY_AGENT,
+  AUDIXIO_AGENT,
   EXTERNAL_LIMIT,
   PAGE_LIMIT,
   QUALITY_KEY,
@@ -205,7 +205,7 @@ async function readRobots(
     const file = parseRobots(res.text());
     return {
       kind: 'rules',
-      allow: (url) => crawlerAllowed(file, url, AUDIGY_AGENT),
+      allow: (url) => crawlerAllowed(file, url, AUDIXIO_AGENT),
     };
   } catch (error) {
     if (isNetError(error, 'BUDGET_EXCEEDED') || ctx.signal.aborted) {

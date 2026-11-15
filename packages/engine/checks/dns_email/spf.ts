@@ -1,4 +1,4 @@
-import type { DnsAnswer } from '@audigy/net';
+import type { DnsAnswer } from '@audixio/net';
 import type { Check, CheckContext, CheckResult } from '../../src/types.js';
 import { isSpf } from './parse.js';
 import {

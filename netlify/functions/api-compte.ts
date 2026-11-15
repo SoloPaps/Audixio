@@ -4,7 +4,7 @@ import {
   handleAccount,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Export JSON, acceptation des CGU, suppression du compte. */
 export default async (

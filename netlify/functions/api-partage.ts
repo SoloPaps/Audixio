@@ -4,7 +4,7 @@ import {
   lienDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 import { renderBriefMarkdown } from '../../apps/web/src/lib/brief-markdown.js';
 import { translate } from '../../apps/web/src/lib/translate.js';
 

@@ -94,7 +94,7 @@ Voir aussi : `docs/etapes/00-LISEZ-MOI.md`, `docs/archive/journal/journal-correc
 
 ### 1. Marque
 
-- **Audixio**. Noms techniques historiques (`@audigy/*`, `*.audigy.test`, dossier repo) restent ; UI = Audixio.
+- **Audixio**. Noms techniques historiques (`@audixio/*`, `*.audixio.test`, dossier repo) restent ; UI = Audixio.
 
 ### 2. Périmètre Cursor / Jojo (cœur d'abord)
 

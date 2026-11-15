@@ -104,7 +104,7 @@ function body(domainPage: boolean): unknown {
 
 async function install(page: Page, domainPage: boolean): Promise<void> {
   await page.addInitScript((value) => {
-    localStorage.setItem('audigy-auth', JSON.stringify(value));
+    localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({ status: 401, body: '{}' });

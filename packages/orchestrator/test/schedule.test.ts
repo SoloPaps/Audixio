@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { NetError, type SafeFetch } from '@audigy/net';
+import { NetError, type SafeFetch } from '@audixio/net';
 import { describe, expect, it, vi } from 'vitest';
 import { createLogger } from '../src/log.js';
 import {
@@ -59,7 +59,7 @@ import {
 } from '../src/schedule-db.js';
 
 const KEY = 'cle-de-test-service-role-0123456789';
-const APP = 'https://audigy.test';
+const APP = 'https://audixio.test';
 const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 
 function uid(slot: number, n: number): string {
@@ -669,12 +669,12 @@ describe('schedule-tick', () => {
     const store = new Memory();
     const { deps } = harness(store);
     const denied = await handleSchedule(
-      new Request('https://audigy.test/.netlify/functions/schedule-tick'),
+      new Request('https://audixio.test/.netlify/functions/schedule-tick'),
       deps,
     );
     expect(denied.status).toBe(405);
     const ok = await handleSchedule(
-      new Request('https://audigy.test/.netlify/functions/schedule-tick', {
+      new Request('https://audixio.test/.netlify/functions/schedule-tick', {
         method: 'POST',
       }),
       deps,
@@ -731,12 +731,12 @@ describe('résumé et Brevo', () => {
     expect(lines.join('\n')).not.toContain('ada@example.com');
 
     const early = await handleDigest(
-      new Request('https://audigy.test/digest', { method: 'POST' }),
+      new Request('https://audixio.test/digest', { method: 'POST' }),
       { ...deps, now: () => new Date('2026-01-06T07:00:00.000Z') },
     );
     expect(early.status).toBe(204);
     const forced = await handleDigest(
-      new Request('https://audigy.test/digest?run=1', { method: 'POST' }),
+      new Request('https://audixio.test/digest?run=1', { method: 'POST' }),
       { ...deps, now: () => new Date('2026-01-06T07:00:00.000Z') },
     );
     expect(forced.status).toBe(200);
@@ -775,7 +775,7 @@ describe('résumé et Brevo', () => {
     }[] = [];
     const mailer = createBrevoMailer({
       apiKey,
-      senderEmail: 'bonjour@audigy.test',
+      senderEmail: 'bonjour@audixio.test',
       fetch: async (url, init) => {
         captured.push({
           url: String(url),
@@ -785,7 +785,7 @@ describe('résumé et Brevo', () => {
         return new Response(null, { status: 201 });
       },
     });
-    const link = `https://audigy.test/api/unsubscribe?user=${user}&token=${unsubscribeMac(KEY, user)}`;
+    const link = `https://audixio.test/api/unsubscribe?user=${user}&token=${unsubscribeMac(KEY, user)}`;
     const body = renderAlert({
       kind: 'cert_expiring',
       payload: { dedup: 'cert:2026-03-20', site: 'Exemple', days: 0 },
@@ -824,7 +824,7 @@ describe('désabonnement', () => {
       },
     };
     const token = unsubscribeMac(KEY, user);
-    const url = `https://audigy.test/api/unsubscribe?user=${user}&token=${token}`;
+    const url = `https://audixio.test/api/unsubscribe?user=${user}&token=${token}`;
     const form = await handleUnsubscribe(new Request(url), deps);
     expect(form.status).toBe(200);
     const html = await form.text();
@@ -1241,7 +1241,7 @@ describe('réglages alert_settings', () => {
     const mail = renderDigest({
       sites: changed[0]?.sites ?? [],
       appUrl: APP,
-      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+      unsubscribeUrl: 'https://audixio.test/api/unsubscribe?user=1&token=ab',
     });
     expect(mail.subject).toBe('Votre récap du lundi');
     expect(mail.text).toContain('2 constats nouveaux');
@@ -1300,7 +1300,7 @@ describe('réglages alert_settings', () => {
     const steady = renderDigest({
       sites: calm[0]?.sites ?? [],
       appUrl: APP,
-      unsubscribeUrl: 'https://audigy.test/api/unsubscribe?user=1&token=ab',
+      unsubscribeUrl: 'https://audixio.test/api/unsubscribe?user=1&token=ab',
     });
     expect(steady.subject).toBe('Rien n’a changé cette semaine');
     expect(steady.text).toContain('Aucun problème grave ouvert');

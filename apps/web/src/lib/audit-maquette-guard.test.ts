@@ -12,8 +12,8 @@ function source(name: string): string {
 
 describe('garde maquette audit', () => {
   it('résout ?url= et n’inscrit pas atelier-martin.fr pour ?id= ou ?site=', () => {
-    const search = `?url=${encodeURIComponent('https://bon.audigy.test/')}`;
-    expect(hostFromProgressQuery(search)).toBe('bon.audigy.test');
+    const search = `?url=${encodeURIComponent('https://bon.audixio.test/')}`;
+    expect(hostFromProgressQuery(search)).toBe('bon.audixio.test');
     expect(
       hostFromProgressQuery('?id=00000000-0000-4000-8000-0000000000b2'),
     ).toBeNull();
@@ -28,7 +28,7 @@ describe('garde maquette audit', () => {
 
   it('n’anime pas la maquette quand un audit est demandé', () => {
     expect(progressSceneSimulates('?id=abc')).toBe(false);
-    expect(progressSceneSimulates('?url=https://bon.audigy.test/')).toBe(false);
+    expect(progressSceneSimulates('?url=https://bon.audixio.test/')).toBe(false);
     expect(progressSceneSimulates('?site=abc')).toBe(false);
     expect(progressSceneSimulates('')).toBe(false);
     expect(progressSceneSimulates('?theme=light')).toBe(false);

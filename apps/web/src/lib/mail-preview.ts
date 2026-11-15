@@ -2,7 +2,7 @@ import {
   renderAuditEndMail,
   renderRecapMail,
   renderSignupMail,
-} from '@audigy/orchestrator/mail-templates';
+} from '@audixio/orchestrator/mail-templates';
 
 const LOGO = '/marque/logo-pc.svg';
 const PREFS = '/compte#alertes';

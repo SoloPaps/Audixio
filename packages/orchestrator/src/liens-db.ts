@@ -10,7 +10,7 @@ import {
   type LinkKind,
   type LinkRecord,
   sha256Hex,
-} from '@audigy/db';
+} from '@audixio/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { LienDeps, LienStore } from './liens-http.js';
 import type { Logger } from './log.js';

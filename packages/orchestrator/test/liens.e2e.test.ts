@@ -5,7 +5,7 @@ import {
   type LinkRecord,
   sha256Hex,
   shareTokenFromBytes,
-} from '@audigy/db';
+} from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import {
   handleLien,

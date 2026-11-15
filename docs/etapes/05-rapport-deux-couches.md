@@ -14,7 +14,7 @@ Verdict en haut (note, **TOP 10 titres** sur hub, français simple). Technique s
 - `docs/produit/FONCTIONNEMENT.md` §1 et §3
 - `docs/design/DESIGN.md` (lecture du rapport)
 - `docs/design/02-PAGES.md` (Rapport)
-- `docs/archive/audigy-titled-2026-10-28/bugs-a-reprendre-2026-11.md` (items rapport / clarté)
+- `docs/archive/audixio-titled-2026-10-28/bugs-a-reprendre-2026-11.md` (items rapport / clarté)
 - Composants rapport sous `apps/web/`
 
 ## À faire

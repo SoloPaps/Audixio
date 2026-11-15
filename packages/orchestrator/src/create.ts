@@ -1,5 +1,5 @@
-import type { RequestAuditInput, RequestAuditResult } from '@audigy/db';
-import { ENGINE_VERSION, METHOD_VERSION } from '@audigy/engine';
+import type { RequestAuditInput, RequestAuditResult } from '@audixio/db';
+import { ENGINE_VERSION, METHOD_VERSION } from '@audixio/engine';
 import { errorCode, type Logger } from './log.js';
 import {
   type CreateAuditInput,

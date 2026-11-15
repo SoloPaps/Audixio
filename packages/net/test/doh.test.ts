@@ -18,7 +18,7 @@ describe('createDohResolver', () => {
           name: '_audigy-challenge.exemple.fr.',
           type: 16,
           TTL: 300,
-          data: '"audigy-site-" "verification=abc"',
+          data: '"audixio-site-" "verification=abc"',
         },
       ],
     });

@@ -1,6 +1,6 @@
 #!/usr/bin/env -S node --import tsx
-import { loadFixes } from '@audigy/engine';
-import { fileFixStore } from '@audigy/engine/fixes-fs';
+import { loadFixes } from '@audixio/engine';
+import { fileFixStore } from '@audixio/engine/fixes-fs';
 import { runCli } from './main.js';
 
 const code = await runCli(

@@ -4,7 +4,7 @@ import {
   handleDigest,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /**
  * Lundi 8 h Paris. 6 h UTC (été) et 7 h UTC (hiver) ; le handler ignore l’autre.

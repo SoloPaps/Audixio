@@ -17,7 +17,7 @@ describe('progression sans audit', () => {
     expect(progressEmpty('?id=00000000-0000-4000-8000-0000000000b2')).toBe(
       false,
     );
-    expect(progressEmpty('?url=https://bon.audigy.test/')).toBe(false);
+    expect(progressEmpty('?url=https://bon.audixio.test/')).toBe(false);
     expect(progressEmpty('?site=site-1')).toBe(false);
     expect(progressSceneSimulates('')).toBe(false);
     expect(progressSceneSimulates('?theme=dark')).toBe(false);

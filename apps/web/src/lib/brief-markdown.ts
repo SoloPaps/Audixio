@@ -1,4 +1,4 @@
-import { isLockedDomain } from '@audigy/db';
+import { isLockedDomain } from '@audixio/db';
 import { briefServerEn } from '../i18n/brief-en.js';
 import {
   type BriefLocale,

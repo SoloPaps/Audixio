@@ -43,7 +43,7 @@ lab.on('exit', (code) => {
   if (!stopping) shutdown(code ?? 1);
 });
 
-const labFile = path.join(root, '.netlify/audigy-lab.json');
+const labFile = path.join(root, '.netlify/audixio-lab.json');
 const deadline = Date.now() + 60_000;
 while (Date.now() < deadline) {
   try {
@@ -58,11 +58,11 @@ await access(labFile);
 const astroEnv = {
   ...process.env,
   NETLIFY_DEV: 'true',
-  AUDIGY_LAB: labFile,
+  AUDIXIO_LAB: labFile,
   ASTRO_TELEMETRY_DISABLED: '1',
-  AUDIGY_DEV_TOOLBAR: 'off',
+  AUDIXIO_DEV_TOOLBAR: 'off',
 };
-delete astroEnv.AUDIGY_GUEST_UNLIMITED;
+delete astroEnv.AUDIXIO_GUEST_UNLIMITED;
 
 const astro = spawn(
   'pnpm',

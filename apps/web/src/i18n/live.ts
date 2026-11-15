@@ -21,13 +21,13 @@ function norm(value: string): string {
 
 function englishPack(): Record<string, string> | null {
   const host = globalThis as Record<string, unknown>;
-  const slot = host.__audigy_en;
+  const slot = host.__audixio_en;
   if (slot && typeof slot === 'object') return slot as Record<string, string>;
   try {
-    const raw = localStorage.getItem('audigy-en');
+    const raw = localStorage.getItem('audixio-en');
     if (!raw) return null;
     const pack = JSON.parse(raw) as Record<string, string>;
-    host.__audigy_en = pack;
+    host.__audixio_en = pack;
     return pack;
   } catch {
     return null;
@@ -52,7 +52,7 @@ function parsePack(raw: string | null): Record<string, string> | null {
 /** Copie posée au choix de l’anglais : la page se traduit sans attendre le réseau. */
 function cachedFrench(): Record<string, string> | null {
   try {
-    return parsePack(localStorage.getItem('audigy-fr'));
+    return parsePack(localStorage.getItem('audixio-fr'));
   } catch {
     return null;
   }
@@ -66,8 +66,8 @@ function loadFrench(): Promise<Record<string, string> | null> {
         const pack = parsePack(raw);
         if (!pack || raw === null) return null;
         try {
-          if (localStorage.getItem('audigy-fr') !== null)
-            localStorage.setItem('audigy-fr', raw);
+          if (localStorage.getItem('audixio-fr') !== null)
+            localStorage.setItem('audixio-fr', raw);
         } catch {
           // Copie locale facultative.
         }
@@ -216,7 +216,7 @@ let anchored = false;
 
 function storedLocale(): 'fr' | 'en' {
   try {
-    return localStorage.getItem('audigy-locale') === 'en' ? 'en' : 'fr';
+    return localStorage.getItem('audixio-locale') === 'en' ? 'en' : 'fr';
   } catch {
     return 'fr';
   }

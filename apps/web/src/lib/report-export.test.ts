@@ -78,10 +78,10 @@ describe('limite du constat', () => {
 describe('markdown', () => {
   it('nomme le fichier par l’hôte et le jour de Paris', () => {
     expect(markdownFilename('https://Exemple.FR/a', at)).toBe(
-      'audigy-exemple.fr-2026-10-24.md',
+      'audixio-exemple.fr-2026-10-24.md',
     );
     expect(markdownFilename('https://user:pw@exemple.fr/secret', at)).toBe(
-      'audigy-exemple.fr-2026-10-24.md',
+      'audixio-exemple.fr-2026-10-24.md',
     );
     expect(markdownFilename('pas une adresse', at)).not.toMatch(/secret|uuid/u);
   });

@@ -1,5 +1,5 @@
-import type { DohResolver, SafeFetch, SafeResponse } from '@audigy/net';
-import { isNetError } from '@audigy/net';
+import type { DohResolver, SafeFetch, SafeResponse } from '@audixio/net';
+import { isNetError } from '@audixio/net';
 import type { Target } from './types.js';
 
 export const VERIFICATION_METHODS = [

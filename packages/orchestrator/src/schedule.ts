@@ -4,7 +4,7 @@ import {
   createSafeFetch,
   isNetError,
   type SafeFetch,
-} from '@audigy/net';
+} from '@audixio/net';
 import { mailLocaleOf } from './copy.js';
 import { apiError } from './http.js';
 import { errorCode, type Logger } from './log.js';
@@ -571,7 +571,7 @@ export function dueAudits(roster: Roster, now: Date): DueSchedule[] {
 
 export function digestRateKey(userId: string, week: string): string {
   return createHash('sha256')
-    .update(`audigy:digest:${userId}:${week}`)
+    .update(`audixio:digest:${userId}:${week}`)
     .digest('hex');
 }
 

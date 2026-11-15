@@ -1,5 +1,5 @@
 {
-  "name": "@audigy/db",
+  "name": "@audixio/db",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,7 +14,7 @@
     "@supabase/supabase-js": "^2.118.0"
   },
   "devDependencies": {
-    "@audigy/engine": "workspace:*",
+    "@audixio/engine": "workspace:*",
     "postgres": "^3.4.9"
   }
 }

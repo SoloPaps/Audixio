@@ -3,7 +3,7 @@ import {
   type ExternalApi,
   type ExternalResponse,
   GREEN_WEB_HOST,
-} from '@audigy/net';
+} from '@audixio/net';
 import type { CheckContext } from '../../src/types.js';
 import {
   cacheKey,

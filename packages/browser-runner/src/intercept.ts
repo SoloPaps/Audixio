@@ -1,4 +1,4 @@
-import { isNetError, type SafeFetch, type SafeResponse } from '@audigy/net';
+import { isNetError, type SafeFetch, type SafeResponse } from '@audixio/net';
 import type { RequestOutcome, RequestRecord } from './schema.js';
 import { isThirdParty } from './site.js';
 

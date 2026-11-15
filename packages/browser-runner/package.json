@@ -1,5 +1,5 @@
 {
-  "name": "@audigy/browser-runner",
+  "name": "@audixio/browser-runner",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,17 +9,17 @@
     "./rgaa": "./src/rgaa.ts"
   },
   "bin": {
-    "audigy-browser": "./bin/audigy-browser.mjs"
+    "audixio-browser": "./bin/audixio-browser.mjs"
   },
   "scripts": {
-    "audit": "node bin/audigy-browser.mjs audit",
-    "job": "node bin/audigy-browser.mjs job",
+    "audit": "node bin/audixio-browser.mjs audit",
+    "job": "node bin/audixio-browser.mjs job",
     "test:ui": "playwright install chromium && playwright test"
   },
   "dependencies": {
-    "@audigy/db": "workspace:*",
-    "@audigy/evidence": "workspace:*",
-    "@audigy/net": "workspace:*",
+    "@audixio/db": "workspace:*",
+    "@audixio/evidence": "workspace:*",
+    "@audixio/net": "workspace:*",
     "@axe-core/playwright": "^4.14.0",
     "axe-core": "^4.14.0",
     "playwright": "^1.64.1",

@@ -261,7 +261,7 @@ packages/engine/          checks/<domaine>/*, runner, scoring, fixes/fr/*.md, da
 packages/browser-runner/  Playwright : axe, cookies/traceurs, captures, WARC, PDF
 packages/evidence/        JCS, SHA-256, RFC 3161, signature, manifeste
 packages/db/              client typé, requêtes, types générés
-packages/cli/             `audigy audit <url>` (local)
+packages/cli/             `audixio audit <url>` (local)
 supabase/migrations/      SQL + tests RLS
 fixtures/sites/           sites de test locaux (bons et mauvais) servis en CI
 scripts/                  garde-fous (no-deploy, copy-lint)
@@ -298,7 +298,7 @@ docs/                     PLAN, QUESTIONS, DESIGN, METHODE (publique), legal/
 2. Artefacts : captures (mobile + desktop, WebP), WARC de la page d'accueil (sur demande), PDF. SHA-256 de chacun.
 3. `manifest.json` = liste {fichier, sha256, octets} + sha256 de `results.json` ; son SHA-256 = **empreinte du rapport**.
 4. Horodatage RFC 3161 de l'empreinte auprès de **2 TSA** indépendantes (robustesse) ; stockage des jetons `.tsr` et chaînes de certificats.
-5. Signature optionnelle Ed25519 du manifeste par la clé Audixio ; clé publique publiée (`/.well-known/audigy-signing-key`). Signature PAdES dans le PDF : après v1.
+5. Signature optionnelle Ed25519 du manifeste par la clé Audixio ; clé publique publiée (`/.well-known/audixio-signing-key`). Signature PAdES dans le PDF : après v1.
 6. PDF : identifiant du rapport, empreinte de `results.json`, date (Europe/Paris), URL de vérification + QR. Le PDF ne peut pas contenir sa propre empreinte : la page de vérification la retrouve dans le manifeste.
 7. Page `/verifier/<id>` : l'utilisateur dépose le PDF ou le JSON, le hachage se fait **dans le navigateur** (WebCrypto, fichier jamais envoyé), comparaison au manifeste, affichage des jetons TSA (heure, émetteur) et de la signature. Doc expert : `openssl ts -verify`.
 8. Mentions obligatoires sur le rapport et la page :
@@ -439,7 +439,7 @@ Chaque PART de cette phase : checks dans `packages/engine/checks/<domaine>/`, fi
 
 **PART-15 — Orchestration et CLI**
 - Contexte : §3, §5, §8 (`audits`, `rate_limits`), §9.
-- Livrables : fonctions `api-audits-create` (validation zod, limites : 10/jour/utilisateur, 1/hôte/15 min), `api-audits-get`, `audit-run-background` (claim, run, merge, score, écriture), dispatch GitHub du runner + délai d'attente → `partial` ; `packages/cli` (`audigy audit <url> [--json] [--browser]`) ; doc `netlify dev`.
+- Livrables : fonctions `api-audits-create` (validation zod, limites : 10/jour/utilisateur, 1/hôte/15 min), `api-audits-get`, `audit-run-background` (claim, run, merge, score, écriture), dispatch GitHub du runner + délai d'attente → `partial` ; `packages/cli` (`audixio audit <url> [--json] [--browser]`) ; doc `netlify dev`.
 - CA : audit complet de bout en bout en local sur fixtures (`netlify dev` + Supabase local) ; double clic = un seul audit ; runner absent → audit `partial` puis `done` avec `untested` explicites ; aucun secret loggé.
 - Modèle : **Fort**. Dépend de : 05, 06–14 (fonctionne avec ceux déjà faits).
 

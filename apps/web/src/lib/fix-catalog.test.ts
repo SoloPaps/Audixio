@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { parseFix, variantFor } from '@audigy/engine/fixes';
+import { parseFix, variantFor } from '@audixio/engine/fixes';
 import { afterEach, describe, expect, it } from 'vitest';
 import { lintText } from '../../../../scripts/copy-lint.js';
 import { installPack } from '../i18n/pack.js';

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { gradeForScore } from '@audigy/db';
+import { gradeForScore } from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import { HOME_EXAMPLE_SCORE } from '../lib/home-example.js';
 import { gaugeLabel } from '../lib/score.js';

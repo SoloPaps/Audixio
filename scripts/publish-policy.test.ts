@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import type { SafeResponse } from '@audigy/net';
+import type { SafeResponse } from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { REWRITES } from '../apps/web/src/lib/redirects.js';
 import { judgeCsp } from '../packages/engine/checks/securite/csp.js';
@@ -89,7 +89,7 @@ describe('CSP du build', () => {
   });
 
   it('écrit une CSP par page et un plan de site', async () => {
-    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-policy-'));
+    const dir = await mkdtemp(path.join(tmpdir(), 'audixio-policy-'));
     try {
       await writeFile(
         path.join(dir, 'index.html'),
@@ -132,7 +132,7 @@ describe('CSP du build', () => {
     expect(contentSecurityPolicy([], [], ['http://127.0.0.1:54321'])).toBe(
       base,
     );
-    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-policy-local-'));
+    const dir = await mkdtemp(path.join(tmpdir(), 'audixio-policy-local-'));
     try {
       await writeFile(
         path.join(dir, 'index.html'),
@@ -166,7 +166,7 @@ describe('CSP du build', () => {
   });
 
   it('compte le poids de l’accueil et refuse un traceur', async () => {
-    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-weight-'));
+    const dir = await mkdtemp(path.join(tmpdir(), 'audixio-weight-'));
     try {
       await writeFile(
         path.join(dir, 'index.html'),
@@ -188,7 +188,7 @@ describe('CSP du build', () => {
     }
   });
   it('suit html → css → police avec un seul descripteur par fichier', async () => {
-    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-weight-'));
+    const dir = await mkdtemp(path.join(tmpdir(), 'audixio-weight-'));
     try {
       const html = '<link rel="stylesheet" href="/a.css">';
       const css = '@font-face{src:url(f.woff2)}';
@@ -209,7 +209,7 @@ describe('CSP du build', () => {
   });
 
   it('CSP des adresses réécrites : /rapport/:id/…, imprimer, /partage/:jeton (bug)', async () => {
-    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-policy-rw-'));
+    const dir = await mkdtemp(path.join(tmpdir(), 'audixio-policy-rw-'));
     const page = async (rel: string, code: string): Promise<void> => {
       await mkdir(path.dirname(path.join(dir, rel)), { recursive: true });
       await writeFile(

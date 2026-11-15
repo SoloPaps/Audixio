@@ -1,4 +1,4 @@
-import type { SafeResponse } from '@audigy/net';
+import type { SafeResponse } from '@audixio/net';
 import type { CheckContext, CheckResult, Status } from '../../src/types.js';
 import { isHtml, loadHome } from '../securite/shared.js';
 import type { PageFacts } from './html.js';

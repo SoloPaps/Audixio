@@ -4,7 +4,7 @@ import {
   createRequestBudget,
   type ExternalApi,
   type ExternalRequest,
-} from '@audigy/net';
+} from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { fr, type MessageKey } from '../../../apps/web/src/i18n/fr.js';
 import { failureCount, lintText } from '../../../scripts/copy-lint.js';

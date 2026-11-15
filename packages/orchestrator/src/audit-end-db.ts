@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import type { Database, Json } from '@audigy/db';
+import type { Database, Json } from '@audixio/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   type AuditEndRecord,

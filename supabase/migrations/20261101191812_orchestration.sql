@@ -24,7 +24,7 @@ language sql
 immutable
 set search_path = ''
 as $$
-  select encode(extensions.digest('audigy:' || p_scope || ':' || p_value, 'sha256'), 'hex');
+  select encode(extensions.digest('audixio:' || p_scope || ':' || p_value, 'sha256'), 'hex');
 $$;
 
 create or replace function public.request_audit(

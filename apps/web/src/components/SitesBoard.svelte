@@ -4,7 +4,7 @@ import {
   FREE_SITE_CAP,
   linkSlotsUsed,
   PRO_SITE_CAP,
-} from '@audigy/db';
+} from '@audixio/db';
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import type { MesureDomaine } from '../lib/apercu.js';

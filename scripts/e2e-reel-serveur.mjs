@@ -118,14 +118,14 @@ async function writeEnv(keys) {
     `SUPABASE_URL=${keys.apiUrl}`,
     `SUPABASE_ANON_KEY=${keys.anon}`,
     `SUPABASE_SERVICE_ROLE_KEY=${keys.service}`,
-    'AUDIGY_LAB=.netlify/audigy-lab.json',
+    'AUDIXIO_LAB=.netlify/audixio-lab.json',
     '',
   ].join('\n');
   await writeFile(file, body, { mode: 0o600 });
   process.env.SUPABASE_URL = keys.apiUrl;
   process.env.SUPABASE_ANON_KEY = keys.anon;
   process.env.SUPABASE_SERVICE_ROLE_KEY = keys.service;
-  process.env.AUDIGY_LAB = '.netlify/audigy-lab.json';
+  process.env.AUDIXIO_LAB = '.netlify/audixio-lab.json';
 }
 
 async function needsBuild() {
@@ -176,7 +176,7 @@ lab.on('exit', (code) => {
   if (!stopping) shutdown(code ?? 1);
 });
 
-const labFile = path.join(root, '.netlify/audigy-lab.json');
+const labFile = path.join(root, '.netlify/audixio-lab.json');
 const labDeadline = Date.now() + 60_000;
 while (Date.now() < labDeadline) {
   try {
@@ -195,7 +195,7 @@ if (await needsBuild()) {
 
 const netlify = spawn(
   'netlify',
-  ['dev', '--offline', '--filter', '@audigy/web'],
+  ['dev', '--offline', '--filter', '@audixio/web'],
   {
     cwd: root,
     env: { ...process.env, BROWSER: 'none' },

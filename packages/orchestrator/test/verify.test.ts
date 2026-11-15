@@ -1,5 +1,5 @@
-import type { Check } from '@audigy/engine';
-import { FRESH_MS, TOKEN_RE } from '@audigy/engine';
+import type { Check } from '@audixio/engine';
+import { FRESH_MS, TOKEN_RE } from '@audixio/engine';
 import { describe, expect, it, vi } from 'vitest';
 import {
   activeCheckEvent,

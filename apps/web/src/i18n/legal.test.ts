@@ -1,5 +1,5 @@
-import { TERMS_VERSION } from '@audigy/db';
-import { METHOD_VERSION } from '@audigy/engine';
+import { TERMS_VERSION } from '@audixio/db';
+import { METHOD_VERSION } from '@audixio/engine';
 import { describe, expect, it } from 'vitest';
 import { fr } from './fr.js';
 
@@ -34,7 +34,7 @@ describe('textes légaux', () => {
     expect(texte).toContain('41.1');
     expect(texte).toContain('41.2');
     expect(texte).toContain('Audixio@outlook.fr');
-    expect(texte).toContain('https://audigyweb.fr');
+    expect(texte).toContain('https://audixio.fr');
     expect(texte).toContain('particulier non professionnel');
     expect(texte).toContain('hébergeur');
     expect(fr['legal.review']).toContain('relire');

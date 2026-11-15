@@ -20,7 +20,7 @@ describe('fichier du brief', () => {
         'https://Exemple.FR/chemin',
         new Date('2026-10-23T22:00:00Z'),
       ),
-    ).toBe('audigy-brief-exemple.fr-2026-10-24.md');
+    ).toBe('audixio-brief-exemple.fr-2026-10-24.md');
   });
 
   it('ajoute la ligne finale sans remplacer le brief', () => {

@@ -1,4 +1,4 @@
-import type { SafeResponse } from '@audigy/net';
+import type { SafeResponse } from '@audixio/net';
 import type { Check, CheckResult } from '../../src/types.js';
 import { parseHsts } from './parse.js';
 import { finding, HSTS_SIX_MONTHS_SECONDS, loadHome } from './shared.js';

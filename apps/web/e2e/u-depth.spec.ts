@@ -50,7 +50,7 @@ for (const theme of ['light', 'dark'] as const) {
 test('U5 : Pro garde toute la courbe et les audits ; aucune promotion', async ({
   page,
 }) => {
-  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
+  await openHistory(page, [72, 88], 'light', 'bon.audixio.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('88');
   await expect(page.locator('table tbody tr')).toHaveCount(2);
   await expect(page.locator('#chartc')).toBeVisible();
@@ -130,7 +130,7 @@ test('U5 : dernier audit en échec, jamais de repli sur un ancien audit ni sur l
     }),
   );
   await page.reload();
-  await expect(page.locator('main h1')).toHaveText('bon.audigy.test');
+  await expect(page.locator('main h1')).toHaveText('bon.audixio.test');
   await expect(page.locator('table tbody tr')).toHaveCount(1);
   await expect(page.locator('table tbody')).not.toContainText('72');
   await expect(page.locator('table tbody a')).toHaveAttribute('href', /0c2$/u);

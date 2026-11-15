@@ -12,7 +12,7 @@ playwright-report/
 test-results/
 supabase/.temp/
 .DS_Store
-.audigy-browser/
+.audixio-browser/
 # Dumps locaux de la CLI d'audit. Jamais commités.
 /solo-audit*.json
 /solo-audit*.jsonl

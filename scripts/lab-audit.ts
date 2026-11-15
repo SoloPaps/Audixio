@@ -5,23 +5,23 @@
  * suite (double clic), puis GET /api/audits/:id jusqu'à `done` ou `failed`.
  * `--browser` : dès `partial`, lance le vrai runner (`runJob`, Chromium) sur le labo,
  * comme le ferait `browser-audit.yml`. `netlify dev` doit tourner avec
- * `AUDIGY_LOCAL_RUNNER=true`. Aucun jeton n'est affiché.
+ * `AUDIXIO_LOCAL_RUNNER=true`. Aucun jeton n'est affiché.
  */
 import {
   BROWSER_BUDGET,
   jobStoreFromEnv,
   runBrowserAudit,
   runJob,
-} from '@audigy/browser-runner';
-import { createRequestBudget } from '@audigy/net';
-import { labFromEnv, labNet } from '@audigy/orchestrator';
+} from '@audixio/browser-runner';
+import { createRequestBudget } from '@audixio/net';
+import { labFromEnv, labNet } from '@audixio/orchestrator';
 import { createClient } from '@supabase/supabase-js';
 import { DEFAULT_LAB_FILE } from '../fixtures/lab.js';
 import { localSupabaseStatus } from '../packages/db/test/local.js';
 
 const withBrowser = process.argv.includes('--browser');
 const args = process.argv.slice(2).filter((arg) => arg !== '--browser');
-const url = args[0] ?? 'https://bon.audigy.test/';
+const url = args[0] ?? 'https://bon.audixio.test/';
 const origin = args[1] ?? 'http://localhost:8888';
 const OWNER_EMAIL = 'proprietaire@localhost';
 const TIMEOUT_MS = 5 * 60_000;
@@ -85,7 +85,7 @@ interface View {
 }
 async function runLocalRunner(auditId: string): Promise<void> {
   const lab = labFromEnv(
-    { AUDIGY_LAB: process.env.AUDIGY_LAB ?? DEFAULT_LAB_FILE },
+    { AUDIXIO_LAB: process.env.AUDIXIO_LAB ?? DEFAULT_LAB_FILE },
     { requireNetlifyDev: false },
   );
   if (!lab) throw new Error('labo absent');

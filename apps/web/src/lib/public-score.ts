@@ -3,7 +3,7 @@ import {
   isLockedDomain,
   type Json,
   readPublicScore,
-} from '@audigy/db';
+} from '@audixio/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { AuditPayload } from './audit-api.js';
 import { isKnownDomain } from './domains.js';

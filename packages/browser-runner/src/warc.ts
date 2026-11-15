@@ -1,4 +1,4 @@
-import { ARTIFACT_LIMITS, assertArtifactSize } from '@audigy/evidence';
+import { ARTIFACT_LIMITS, assertArtifactSize } from '@audixio/evidence';
 import { WARCRecord, WARCSerializer } from 'warcio';
 
 /** Réponse déjà reçue par `safeFetch`, rejouée dans l’archive. */
@@ -10,7 +10,7 @@ export interface WarcExchange {
 }
 
 const WARC_VERSION = 'WARC/1.1';
-const SOFTWARE = 'audigy-browser';
+const SOFTWARE = 'audixio-browser';
 const SKIP_HEADERS = new Set([
   'set-cookie',
   'cookie',

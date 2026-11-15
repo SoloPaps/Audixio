@@ -102,7 +102,7 @@ jobs:
 
       # browser-runner et la CLI lancent Chromium dans leurs tests unitaires.
       - name: Chromium
-        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
+        run: pnpm --filter @audixio/web exec playwright install --with-deps chromium
 
       - name: test
         run: pnpm test
@@ -140,7 +140,7 @@ jobs:
         run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
 
       - name: Chromium
-        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
+        run: pnpm --filter @audixio/web exec playwright install --with-deps chromium
 
       - name: build
         run: pnpm build
@@ -190,18 +190,18 @@ jobs:
         run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
 
       - name: Chromium
-        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
+        run: pnpm --filter @audixio/web exec playwright install --with-deps chromium
 
       # Certains tests UI lisent dist/ (poids de l’accueil, cadran).
       - name: build
         run: pnpm build
 
       - name: test:ui (web, part ${{ matrix.shard }}/4)
-        run: pnpm --filter @audigy/web exec playwright test --shard=${{ matrix.shard }}/4
+        run: pnpm --filter @audixio/web exec playwright test --shard=${{ matrix.shard }}/4
 
       - name: test:ui (browser-runner)
         if: ${{ matrix.shard == 1 && !cancelled() }}
-        run: pnpm --filter @audigy/browser-runner run test:ui
+        run: pnpm --filter @audixio/browser-runner run test:ui
 
   check:
     runs-on: ubuntu-latest
@@ -329,7 +329,7 @@ jobs:
         run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
 
       - name: Chromium
-        run: pnpm --filter @audigy/web exec playwright install --with-deps chromium
+        run: pnpm --filter @audixio/web exec playwright install --with-deps chromium
 
       - name: Netlify CLI
         # Version et dépendances figées par .github/netlify-cli/package-lock.json.

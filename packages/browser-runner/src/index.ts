@@ -1,5 +1,5 @@
 /**
- * @audigy/browser-runner — runner navigateur (PLAN §3, §6). Mode passif uniquement.
+ * @audixio/browser-runner — runner navigateur (PLAN §3, §6). Mode passif uniquement.
  *
  * API
  * - `runBrowserAudit({ url, fetch?, browser?, viewports?, botUrl? })` : Chromium, profil
@@ -12,17 +12,17 @@
  *   console, contenu mixte dynamique, DOM / requêtes / poids pour EcoIndex, captures WebP
  *   horodatées (plafond 200 Ko). `warc: true` : WARC 1.1 de la page d’accueil (plafond 5 Mo).
  * - Anti-SSRF : chaque requête du navigateur est interceptée et rejouée par `safeFetch`
- *   (`@audigy/net`) ; le navigateur ne résout aucun nom (`LAUNCH_ARGS`). GET et HEAD
+ *   (`@audixio/net`) ; le navigateur ne résout aucun nom (`LAUNCH_ARGS`). GET et HEAD
  *   seulement : un envoi reçoit une réponse vide locale et n'atteint pas le site.
  *   WebSocket refusés. Budget `BROWSER_BUDGET` (1 req/s par hôte).
  * - `launchBrowser()` : Chromium avec `LAUNCH_ARGS`, à partager entre plusieurs audits.
  * - `runJob(auditId, { store, run })`, `supabaseJobStore`, `jobStoreFromEnv` : exécution
  *   `browser-audit.yml` ; artefacts dans le seau privé `artifacts/<auditId>/browser/`,
  *   avec `manifest.json` (empreinte SHA-256). PDF via `renderPdf` (`page.pdf()`, 1 Mo).
- * - `RGAA_AXE_MAP`, `rgaaFromAxe` (`@audigy/browser-runner/rgaa`) : données
+ * - `RGAA_AXE_MAP`, `rgaaFromAxe` (`@audixio/browser-runner/rgaa`) : données
  *   `data/rgaa-axe-map.json`, couverture partielle déclarée.
- * - Schéma seul, sans Playwright : `@audigy/browser-runner/schema`.
- * - CLI : `audigy-browser audit <url>` (local) et `audigy-browser job <auditId>`.
+ * - Schéma seul, sans Playwright : `@audixio/browser-runner/schema`.
+ * - CLI : `audixio-browser audit <url>` (local) et `audixio-browser job <auditId>`.
  */
 export {
   CMP_SIGNATURES,

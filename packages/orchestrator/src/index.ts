@@ -1,5 +1,5 @@
 /**
- * @audigy/orchestrator — file d'audits, exécution et écriture (PLAN §3, §5, §8).
+ * @audixio/orchestrator — file d'audits, exécution et écriture (PLAN §3, §5, §8).
  * Les fonctions Netlify (`netlify/functions/*`) et la CLI ne font qu'appeler ce paquet.
  *
  * API
@@ -18,7 +18,7 @@
  * - `handleBriefExport(req, deps, id)` : `GET|POST /api/audits/:id/brief`.
  *   Jeton requis. Le Markdown ne contient que les constats autorisés
  *   (soft-gate). Un brief interdit répond 403, sans les constats.
- * - `handleRun(req, deps)` : `audit-run-background`, réveil signé (`x-audigy-trigger`,
+ * - `handleRun(req, deps)` : `audit-run-background`, réveil signé (`x-audixio-trigger`,
  *   HMAC de `SUPABASE_SERVICE_ROLE_KEY`), puis `processNextAudit`.
  * - `handleCreateVerification`, `handleCheckVerification` : `POST /api/verifications`
  *   et `POST /api/verifications/check`. Le client ne peut pas se marquer vérifié.
@@ -36,22 +36,22 @@
  *   si la portée ne correspond pas, ou si elle a disparu (`expired` + alerte).
  * - `processNextAudit(deps)` : claim → checks côté fonction → `partial` → runner
  *   navigateur (GitHub `browser-audit.yml`) → attente ≤ 10 min → fusion → `done`.
- *   Le runner (`@audigy/browser-runner`, `runJob`) dépose `<id>/browser/results.json`
+ *   Le runner (`@audixio/browser-runner`, `runJob`) dépose `<id>/browser/results.json`
  *   dans le seau `artifacts` ; relu, vérifié (sha256, taille, schéma) puis rangé dans
  *   `ctx.shared` (`browser`) pour les checks `needs: ['browser']` (vie privée).
  *   Runner absent : checks navigateur `untested`, raison `reason.runner_absent`.
- * - `createAuditContext`, `defaultChecks` : réseau `@audigy/net` réel, ou labo local.
+ * - `createAuditContext`, `defaultChecks` : réseau `@audixio/net` réel, ou labo local.
  * - `normalizeSiteUrl` : adresse saisie → site (`https`, portée, hébergeur).
  * - `createLogger`, `redact` : journal JSON sans secret ni donnée personnelle.
  * - `handleAccount` : export JSON, acceptation versionnée des CGU, suppression
  *   du compte (données et artefacts). Export et CGU : 30 par heure. Suppression :
- *   5 par jour. Au-delà : 429. `TERMS_VERSION` vient de `@audigy/db`.
+ *   5 par jour. Au-delà : 429. `TERMS_VERSION` vient de `@audixio/db`.
  * - `handlePlaces` : recherche et confirmation d’un lieu (Places API New).
  *   Sans `PLACES_API_KEY`, `GET` répond `{ enabled: false }` et aucun appel ne part.
  *   Le navigateur ne parle qu’à `/api/places`. Cache 7 jours en base.
  * - `apiDepsFromEnv`, `runDepsFromEnv` : dépendances depuis les noms du §9.
- * - Labo (`AUDIGY_LAB`, dev seulement) : `labFromEnv`, `labNet`. Noms `*.audigy.test`.
- *   `AUDIGY_LOCAL_RUNNER=true` (labo sous `netlify dev`) : pas d'appel GitHub, la
+ * - Labo (`AUDIXIO_LAB`, dev seulement) : `labFromEnv`, `labNet`. Noms `*.audixio.test`.
+ *   `AUDIXIO_LOCAL_RUNNER=true` (labo sous `netlify dev`) : pas d'appel GitHub, la
  *   fonction attend le runner lancé en local (`pnpm lab:audit --browser`).
  */
 export {

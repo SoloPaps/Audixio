@@ -1,4 +1,4 @@
-import type { TlsProbeResult } from '@audigy/net';
+import type { TlsProbeResult } from '@audixio/net';
 import type { Check, CheckResult } from '../../src/types.js';
 import { CERT_SOON_DAYS, finding, hostName } from './shared.js';
 

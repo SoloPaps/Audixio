@@ -1,4 +1,4 @@
-import { NetError, type SafeResponse } from '@audigy/net';
+import { NetError, type SafeResponse } from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import {
   activeAllowed,

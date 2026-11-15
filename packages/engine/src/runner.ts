@@ -1,4 +1,4 @@
-import { isNetError } from '@audigy/net';
+import { isNetError } from '@audixio/net';
 import {
   type Check,
   type CheckOutcome,

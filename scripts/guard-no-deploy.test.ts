@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { scan } from './guard-no-deploy.js';
 
 async function withFixture(run: (dir: string) => Promise<void>): Promise<void> {
-  const dir = await mkdtemp(path.join(tmpdir(), 'audigy-guard-'));
+  const dir = await mkdtemp(path.join(tmpdir(), 'audixio-guard-'));
   try {
     await run(dir);
   } finally {

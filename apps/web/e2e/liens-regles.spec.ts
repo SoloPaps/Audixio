@@ -1,12 +1,12 @@
-import type { LienRapport, LinkRecord } from '@audigy/db';
-import type { LienDeps, LienStore } from '@audigy/orchestrator';
+import type { LienRapport, LinkRecord } from '@audixio/db';
+import type { LienDeps, LienStore } from '@audixio/orchestrator';
 import { expect, test } from '@playwright/test';
 import { register } from 'tsx/esm/api';
 
 register();
 
-const { sha256Hex, shareTokenFromBytes } = await import('@audigy/db');
-const { handleLien, handlePartage } = await import('@audigy/orchestrator');
+const { sha256Hex, shareTokenFromBytes } = await import('@audixio/db');
+const { handleLien, handlePartage } = await import('@audixio/orchestrator');
 
 const USER = '33333333-3333-4333-8333-333333333333';
 const AUDIT = '22222222-2222-4222-8222-222222222222';

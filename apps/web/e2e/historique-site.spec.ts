@@ -21,7 +21,7 @@ async function openHistory(
   page: Page,
   scores: readonly [number | null, number | null] | readonly [number],
   theme: 'light' | 'dark' = 'light',
-  host = 'bon.audigy.test',
+  host = 'bon.audixio.test',
 ): Promise<void> {
   await page.addInitScript((value) => {
     const storage = (
@@ -29,7 +29,7 @@ async function openHistory(
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({
@@ -234,9 +234,9 @@ test('« Historique et tendances » ouvre l’historique du site de la carte', a
   const rows = [
     {
       id: BON,
-      url: 'https://bon.audigy.test',
-      label: 'bon.audigy.test',
-      host: 'bon.audigy.test',
+      url: 'https://bon.audixio.test',
+      label: 'bon.audixio.test',
+      host: 'bon.audixio.test',
       owner_id: session.user.id,
     },
     {
@@ -253,7 +253,7 @@ test('« Historique et tendances » ouvre l’historique du site de la carte', a
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
@@ -277,7 +277,7 @@ test('« Historique et tendances » ouvre l’historique du site de la carte', a
     });
   });
   await page.goto('/sites?theme=light');
-  await expect(page.getByText('bon.audigy.test').first()).toBeVisible({
+  await expect(page.getByText('bon.audixio.test').first()).toBeVisible({
     timeout: 15_000,
   });
   // Lot 4 : la section #historique de la page du site (R11).
@@ -285,7 +285,7 @@ test('« Historique et tendances » ouvre l’historique du site de la carte', a
   await expect(links).toHaveCount(2);
   await expect(links.nth(0)).toHaveAttribute(
     'href',
-    '/sites/bon.audigy.test#historique',
+    '/sites/bon.audixio.test#historique',
   );
   await expect(links.nth(1)).toHaveAttribute(
     'href',
@@ -328,7 +328,7 @@ test('en thème sombre, les libellés du graphique sont lisibles (bug #14)', asy
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.addInitScript(() => {
-    localStorage.setItem('audigy-theme', 'dark');
+    localStorage.setItem('audixio-theme', 'dark');
   });
   await openHistory(page, [72, 88], 'dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
@@ -383,7 +383,7 @@ test('en thème sombre, le journal ne dessine pas un rectangle par cellule (bug 
   await page.setViewportSize({ width: 330, height: 900 });
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.addInitScript(() => {
-    localStorage.setItem('audigy-theme', 'dark');
+    localStorage.setItem('audixio-theme', 'dark');
   });
   await openHistory(page, [72, 88], 'dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
@@ -419,7 +419,7 @@ test('B2 sombre : le bouton de période actif reste visible', async ({
 }) => {
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.addInitScript(() => {
-    localStorage.setItem('audigy-theme', 'dark');
+    localStorage.setItem('audixio-theme', 'dark');
   });
   await openHistory(page, [72, 88], 'dark');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');

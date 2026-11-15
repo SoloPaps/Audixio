@@ -22,7 +22,7 @@ test('/badge sans id (connecté) : titre du badge et invitation à choisir', asy
 }) => {
   await page.addInitScript(() => {
     globalThis.localStorage.setItem(
-      'audigy-auth',
+      'audixio-auth',
       JSON.stringify({
         access_token: 'header.payload.signature',
         expires_at: 2_000_000_000,

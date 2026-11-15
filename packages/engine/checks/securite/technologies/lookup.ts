@@ -1,4 +1,4 @@
-import type { ExternalApi } from '@audigy/net';
+import type { ExternalApi } from '@audixio/net';
 import type { CheckContext } from '../../../src/types.js';
 import {
   cacheKey,

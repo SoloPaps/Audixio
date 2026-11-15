@@ -22,9 +22,9 @@ async function openEnglishHistory(page: Page): Promise<void> {
           localStorage: { setItem: (key: string, item: string) => void };
         }
       ).localStorage;
-      storage.setItem('audigy-auth', JSON.stringify(auth));
-      storage.setItem('audigy-en', dictionary);
-      storage.setItem('audigy-locale', 'en');
+      storage.setItem('audixio-auth', JSON.stringify(auth));
+      storage.setItem('audixio-en', dictionary);
+      storage.setItem('audixio-locale', 'en');
     },
     [session, pack] as const,
   );
@@ -72,7 +72,7 @@ async function openEnglishHistory(page: Page): Promise<void> {
       route.fulfill({ status: 200, headers, body: JSON.stringify(body) });
     if (url.includes('/rest/v1/audits')) return json(audits);
     if (url.includes('/rest/v1/sites'))
-      return json([{ id: SITE, host: 'bon.audigy.test', hosting: 'other' }]);
+      return json([{ id: SITE, host: 'bon.audixio.test', hosting: 'other' }]);
     if (url.includes('/rest/v1/profiles')) return json({ plan: 'pro' });
     if (url.includes('read_rapport_apercu')) {
       const raw = request.postData() ?? '';

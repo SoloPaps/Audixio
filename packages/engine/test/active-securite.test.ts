@@ -7,7 +7,7 @@ import {
   type SafeResponse,
   type TlsProbe,
   type TlsProbeResult,
-} from '@audigy/net';
+} from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { fr } from '../../../apps/web/src/i18n/fr.js';
 import { failureCount, lintText } from '../../../scripts/copy-lint.js';

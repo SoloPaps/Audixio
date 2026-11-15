@@ -11,7 +11,7 @@ const item = {
 describe('briefScreen (bug #18)', () => {
   it('ne dit pas « Site non vérifié » pour un site vérifié', () => {
     const text = briefScreen({
-      url: 'https://gratuit.audigy.test',
+      url: 'https://gratuit.audixio.test',
       items: [item],
       verified: true,
     });
@@ -19,7 +19,7 @@ describe('briefScreen (bug #18)', () => {
   });
   it('garde le brief partiel pour un site non vérifié', () => {
     const text = briefScreen({
-      url: 'https://gratuit.audigy.test',
+      url: 'https://gratuit.audixio.test',
       items: [item],
       verified: false,
     });

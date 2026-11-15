@@ -1,5 +1,5 @@
-import type { RequestAuditInput, RequestAuditResult } from '@audigy/db';
-import { ENGINE_VERSION, METHOD_VERSION } from '@audigy/engine';
+import type { RequestAuditInput, RequestAuditResult } from '@audixio/db';
+import { ENGINE_VERSION, METHOD_VERSION } from '@audixio/engine';
 import { describe, expect, it, vi } from 'vitest';
 import {
   type ApiDeps,
@@ -203,7 +203,7 @@ describe('POST /api/audits', () => {
     ['champ inconnu', { url: 'a.fr', admin: true }, 'invalid_input'],
     ['corps trop gros', { url: `a.fr/${'x'.repeat(5000)}` }, 'invalid_input'],
     ['adresse privée', { url: 'http://127.0.0.1' }, 'invalid_url'],
-    ['labo refusé', { url: 'bon.audigy.test' }, 'invalid_url'],
+    ['labo refusé', { url: 'bon.audixio.test' }, 'invalid_url'],
   ])('400 : %s', async (_name, body, code) => {
     const { deps, requests } = apiDeps();
     expect(await read(await handleCreate(post(body), deps))).toEqual({

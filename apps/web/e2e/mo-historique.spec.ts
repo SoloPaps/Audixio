@@ -7,7 +7,7 @@ import { openHistory } from './h-history.js';
 test('M1/M4 : le seuil B (80) est tracé entre les graduations 75 et 90', async ({
   page,
 }) => {
-  await openHistory(page, [64, 86], 'light', 'bon.audigy.test', 'pro');
+  await openHistory(page, [64, 86], 'light', 'bon.audixio.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('86', {
     timeout: 15_000,
   });
@@ -38,7 +38,7 @@ test('M1/M4 : le seuil B (80) est tracé entre les graduations 75 et 90', async 
 test('M1 (bug_22d8d4f1) : un audit à 78 est C, sous la ligne B (80)', async ({
   page,
 }) => {
-  await openHistory(page, [78, 86], 'light', 'bon.audigy.test', 'pro');
+  await openHistory(page, [78, 86], 'light', 'bon.audixio.test', 'pro');
   // La maquette statique affiche déjà 78 et la graduation 80 : on attend le
   // journal réel (deux lignes) avant de lire le graphique.
   await expect(page.getByRole('cell', { name: 'B · 86' })).toBeVisible({

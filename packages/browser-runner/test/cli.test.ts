@@ -1,7 +1,7 @@
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { NetError } from '@audigy/net';
+import { NetError } from '@audixio/net';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type CliIo, main, summaryLines } from '../src/cli.js';
 import type { BrowserAuditOutput } from '../src/run.js';
@@ -13,7 +13,7 @@ afterEach(async () => {
 });
 
 async function io(env: NodeJS.ProcessEnv = {}) {
-  const cwd = await mkdtemp(path.join(tmpdir(), 'audigy-cli-'));
+  const cwd = await mkdtemp(path.join(tmpdir(), 'audixio-cli-'));
   dirs.push(cwd);
   const out: string[] = [];
   const err: string[] = [];
@@ -37,7 +37,7 @@ describe('CLI locale', () => {
   it('affiche l’aide et refuse une commande incomplète', async () => {
     const help = await io();
     expect(await main(['--help'], help.value)).toBe(0);
-    expect(help.out.join('\n')).toContain('audigy-browser audit <url>');
+    expect(help.out.join('\n')).toContain('audixio-browser audit <url>');
     const bad = await io();
     expect(await main(['audit'], bad.value)).toBe(2);
     expect(await main(['inconnu', 'x'], bad.value)).toBe(2);
@@ -45,7 +45,7 @@ describe('CLI locale', () => {
   });
 
   it('écrit browser.json et les captures, puis un résumé', async () => {
-    const t = await io({ APP_BASE_URL: 'https://audigy.exemple' });
+    const t = await io({ APP_BASE_URL: 'https://audixio.exemple' });
     const run = vi.fn(async () => output);
     expect(
       await main(
@@ -58,7 +58,7 @@ describe('CLI locale', () => {
     ).toBe(0);
     expect(run).toHaveBeenCalledWith({
       url: 'https://www.exemple.fr/',
-      botUrl: 'https://audigy.exemple',
+      botUrl: 'https://audixio.exemple',
     });
     const json = JSON.parse(
       await readFile(path.join(t.cwd, 'res', 'browser.json'), 'utf8'),
@@ -70,7 +70,7 @@ describe('CLI locale', () => {
     expect(t.out.at(-1)).toBe(`Résultat : ${path.join('res', 'browser.json')}`);
   });
 
-  it('range par défaut sous .audigy-browser/<hôte>, ou sort le JSON', async () => {
+  it('range par défaut sous .audixio-browser/<hôte>, ou sort le JSON', async () => {
     const t = await io();
     const run = vi.fn(async () => output);
     await main(
@@ -85,7 +85,7 @@ describe('CLI locale', () => {
       viewports: ['desktop'],
     });
     await readFile(
-      path.join(t.cwd, '.audigy-browser', 'www.exemple.fr', 'browser.json'),
+      path.join(t.cwd, '.audixio-browser', 'www.exemple.fr', 'browser.json'),
     );
     const j = await io();
     await main(['audit', 'https://www.exemple.fr/', '--json'], j.value, {

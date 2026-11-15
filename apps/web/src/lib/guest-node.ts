@@ -7,7 +7,7 @@ import {
   createLogger,
   handleGuestCreate,
   secretsFromEnv,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 const root = fileURLToPath(new URL('../../../../', import.meta.url));
 

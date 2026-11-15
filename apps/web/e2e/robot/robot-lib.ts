@@ -53,7 +53,7 @@ export const PAGES: RobotPage[] = [
   { path: `/rapport/${AUDIT}/plan`, report: true },
   { path: `/rapport/${AUDIT}/brief`, report: true },
   { path: '/sites', session: true },
-  { path: '/sites/bon.audigy.test', session: true },
+  { path: '/sites/bon.audixio.test', session: true },
   { path: '/compte', session: true },
   { path: '/historique', session: true },
   { path: '/bienvenue', session: true },
@@ -184,8 +184,8 @@ function reportPayload(): unknown {
       error: null,
       site: {
         id: '00000000-0000-4000-8000-00000000c702',
-        url: 'https://robot.audigy.test',
-        label: 'robot.audigy.test',
+        url: 'https://robot.audixio.test',
+        label: 'robot.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },
@@ -226,7 +226,7 @@ export async function openMode(
         () =>
           page
             .evaluate<boolean>(
-              "document.readyState === 'complete' && !new URL(location.href).searchParams.has('lang') && localStorage.getItem('audigy-locale') === 'en'",
+              "document.readyState === 'complete' && !new URL(location.href).searchParams.has('lang') && localStorage.getItem('audixio-locale') === 'en'",
             )
             .catch(() => false),
         { timeout: 20_000 },

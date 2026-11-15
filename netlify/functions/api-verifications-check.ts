@@ -4,7 +4,7 @@ import {
   secretsFromEnv,
   serve,
   verificationDepsFromEnv,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 export default async (req: Request): Promise<Response> => {
   const logger = createLogger({ secrets: secretsFromEnv(process.env) });

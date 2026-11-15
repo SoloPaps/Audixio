@@ -6,7 +6,7 @@ import { ORIGIN } from './origin.js';
  * terminés, pour la page d’un site et le compte en sections.
  */
 export const SITE_ID = '00000000-0000-4000-8000-0000000000bb';
-export const SITE_HOST = 'bon.audigy.test';
+export const SITE_HOST = 'bon.audixio.test';
 export const AUDITS = [
   ['00000000-0000-4000-8000-0000000000c1', '2026-01-15T10:05:00.000Z', 58],
   ['00000000-0000-4000-8000-0000000000c2', '2026-05-15T10:05:00.000Z', 71],
@@ -26,7 +26,7 @@ export async function stubSiteAccount(
     user: { id: USER, email: 'test@exemple.fr' },
   };
   await page.addInitScript((value) => {
-    localStorage.setItem('audigy-auth', JSON.stringify(value));
+    localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', (route) =>
     route.fulfill({

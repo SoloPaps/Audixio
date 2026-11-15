@@ -24,11 +24,11 @@ for (const width of widths) {
       test(`banc ${width} ${theme} ${lang}`, async ({ page }) => {
         await page.addInitScript(
           ({ theme: asked, lang: askedLang, english, french }) => {
-            localStorage.setItem('audigy-theme', asked);
+            localStorage.setItem('audixio-theme', asked);
             if (askedLang === 'en') {
-              localStorage.setItem('audigy-locale', 'en');
-              localStorage.setItem('audigy-en', english);
-              localStorage.setItem('audigy-fr', french);
+              localStorage.setItem('audixio-locale', 'en');
+              localStorage.setItem('audixio-en', english);
+              localStorage.setItem('audixio-fr', french);
             }
           },
           { theme, lang, english: en, french: fr },
@@ -89,9 +89,9 @@ for (const lang of langs) {
     await page.addInitScript(
       ({ askedLang, english, french }) => {
         if (askedLang === 'en') {
-          localStorage.setItem('audigy-locale', 'en');
-          localStorage.setItem('audigy-en', english);
-          localStorage.setItem('audigy-fr', french);
+          localStorage.setItem('audixio-locale', 'en');
+          localStorage.setItem('audixio-en', english);
+          localStorage.setItem('audixio-fr', french);
         }
       },
       { askedLang: lang, english: en, french: fr },
@@ -202,9 +202,9 @@ for (const lang of langs) {
     await page.addInitScript(
       ({ askedLang, english, french }) => {
         if (askedLang === 'en') {
-          localStorage.setItem('audigy-locale', 'en');
-          localStorage.setItem('audigy-en', english);
-          localStorage.setItem('audigy-fr', french);
+          localStorage.setItem('audixio-locale', 'en');
+          localStorage.setItem('audixio-en', english);
+          localStorage.setItem('audixio-fr', french);
         }
       },
       { askedLang: lang, english: en, french: fr },

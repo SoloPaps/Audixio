@@ -3,7 +3,7 @@ import {
   createSafeFetch,
   type DohResolver,
   type TlsProbe,
-} from '@audigy/net';
+} from '@audixio/net';
 import {
   type Check,
   type CheckResult,

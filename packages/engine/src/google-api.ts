@@ -1,4 +1,4 @@
-import { createExternalApi, type ExternalApi } from '@audigy/net';
+import { createExternalApi, type ExternalApi } from '@audixio/net';
 import type { RunContext } from './types.js';
 
 /** Lit `GOOGLE_API_KEY`. Vide ou absente : pas de source PSI/CrUX. Jamais journalisée. */
@@ -12,7 +12,7 @@ export function googleApiKey(
 }
 
 /**
- * Branche le client `@audigy/net` si la clé est présente.
+ * Branche le client `@audixio/net` si la clé est présente.
  * Un client déjà injecté (test, cache) est conservé.
  */
 export function withGoogleApi<T extends RunContext>(

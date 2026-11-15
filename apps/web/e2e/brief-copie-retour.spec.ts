@@ -92,7 +92,7 @@ async function install(page: Page): Promise<void> {
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const origin = route.request().headers().origin ?? ORIGIN;

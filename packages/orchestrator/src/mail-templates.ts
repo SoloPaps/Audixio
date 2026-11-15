@@ -1,9 +1,9 @@
-import { type Grade, gradeForScore } from '@audigy/db';
+import { type Grade, gradeForScore } from '@audixio/db';
 import { currentMailLocale, mailLocaleOf, t, withMailLocale } from './copy.js';
 
 export type MailGrade = Grade;
 
-/** Barème unique de `@audigy/db` (`GRADE_THRESHOLDS`). */
+/** Barème unique de `@audixio/db` (`GRADE_THRESHOLDS`). */
 export function mailGrade(score: number | null): MailGrade | null {
   return gradeForScore(score);
 }

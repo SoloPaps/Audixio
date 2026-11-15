@@ -24,8 +24,8 @@ function payload(status: string, siteVerified: boolean): unknown {
       error: null,
       site: {
         id: '7a2b3c4d-5e6f-4789-a012-bcdef0123457',
-        url: 'https://partiel.audigy.test',
-        label: 'partiel.audigy.test',
+        url: 'https://partiel.audixio.test',
+        label: 'partiel.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },

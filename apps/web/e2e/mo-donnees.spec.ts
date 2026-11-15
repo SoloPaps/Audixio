@@ -95,8 +95,8 @@ async function install(
 ): Promise<void> {
   await page.addInitScript(
     ([value, locale]) => {
-      localStorage.setItem('audigy-auth', JSON.stringify(value));
-      localStorage.setItem('audigy-locale', locale as string);
+      localStorage.setItem('audixio-auth', JSON.stringify(value));
+      localStorage.setItem('audixio-locale', locale as string);
     },
     [session, lang] as const,
   );

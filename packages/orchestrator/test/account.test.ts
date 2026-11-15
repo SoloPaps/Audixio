@@ -1,4 +1,4 @@
-import { TERMS_VERSION } from '@audigy/db';
+import { TERMS_VERSION } from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import {
   type AccountDeps,
@@ -203,7 +203,7 @@ describe('API compte', () => {
     const res = await call(memory, '/api/compte/export', 'GET');
     expect(res.status).toBe(200);
     expect(res.headers.get('content-disposition')).toContain(
-      'audigy-donnees.json',
+      'audixio-donnees.json',
     );
     const body = (await res.json()) as AccountExport;
     expect(body.sites[0]?.adresse).toBe('https://a.exemple');

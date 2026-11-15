@@ -1,4 +1,4 @@
-import { buildChallenge } from '@audigy/engine';
+import { buildChallenge } from '@audixio/engine';
 import { describe, expect, it } from 'vitest';
 import { fr } from '../i18n/index.js';
 import { localChallenge } from './verify-challenge.js';

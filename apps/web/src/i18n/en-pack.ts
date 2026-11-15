@@ -23,7 +23,7 @@ async function storeFrenchDictionary(stamp: number): Promise<void> {
     const text = await res.text();
     const pack = JSON.parse(text) as unknown;
     if (!pack || typeof pack !== 'object') return;
-    localStorage.setItem('audigy-fr', text);
+    localStorage.setItem('audixio-fr', text);
   } catch {
     // Sans copie locale, la traduction attend le dictionnaire du réseau.
   }
@@ -44,11 +44,11 @@ export async function storeEnglishDictionary(): Promise<boolean> {
     return false;
   }
   if (!enPackUsable(pack)) return false;
-  localStorage.setItem('audigy-en', text);
+  localStorage.setItem('audixio-en', text);
   return true;
 }
 
-const PENDING = 'audigy-locale-pending';
+const PENDING = 'audixio-locale-pending';
 
 /**
  * Note le choix de langue avant le téléchargement du dictionnaire (300 Ko) :
@@ -79,14 +79,14 @@ export function settleLocaleChoice(): void {
 export async function resumeEnglishChoice(): Promise<boolean> {
   try {
     if (localStorage.getItem(PENDING) !== 'en') return false;
-    if (localStorage.getItem('audigy-locale') === 'en') {
+    if (localStorage.getItem('audixio-locale') === 'en') {
       settleLocaleChoice();
       return false;
     }
     const stored = await storeEnglishDictionary();
     settleLocaleChoice();
     if (!stored) return false;
-    localStorage.setItem('audigy-locale', 'en');
+    localStorage.setItem('audixio-locale', 'en');
     return true;
   } catch {
     return false;

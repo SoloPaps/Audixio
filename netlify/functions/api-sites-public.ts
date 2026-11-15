@@ -5,7 +5,7 @@ import {
   lienDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Publication ou retrait du score public, soumis au même quota que /api/liens. */
 export default async (req: Request): Promise<Response> => {

@@ -35,12 +35,12 @@ test('U1 : un compte gratuit exporte en CSV ou PDF, Excel reste un appel Pro', a
     menu.locator('[data-hfmt="pdf"]').click(),
   ]);
   expect(download.suggestedFilename()).toBe(
-    'audixio-historique-bon.audigy.test.pdf',
+    'audixio-historique-bon.audixio.test.pdf',
   );
   const bytes = await readFile(await download.path());
   expect(bytes.subarray(0, 8).toString('latin1')).toBe('%PDF-1.4');
   const text = bytes.toString('latin1');
-  expect(text).toContain('bon.audigy.test');
+  expect(text).toContain('bon.audixio.test');
   expect(text).not.toContain('(72)');
   expect(text).toContain('(88)');
   await expect(page.locator('#toast')).toContainText(
@@ -49,7 +49,7 @@ test('U1 : un compte gratuit exporte en CSV ou PDF, Excel reste un appel Pro', a
 });
 
 test('U1 : un compte Pro exporte aussi en Excel (.xlsx)', async ({ page }) => {
-  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
+  await openHistory(page, [72, 88], 'light', 'bon.audixio.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('88', {
     timeout: 15_000,
   });
@@ -63,7 +63,7 @@ test('U1 : un compte Pro exporte aussi en Excel (.xlsx)', async ({ page }) => {
     xlsx.click(),
   ]);
   expect(download.suggestedFilename()).toBe(
-    'audixio-historique-bon.audigy.test.xlsx',
+    'audixio-historique-bon.audixio.test.xlsx',
   );
   const bytes = await readFile(await download.path());
   expect(bytes.subarray(0, 2).toString('latin1')).toBe('PK');
@@ -96,7 +96,7 @@ test('U1 : en anglais, le menu d’export ne garde aucun français', async ({
 });
 
 test('U1b : un compte Pro exporte aussi en JSON', async ({ page }) => {
-  await openHistory(page, [72, 88], 'light', 'bon.audigy.test', 'pro');
+  await openHistory(page, [72, 88], 'light', 'bon.audixio.test', 'pro');
   await expect(page.locator('text.val').nth(1)).toHaveText('88', {
     timeout: 15_000,
   });
@@ -108,7 +108,7 @@ test('U1b : un compte Pro exporte aussi en JSON', async ({ page }) => {
     json.click(),
   ]);
   expect(download.suggestedFilename()).toBe(
-    'audixio-historique-bon.audigy.test.json',
+    'audixio-historique-bon.audixio.test.json',
   );
   const body = JSON.parse(await readFile(await download.path(), 'utf8')) as {
     format: string;
@@ -116,7 +116,7 @@ test('U1b : un compte Pro exporte aussi en JSON', async ({ page }) => {
     audits: { scores: Record<string, number | null> }[];
   };
   expect(body.format).toBe('audixio-historique');
-  expect(body.site).toBe('bon.audigy.test');
+  expect(body.site).toBe('bon.audixio.test');
   expect(body.audits.map((audit) => audit.scores.global)).toEqual([72, 88]);
   await expect(page.locator('#toast')).toContainText(
     'Historique téléchargé (fichier JSON).',

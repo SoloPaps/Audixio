@@ -275,7 +275,7 @@ export async function posterTsa(
       headers: {
         'content-type': 'application/timestamp-query',
         accept: 'application/timestamp-reply',
-        'user-agent': 'Audigy/1.0',
+        'user-agent': 'Audixio/1.0',
       },
       body: vue(corps),
     });

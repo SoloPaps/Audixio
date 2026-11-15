@@ -1,5 +1,5 @@
 {
-  "name": "@audigy/web",
+  "name": "@audixio/web",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -15,10 +15,10 @@
   },
   "dependencies": {
     "@astrojs/svelte": "^9.1.1",
-    "@audigy/db": "workspace:*",
-    "@audigy/engine": "workspace:*",
-    "@audigy/evidence": "workspace:*",
-    "@audigy/orchestrator": "workspace:*",
+    "@audixio/db": "workspace:*",
+    "@audixio/engine": "workspace:*",
+    "@audixio/evidence": "workspace:*",
+    "@audixio/orchestrator": "workspace:*",
     "@supabase/supabase-js": "^2.118.0",
     "astro": "^7.4.2",
     "qrcode": "1.5.4",
