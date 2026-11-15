@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount, tick } from 'svelte';
 import { t } from '../i18n/index.js';
-import '../styles/maquettes/guest-gate.css';
+import '../styles/pages/guest-gate.css';
 
 interface Props {
   open: boolean;
