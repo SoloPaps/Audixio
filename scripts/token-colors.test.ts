@@ -8,7 +8,7 @@ const ARC_FILE = 'apps/web/src/styles/arc.css';
 
 /** Portage figé des maquettes finales : couleurs et rythmes copiés, contrôlés par le test pixel. */
 const MAQUETTE_PORT = [
-  'apps/web/src/styles/maquettes/',
+  'apps/web/src/styles/pages/',
   'apps/web/src/styles/canon.css',
   'apps/web/src/styles/chrome.css',
   'apps/web/src/styles/nav6.css',
@@ -261,7 +261,7 @@ describe('couleurs des CSS', () => {
   });
 
   it('laisse le portage des maquettes hors des tokens, pas le reste', () => {
-    expect(isMaquettePort('apps/web/src/styles/maquettes/hub.css')).toBe(true);
+    expect(isMaquettePort('apps/web/src/styles/pages/hub.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/styles/canon.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/styles/chrome.css')).toBe(true);
     expect(isMaquettePort('apps/web/src/styles/theme-dark.css')).toBe(true);

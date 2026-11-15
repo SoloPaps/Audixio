@@ -6,7 +6,7 @@ import { t as gateText } from '../lib/home-audit-copy.js';
 import { homeFormAlert } from '../lib/home-audit-notice.js';
 import { homeUrlIssue, withScheme } from '../lib/home-url-issue.js';
 import { progressionHref } from '../lib/relaunch.js';
-import '../styles/maquettes/guest-gate.css';
+import '../styles/pages/guest-gate.css';
 
 interface Props {
   /** Formulaire du héros : porte les ancres #audit-form et #url-input. */

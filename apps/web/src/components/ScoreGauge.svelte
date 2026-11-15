@@ -7,7 +7,7 @@ let gauges = 0;
 import { GRADE_THRESHOLDS, gradeForScore } from '@audixio/db';
 import { gradeLabel } from '../lib/grade.js';
 import { t } from '../i18n/index.js';
-import '../styles/maquettes/gauge.css';
+import '../styles/pages/gauge.css';
 import {
   GAUGE,
   gaugeBands,
@@ -112,7 +112,7 @@ const frame = $derived(
 </div>
 
 <style>
-  /* Tracé, texte et teintes par lettre : maquettes/gauge.css, chargée avec
+  /* Tracé, texte et teintes par lettre : pages/gauge.css, chargée avec
      le composant (pas de classes de portée répétées dans le HTML). Largeur et
      container-type : style en ligne, le cadran tient sans feuille de style. */
   .gauge[data-size='hero'] {
