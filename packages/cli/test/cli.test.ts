@@ -87,7 +87,11 @@ describe('audixio audit', () => {
   });
 
   it('--json : scores, versions, raison explicite', async () => {
-    const { code, out } = await cli(['audit', 'mauvais.audixio.test', '--json']);
+    const { code, out } = await cli([
+      'audit',
+      'mauvais.audixio.test',
+      '--json',
+    ]);
     expect(code).toBe(0);
     const report = JSON.parse(out.join('\n'));
     expect(report.url).toBe('https://mauvais.audixio.test/');
