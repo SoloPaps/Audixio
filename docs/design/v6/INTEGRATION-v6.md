@@ -1,6 +1,6 @@
 # Audixio v6 : notes d'intégration (Astro, Svelte, TypeScript, apps/web)
 
-Maquette : `/workspace/v5c/audixio-v6.html`. C'est un fichier autonome de 213 Ko qui s'ouvre d'un double-clic. Il est généré par `build6.py` à partir de `src6/`.
+Maquette d'origine : retirée du dépôt (générateur `build6.py` et sources `src6/` conservés dans l'historique git). Ce document garde les décisions d'intégration.
 
 **Base retenue :** `radiographie-v3.html`, en thème clair, comme sur la capture de l'owner : « À vous de jouer » est suivi de « Atelier ». On reprend de la v3, quasiment tels quels :
 
@@ -11,18 +11,7 @@ Tout ce qui suit « À vous de jouer » est refait. La barre de sections est ajo
 
 ## 1. Sources
 
-| Fichier | Contenu |
-|---|---|
-| `src6/shell.html` | `<head>`, script de thème et garde polices, inclusions |
-| `src6/tokens.css` | **Source unique des jetons** : sombre sur `:root`, clair sur `:root[data-theme=light]`, constantes radiographie, jetons v6 |
-| `src6/kept.css` | CSS des sections conservées de la v3. Toutes les couleurs passent par des jetons (0 hex, 0 `rgb()`) |
-| `src6/s6.css` | Nouvelles sections, langage des liens et boutons, barre de sections, retouches des sections conservées, tailles réservées |
-| `src6/icons.html` | Sprite SVG : logo, icônes d'interface `i-*`, icônes de domaine `ic-*` |
-| `src6/b-top.html`, `b-dom.html` | En-tête, barre de sections, héros, comment, 8 domaines (gabarit), vue éclatée, jeu |
-| `src6/b-new.html` | Rapport, Après la note, Offres, Questions, Appel final, pied de page |
-| `src6/content-fr.json` | Contenus générés au build : faux site, zones, 8 domaines. C'est le futur catalogue FR |
-| `src6/i18n-fr.json` | Chaînes utilisées par le JS (thème, statut du scan, compteur du jeu, barre de sections), intégrées dans `<script type=application/json id=i18n-fr>` |
-| `src6/app6.js` | Une fonction `initX(el)` par composant, qui renvoie `destroy()`. Aucun texte en dur |
+Les jetons vivent dans `apps/web/src/styles/tokens.css`, les composants dans `apps/web/src/components/v6/`. Les sources de la maquette (`src6/`) ont été retirées du dépôt.
 
 Depuis la v3 :
 
@@ -75,7 +64,7 @@ Depuis la v3 :
 
 ## 4. Jetons
 
-Il n'y a qu'une source, `src6/tokens.css` (149 jetons, dont 29 surchargés en clair).
+Il n'y a qu'une source : `apps/web/src/styles/tokens.css`.
 
 - Les sections conservées et les nouvelles ne contiennent aucune couleur en dur.
 - **Limite connue :** dans `kept.css` (sections v3), les tailles, espacements et rayons sont encore littéraux (rem/px), comme dans la v3. Seules les couleurs y sont en jetons. Les nouvelles sections utilisent `--s-*`, `--r-*`, `--d-*`, etc.
@@ -336,22 +325,22 @@ Il n'y a qu'une source, `src6/tokens.css` (149 jetons, dont 29 surchargés en cl
 - Les tailles réservées de `content-visibility`, à re-mesurer.
 - La vue éclatée : épinglage, `perspective` et 440vh de défilement. Elle a besoin d'un composant client avec écouteur de défilement, à désactiver en mouvement réduit.
 - Le scanner du héros : une boucle rAF à mettre en pause hors écran. Dans Svelte, utiliser une action qui gère l'IntersectionObserver.
-- La position des bulles des 8 domaines, calculée au build à partir des zones (formule dans `build6.py`). À porter en TS.
+- La position des bulles des 8 domaines, calculée au build à partir des zones. À porter en TS.
 - `kept.css` garde des tailles littérales héritées de la v3 (voir § 4).
 - La barre de sections : synchroniser la section active avec le routeur Astro si les ancres changent, et ne pas la doubler avec la nav du header sur mobile.
 
 ## 9. Révision du 11/11/2026 : en-tête global = barre actuelle de main
 
-Décision de l'owner : garder la barre du site actuel (`apps/web/src/components/CanonBar.svelte` + `styles/chrome.css`), habillée v6. L'ancien en-tête `.top` de la maquette (5 liens, ligne de progression) est retiré.
+Décision de l'owner : garder la barre du site, habillée v6 (aujourd'hui `apps/web/src/components/v6/SiteHeader.svelte`). L'ancien en-tête `.top` de la maquette (5 liens, ligne de progression) est retiré.
 
-Source unique : `src6/nav6.py` (balisage), `src6/nav6.css` (styles, jetons v6), `src6/nav6.js` (comportement). Le même en-tête sert à l'accueil et à `/methode`.
+Source unique : `apps/web/src/components/v6/SiteHeader.svelte` (balisage et comportement) et `apps/web/src/styles/nav6.css` (styles, jetons v6). Le même en-tête sert à l'accueil et à `/methode`.
 
-- Entrées, dans l'ordre : Accueil `/`, Méthode `/methode`, Sites suivis `/sites`, Tarifs `/pro`. Lien actif : `aria-current="page"` (même règle `current()` que CanonBar, `/rapport…` → `/sites`).
+- Entrées, dans l'ordre : Accueil `/`, Méthode `/methode`, Sites suivis `/sites`, Tarifs `/pro`. Lien actif : `aria-current="page"` (même règle que l'ancienne barre, `/rapport…` → `/sites`).
 - Outils : segment FR | EN (la langue courante est un `<span aria-current>`), bouton thème (soleil en clair, lune en sombre, `aria-pressed`), bouton Connexion → `/connexion` ou Compte → `/compte` si session (maquette : `?session=1`).
 - Pas de menu déroulant (il n'y en a pas sur main).
 - Défilement : `is-scrolled` au-delà de 8 px (barre resserrée, ombre). Écart volontaire : la hauteur de l'en-tête reste fixe (`--hh` 92 px, 78 px ≤ 900 px) et le resserrement passe par `transform`, pour garder CLS 0.
 - Mobile ≤ 900 px : burger → panneau `role="dialog"` + voile, `inert` fermé, verrou de défilement, focus sur le 1er lien, piège Tab, Échap et clic sur le voile ferment, retour au burger, fermeture au passage en large, entrées décalées (`--i`). Sous 330 px : logo réduit au symbole.
 - Bouton « Remonter en haut » (`.axn-top`, mobile) : gardé, mais masqué quand la barre de sections v6 est visible (son bouton ↑ fait la même chose).
-- Écart volontaire : le verrou ne pose `overflow:hidden` que sur `<html>` (pas sur `<body>`), ce qui évite le saut en haut de page que CanonBar doit corriger à la fermeture.
+- Écart volontaire : le verrou ne pose `overflow:hidden` que sur `<html>` (pas sur `<body>`), ce qui évite le saut en haut de page que l'ancienne barre devait corriger à la fermeture.
 - Doublons à retirer à l'intégration : la nav cachée `.legacy-pages` de `Canon.astro` (Méthode, Connexion) ; l'`id="top"` de l'en-tête (le héros porte déjà `id="top"`, utilisé par la barre de sections) → l'en-tête prend `id="axn"`.
 - Libellés EN : ceux de `dictionnaire-en.json` lus (Method, Tracked sites, Sign in, Account, Menu, Close menu, Language, Theme) ; Home, Pricing, Open menu, Back to top, Main navigation sont proposés (clés non trouvées dans l'extrait lu).

@@ -1,4 +1,4 @@
-# Docs Audixio — lisez-moi
+# Docs Audixio
 
 Ce dossier contient toute la documentation d'Audixio, rangée par sujet. Réorganisé le 29/10/2026.
 
@@ -13,18 +13,13 @@ Ce dossier contient toute la documentation d'Audixio, rangée par sujet. Réorga
 | Dossier | Ce qu'on y trouve |
 |---|---|
 | `00-DECISIONS.md` | Les décisions de l'owner (28/10 soir, 29/10, questions tranchées). |
-| `agents/` | Le pack d'instructions pour les agents (règles communes + un fichier par rôle). |
 | `produit/` | Ce que fait Audixio : fonctionnement, méthode de notation, droits (matrice), soft-gate, questions encore ouvertes. |
 | `design/` | Règles visuelles, thèmes, couleurs, logo, pages, backlog design, éléments, logos. |
-| `design/v6/` | Charte v6, maquette de l’accueil, `STRUCTURE.md` (pages, adresses, redirections). Les maquettes Stitch sont archivées hors du dépôt. |
+| `design/v6/` | Charte v6, `STRUCTURE.md` (pages, adresses, redirections). Les maquettes Stitch ont été retirées du dépôt. |
 | `dev/` | Pour coder : plan technique, lancer en local, recette. |
 | `etapes/` | Les étapes de la refonte, une par fichier, dans l'ordre. |
 | `legal/` | Le registre des traitements (RGPD). |
-| `archive/` | Ce qui n'est plus à jour : anciens docs, journal, originaux des fichiers fusionnés. À lire seulement pour l'historique. |
-
-## Correspondance ancien → nouveau
-
-Chaque ancien fichier et sa nouvelle place : [`archive/_MAPPING-ancien-vers-nouveau.md`](archive/_MAPPING-ancien-vers-nouveau.md).
+| `archive/` | Spec historique du soft-gate (le reste de l'historique est dans git). |
 
 ## À venir
 

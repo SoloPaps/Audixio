@@ -80,7 +80,7 @@ Détail produit : [`docs/produit/FONCTIONNEMENT.md`](docs/produit/FONCTIONNEMENT
 
 ## Où lire
 
-Carte complète : [`docs/LISEZ-MOI.md`](docs/LISEZ-MOI.md). Règles agents : [`AGENTS.md`](AGENTS.md) + `.cursor/rules/`.
+Carte complète : [`docs/README.md`](docs/README.md). Règles pour les agents de code : [`AGENTS.md`](AGENTS.md).
 
 | Document | Rôle |
 |---|---|
