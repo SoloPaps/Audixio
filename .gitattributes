@@ -1,3 +1,21 @@
+# Tout le texte en LF, quel que soit core.autocrlf (Windows compris) : les
+# gabarits et fichiers générés sont comparés octet pour octet par les tests.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.avif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.zip binary
+*.gz binary
+*.wasm binary
 # LF obligatoire : les empreintes SHA-256 sont celles des octets LF.
 .github/workflows/*.yml text eol=lf
 packages/engine/data/trackers/domains.txt text eol=lf
