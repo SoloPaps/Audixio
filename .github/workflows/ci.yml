@@ -181,6 +181,14 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Supabase CLI
+        run: |
+          curl -fsSL -o /tmp/supabase.tar.gz https://github.com/supabase/cli/releases/download/v2.122.0/supabase_linux_amd64.tar.gz
+          sudo tar -xzf /tmp/supabase.tar.gz -C /usr/local/bin
+
+      - name: Supabase local
+        run: supabase start --yes -x realtime,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+
       - name: Chromium
         run: pnpm --filter @audixio/web exec playwright install --with-deps chromium
 
