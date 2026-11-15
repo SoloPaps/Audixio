@@ -3,17 +3,17 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const files = execFileSync('git', ['ls-files', '-z', '*.md'], {
+const IN_SCOPE =
+  /^(docs\/|README\.md$|AGENTS\.md$|CONTRIBUTING\.md$|SECURITY\.md$)/;
+
+const tracked = execFileSync('git', ['ls-files', '-z', '*.md'], {
   encoding: 'utf8',
-})
+});
+
+const files = tracked
   .split('\0')
   .filter(Boolean)
-  .filter(
-    (f) =>
-      /^(docs\/|README\.md$|AGENTS\.md$|CONTRIBUTING\.md$|SECURITY\.md$)/.test(
-        f,
-      ) && !f.startsWith('docs/archive/'),
-);
+  .filter((f) => IN_SCOPE.test(f) && !f.startsWith('docs/archive/'));
 
 const LINK_RE = /\]\(([^)\s]+)\)/g;
 const PATH_RE =
