@@ -664,6 +664,7 @@ async function collect(
         scrollWidth: number;
         clientWidth: number;
         querySelectorAll: (selector: string) => Iterable<El>;
+        getAnimations?: () => unknown[];
       };
       type Style = {
         display: string;
@@ -792,6 +793,15 @@ async function collect(
         }
       }
 
+      // Une révélation .rv encore en cours place l'élément hors écran : ce
+      // n'est pas un débordement, il se pose tout seul en fin d'animation.
+      function moving(el: El): boolean {
+        for (let n: El | null = el; n; n = n.parentElement) {
+          if (n.getAnimations?.().length) return true;
+        }
+        return false;
+      }
+
       const nodes = [...doc.querySelectorAll('body *')];
       const overflowing: El[] = [];
       for (const el of nodes) {
@@ -814,7 +824,7 @@ async function collect(
         const box = el.getBoundingClientRect();
         if (box.width < 1 && box.height < 1) continue;
         const outside = box.right > vw + tol || box.left < -tol;
-        if (!outside || excused(el)) continue;
+        if (!outside || excused(el) || moving(el)) continue;
         overflowing.push(el);
       }
       const deepest = overflowing.filter(
