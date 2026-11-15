@@ -34,7 +34,9 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
 
   // R11 : l’ancien historique d’un site mène à sa page, section historique.
   await page.goto(`/historique?site=${encodeURIComponent(siteId)}`);
-  await page.waitForURL(/\/sites\/mauvais\.audixio\.test(\?[^#]*)?#historique$/);
+  await page.waitForURL(
+    /\/sites\/mauvais\.audixio\.test(\?[^#]*)?#historique$/,
+  );
   await expect(
     page.getByRole('heading', { name: 'Comment la note évolue' }),
   ).toBeVisible();

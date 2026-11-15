@@ -330,7 +330,9 @@ describe('OAuth Google', () => {
       new Request(
         `https://audixio.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=${pending.state}`,
         {
-          headers: { cookie: `audixio_gsc=${cookieValue(liveCookie(started))}` },
+          headers: {
+            cookie: `audixio_gsc=${cookieValue(liveCookie(started))}`,
+          },
         },
       ),
       deps,

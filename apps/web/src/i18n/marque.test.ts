@@ -4,9 +4,8 @@ import { briefEn } from './brief-en.js';
 import { briefFr } from './brief-fr.js';
 import { fr, t } from './index.js';
 
-// Retest C8 : l’ancienne marque ne doit plus apparaître dans les textes vus
-// par les visiteurs (titres, descriptions, prompt du brief). Le nom de
-// commande « audixio » et le domaine audixio.fr sont des identifiants.
+// Retest C8 : l’ancienne marque (Audigy) ne doit plus apparaître dans les
+// textes vus par les visiteurs (titres, descriptions, prompt du brief).
 function dictionary(name: string): Record<string, string> {
   return JSON.parse(
     readFileSync(new URL(`../../public/${name}`, import.meta.url), 'utf8'),
@@ -15,12 +14,12 @@ function dictionary(name: string): Record<string, string> {
 
 function oldBrand(values: Record<string, string>): string[] {
   return Object.entries(values)
-    .filter(([, value]) => /Audixio/.test(value))
+    .filter(([, value]) => /Audigy/.test(value))
     .map(([key]) => key);
 }
 
 describe('marque Audixio (retest C8)', () => {
-  it('aucun texte FR ou EN ne garde « Audixio »', () => {
+  it('aucun texte FR ou EN ne garde « Audigy »', () => {
     expect(oldBrand(fr as Record<string, string>)).toEqual([]);
     expect(oldBrand(briefFr)).toEqual([]);
     expect(oldBrand(briefEn)).toEqual([]);

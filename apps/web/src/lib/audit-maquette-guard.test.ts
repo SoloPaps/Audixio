@@ -28,7 +28,9 @@ describe('garde maquette audit', () => {
 
   it('n’anime pas la maquette quand un audit est demandé', () => {
     expect(progressSceneSimulates('?id=abc')).toBe(false);
-    expect(progressSceneSimulates('?url=https://bon.audixio.test/')).toBe(false);
+    expect(progressSceneSimulates('?url=https://bon.audixio.test/')).toBe(
+      false,
+    );
     expect(progressSceneSimulates('?site=abc')).toBe(false);
     expect(progressSceneSimulates('')).toBe(false);
     expect(progressSceneSimulates('?theme=light')).toBe(false);

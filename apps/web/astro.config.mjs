@@ -22,7 +22,7 @@ function envKey(suffix) {
 
 function labFlagKey() {
   const pub = piece(['P', 'U', 'B', 'L', 'I', 'C']);
-  const name = piece(['A', 'U', 'D', 'I', 'G', 'Y']);
+  const name = piece(['A', 'U', 'D', 'I', 'X', 'I', 'O']);
   const lab = piece(['L', 'A', 'B']);
   return `import.meta.env.${pub}_${name}_${lab}`;
 }
