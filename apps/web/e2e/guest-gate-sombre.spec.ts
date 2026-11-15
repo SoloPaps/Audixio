@@ -21,8 +21,8 @@ function guestPayload(): unknown {
       error: null,
       site: {
         id: '00000000-0000-4000-8000-00000000b102',
-        url: 'https://bon.audigy.test',
-        label: 'bon.audigy.test',
+        url: 'https://bon.audixio.test',
+        label: 'bon.audixio.test',
         scope: 'origin',
         hosting: 'other',
       },

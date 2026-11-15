@@ -50,7 +50,7 @@ async function signIn(page: Page, session: unknown): Promise<void> {
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
 }
 
@@ -131,9 +131,9 @@ test('la vérification de propriété du compte pro montre le jeton et les méth
         contentType: 'application/json',
         body: JSON.stringify({
           id: PRO_SITE,
-          url: 'https://bon.audigy.test',
-          label: 'bon.audigy.test',
-          host: 'bon.audigy.test',
+          url: 'https://bon.audixio.test',
+          label: 'bon.audixio.test',
+          host: 'bon.audixio.test',
           scope: 'origin',
           path_prefix: null,
           owner_id: PRO.user.id,
@@ -192,7 +192,7 @@ test('un audit injoignable sans domaine mesuré ouvre la page d’échec, jamais
   });
   await page.goto('/');
   await waitForIslands(page);
-  await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
+  await page.getByLabel('Adresse du site').fill('https://absent.audixio.test');
   await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
   await expect(page.getByText('Audit interrompu').first()).toBeVisible();
@@ -210,11 +210,11 @@ test('l’échec d’un site injoignable nomme ce site, pas la maquette', async 
   });
   await page.goto('/');
   await waitForIslands(page);
-  await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
+  await page.getByLabel('Adresse du site').fill('https://absent.audixio.test');
   await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL(/\/audit-echoue/, { timeout: 20_000 });
   await expect(page.getByText('Audit interrompu').first()).toBeVisible();
-  await expect(page.getByText('absent.audigy.test').first()).toBeVisible();
+  await expect(page.getByText('absent.audixio.test').first()).toBeVisible();
   await expect(page.getByText('monsite-exemple.fr')).toHaveCount(0);
   await expect(page.getByText('30 oct. 2026, 14 h 32')).toHaveCount(0);
 });
@@ -228,14 +228,14 @@ test('« Relancer l’audit » relance le même site, jamais la progression nue 
   });
   await page.goto('/');
   await waitForIslands(page);
-  await page.getByLabel('Adresse du site').fill('https://absent.audigy.test');
+  await page.getByLabel('Adresse du site').fill('https://absent.audixio.test');
   await page.getByRole('button', { name: 'Scanner mon site, gratuit' }).click();
   await expect(page).toHaveURL(/\/audit-echoue\?id=/, { timeout: 20_000 });
   await page.getByRole('button', { name: 'Relancer l’audit' }).click();
   await expect(page).toHaveURL(/\/progression\?/, { timeout: 10_000 });
   const url = new URL(page.url());
   expect(new URL(url.searchParams.get('url') ?? 'x:').host).toBe(
-    'absent.audigy.test',
+    'absent.audixio.test',
   );
   await expect(page).not.toHaveURL(/exemple-rapport/);
 });
@@ -319,9 +319,9 @@ test('la nav et le pied de Sites suivis ont la même géométrie que l’histori
         body: JSON.stringify([
           {
             id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-            url: 'https://gratuit.audigy.test',
-            label: 'gratuit.audigy.test',
-            host: 'gratuit.audigy.test',
+            url: 'https://gratuit.audixio.test',
+            label: 'gratuit.audixio.test',
+            host: 'gratuit.audixio.test',
             is_public: false,
             public_slug: null,
             expose_security: false,
@@ -349,7 +349,7 @@ test('la nav et le pied de Sites suivis ont la même géométrie que l’histori
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`/sites?theme=${theme}`);
       await expect(
-        page.getByRole('heading', { name: 'gratuit.audigy.test' }),
+        page.getByRole('heading', { name: 'gratuit.audixio.test' }),
       ).toBeVisible();
       const sites = await chromeGeom(page);
       // /compte est passée sur V6Page (lot 4) : même gabarit Canon que /sites, /historique.
@@ -362,7 +362,7 @@ test('la nav et le pied de Sites suivis ont la même géométrie que l’histori
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto('/sites?theme=dark');
   await expect(
-    page.getByRole('heading', { name: 'gratuit.audigy.test' }),
+    page.getByRole('heading', { name: 'gratuit.audixio.test' }),
   ).toBeVisible();
   const icon = page.locator('.inp svg');
   await expect(icon).toBeVisible();

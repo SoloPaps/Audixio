@@ -4,7 +4,7 @@ import {
   scheduleDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /**
  * Toutes les 15 min. Doit tenir en 30 s (limite scheduled).

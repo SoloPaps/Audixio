@@ -1,4 +1,4 @@
--- Schéma Audigy (PLAN §8). RLS sur chaque table.
+-- Schéma Audixio (PLAN §8). RLS sur chaque table.
 -- anon : rapports public non révoqués, et sites is_public non supprimés.
 -- Un rapport link n'est lisible qu'avec son jeton (128 bits), via read_report_by_share_token.
 -- Les findings, artefacts et jetons OAuth ne sont jamais lisibles par anon.

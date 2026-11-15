@@ -16,9 +16,9 @@ const session = {
 async function openTwoSites(page: Page): Promise<void> {
   const rows = SITES.map((id, index) => ({
     id,
-    url: `https://site-${index + 1}.audigy.test`,
-    label: `site-${index + 1}.audigy.test`,
-    host: `site-${index + 1}.audigy.test`,
+    url: `https://site-${index + 1}.audixio.test`,
+    label: `site-${index + 1}.audixio.test`,
+    host: `site-${index + 1}.audixio.test`,
     is_public: false,
     public_slug: null,
     expose_security: false,
@@ -30,7 +30,7 @@ async function openTwoSites(page: Page): Promise<void> {
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({

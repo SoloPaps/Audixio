@@ -22,7 +22,7 @@ function envKey(suffix) {
 
 function labFlagKey() {
   const pub = piece(['P', 'U', 'B', 'L', 'I', 'C']);
-  const name = piece(['A', 'U', 'D', 'I', 'G', 'Y']);
+  const name = piece(['A', 'U', 'D', 'I', 'X', 'I', 'O']);
   const lab = piece(['L', 'A', 'B']);
   return `import.meta.env.${pub}_${name}_${lab}`;
 }
@@ -88,7 +88,7 @@ function briefDev() {
     });
   };
   return {
-    name: 'audigy-brief-dev',
+    name: 'audixio-brief-dev',
     enforce: 'pre',
     configureServer: mount,
     configurePreviewServer: mount,
@@ -117,7 +117,7 @@ function auditGetDev() {
     });
   };
   return {
-    name: 'audigy-audit-get-dev',
+    name: 'audixio-audit-get-dev',
     enforce: 'pre',
     configureServer: mount,
     configurePreviewServer: mount,
@@ -139,7 +139,7 @@ function sitesPublicDev() {
     });
   };
   return {
-    name: 'audigy-sites-public-dev',
+    name: 'audixio-sites-public-dev',
     enforce: 'pre',
     configureServer: mount,
     configurePreviewServer: mount,
@@ -183,7 +183,7 @@ function authDev() {
     });
   };
   return {
-    name: 'audigy-auth-dev',
+    name: 'audixio-auth-dev',
     enforce: 'pre',
     configureServer: mount,
   };
@@ -191,7 +191,7 @@ function authDev() {
 
 function dropDevOnBuild() {
   return {
-    name: 'audigy-drop-dev-pages',
+    name: 'audixio-drop-dev-pages',
     apply: 'build',
     async closeBundle() {
       await dropDevPages('dist');
@@ -202,7 +202,7 @@ function dropDevOnBuild() {
 /** Écrit dist/_redirects depuis la table unique (aucun déploiement). */
 function redirectsFile() {
   return {
-    name: 'audigy-redirects',
+    name: 'audixio-redirects',
     hooks: {
       'astro:build:done': async ({ dir }) => {
         await writeFile(
@@ -220,7 +220,7 @@ function printRoute() {
     server.middlewares.stack.unshift({ route: '', handle: rewriteRoutes });
   };
   return {
-    name: 'audigy-public-routes',
+    name: 'audixio-public-routes',
     enforce: 'pre',
     configureServer: mount,
     configurePreviewServer: mount,
@@ -231,7 +231,7 @@ export default defineConfig({
   integrations: [svelte(), redirectsFile()],
   output: 'static',
   devToolbar: {
-    enabled: process.env.AUDIGY_DEV_TOOLBAR !== 'off',
+    enabled: process.env.AUDIXIO_DEV_TOOLBAR !== 'off',
   },
   build: {
     format: 'directory',
@@ -250,7 +250,7 @@ export default defineConfig({
       [envKey(`${piece(['A', 'N', 'O', 'N'])}_KEY`)]: JSON.stringify(
         process.env.SUPABASE_ANON_KEY ?? '',
       ),
-      [labFlagKey()]: JSON.stringify(process.env.AUDIGY_LAB ? '1' : ''),
+      [labFlagKey()]: JSON.stringify(process.env.AUDIXIO_LAB ? '1' : ''),
     },
   },
 });

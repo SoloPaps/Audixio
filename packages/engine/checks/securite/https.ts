@@ -1,4 +1,4 @@
-import { isNetError, type SafeResponse } from '@audigy/net';
+import { isNetError, type SafeResponse } from '@audixio/net';
 import type { Check, CheckResult } from '../../src/types.js';
 import { finding, loadHome, sameHost } from './shared.js';
 

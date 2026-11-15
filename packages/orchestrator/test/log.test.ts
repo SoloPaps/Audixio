@@ -17,7 +17,7 @@ describe('journal', () => {
       secretsFromEnv({
         SUPABASE_SERVICE_ROLE_KEY: ` ${SERVICE} `,
         GOOGLE_API_KEY: 'court',
-        APP_BASE_URL: 'https://audigy.example',
+        APP_BASE_URL: 'https://audixio.example',
       }),
     ).toEqual([SERVICE]);
   });

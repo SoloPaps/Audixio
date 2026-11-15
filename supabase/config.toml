@@ -1,7 +1,7 @@
 # Supabase LOCAL uniquement. Aucun projet distant, aucune clé réelle.
 # Les jetons de dev sont générés par la CLI dans supabase/.temp (ignoré par git).
 
-project_id = "audigy"
+project_id = "audixio"
 
 [api]
 enabled = true
@@ -103,7 +103,7 @@ subject = "Réinitialiser le mot de passe Audixio"
 content_path = "./supabase/templates/recovery.html"
 
 [auth.email.template.magic_link]
-subject = "Votre lien de connexion Audigy"
+subject = "Votre lien de connexion Audixio"
 content_path = "./supabase/templates/magic_link.html"
 
 # Google et GitHub : désactivés tant que les identifiants ne sont pas posés

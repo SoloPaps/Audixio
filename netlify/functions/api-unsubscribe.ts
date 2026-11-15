@@ -4,7 +4,7 @@ import {
   secretsFromEnv,
   serve,
   unsubscribeDepsFromEnv,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Lien List-Unsubscribe et formulaire de confirmation. */
 export default async (req: Request): Promise<Response> => {

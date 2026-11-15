@@ -4,7 +4,7 @@ import {
   runDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Background (suffixe `-background`) : 15 min. Pas de `config.path`, appel interne signé. */
 export default async (req: Request): Promise<Response> => {

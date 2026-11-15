@@ -4,7 +4,7 @@ import {
   KEV_HOST,
   NVD_HOST,
   OSV_HOST,
-} from '@audigy/net';
+} from '@audixio/net';
 
 export type Severity = 'critical' | 'high' | 'medium' | 'low' | 'unknown';
 

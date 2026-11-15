@@ -148,7 +148,7 @@ export interface ApiDeps {
    * Absent : 500, jamais un hub aux notes vides.
    */
   guestAudit?(site: SiteInput): Promise<AuditSummary>;
-  /** Hôtes de labo (`*.audigy.test`) seulement quand le drapeau local est là. */
+  /** Hôtes de labo (`*.audixio.test`) seulement quand le drapeau local est là. */
   allowLab?: boolean;
 }
 

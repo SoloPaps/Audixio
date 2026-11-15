@@ -1,7 +1,7 @@
 import { authConfigured } from './public-config.js';
 
 /** Même clé que la session Supabase. Jamais un secret dans le code. */
-export const AUTH_STORAGE_KEY = 'audigy-auth';
+export const AUTH_STORAGE_KEY = 'audixio-auth';
 
 export interface StoredAccess {
   access_token: string;

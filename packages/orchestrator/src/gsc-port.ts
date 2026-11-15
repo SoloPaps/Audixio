@@ -1,13 +1,13 @@
-import type { Database } from '@audigy/db';
-import type { GscSnapshot, SearchConsolePort } from '@audigy/engine';
-import { matchProperty } from '@audigy/engine';
+import type { Database } from '@audixio/db';
+import type { GscSnapshot, SearchConsolePort } from '@audixio/engine';
+import { matchProperty } from '@audixio/engine';
 import {
   createExternalApi,
   createGoogleAuthClient,
   createSearchConsoleApi,
   GoogleApiError,
   type SearchConsoleApi,
-} from '@audigy/net';
+} from '@audixio/net';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { readOauthConfig, supabaseOauthRows } from './oauth-google.js';
 import { createOauthCrypto, type OauthCrypto } from './token-box.js';

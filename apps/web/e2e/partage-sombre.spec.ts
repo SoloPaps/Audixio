@@ -167,7 +167,7 @@ test('feuille de partage lisible en thème sombre (#57), compte', async ({
       globalThis as unknown as {
         localStorage: { setItem: (key: string, item: string) => void };
       }
-    ).localStorage.setItem('audigy-auth', JSON.stringify(value));
+    ).localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, SESSION);
   await page.route('**/api/auth/session', (route) =>
     route.fulfill({ status: 401, body: '{}' }),

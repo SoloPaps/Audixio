@@ -1,4 +1,4 @@
-import type { ExternalApi, ExternalResponse } from '@audigy/net';
+import type { ExternalApi, ExternalResponse } from '@audixio/net';
 import type { CheckContext } from '../../src/types.js';
 import { cacheKey, type DayCache, readCache, utcDay } from './cache.js';
 import { parseCruxRecord, parsePsiStrategy } from './parse.js';

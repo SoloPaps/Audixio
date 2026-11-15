@@ -1,11 +1,11 @@
-import { SECURITE_CHECKS, SEO_CHECKS } from '@audigy/engine';
+import { SECURITE_CHECKS, SEO_CHECKS } from '@audixio/engine';
 import {
   type DohResolver,
   NetError,
   type SafeFetch,
   type SafeResponse,
   type TlsProbe,
-} from '@audigy/net';
+} from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import {
   type ApiDeps,

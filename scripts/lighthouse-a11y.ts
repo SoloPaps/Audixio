@@ -93,7 +93,7 @@ function playwrightChrome(): string {
       'pnpm',
       [
         '--filter',
-        '@audigy/web',
+        '@audixio/web',
         'exec',
         'node',
         '--input-type=module',
@@ -142,7 +142,7 @@ async function main(): Promise<void> {
     'pnpm',
     [
       '--filter',
-      '@audigy/web',
+      '@audixio/web',
       'exec',
       'astro',
       'dev',
@@ -161,7 +161,7 @@ async function main(): Promise<void> {
   try {
     await waitForPort(120_000);
     await delay(300);
-    const dir = await mkdtemp(path.join(tmpdir(), 'audigy-lh-'));
+    const dir = await mkdtemp(path.join(tmpdir(), 'audixio-lh-'));
     const chromePath = playwrightChrome();
     const failures: string[] = [];
     for (const [index, url] of pages.entries()) {

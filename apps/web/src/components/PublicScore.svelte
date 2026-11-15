@@ -1,5 +1,5 @@
 <script lang="ts">
-import { isLockedDomain } from '@audigy/db';
+import { isLockedDomain } from '@audixio/db';
 import { onMount } from 'svelte';
 import { type MessageKey, t } from '../i18n/index.js';
 import { browserClient } from '../lib/browser-session.js';
@@ -164,7 +164,7 @@ function download(): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'audigy-score.svg';
+  link.download = 'audixio-score.svg';
   link.click();
   URL.revokeObjectURL(url);
 }

@@ -6,7 +6,7 @@ import {
   handleBriefExport,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 import { briefDeps, briefLocaleOf } from './brief-deps.js';
 
 function headerValue(value: string | string[] | undefined): string {

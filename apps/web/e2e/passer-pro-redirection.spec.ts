@@ -30,7 +30,7 @@ async function signIn(page: Page, plan: 'free' | 'pro'): Promise<void> {
       globalThis as unknown as {
         localStorage: { setItem: (key: string, item: string) => void };
       }
-    ).localStorage.setItem('audigy-auth', JSON.stringify(value));
+    ).localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const request = route.request();
@@ -97,7 +97,7 @@ test('la redirection vers /pro garde la requête et l’ancre (question 1)', asy
 /**
  * C1 : la connexion réelle passe par le cookie (`sb-127-auth-token`
  * httpOnly + drapeau `audixio_connecte=1`) et /api/auth/session. Aucun
- * jeton `audigy-auth` en localStorage.
+ * jeton `audixio-auth` en localStorage.
  */
 async function signInByCookie(page: Page, plan: 'free' | 'pro'): Promise<void> {
   await page.context().addCookies([
@@ -160,7 +160,7 @@ test('C1 : un Pro connecté par cookie (sans localStorage) va sur /compte', asyn
   await page.goto('/passer-pro?from=sites#offre');
   await expect(page).toHaveURL(/\/compte(?:[?#].*)?$/);
   expect(
-    await page.evaluate(() => localStorage.getItem('audigy-auth')),
+    await page.evaluate(() => localStorage.getItem('audixio-auth')),
   ).toBeNull();
 });
 

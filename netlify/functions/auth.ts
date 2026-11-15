@@ -1,4 +1,4 @@
-import { authEnvFrom, handleAuthRequest } from '@audigy/db/auth-http';
+import { authEnvFrom, handleAuthRequest } from '@audixio/db/auth-http';
 
 /** Connexion, inscription, réinitialisation, rappel OAuth. Cookies httpOnly. */
 export default async function handler(req: Request): Promise<Response> {

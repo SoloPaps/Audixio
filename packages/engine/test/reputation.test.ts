@@ -1,4 +1,4 @@
-import type { ExternalApi } from '@audigy/net';
+import type { ExternalApi } from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { createReputationChecks } from '../checks/reputation/index.js';
 import {

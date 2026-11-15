@@ -21,7 +21,7 @@ export default defineConfig({
     timeout: 180_000,
     env: {
       ASTRO_TELEMETRY_DISABLED: '1',
-      AUDIGY_DEV_TOOLBAR: 'off',
+      AUDIXIO_DEV_TOOLBAR: 'off',
       NETLIFY_DEV: 'true',
       E2E_PORT: port,
       SUPABASE_URL: 'http://127.0.0.1:54321',

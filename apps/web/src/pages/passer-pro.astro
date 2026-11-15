@@ -11,7 +11,7 @@ import V6Page from '../layouts/V6Page.astro';
 
 <V6Page vue="passer" title={t('mq.passer.meta.title')} description={t('mq.passer.meta.desc')} robots="noindex, nofollow">
 <script is:inline>
-try{var c=(document.cookie||'').split('; ').indexOf('audixio_connecte=1')>=0,l=false;try{l=!!localStorage.getItem('audigy-auth')}catch(e){}if(!c&&!l)location.replace('/pro'+location.search+location.hash)}catch(e){location.replace('/pro')}
+try{var c=(document.cookie||'').split('; ').indexOf('audixio_connecte=1')>=0,l=false;try{l=!!localStorage.getItem('audixio-auth')}catch(e){}if(!c&&!l)location.replace('/pro'+location.search+location.hash)}catch(e){location.replace('/pro')}
 </script>
 <main id="contenu" class="wrap pp6" tabindex="-1">
   <h1>{t('mq.passer.015')}</h1>

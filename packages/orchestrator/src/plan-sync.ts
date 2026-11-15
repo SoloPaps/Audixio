@@ -8,7 +8,7 @@ import {
   type PlanMemory,
   type PlanSignal,
   reconcilePlan,
-} from '@audigy/db';
+} from '@audixio/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 type Client = SupabaseClient<Database>;

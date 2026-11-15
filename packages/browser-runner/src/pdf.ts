@@ -1,4 +1,4 @@
-import { assertArtifactSize } from '@audigy/evidence';
+import { assertArtifactSize } from '@audixio/evidence';
 import type { Page } from 'playwright';
 
 /** Réglages communs de `page.pdf()` : A4, fond blanc, texte balisé. */

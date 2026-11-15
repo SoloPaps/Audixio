@@ -17,21 +17,21 @@ Trois terminaux.
 # 1. Base locale
 supabase start
 
-# 2. Labo : sites de test sous https://bon.audigy.test/ et https://mauvais.audigy.test/
+# 2. Labo : sites de test sous https://bon.audixio.test/ et https://mauvais.audixio.test/
 pnpm lab
 ```
 
-`pnpm lab` écrit `.netlify/audigy-lab.json` (AC de test et ports). Si `.env` manque, il le crée avec les clés du Supabase local et `AUDIGY_LAB`. Il écrit aussi `apps/web/.env` avec seulement `SUPABASE_URL` et `SUPABASE_ANON_KEY` (publiques). La clé service n'y est pas. Les clés ne sont jamais affichées. Les identifiants des comptes de test locaux le sont : `docs/dev/TEST-LOCAL.md`.
+`pnpm lab` écrit `.netlify/audixio-lab.json` (AC de test et ports). Si `.env` manque, il le crée avec les clés du Supabase local et `AUDIXIO_LAB`. Il écrit aussi `apps/web/.env` avec seulement `SUPABASE_URL` et `SUPABASE_ANON_KEY` (publiques). La clé service n'y est pas. Les clés ne sont jamais affichées. Les identifiants des comptes de test locaux le sont : `docs/dev/TEST-LOCAL.md`.
 
 `.env`, `apps/web/.env` et `.netlify/` sont ignorés par Git. Les secrets restent sur votre machine : ne commitez jamais ces fichiers, ni une copie remplie. `.env.example` ne contient que les noms. Si `.env` existait déjà, relancez `pnpm lab` : il met à jour `apps/web/.env` sans afficher les clés.
 
 ```bash
 # 3. Fonctions + site statique sur http://localhost:8888
 pnpm build
-netlify dev --offline --filter @audigy/web
+netlify dev --offline --filter @audixio/web
 ```
 
-`--filter @audigy/web` évite la question du monorepo. `pnpm build` produit le site et le bundle des fonctions (`netlify/dist/functions`). Il charge d'abord le `.env` de la racine (sans afficher les valeurs) et le transmet à Astro, qui fige `SUPABASE_URL` et `SUPABASE_ANON_KEY` dans le site statique. Le lien magique a alors de quoi joindre le Supabase local. Relancez `pnpm build` si ces clés changent. Sous Windows, le même script lance `pnpm` via le shell du système, sans modifier le PATH. Après une modification d'une fonction ou d'un paquet : `pnpm build:functions`, puis relancer `netlify dev`.
+`--filter @audixio/web` évite la question du monorepo. `pnpm build` produit le site et le bundle des fonctions (`netlify/dist/functions`). Il charge d'abord le `.env` de la racine (sans afficher les valeurs) et le transmet à Astro, qui fige `SUPABASE_URL` et `SUPABASE_ANON_KEY` dans le site statique. Le lien magique a alors de quoi joindre le Supabase local. Relancez `pnpm build` si ces clés changent. Sous Windows, le même script lance `pnpm` via le shell du système, sans modifier le PATH. Après une modification d'une fonction ou d'un paquet : `pnpm build:functions`, puis relancer `netlify dev`.
 
 Puis, dans un quatrième terminal :
 
@@ -43,14 +43,14 @@ Le script ouvre une session locale (`proprietaire@localhost`, Supabase local seu
 
 ### Avec le runner navigateur
 
-Chromium installé une fois : `pnpm --filter @audigy/browser-runner exec playwright install chromium`.
+Chromium installé une fois : `pnpm --filter @audixio/browser-runner exec playwright install chromium`.
 
 ```bash
-AUDIGY_LOCAL_RUNNER=true netlify dev --offline --filter @audigy/web
-pnpm lab:audit https://navigateur.audigy.test/ --browser
+AUDIXIO_LOCAL_RUNNER=true netlify dev --offline --filter @audixio/web
+pnpm lab:audit https://navigateur.audixio.test/ --browser
 ```
 
-Avec `AUDIGY_LOCAL_RUNNER=true`, la fonction n'appelle pas GitHub : elle attend le runner. Dès que l'audit est `partial`, le script lance le vrai runner (`runJob`, Chromium) sur le labo, comme `browser-audit.yml`. Le rapport est déposé dans le seau `artifacts`, puis fusionné : l'audit finit en `done` avec la vie privée notée.
+Avec `AUDIXIO_LOCAL_RUNNER=true`, la fonction n'appelle pas GitHub : elle attend le runner. Dès que l'audit est `partial`, le script lance le vrai runner (`runJob`, Chromium) sur le labo, comme `browser-audit.yml`. Le rapport est déposé dans le seau `artifacts`, puis fusionné : l'audit finit en `done` avec la vie privée notée.
 
 ## API
 
@@ -74,29 +74,29 @@ Limites : 10 audits par jour et par compte (jour de Paris), 1 audit par hôte to
 
 Un test actif ne tourne que si la propriété est vérifiée et revérifiée depuis moins de 10 minutes. Un audit bloqué en `running` ou `partial` plus de 20 minutes passe en `failed`.
 
-`GH_DISPATCH_TOKEN` est facultatif en local. Sans lui, aucun appel à GitHub. Pour les checks navigateur : un jeton fine-grained `actions:write` sur ce dépôt seul, ou le repli `pnpm lab:audit --browser` (et `pnpm audigy audit <url> --browser`). Ne jamais coller la valeur du jeton. Sans l’un ou l’autre, l’audit finit `done` et ces checks restent nommés « non testé ».
+`GH_DISPATCH_TOKEN` est facultatif en local. Sans lui, aucun appel à GitHub. Pour les checks navigateur : un jeton fine-grained `actions:write` sur ce dépôt seul, ou le repli `pnpm lab:audit --browser` (et `pnpm audixio audit <url> --browser`). Ne jamais coller la valeur du jeton. Sans l’un ou l’autre, l’audit finit `done` et ces checks restent nommés « non testé ».
 
 ## CLI
 
 ```bash
-pnpm audigy audit https://exemple.fr
-pnpm audigy audit exemple.fr --json
-pnpm audigy audit exemple.fr --browser
+pnpm audixio audit https://exemple.fr
+pnpm audixio audit exemple.fr --json
+pnpm audixio audit exemple.fr --browser
 ```
 
-Audit passif uniquement, mêmes tests que la fonction, réseau via `@audigy/net`. `--browser` lance Chromium via `@audigy/browser-runner` (passif, aucune interaction). Sans Chromium installé, les tests concernés sont « Non testé ». Codes de sortie : `0` fini, `1` échec, `2` usage.
+Audit passif uniquement, mêmes tests que la fonction, réseau via `@audixio/net`. `--browser` lance Chromium via `@audixio/browser-runner` (passif, aucune interaction). Sans Chromium installé, les tests concernés sont « Non testé ». Codes de sortie : `0` fini, `1` échec, `2` usage.
 
 Sur le labo, sans aucun accès extérieur :
 
 ```bash
-AUDIGY_LAB=.netlify/audigy-lab.json pnpm audigy audit https://bon.audigy.test/
+AUDIXIO_LAB=.netlify/audixio-lab.json pnpm audixio audit https://bon.audixio.test/
 ```
 
 N'auditez avec la CLI que des sites dont vous êtes propriétaire ou que vous êtes autorisé à observer.
 
-## `AUDIGY_LAB` et `AUDIGY_LOCAL_RUNNER`
+## `AUDIXIO_LAB` et `AUDIXIO_LOCAL_RUNNER`
 
-Variables de développement, hors liste §9. `AUDIGY_LAB` redirige les noms `*.audigy.test` vers les serveurs du labo et coupe le DNS public et les API tierces. `AUDIGY_LOCAL_RUNNER=true` remplace l'appel à GitHub par l'attente d'un runner local. Les fonctions ne les lisent que sous `netlify dev` (`NETLIFY_DEV=true`), labo actif.
+Variables de développement, hors liste §9. `AUDIXIO_LAB` redirige les noms `*.audixio.test` vers les serveurs du labo et coupe le DNS public et les API tierces. `AUDIXIO_LOCAL_RUNNER=true` remplace l'appel à GitHub par l'attente d'un runner local. Les fonctions ne les lisent que sous `netlify dev` (`NETLIFY_DEV=true`), labo actif.
 
 ## Tests
 

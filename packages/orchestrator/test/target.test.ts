@@ -44,15 +44,15 @@ describe('normalizeSiteUrl', () => {
     'https://localhost',
     'https://intranet',
     'https://site.test',
-    'https://bon.audigy.test',
+    'https://bon.audixio.test',
     `https://exemple.fr/${'a'.repeat(2100)}`,
   ])('refuse %s', (raw) => {
     expect(() => normalizeSiteUrl(raw)).toThrow(InvalidSiteUrl);
   });
 
   it('accepte le labo seulement sur demande', () => {
-    expect(normalizeSiteUrl('bon.audigy.test', { allowLab: true }).url).toBe(
-      'https://bon.audigy.test',
+    expect(normalizeSiteUrl('bon.audixio.test', { allowLab: true }).url).toBe(
+      'https://bon.audixio.test',
     );
     expect(() => normalizeSiteUrl('autre.test', { allowLab: true })).toThrow(
       InvalidSiteUrl,

@@ -2,7 +2,7 @@ import {
   BROWSER_SHARED_KEY,
   type BrowserAuditResult,
   BrowserAuditResultSchema,
-} from '@audigy/browser-runner/schema';
+} from '@audixio/browser-runner/schema';
 import type { Check, CheckContext, CheckResult } from '../../src/types.js';
 import { finding } from '../securite/shared.js';
 

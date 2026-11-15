@@ -79,7 +79,7 @@ export async function ensureLocalSupabase(): Promise<void> {
   ]);
 }
 
-const LOCK_FILE = path.join(tmpdir(), 'audigy-supabase-test.lock');
+const LOCK_FILE = path.join(tmpdir(), 'audixio-supabase-test.lock');
 const LOCK_STALE_MS = 15 * 60_000;
 
 /**

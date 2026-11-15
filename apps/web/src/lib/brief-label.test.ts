@@ -1,11 +1,11 @@
-import { seesFullReport } from '@audigy/db';
+import { seesFullReport } from '@audixio/db';
 import {
   type AuditView,
   type BriefExportDeps,
   type FindingView,
   handleBriefExport,
   type Logger,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 import { describe, expect, it } from 'vitest';
 import { labelBriefFinding } from './brief-deps.js';
 
@@ -60,7 +60,7 @@ describe('brief .md d’un site vérifié (QA Mo M6)', () => {
       siteVerified: verified,
       site: {
         id: '00000000-0000-4000-8000-0000000000b2',
-        url: 'https://bon.audigy.test/',
+        url: 'https://bon.audixio.test/',
         label: 'Exemple vérifié',
         scope: 'origin',
         hosting: 'other',

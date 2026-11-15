@@ -1,4 +1,4 @@
-import { gradeForScore } from '@audigy/db';
+import { gradeForScore } from '@audixio/db';
 import { describe, expect, it } from 'vitest';
 import {
   type AuditEndRecord,

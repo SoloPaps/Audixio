@@ -2,7 +2,7 @@ import {
   createAccessibiliteChecks,
   runChecks,
   scoreDomain,
-} from '@audigy/engine';
+} from '@audixio/engine';
 import { describe, expect, it } from 'vitest';
 import { createAuditContext, defaultChecks } from '../src/context.js';
 

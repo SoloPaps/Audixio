@@ -12,7 +12,7 @@ export class InvalidSiteUrl extends Error {
 }
 
 const RESERVED_TLDS = ['test', 'localhost', 'invalid', 'example', 'local'];
-const LAB_SUFFIX = '.audigy.test';
+const LAB_SUFFIX = '.audixio.test';
 const HOST_RE =
   /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z][a-z0-9-]{0,62}$/;
 const MAX_URL_LENGTH = 2048;
@@ -40,7 +40,7 @@ function isIp(host: string): boolean {
 /**
  * Même règles que l’orchestrateur : https forcé, pas d’identifiant,
  * pas de port, pas d’adresse IP, pas de nom réservé.
- * `allowLab` accepte seulement `*.audigy.test`.
+ * `allowLab` accepte seulement `*.audixio.test`.
  */
 export function normalizeSiteUrl(
   raw: string,

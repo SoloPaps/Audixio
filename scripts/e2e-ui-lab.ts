@@ -1,5 +1,5 @@
 /**
- * Labo pour `pnpm test:ui` : sert `fixtures/sites` sous `*.audigy.test`.
+ * Labo pour `pnpm test:ui` : sert `fixtures/sites` sous `*.audixio.test`.
  * N’écrit pas `.env` et ne lève pas le plafond visiteur.
  */
 import { mkdir, writeFile } from 'node:fs/promises';

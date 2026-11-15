@@ -5,7 +5,7 @@ import {
   type Database,
   dbEnvFrom,
   TERMS_VERSION,
-} from '@audigy/db';
+} from '@audixio/db';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   type AccountAction,
@@ -469,7 +469,7 @@ export async function takeAccountSlot(
 ): Promise<boolean> {
   const windowStart = accountWindowStart(action, new Date());
   const key = createHash('sha256')
-    .update(`audigy:account:${action}:${userId}:${windowStart}`)
+    .update(`audixio:account:${action}:${userId}:${windowStart}`)
     .digest('hex');
   const { data, error } = await service.rpc('consume_rate_limit', {
     p_key: key,

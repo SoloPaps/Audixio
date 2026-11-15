@@ -1,4 +1,4 @@
-import type { SafeResponse } from '@audigy/net';
+import type { SafeResponse } from '@audixio/net';
 import type { Check, CheckContext, CheckResult } from '../../src/types.js';
 import { publicHttpUrl, sitemapLinks } from './robots-parse.js';
 import {

@@ -9,7 +9,7 @@ export interface BriefChoice {
 
 function englishChosen(): boolean {
   try {
-    return globalThis.localStorage?.getItem('audigy-locale') === 'en';
+    return globalThis.localStorage?.getItem('audixio-locale') === 'en';
   } catch {
     return false;
   }
@@ -53,7 +53,7 @@ export async function requestBriefExport(
       headers: {
         authorization: `Bearer ${token}`,
         'content-type': 'application/json',
-        'x-audigy-locale': englishChosen() ? 'en' : 'fr',
+        'x-audixio-locale': englishChosen() ? 'en' : 'fr',
       },
       body: JSON.stringify({
         selection: selection.map((item) => ({

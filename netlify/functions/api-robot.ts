@@ -4,7 +4,7 @@ import {
   intakeDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Formulaire d’exclusion du robot. Plafonds par IP, e-mail, domaine et compte. */
 export default async (req: Request): Promise<Response> => {

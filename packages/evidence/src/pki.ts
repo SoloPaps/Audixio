@@ -5,6 +5,6 @@ import * as pkijs from 'pkijs';
  * (workers de test). On le pose explicitement sur WebCrypto.
  */
 pkijs.setEngine(
-  'audigy',
-  new pkijs.CryptoEngine({ name: 'audigy', crypto: globalThis.crypto }),
+  'audixio',
+  new pkijs.CryptoEngine({ name: 'audixio', crypto: globalThis.crypto }),
 );

@@ -36,7 +36,7 @@ describe('PDF de la vue à imprimer', () => {
       observedAt: new Date('2026-10-23T12:30:00.000Z'),
       resultsSha256: HASH,
       verifyUrl:
-        'https://audigy.exemple/verifier/6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10',
+        'https://audixio.exemple/verifier/6f1c1f52-6a43-4d55-9d0c-3c2b1f6e7a10',
       captures: [
         {
           viewport: 'desktop',

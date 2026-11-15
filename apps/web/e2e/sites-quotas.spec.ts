@@ -20,7 +20,7 @@ async function openSites(
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page
     .context()
@@ -74,9 +74,9 @@ async function openSites(
         body: JSON.stringify([
           {
             id: SITE,
-            url: 'https://gratuit.audigy.test',
-            label: 'gratuit.audigy.test',
-            host: 'gratuit.audigy.test',
+            url: 'https://gratuit.audixio.test',
+            label: 'gratuit.audixio.test',
+            host: 'gratuit.audixio.test',
             is_public: false,
             public_slug: null,
             expose_security: false,

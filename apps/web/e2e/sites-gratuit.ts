@@ -89,7 +89,7 @@ export async function stubFreeSites(page: Page): Promise<void> {
     const view = globalThis as unknown as {
       localStorage: { setItem: (key: string, value: string) => void };
     };
-    view.localStorage.setItem('audigy-auth', JSON.stringify(stored));
+    view.localStorage.setItem('audixio-auth', JSON.stringify(stored));
   }, session);
   await page
     .context()

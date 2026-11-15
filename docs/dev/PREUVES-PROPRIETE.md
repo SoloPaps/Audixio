@@ -16,7 +16,7 @@ Un jeton par site, partagé par toutes les méthodes. Il est créé à la premi�
 
 ## Sécurité des sondes
 
-Les lectures HTTP passent par `safeFetch` (`@audigy/net`) : http ou https, ports 80 et 443, pas d’adresse privée, locale ou de métadonnées, DNS vérifié puis IP épinglée, redirections limitées et revérifiées, délai et taille plafonnés.
+Les lectures HTTP passent par `safeFetch` (`@audixio/net`) : http ou https, ports 80 et 443, pas d’adresse privée, locale ou de métadonnées, DNS vérifié puis IP épinglée, redirections limitées et revérifiées, délai et taille plafonnés.
 
 Chaque clic « Vérifier maintenant » consomme `rate_limits` via `consume_verification_probe` : 10 fois par utilisateur et par heure, 6 fois par hôte et par 15 minutes. La clé est une empreinte, pas le nom en clair.
 

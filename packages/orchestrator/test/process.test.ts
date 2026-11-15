@@ -1,4 +1,4 @@
-import type { Check, FixSheet } from '@audigy/engine';
+import type { Check, FixSheet } from '@audixio/engine';
 import { describe, expect, it, vi } from 'vitest';
 import {
   assemble,

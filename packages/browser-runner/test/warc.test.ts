@@ -1,5 +1,5 @@
 import { ReadableStream } from 'node:stream/web';
-import { ARTIFACT_LIMITS, ArtifactTooLargeError } from '@audigy/evidence';
+import { ARTIFACT_LIMITS, ArtifactTooLargeError } from '@audixio/evidence';
 import { describe, expect, it } from 'vitest';
 import { WARCParser } from 'warcio';
 import { buildHomepageWarc, warcDate } from '../src/warc.js';

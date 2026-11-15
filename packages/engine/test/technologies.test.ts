@@ -12,7 +12,7 @@ import {
   OSV_HOST,
   type SafeFetch,
   type SafeResponse,
-} from '@audigy/net';
+} from '@audixio/net';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import { fr, type MessageKey } from '../../../apps/web/src/i18n/fr.js';
 import { failureCount, lintText } from '../../../scripts/copy-lint.js';
@@ -311,7 +311,7 @@ describe('signatures retire.js', () => {
       libraries: Record<string, Record<string, unknown>>;
     };
     expect(raw.source).toContain(SIGNATURES.commit);
-    expect(raw.changes).toContain('Audigy');
+    expect(raw.changes).toContain('Audixio');
     for (const entry of Object.values(raw.libraries)) {
       expect(
         Object.keys(entry).every((name) =>

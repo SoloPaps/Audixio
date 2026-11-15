@@ -9,7 +9,7 @@ const page = readFileSync(
 describe('bandeau cookies', () => {
   it('offre un sélecteur de langue alors que la barre Canon est masquée', () => {
     expect(page).toContain('id="ck-lang"');
-    expect(page).toContain("localStorage.setItem('audigy-locale'");
+    expect(page).toContain("localStorage.setItem('audixio-locale'");
     expect(page).toContain('EN — English');
   });
 });

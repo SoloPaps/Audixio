@@ -568,7 +568,7 @@ async function install(page: Page, scene: Scene): Promise<void> {
         const view = globalThis as unknown as {
           localStorage: { setItem: (key: string, value: string) => void };
         };
-        view.localStorage.setItem('audigy-auth', JSON.stringify(stored));
+        view.localStorage.setItem('audixio-auth', JSON.stringify(stored));
       },
       {
         access_token: session.access_token,

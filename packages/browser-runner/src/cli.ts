@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
-import { isNetError } from '@audigy/net';
+import { isNetError } from '@audixio/net';
 import { chromium } from 'playwright';
 import { JobError, jobStoreFromEnv, runJob } from './job.js';
 import { pdfFromPage } from './pdf.js';
@@ -9,11 +9,11 @@ import { type BrowserAuditOutput, runBrowserAudit } from './run.js';
 import type { BrowserAuditResult } from './schema.js';
 
 export const USAGE = `Usage :
-  audigy-browser audit <url> [--out <dossier>] [--desktop-only] [--warc] [--json]
-  audigy-browser job <auditId>
+  audixio-browser audit <url> [--out <dossier>] [--desktop-only] [--warc] [--json]
+  audixio-browser job <auditId>
 
 audit : charge la page dans Chromium (profil vierge, aucune interaction) et écrit
-        browser.json et les captures dans le dossier (défaut : .audigy-browser/<hôte>).
+        browser.json et les captures dans le dossier (défaut : .audixio-browser/<hôte>).
         --warc écrit aussi accueil.warc (page d’accueil, sur demande).
 job   : exécution GitHub Actions. Lit l'audit dans Supabase (SUPABASE_URL,
         SUPABASE_SERVICE_ROLE_KEY) et range les artefacts dans le seau privé.
@@ -115,7 +115,7 @@ export async function main(
       const host = new URL(output.result.target.url).hostname;
       const dir = path.resolve(
         io.cwd,
-        parsed.values.out ?? path.join('.audigy-browser', host),
+        parsed.values.out ?? path.join('.audixio-browser', host),
       );
       const file = await writeOutput(output, dir);
       for (const line of summaryLines(output.result)) io.out(line);

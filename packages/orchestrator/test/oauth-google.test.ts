@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { GOOGLE_WEBMASTERS_SCOPE } from '@audigy/net';
+import { GOOGLE_WEBMASTERS_SCOPE } from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { loadSearchConsole } from '../src/gsc-port.js';
 import { createLogger } from '../src/log.js';
@@ -64,8 +64,8 @@ function harness(
     userFromToken: async () => USER,
     config: {
       clientId: 'client-id.apps.googleusercontent.com',
-      origin: 'https://audigy.example/',
-      redirectUri: 'https://audigy.example/api/oauth/google/callback',
+      origin: 'https://audixio.example/',
+      redirectUri: 'https://audixio.example/api/oauth/google/callback',
       secureCookie: true,
     },
     crypto,
@@ -96,7 +96,7 @@ function harness(
 }
 
 function startRequest(): Request {
-  return new Request('https://audigy.example/api/oauth/google/start', {
+  return new Request('https://audixio.example/api/oauth/google/start', {
     method: 'POST',
     headers: { authorization: 'Bearer header.payload.signature' },
   });
@@ -108,14 +108,14 @@ function setCookies(response: Response): string[] {
 
 function liveCookie(response: Response): string {
   const live = setCookies(response).find(
-    (item) => item.startsWith('audigy_gsc=') && !item.includes('Max-Age=0'),
+    (item) => item.startsWith('audixio_gsc=') && !item.includes('Max-Age=0'),
   );
   return live ?? '';
 }
 
 function cookieValue(header: string): string {
   const raw = header.split(';')[0] ?? '';
-  return raw.slice('audigy_gsc='.length);
+  return raw.slice('audixio_gsc='.length);
 }
 
 describe('chiffrement des jetons', () => {
@@ -154,7 +154,7 @@ describe('OAuth Google', () => {
     expect(url.searchParams.get('response_type')).toBe('code');
     expect(url.searchParams.get('scope')).toBe(GOOGLE_WEBMASTERS_SCOPE);
     expect(url.searchParams.get('redirect_uri')).toBe(
-      'https://audigy.example/api/oauth/google/callback',
+      'https://audixio.example/api/oauth/google/callback',
     );
     const cookie = liveCookie(response);
     expect(cookie).toContain('HttpOnly');
@@ -184,14 +184,14 @@ describe('OAuth Google', () => {
     ) as { state: string; verifier: string };
     const response = await handleOauthCallback(
       new Request(
-        `https://audigy.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=${pending.state}`,
-        { headers: { cookie: `audigy_gsc=${cookieValue(cookie)}` } },
+        `https://audixio.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=${pending.state}`,
+        { headers: { cookie: `audixio_gsc=${cookieValue(cookie)}` } },
       ),
       deps,
     );
     expect(response.status).toBe(302);
     const location = response.headers.get('location') ?? '';
-    expect(location).toBe('https://audigy.example/compte?etat=ok');
+    expect(location).toBe('https://audixio.example/compte?etat=ok');
     const packed =
       location +
       (await response.text()) +
@@ -230,10 +230,10 @@ describe('OAuth Google', () => {
     const started = await handleOauthStart(startRequest(), deps);
     const response = await handleOauthCallback(
       new Request(
-        'https://audigy.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=autre-state-qui-ne-correspond-pas-du-tout',
+        'https://audixio.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=autre-state-qui-ne-correspond-pas-du-tout',
         {
           headers: {
-            cookie: `audigy_gsc=${cookieValue(liveCookie(started))}`,
+            cookie: `audixio_gsc=${cookieValue(liveCookie(started))}`,
           },
         },
       ),
@@ -275,7 +275,7 @@ describe('OAuth Google', () => {
     };
     const response = await handleOauthCallback(
       new Request(
-        'https://audigy.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=state-qui-ne-sera-pas-compare-sans-cookie',
+        'https://audixio.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=state-qui-ne-sera-pas-compare-sans-cookie',
       ),
       deps,
     );
@@ -293,7 +293,7 @@ describe('OAuth Google', () => {
     const deps = harness();
     const response = await handleOauthCallback(
       new Request(
-        'https://audigy.example/api/oauth/google/callback?code=court&state=state-inutile-pour-ce-cas-de-refus',
+        'https://audixio.example/api/oauth/google/callback?code=court&state=state-inutile-pour-ce-cas-de-refus',
       ),
       deps,
     );
@@ -328,9 +328,11 @@ describe('OAuth Google', () => {
     ) as { state: string };
     const response = await handleOauthCallback(
       new Request(
-        `https://audigy.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=${pending.state}`,
+        `https://audixio.example/api/oauth/google/callback?code=4/0Acode-value-0123456789&state=${pending.state}`,
         {
-          headers: { cookie: `audigy_gsc=${cookieValue(liveCookie(started))}` },
+          headers: {
+            cookie: `audixio_gsc=${cookieValue(liveCookie(started))}`,
+          },
         },
       ),
       deps,
@@ -430,7 +432,7 @@ describe('OAuth Google', () => {
         {
           headers: {
             host: '127.0.0.1:8888',
-            cookie: `audigy_gsc=${cookieValue(cookie)}`,
+            cookie: `audixio_gsc=${cookieValue(cookie)}`,
           },
         },
       ),
@@ -454,7 +456,7 @@ describe('OAuth Google', () => {
     };
     const httpsDeps = harness();
     const spoofed = await handleOauthStart(
-      new Request('https://audigy.example/api/oauth/google/start', {
+      new Request('https://audixio.example/api/oauth/google/start', {
         method: 'POST',
         headers: {
           authorization: 'Bearer header.payload.signature',
@@ -466,7 +468,7 @@ describe('OAuth Google', () => {
     const spoofedBody = (await spoofed.json()) as { authorizeUrl: string };
     expect(
       new URL(spoofedBody.authorizeUrl).searchParams.get('redirect_uri'),
-    ).toBe('https://audigy.example/api/oauth/google/callback');
+    ).toBe('https://audixio.example/api/oauth/google/callback');
 
     const otherPort = harness({ config: local });
     const shifted = await handleOauthStart(

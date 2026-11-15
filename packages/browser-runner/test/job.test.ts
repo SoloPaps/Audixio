@@ -39,11 +39,11 @@ describe('exécution par identifiant d’audit', () => {
     const summary = await runJob(ID, {
       store,
       run,
-      botUrl: 'https://audigy.exemple',
+      botUrl: 'https://audixio.exemple',
     });
     expect(run).toHaveBeenCalledWith({
       url: 'https://www.exemple.fr/',
-      botUrl: 'https://audigy.exemple',
+      botUrl: 'https://audixio.exemple',
     });
     expect(summary).toMatchObject({
       auditId: ID,
@@ -81,7 +81,7 @@ describe('exécution par identifiant d’audit', () => {
       status: 'partial',
     });
     const renderPdf = vi.fn(async (html: string) => {
-      expect(html).toContain(`https://audigy.exemple/verifier/${ID}`);
+      expect(html).toContain(`https://audixio.exemple/verifier/${ID}`);
       expect(html).toContain(
         createHash('sha256')
           .update(JSON.stringify(sampleResult()))
@@ -100,7 +100,7 @@ describe('exécution par identifiant d’audit', () => {
         warc: { file: 'accueil.warc', data: warc },
       }),
       warc: true,
-      verifyOrigin: 'https://audigy.exemple/',
+      verifyOrigin: 'https://audixio.exemple/',
       renderPdf,
     });
     expect(renderPdf).toHaveBeenCalledOnce();

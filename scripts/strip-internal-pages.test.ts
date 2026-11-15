@@ -19,7 +19,7 @@ afterEach(async () => {
 
 describe('pages internes retirées du build de production', () => {
   it('ferme /dev/composants et /courriel/fin-audit-* tout en gardant les autres courriels', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'audigy-strip-'));
+    const root = await mkdtemp(path.join(tmpdir(), 'audixio-strip-'));
     dirs.push(root);
     const files = [
       'index.html',

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { GRADE_THRESHOLDS } from '@audigy/db';
-import { METHOD_VERSION } from '@audigy/engine';
+import { GRADE_THRESHOLDS } from '@audixio/db';
+import { METHOD_VERSION } from '@audixio/engine';
 import { describe, expect, it } from 'vitest';
 import { methodeEn } from './methode-en.js';
 import { methodeFr } from './methode-fr.js';

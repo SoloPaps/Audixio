@@ -4,7 +4,7 @@ let gauges = 0;
 </script>
 
 <script lang="ts">
-import { GRADE_THRESHOLDS, gradeForScore } from '@audigy/db';
+import { GRADE_THRESHOLDS, gradeForScore } from '@audixio/db';
 import { gradeLabel } from '../lib/grade.js';
 import { t } from '../i18n/index.js';
 import '../styles/maquettes/gauge.css';
@@ -116,6 +116,6 @@ const frame = $derived(
      le composant (pas de classes de portée répétées dans le HTML). Largeur et
      container-type : style en ligne, le cadran tient sans feuille de style. */
   .gauge[data-size='hero'] {
-    view-transition-name: audigy-gauge;
+    view-transition-name: audixio-gauge;
   }
 </style>

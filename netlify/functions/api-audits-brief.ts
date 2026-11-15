@@ -3,7 +3,7 @@ import {
   handleBriefExport,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 import { briefDeps, briefLocaleOf } from '../../apps/web/src/lib/brief-deps.js';
 
 export default async (

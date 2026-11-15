@@ -49,7 +49,7 @@ function sql(statement: string): void {
     [
       'exec',
       '-i',
-      'supabase_db_audigy',
+      'supabase_db_audixio',
       'psql',
       '-U',
       'postgres',
@@ -70,9 +70,9 @@ export default async function globalSetup(): Promise<void> {
   }
   sql('delete from public.rate_limits;');
   sql(
-    "update public.audits a set created_at = now() - interval '20 minutes' from public.sites s where a.site_id = s.id and s.host like '%.audigy.test' and a.created_at > now() - interval '16 minutes';",
+    "update public.audits a set created_at = now() - interval '20 minutes' from public.sites s where a.site_id = s.id and s.host like '%.audixio.test' and a.created_at > now() - interval '16 minutes';",
   );
   sql(
-    "update public.audits a set status = 'failed', created_at = now() - interval '20 minutes', finished_at = coalesce(a.finished_at, now()) from public.sites s where a.site_id = s.id and s.host like '%.audigy.test' and a.status in ('queued', 'running', 'partial');",
+    "update public.audits a set status = 'failed', created_at = now() - interval '20 minutes', finished_at = coalesce(a.finished_at, now()) from public.sites s where a.site_id = s.id and s.host like '%.audixio.test' and a.status in ('queued', 'running', 'partial');",
   );
 }

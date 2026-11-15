@@ -60,15 +60,15 @@ document.getElementById('sv').onclick=function(){save(pref.checked,MSG['mq.lg.59
 ps.onclick=function(){var o=pn.classList.toggle('open');pn.inert=!o;ps.setAttribute('aria-expanded',o);if(o)setTimeout(function(){pref.focus()},350)};
 document.getElementById('ac').focus({preventScroll:true});
 var langBtn=document.getElementById('ck-lang');
-function langIsEn(){try{return localStorage.getItem('audigy-locale')==='en'}catch(e){return false}}
+function langIsEn(){try{return localStorage.getItem('audixio-locale')==='en'}catch(e){return false}}
 function paintLang(){if(!langBtn)return;if(langIsEn()){langBtn.lang='fr';langBtn.textContent='FR — Français'}else{langBtn.lang='en';langBtn.textContent='EN — English'}}
 paintLang();
 if(langBtn)langBtn.addEventListener('click',function(){
   var next=langIsEn()?'fr':'en';
-  function go(){try{localStorage.setItem('audigy-locale',next)}catch(e){}location.reload()}
+  function go(){try{localStorage.setItem('audixio-locale',next)}catch(e){}location.reload()}
   if(next==='fr'){go();return}
   fetch('/dictionnaire-en.json').then(function(r){return r.ok?r.text():null}).then(function(raw){
-    if(raw){try{localStorage.setItem('audigy-en',raw);window.__audigy_en=JSON.parse(raw)}catch(e){}}
+    if(raw){try{localStorage.setItem('audixio-en',raw);window.__audixio_en=JSON.parse(raw)}catch(e){}}
     go();
   }).catch(go);
 });

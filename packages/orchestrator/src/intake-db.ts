@@ -1,5 +1,5 @@
-import { accountId, createServiceClient, dbEnvFrom } from '@audigy/db';
-import { authEnvFrom, sessionUserId } from '@audigy/db/auth-http';
+import { accountId, createServiceClient, dbEnvFrom } from '@audixio/db';
+import { authEnvFrom, sessionUserId } from '@audixio/db/auth-http';
 import type { IntakeDeps, IntakeRecord } from './intake.js';
 import { takeRateLimit } from './intake.js';
 import type { Logger } from './log.js';

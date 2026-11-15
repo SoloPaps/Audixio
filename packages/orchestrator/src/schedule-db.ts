@@ -3,8 +3,8 @@ import {
   type Database,
   dbEnvFrom,
   requestAudit,
-} from '@audigy/db';
-import { ENGINE_VERSION, METHOD_VERSION } from '@audigy/engine';
+} from '@audixio/db';
+import { ENGINE_VERSION, METHOD_VERSION } from '@audixio/engine';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { auditEndEmailFns } from './audit-end-db.js';

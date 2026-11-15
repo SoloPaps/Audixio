@@ -22,7 +22,7 @@ import {
   TECHNOLOGIES_CHECKS,
   VIE_PRIVEE_CHECKS,
   withExternalApi,
-} from '@audigy/engine';
+} from '@audixio/engine';
 import {
   createDohResolver,
   createRequestBudget,
@@ -30,7 +30,7 @@ import {
   createTlsProbe,
   DEFAULT_MAX_REQUESTS,
   type RequestBudgetOptions,
-} from '@audigy/net';
+} from '@audixio/net';
 import { type LabConfig, labNet } from './lab.js';
 
 /**

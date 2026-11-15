@@ -4,7 +4,7 @@ import {
   type ProbeOutcome,
   VERIFICATION_METHODS,
   type VerificationMethod,
-} from '@audigy/engine';
+} from '@audixio/engine';
 import { z } from 'zod';
 import {
   type AuditEvent,

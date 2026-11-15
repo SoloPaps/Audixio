@@ -20,7 +20,7 @@ afterEach(async () => {
 });
 
 async function tempRoot(): Promise<string> {
-  const root = await mkdtemp(path.join(tmpdir(), 'audigy-env-'));
+  const root = await mkdtemp(path.join(tmpdir(), 'audixio-env-'));
   roots.push(root);
   return root;
 }

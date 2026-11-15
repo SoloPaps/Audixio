@@ -1,5 +1,5 @@
 <script lang="ts">
-import { validEmail, validPassword } from '@audigy/db/auth-policy';
+import { validEmail, validPassword } from '@audixio/db/auth-policy';
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { say } from '../lib/motion.js';
@@ -54,7 +54,7 @@ onMount(() => {
   if (params.get('envoye') === '1') {
     sent = true;
     // La page est rechargée après l’envoi : l’adresse saisie est gardée pour la phrase.
-    email ||= sessionStorage.getItem('audigy-reset-email') ?? '';
+    email ||= sessionStorage.getItem('audixio-reset-email') ?? '';
   }
 });
 
@@ -94,7 +94,7 @@ async function onAsk(event: SubmitEvent): Promise<void> {
   }
   if (pending) return;
   pending = true;
-  sessionStorage.setItem('audigy-reset-email', email);
+  sessionStorage.setItem('audixio-reset-email', email);
   await post('/api/auth/reinitialisation', { email });
   if (!error) sent = true;
   pending = false;

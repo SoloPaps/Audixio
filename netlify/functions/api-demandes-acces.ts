@@ -4,7 +4,7 @@ import {
   intakeDepsFromEnv,
   secretsFromEnv,
   serve,
-} from '@audigy/orchestrator';
+} from '@audixio/orchestrator';
 
 /** Demande d’accès. Plafonds par IP, e-mail et compte. */
 export default async (req: Request): Promise<Response> => {

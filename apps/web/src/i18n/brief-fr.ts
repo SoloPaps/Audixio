@@ -99,7 +99,7 @@ let forced: BriefLocale | null = null;
 export function briefLocale(): BriefLocale {
   if (forced) return forced;
   try {
-    return globalThis.localStorage?.getItem('audigy-locale') === 'en'
+    return globalThis.localStorage?.getItem('audixio-locale') === 'en'
       ? 'en'
       : 'fr';
   } catch {

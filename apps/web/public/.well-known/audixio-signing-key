@@ -1,6 +1,6 @@
 {
   "alg": "Ed25519",
-  "kid": "audigy-2026",
+  "kid": "audixio-2026",
   "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAGqM6H7jv5Q176mlsBgNAAo1Guhw/K/xbtknM8dYZNSQ=\n-----END PUBLIC KEY-----\n",
   "jwk": {
     "kty": "OKP",

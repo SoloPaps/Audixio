@@ -1,4 +1,4 @@
-import type { SafeResponse } from '@audigy/net';
+import type { SafeResponse } from '@audixio/net';
 import type { Check, CheckResult } from '../../src/types.js';
 import { scanMixed } from './parse.js';
 import { finding, isHtml, loadHome } from './shared.js';

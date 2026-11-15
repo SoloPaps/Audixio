@@ -1,10 +1,10 @@
 import {
   BROWSER_SHARED_KEY,
   BrowserAuditResultSchema,
-} from '@audigy/browser-runner/schema';
-import { isNetError, type SafeResponse } from '@audigy/net';
+} from '@audixio/browser-runner/schema';
+import { isNetError, type SafeResponse } from '@audixio/net';
 import type { CheckContext } from '../../src/types.js';
-import { AUDIGY_AGENT } from '../qualite/limits.js';
+import { AUDIXIO_AGENT } from '../qualite/limits.js';
 import { inScope } from '../qualite/scope.js';
 import { loadHome } from '../securite/shared.js';
 import { crawlerAllowed, parseRobots } from '../seo/robots-parse.js';
@@ -197,7 +197,7 @@ async function readRobots(
     const file = parseRobots(res.text());
     return {
       kind: 'rules',
-      allow: (url) => crawlerAllowed(file, url, AUDIGY_AGENT),
+      allow: (url) => crawlerAllowed(file, url, AUDIXIO_AGENT),
     };
   } catch (error) {
     if (isNetError(error, 'BUDGET_EXCEEDED') || ctx.signal.aborted) {

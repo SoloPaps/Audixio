@@ -99,7 +99,7 @@ document.dispatchEvent(new Event('audixio-motion'));
 var MSG = JSON.parse(document.getElementById('i18n-msg').textContent);
 var EN=false;
 /* Textes posés par le script : version anglaise quand EN est actif. */
-function L(k){try{if(localStorage.getItem('audigy-locale')==='en'){EN=true;var p=window.__audigy_en||JSON.parse(localStorage.getItem('audigy-en')||'null');if(p&&p[k])return p[k]}}catch(e){}return MSG[k]}
+function L(k){try{if(localStorage.getItem('audixio-locale')==='en'){EN=true;var p=window.__audixio_en||JSON.parse(localStorage.getItem('audixio-en')||'null');if(p&&p[k])return p[k]}}catch(e){}return MSG[k]}
 
 (function(){
 MSG['mq.lg.533'];

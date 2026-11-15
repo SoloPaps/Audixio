@@ -14,7 +14,7 @@ afterEach(async () => {
 
 describe('pruneUnreferenced', () => {
   it('garde dictionnaire-en.json chargé seulement par fetch', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'audigy-prune-'));
+    const root = await mkdtemp(path.join(tmpdir(), 'audixio-prune-'));
     dirs.push(root);
     await writeFile(path.join(root, 'index.html'), '<html></html>');
     await writeFile(path.join(root, 'dictionnaire-en.json'), '{}');
@@ -33,7 +33,7 @@ describe('pruneUnreferenced', () => {
   });
 
   it('garde _redirects écrit au build (bug : supprimé comme orphelin)', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'audigy-prune-'));
+    const root = await mkdtemp(path.join(tmpdir(), 'audixio-prune-'));
     dirs.push(root);
     await writeFile(path.join(root, 'index.html'), '<html></html>');
     await writeFile(

@@ -1,11 +1,11 @@
-import type { AuditResultsInput } from '@audigy/db';
+import type { AuditResultsInput } from '@audixio/db';
 import {
   type Check,
   type CheckOutcome,
   type FixSheet,
   type Target,
   UPTIME_KEY,
-} from '@audigy/engine';
+} from '@audixio/engine';
 import type { AuditContext } from './context.js';
 import type { Dispatcher } from './dispatch.js';
 import { errorCode, type Logger } from './log.js';

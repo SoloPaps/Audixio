@@ -1,7 +1,7 @@
 import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { createRequestBudget } from '@audigy/net';
+import { createRequestBudget } from '@audixio/net';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { type Lab, startLab } from '../../../fixtures/lab.js';
 import { LAB_ENV_NAME, labFromEnv, labNet } from '../src/index.js';
@@ -12,7 +12,7 @@ let file: string;
 
 beforeAll(async () => {
   lab = await startLab();
-  dir = await mkdtemp(path.join(tmpdir(), 'audigy-lab-'));
+  dir = await mkdtemp(path.join(tmpdir(), 'audixio-lab-'));
   file = path.join(dir, 'lab.json');
   await writeFile(file, JSON.stringify(lab.config));
 });
@@ -30,7 +30,7 @@ describe('labo local', () => {
     expect(
       labFromEnv({ ...env, NETLIFY_DEV: 'true' }, { requireNetlifyDev: true })
         ?.hosts,
-    ).toHaveProperty(['bon.audigy.test']);
+    ).toHaveProperty(['bon.audixio.test']);
   });
 
   it('fichier absent : labo désactivé', () => {
@@ -69,10 +69,10 @@ describe('labo local', () => {
       lab.config,
       createRequestBudget({ perHostIntervalMs: 0 }),
     );
-    const res = await net.fetch('https://bon.audigy.test/');
+    const res = await net.fetch('https://bon.audixio.test/');
     expect(res.status).toBe(200);
     await expect(net.fetch('https://exemple.fr/')).rejects.toThrow();
-    await expect(net.dns.addresses('bon.audigy.test')).rejects.toThrow();
+    await expect(net.dns.addresses('bon.audixio.test')).rejects.toThrow();
     await expect(
       net.api?.request({ url: 'https://www.googleapis.com/' } as never),
     ).rejects.toThrow();

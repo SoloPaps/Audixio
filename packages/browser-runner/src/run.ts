@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { ARTIFACT_LIMITS } from '@audigy/evidence';
+import { ARTIFACT_LIMITS } from '@audixio/evidence';
 import {
   createRequestBudget,
   createSafeFetch,
@@ -7,7 +7,7 @@ import {
   type SafeFetch,
   userAgent,
   validateTargetUrl,
-} from '@audigy/net';
+} from '@audixio/net';
 import { AxeBuilder } from '@axe-core/playwright';
 import axe from 'axe-core';
 import {
@@ -191,7 +191,7 @@ export async function runBrowserAudit(
       version: BROWSER_RESULT_VERSION,
       mode: 'passive',
       runner: {
-        name: 'audigy-browser',
+        name: 'audixio-browser',
         browser: `chromium ${browser.version()}`.slice(0, 64),
         axe: axe.version,
         fetchUserAgent: userAgent(options.botUrl),

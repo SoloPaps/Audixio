@@ -1,7 +1,7 @@
 /**
- * @audigy/cli — `audigy audit <url> [--json] [--browser]`, audit passif en local.
- * Mêmes checks que la fonction Netlify, réseau `@audigy/net`. Jamais de test actif :
- * la propriété n'est pas vérifiée en local. `AUDIGY_LAB` : sites du labo (`pnpm lab`).
+ * @audixio/cli — `audixio audit <url> [--json] [--browser]`, audit passif en local.
+ * Mêmes checks que la fonction Netlify, réseau `@audixio/net`. Jamais de test actif :
+ * la propriété n'est pas vérifiée en local. `AUDIXIO_LAB` : sites du labo (`pnpm lab`).
  * `--browser` : runner navigateur local s'il est disponible, sinon « Non testé ».
  */
 export {

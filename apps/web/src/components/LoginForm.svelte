@@ -1,5 +1,5 @@
 <script lang="ts">
-import { validEmail, validPassword } from '@audigy/db/auth-policy';
+import { validEmail, validPassword } from '@audixio/db/auth-policy';
 import { onMount } from 'svelte';
 import { t } from '../i18n/index.js';
 import { bindTilt } from '../lib/motion.js';

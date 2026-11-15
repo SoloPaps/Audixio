@@ -87,7 +87,7 @@ async function install(page: Page): Promise<void> {
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('http://127.0.0.1:54321/**', async (route) => {
     const origin = route.request().headers().origin ?? ORIGIN;
@@ -139,7 +139,7 @@ test('markdown local et limite repliée', async ({ page }) => {
     page.waitForEvent('download'),
     page.getByRole('link', { name: 'Télécharger en Markdown' }).click(),
   ]);
-  expect(download.suggestedFilename()).toBe('audigy-exemple.fr-2026-10-23.md');
+  expect(download.suggestedFilename()).toBe('audixio-exemple.fr-2026-10-23.md');
   const path = await download.path();
   expect(path).toBeTruthy();
   const markdown = await readFile(path as string, 'utf8');
@@ -208,7 +208,7 @@ test('le score public n’exporte pas les causes internes', async ({ page }) => 
     page.waitForEvent('download'),
     page.getByRole('link', { name: 'Télécharger en Markdown' }).click(),
   ]);
-  expect(download.suggestedFilename()).toBe('audigy-exemple.fr-2026-10-23.md');
+  expect(download.suggestedFilename()).toBe('audixio-exemple.fr-2026-10-23.md');
   const path = await download.path();
   const markdown = await readFile(path as string, 'utf8');
   expect(markdown.trimEnd().endsWith('Ce fichier n’est pas une preuve.')).toBe(
@@ -275,8 +275,8 @@ test('méthode, conditions, confidentialité et mentions ont un sommaire', async
 });
 
 test('captures clair et sombre', async ({ page }) => {
-  const dir = process.env.AUDIGY_SHOTS;
-  test.skip(!dir, 'définir AUDIGY_SHOTS pour écrire les captures');
+  const dir = process.env.AUDIXIO_SHOTS;
+  test.skip(!dir, 'définir AUDIXIO_SHOTS pour écrire les captures');
   await install(page);
   await page.addInitScript(() => {
     const view = globalThis as unknown as { print: () => void };

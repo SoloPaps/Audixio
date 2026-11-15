@@ -1,7 +1,8 @@
 {
-  "name": "audigy",
+  "name": "audixio",
   "version": "0.0.0",
   "private": true,
+  "license": "UNLICENSED",
   "type": "module",
   "packageManager": "pnpm@10.34.9",
   "engines": {
@@ -12,15 +13,15 @@
     "lint": "biome check .",
     "copy-lint": "node scripts/copy-lint.ts",
     "format": "biome check --write .",
-    "typecheck": "tsc -p tsconfig.json --noEmit && pnpm --filter @audigy/web run check:types",
+    "typecheck": "tsc -p tsconfig.json --noEmit && pnpm --filter @audixio/web run check:types",
     "test": "vitest run",
-    "test:ui": "pnpm --filter @audigy/web run test:ui && pnpm --filter @audigy/browser-runner run test:ui",
-    "test:e2e": "pnpm --filter @audigy/web exec playwright test -c playwright.reel.config.ts",
+    "test:ui": "pnpm --filter @audixio/web run test:ui && pnpm --filter @audixio/browser-runner run test:ui",
+    "test:e2e": "pnpm --filter @audixio/web exec playwright test -c playwright.reel.config.ts",
     "test:a11y": "tsx scripts/lighthouse-a11y.ts",
     "fixtures": "node fixtures/server.ts",
     "lab": "tsx fixtures/lab.ts",
     "lab:audit": "tsx scripts/lab-audit.ts",
-    "audigy": "tsx packages/cli/src/bin.ts",
+    "audixio": "tsx packages/cli/src/bin.ts",
     "build": "node scripts/build.mjs",
     "build:functions": "node scripts/build-functions.ts",
     "self-audit": "tsx scripts/self-audit.ts",
@@ -28,13 +29,13 @@
     "check": "pnpm guard && pnpm lint && pnpm copy-lint && pnpm typecheck && pnpm test && pnpm build && pnpm self-audit && pnpm test:ui && pnpm test:a11y"
   },
   "dependencies": {
-    "@audigy/db": "workspace:*",
-    "@audigy/orchestrator": "workspace:*",
+    "@audixio/db": "workspace:*",
+    "@audixio/orchestrator": "workspace:*",
     "@supabase/ssr": "^0.8.0"
   },
   "devDependencies": {
-    "@audigy/browser-runner": "workspace:*",
-    "@audigy/net": "workspace:*",
+    "@audixio/browser-runner": "workspace:*",
+    "@audixio/net": "workspace:*",
     "@biomejs/biome": "^2.6.3",
     "@supabase/supabase-js": "^2.118.0",
     "@types/node": "^22.20.5",

@@ -91,7 +91,7 @@ function auditBody(verified: boolean): unknown {
 
 async function install(page: Page, verified = true): Promise<void> {
   await page.addInitScript((value) => {
-    localStorage.setItem('audigy-auth', JSON.stringify(value));
+    localStorage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/auth/v1/**', async (route) => {
     await route.fulfill({
@@ -278,8 +278,8 @@ test('rapport visiteur partiel : scores ronds sans « 0/100 »', async ({
       error: null,
       site: {
         id: '7a2b3c4d-5e6f-4789-a012-bcdef0123457',
-        url: 'https://bon.audigy.test',
-        label: 'bon.audigy.test',
+        url: 'https://bon.audixio.test',
+        label: 'bon.audixio.test',
         scope: 'origin',
         hosting: 'unknown',
       },

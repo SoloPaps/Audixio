@@ -4,7 +4,7 @@ import {
   BROWSER_SHARED_KEY,
   type BrowserAuditResult,
   BrowserAuditResultSchema,
-} from '@audigy/browser-runner/schema';
+} from '@audixio/browser-runner/schema';
 import {
   createRequestBudget,
   type DohResolver,
@@ -12,7 +12,7 @@ import {
   type ExternalRequest,
   type SafeFetch,
   type TlsProbe,
-} from '@audigy/net';
+} from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { fr, type MessageKey } from '../../../apps/web/src/i18n/fr.js';
 import { reportLine } from '../../../apps/web/src/i18n/report-fr.js';

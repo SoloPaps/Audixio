@@ -42,17 +42,17 @@ describe('normalizeSiteUrl', () => {
     'https://localhost',
     'https://intranet',
     'https://site.test',
-    'https://bon.audigy.test',
+    'https://bon.audixio.test',
   ])('refuse %s', (raw) => {
     expect(() => normalizeSiteUrl(raw)).toThrow(InvalidSiteUrl);
   });
 
-  it('accepte seulement *.audigy.test quand le labo est autorisé', () => {
+  it('accepte seulement *.audixio.test quand le labo est autorisé', () => {
     expect(
-      normalizeSiteUrl('https://bon.audigy.test/', { allowLab: true }),
+      normalizeSiteUrl('https://bon.audixio.test/', { allowLab: true }),
     ).toMatchObject({
-      url: 'https://bon.audigy.test',
-      host: 'bon.audigy.test',
+      url: 'https://bon.audixio.test',
+      host: 'bon.audixio.test',
       scope: 'origin',
     });
     expect(() =>

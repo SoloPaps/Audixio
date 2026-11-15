@@ -1,4 +1,4 @@
-import { GRADE_THRESHOLDS } from '@audigy/db';
+import { GRADE_THRESHOLDS } from '@audixio/db';
 import { formatFixed } from '../i18n/format.js';
 
 /** Géométrie du graphique d’évolution (viewBox 960×300 des maquettes). */

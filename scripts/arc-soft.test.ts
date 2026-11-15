@@ -135,7 +135,7 @@ describe('plafond', () => {
 describe('transitions', () => {
   it('nomme la jauge hero et coupe le mouvement réduit', () => {
     const gauge = text('apps/web/src/components/ScoreGauge.svelte');
-    expect(gauge).toContain('view-transition-name: audigy-gauge');
+    expect(gauge).toContain('view-transition-name: audixio-gauge');
     expect(gauge).toContain("data-size='hero'");
     const layout = text('apps/web/src/layouts/Base.astro');
     expect(layout).toContain('ClientRouter');

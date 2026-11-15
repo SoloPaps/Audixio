@@ -1,8 +1,8 @@
 /**
- * Labo local : `fixtures/sites/<site>` servis sous `<site>.audigy.test`, en HTTP et en
+ * Labo local : `fixtures/sites/<site>` servis sous `<site>.audixio.test`, en HTTP et en
  * HTTPS (AC de test générée au démarrage). Rien ne sort de 127.0.0.1.
- * `pnpm lab` écrit `.netlify/audigy-lab.json` puis reste ouvert. Avec
- * `AUDIGY_LAB=.netlify/audigy-lab.json`, `netlify dev` et la CLI auditent ces noms.
+ * `pnpm lab` écrit `.netlify/audixio-lab.json` puis reste ouvert. Avec
+ * `AUDIXIO_LAB=.netlify/audixio-lab.json`, `netlify dev` et la CLI auditent ces noms.
  * Si `.env` manque, il est créé avec les valeurs du Supabase local (jamais affichées,
  * jamais commitées). `apps/web/.env` ne reçoit que l'URL et la clé anon.
  */
@@ -25,8 +25,8 @@ import {
   startFixtureServer,
 } from './server.js';
 
-export const LAB_DOMAIN = 'audigy.test';
-export const DEFAULT_LAB_FILE = '.netlify/audigy-lab.json';
+export const LAB_DOMAIN = 'audixio.test';
+export const DEFAULT_LAB_FILE = '.netlify/audixio-lab.json';
 
 export interface LabFile {
   version: 1;
@@ -78,8 +78,8 @@ async function ensureDevEnv(root: string, labFile: string): Promise<string> {
   if (existsSync(envPath)) {
     const wrote = await syncWebEnv(root);
     return wrote
-      ? `.env existe : apps/web/.env reprend l'URL et la clé anon. Les deux fichiers restent locaux, jamais commités. Vérifiez AUDIGY_LAB=${labFile}.`
-      : `.env existe : URL ou clé anon manquante, apps/web/.env inchangé. Vérifiez AUDIGY_LAB=${labFile} et les clés SUPABASE_* locales.`;
+      ? `.env existe : apps/web/.env reprend l'URL et la clé anon. Les deux fichiers restent locaux, jamais commités. Vérifiez AUDIXIO_LAB=${labFile}.`
+      : `.env existe : URL ou clé anon manquante, apps/web/.env inchangé. Vérifiez AUDIXIO_LAB=${labFile} et les clés SUPABASE_* locales.`;
   }
   const { localSupabaseStatus } = await import('../packages/db/test/local.js');
   let local: ReturnType<typeof localSupabaseStatus>;
@@ -98,7 +98,7 @@ async function ensureDevEnv(root: string, labFile: string): Promise<string> {
       `SUPABASE_URL=${local.apiUrl}`,
       `SUPABASE_ANON_KEY=${local.anonKey}`,
       `SUPABASE_SERVICE_ROLE_KEY=${local.serviceRoleKey}`,
-      `AUDIGY_LAB=${labFile}`,
+      `AUDIXIO_LAB=${labFile}`,
       '',
     ].join('\n'),
     { mode: 0o600 },

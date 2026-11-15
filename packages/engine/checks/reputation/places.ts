@@ -1,4 +1,4 @@
-import { type ExternalApi, PLACES_HOST } from '@audigy/net';
+import { type ExternalApi, PLACES_HOST } from '@audixio/net';
 
 /** Sept jours. Les audits suivants relisent le cache, sans nouvel appel. */
 export const PLACES_CACHE_MS = 7 * 24 * 60 * 60 * 1000;

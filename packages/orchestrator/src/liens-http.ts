@@ -12,7 +12,7 @@ import {
   SHARE_TOKEN,
   sha256Hex,
   vueLien,
-} from '@audigy/db';
+} from '@audixio/db';
 import { z } from 'zod';
 import { apiError, bearerToken } from './http.js';
 import { errorCode, type Logger } from './log.js';

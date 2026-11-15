@@ -1,5 +1,5 @@
 {
-  "name": "@audigy/orchestrator",
+  "name": "@audixio/orchestrator",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,10 +8,10 @@
     "./mail-templates": "./src/mail-templates.ts"
   },
   "dependencies": {
-    "@audigy/browser-runner": "workspace:*",
-    "@audigy/db": "workspace:*",
-    "@audigy/engine": "workspace:*",
-    "@audigy/net": "workspace:*",
+    "@audixio/browser-runner": "workspace:*",
+    "@audixio/db": "workspace:*",
+    "@audixio/engine": "workspace:*",
+    "@audixio/net": "workspace:*",
     "@supabase/supabase-js": "^2.118.0",
     "zod": "^4.6.7"
   },

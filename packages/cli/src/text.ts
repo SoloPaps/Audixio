@@ -1,6 +1,6 @@
-import { MAIN_DOMAINS } from '@audigy/engine';
-import type { AuditSummary } from '@audigy/orchestrator';
-import { fr, type MessageKey, t } from '@audigy/web/i18n';
+import { MAIN_DOMAINS } from '@audixio/engine';
+import type { AuditSummary } from '@audixio/orchestrator';
+import { fr, type MessageKey, t } from '@audixio/web/i18n';
 
 /** Traduit une clé venue du moteur. Clé inconnue : la clé elle-même. */
 export function translate(

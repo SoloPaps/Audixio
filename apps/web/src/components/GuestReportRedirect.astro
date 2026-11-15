@@ -37,7 +37,7 @@ const { mode } = Astro.props;
     if ((document.cookie || '').split('; ').indexOf('audixio_connecte=1') >= 0)
       return;
     try {
-      if (localStorage.getItem('audigy-auth')) return;
+      if (localStorage.getItem('audixio-auth')) return;
     } catch (err) {
       return;
     }

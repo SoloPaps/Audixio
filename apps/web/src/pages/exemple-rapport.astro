@@ -174,7 +174,7 @@ if(!R&&matchMedia('(hover:hover) and (min-width:900px)').matches){var mx=0,my=0,
  addEventListener('pointermove',function(e){mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;q()},{passive:true});addEventListener('scroll',function(){sy=Math.min(scrollY,700);q()},{passive:true})}
 /* copy helper */
 var MSG=JSON.parse(document.getElementById('i18n-msg').textContent);
-function L(k,p){var s=MSG[k];try{if(localStorage.getItem('audigy-locale')==='en'){var e=window.__audigy_en||JSON.parse(localStorage.getItem('audigy-en')||'null');if(e&&e[k])s=e[k]}}catch(x){}return p?s.replace(/\{(\w+)\}/g,function(m,n){return n in p?String(p[n]):m}):s}
+function L(k,p){var s=MSG[k];try{if(localStorage.getItem('audixio-locale')==='en'){var e=window.__audixio_en||JSON.parse(localStorage.getItem('audixio-en')||'null');if(e&&e[k])s=e[k]}}catch(x){}return p?s.replace(/\{(\w+)\}/g,function(m,n){return n in p?String(p[n]):m}):s}
 AX.L=L;
 function cp(t,ok,ko){function lg(){var a=d.createElement('textarea'),r=false;a.value=t;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;opacity:0';d.body.appendChild(a);a.select();try{r=d.execCommand('copy')}catch(e){}a.remove();r?ok():ko()}
  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,lg);else lg()}

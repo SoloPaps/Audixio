@@ -144,7 +144,7 @@ async function setLocale(event: MouseEvent, next: 'fr' | 'en'): Promise<void> {
       }
     }
     settleLocaleChoice();
-    localStorage.setItem('audigy-locale', next);
+    localStorage.setItem('audixio-locale', next);
     locale = next;
     applyLocale(next);
     location.reload();
@@ -165,7 +165,7 @@ async function followLangQuery(): Promise<void> {
   }
   try {
     if (asked === 'en' && !(await storeEnglishDictionary())) return;
-    localStorage.setItem('audigy-locale', asked);
+    localStorage.setItem('audixio-locale', asked);
   } catch {
     return;
   }
@@ -175,7 +175,7 @@ async function followLangQuery(): Promise<void> {
 function toggleTheme(): void {
   const next = dark ? 'light' : 'dark';
   dark = next === 'dark';
-  localStorage.setItem('audigy-theme', next);
+  localStorage.setItem('audixio-theme', next);
   document.documentElement.setAttribute('data-theme', next);
 }
 
@@ -183,7 +183,7 @@ onMount(() => {
   const query = new URLSearchParams(location.search).get('theme');
   let saved: string | null = null;
   try {
-    saved = localStorage.getItem('audigy-theme');
+    saved = localStorage.getItem('audixio-theme');
   } catch {
     saved = null;
   }
@@ -193,7 +193,7 @@ onMount(() => {
       ? choice
       : document.documentElement.getAttribute('data-theme')) === 'dark';
   loggedIn = storedSessionPresent();
-  if (localStorage.getItem('audigy-locale') === 'en') locale = 'en';
+  if (localStorage.getItem('audixio-locale') === 'en') locale = 'en';
   applyLocale(locale);
   void resumeEnglishChoice().then((resumed) => {
     if (resumed) location.reload();

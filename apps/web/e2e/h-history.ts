@@ -18,7 +18,7 @@ export async function openHistory(
   page: Page,
   scores: readonly [number | null, number | null] | readonly [number],
   theme: 'light' | 'dark' = 'light',
-  host = 'bon.audigy.test',
+  host = 'bon.audixio.test',
   plan: 'free' | 'pro' = 'free',
 ): Promise<void> {
   await page.addInitScript((value) => {
@@ -27,7 +27,7 @@ export async function openHistory(
         localStorage: { setItem: (key: string, item: string) => void };
       }
     ).localStorage;
-    storage.setItem('audigy-auth', JSON.stringify(value));
+    storage.setItem('audixio-auth', JSON.stringify(value));
   }, session);
   await page.route('**/api/auth/session', async (route) => {
     await route.fulfill({

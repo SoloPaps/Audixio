@@ -1,4 +1,4 @@
-import { type DnsAnswer, type DnsType, isNetError } from '@audigy/net';
+import { type DnsAnswer, type DnsType, isNetError } from '@audixio/net';
 import type { CheckContext, CheckResult, Status } from '../../src/types.js';
 import { type MxRecord, parseMx } from './parse.js';
 

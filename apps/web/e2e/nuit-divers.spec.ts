@@ -8,7 +8,7 @@ test('/reinitialisation : la confirmation ne laisse pas un e-mail vide', async (
   await expect(note).toBeVisible();
   await expect(note).not.toContainText('pour ,');
   await page.evaluate(() =>
-    sessionStorage.setItem('audigy-reset-email', 'camille@exemple.fr'),
+    sessionStorage.setItem('audixio-reset-email', 'camille@exemple.fr'),
   );
   await page.reload();
   await expect(note).toContainText(

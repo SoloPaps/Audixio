@@ -4,7 +4,7 @@ import { exportHost, parisCivilDay, saveTextFile } from './report-export.js';
 export { exportHost, parisCivilDay };
 
 export function briefFilename(url: string, at: Date): string {
-  return `audigy-brief-${exportHost(url)}-${parisCivilDay(at)}.md`;
+  return `audixio-brief-${exportHost(url)}-${parisCivilDay(at)}.md`;
 }
 
 export function briefFileBody(brief: string): string {

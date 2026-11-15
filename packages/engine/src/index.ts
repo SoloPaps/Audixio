@@ -1,6 +1,6 @@
 /**
- * @audigy/engine — cœur du moteur d'audit (PLAN §5). Pur : aucun accès réseau ni disque
- * direct, tout passe par `ctx.net` (`@audigy/net`) et des adaptateurs injectés.
+ * @audixio/engine — cœur du moteur d'audit (PLAN §5). Pur : aucun accès réseau ni disque
+ * direct, tout passe par `ctx.net` (`@audixio/net`) et des adaptateurs injectés.
  *
  * API
  * - Types §5.1 : `Check`, `CheckContext`, `CheckResult`, `CheckOutcome`, `Domain`, `Status`…
@@ -11,7 +11,7 @@
  * - `scoreDomain`, `scoreDomains`, `scoreGlobal`, `levelFor`, `prioritize` : score §5.2.
  * - `runAudit(checks, ctx, options?)` : rapport déterministe (`methodVersion` 2026.1).
  * - `parseFix`, `loadFixes(store)`, `variantFor` : fiches §5.3. Lecture disque :
- *   `fileFixStore(dir?)` depuis `@audigy/engine/fixes-fs`.
+ *   `fileFixStore(dir?)` depuis `@audixio/engine/fixes-fs`.
  * - `createSharedArtifacts()` : artefacts chargés une seule fois par audit.
  *   `BROWSER_SHARED_KEY` : sortie du runner navigateur, pour les checks `needs: ['browser']`.
  * - `ENGINE_VERSION`, `METHOD_VERSION` : versions stockées sur chaque audit.
@@ -36,7 +36,7 @@
  *   sans réponse est absente, pas un échec.
  * - `QUALITE_CHECKS` : parcours borné (50 pages, robots, portée), liens internes
  *   et externes, HTML essentiel, images (poids, dimensions, format).
- * - `googleApiKey`, `withGoogleApi` : clé `GOOGLE_API_KEY` et client `@audigy/net`.
+ * - `googleApiKey`, `withGoogleApi` : clé `GOOGLE_API_KEY` et client `@audixio/net`.
  * - `withExternalApi` : même client sans clé, pour Green Web, OSV, NVD et KEV.
  * - `TECHNOLOGIES_CHECKS`, `createTechnologiesChecks` : technologies (en-têtes `Server`,
  *   `X-Powered-By`, balise generator, signatures retire.js Apache-2.0 sur les scripts
@@ -47,7 +47,7 @@
  * - `VIE_PRIVEE_CHECKS` : traceurs avant consentement (liste DuckDuckGo, licence
  *   CC BY-NC-SA 4.0), bannière, refus au premier niveau, scripts et polices tiers,
  *   mentions légales et confidentialité. Le rapport navigateur se lit dans
- *   `ctx.shared` sous la clé `browser` (schéma `@audigy/browser-runner`).
+ *   `ctx.shared` sous la clé `browser` (schéma `@audixio/browser-runner`).
  *   Sans ce rapport, les checks navigateur sont « Non testé ».
  */
 

@@ -7,11 +7,11 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
   await page.goto('/sites');
   await expect(page.locator('#addf')).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'mauvais.audigy.test', exact: true }),
+    page.getByRole('link', { name: 'mauvais.audixio.test', exact: true }),
   ).toBeVisible();
   // La vérification d’un site vit dans sa page (R12), ses alertes dans /compte.
   await expect(
-    page.locator('a[href="/sites/mauvais.audigy.test#verification"]').first(),
+    page.locator('a[href="/sites/mauvais.audixio.test#verification"]').first(),
   ).toBeVisible();
   const alertsLink = page.locator('a[href*="/compte?site="]').first();
   const href = await alertsLink.getAttribute('href');
@@ -19,22 +19,24 @@ test('ajout d’un site, plafond, historique et alertes', async ({ page }) => {
     new URL(href ?? '', 'http://127.0.0.1:8888').searchParams.get('site') ?? '';
   expect(siteId).toMatch(/^[0-9a-f-]{36}$/);
 
-  await page.locator('#url').fill('https://bon.audigy.test/');
+  await page.locator('#url').fill('https://bon.audixio.test/');
   await page.getByRole('button', { name: 'Ajouter un site' }).click();
   await expect(
-    page.getByRole('link', { name: 'bon.audigy.test', exact: true }),
+    page.getByRole('link', { name: 'bon.audixio.test', exact: true }),
   ).toBeVisible();
 
-  await page.locator('#url').fill('https://troisieme.audigy.test/');
+  await page.locator('#url').fill('https://troisieme.audixio.test/');
   await page.getByRole('button', { name: 'Ajouter un site' }).click();
   await expect(page.locator('#pro-modal')).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'troisieme.audigy.test', exact: true }),
+    page.getByRole('link', { name: 'troisieme.audixio.test', exact: true }),
   ).toHaveCount(0);
 
   // R11 : l’ancien historique d’un site mène à sa page, section historique.
   await page.goto(`/historique?site=${encodeURIComponent(siteId)}`);
-  await page.waitForURL(/\/sites\/mauvais\.audigy\.test(\?[^#]*)?#historique$/);
+  await page.waitForURL(
+    /\/sites\/mauvais\.audixio\.test(\?[^#]*)?#historique$/,
+  );
   await expect(
     page.getByRole('heading', { name: 'Comment la note évolue' }),
   ).toBeVisible();

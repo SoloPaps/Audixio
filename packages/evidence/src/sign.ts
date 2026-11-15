@@ -41,10 +41,10 @@ export function genererCleEd25519(): { privee: KeyObject; pem: string } {
   return { privee: privateKey, pem };
 }
 
-/** Document publié dans `/.well-known/audigy-signing-key`. Pas de clé privée. */
+/** Document publié dans `/.well-known/audixio-signing-key`. Pas de clé privée. */
 export function documentClePublique(
   privee: KeyObject,
-  kid = 'audigy-2026',
+  kid = 'audixio-2026',
 ): ClePubliqueEd25519 {
   const publique = createPublicKey(privee);
   const pem = publique.export({ type: 'spki', format: 'pem' });

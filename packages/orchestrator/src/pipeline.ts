@@ -1,4 +1,4 @@
-import type { DomainScoreRow, FindingRow, Json } from '@audigy/db';
+import type { DomainScoreRow, FindingRow, Json } from '@audixio/db';
 import {
   BROWSER_SHARED_KEY,
   type Check,
@@ -15,7 +15,7 @@ import {
   runChecks,
   scoreDomains,
   scoreGlobal,
-} from '@audigy/engine';
+} from '@audixio/engine';
 
 /** Raisons « Non testé » propres à l'orchestration (clés i18n `fr`). */
 export const ORCHESTRATION_REASONS = {

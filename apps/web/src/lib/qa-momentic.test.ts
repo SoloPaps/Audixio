@@ -61,13 +61,13 @@ describe('bug 1 — retrait d’accès', () => {
           createdAt: '2026-05-01T00:00:00.000Z',
         },
       ],
-      new Map([[AUDIT, 'gratuit.audigy.test']]),
+      new Map([[AUDIT, 'gratuit.audixio.test']]),
       now,
     );
     expect(links).toEqual([
       {
         id: AUDIT,
-        host: 'gratuit.audigy.test',
+        host: 'gratuit.audixio.test',
         kind: 'team',
         urlPath: `/partage/${TOKEN}`,
         createdAt: '2026-05-11T00:00:00.000Z',
@@ -128,9 +128,9 @@ describe('bug 3 — action Rien', () => {
 });
 
 describe('bug 4 — domaine de la progression', () => {
-  it('affiche bon.audigy.test et non atelier-martin.fr', () => {
-    const search = `?url=${encodeURIComponent('https://bon.audigy.test/')}`;
-    expect(hostFromProgressQuery(search)).toBe('bon.audigy.test');
+  it('affiche bon.audixio.test et non atelier-martin.fr', () => {
+    const search = `?url=${encodeURIComponent('https://bon.audixio.test/')}`;
+    expect(hostFromProgressQuery(search)).toBe('bon.audixio.test');
     expect(source('../components/ProgressLive.svelte')).toContain(
       'hostFromProgressQuery',
     );
@@ -190,7 +190,7 @@ describe('bug 7 — badge', () => {
 describe('bug 8 — brief du site', () => {
   it('montre le prompt du site, pas l’exemple images', () => {
     const text = briefScreen({
-      url: 'https://gratuit.audigy.test',
+      url: 'https://gratuit.audixio.test',
       items: [
         {
           checkId: 'seo.canonical',
@@ -200,7 +200,7 @@ describe('bug 8 — brief du site', () => {
         },
       ],
     });
-    expect(text).toContain('https://gratuit.audigy.test');
+    expect(text).toContain('https://gratuit.audixio.test');
     expect(text).toContain('Adresse canonique');
     expect(text).toContain('pointe vers autre.example');
     expect(text).not.toContain('Images trop volumineuses');

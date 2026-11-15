@@ -2,7 +2,7 @@
   "version": 1,
   "mode": "passive",
   "runner": {
-    "name": "audigy-browser",
+    "name": "audixio-browser",
     "browser": "chromium",
     "axe": "4.14.0",
     "fetchUserAgent": "AudixioBot/1.0"

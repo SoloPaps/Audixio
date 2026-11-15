@@ -1,4 +1,4 @@
-import { gradeForScore } from '@audigy/db';
+import { gradeForScore } from '@audixio/db';
 import { type MessageKey, t } from '../i18n/index.js';
 
 export const LEVELS = ['good', 'improve', 'problem', 'untested'] as const;

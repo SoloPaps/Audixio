@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import {
   type BrowserAuditResult,
   BrowserAuditResultSchema,
-} from '@audigy/browser-runner';
+} from '@audixio/browser-runner';
 import {
   createRequestBudget,
   type DohResolver,
@@ -12,7 +12,7 @@ import {
   type SafeFetch,
   type SafeResponse,
   type TlsProbe,
-} from '@audigy/net';
+} from '@audixio/net';
 import { describe, expect, it } from 'vitest';
 import { fr, type MessageKey } from '../../../apps/web/src/i18n/fr.js';
 import { failureCount, lintText } from '../../../scripts/copy-lint.js';

@@ -10,17 +10,6 @@ Design v6 : `docs/design/01-REGLES-STRICTES.md`, `docs/design/v6/INTEGRATION-v6.
 
 ---
 
-## Mode caveman
-
-- Réponses **ultra-courtes**. Pas de récap. Pas de préambule. Pas de reformulation de la demande.
-- Montrer **seulement** le diff ou l’extrait utile. Jamais un fichier entier inchangé.
-- **Une** question seulement si bloquant. Sinon appliquer le défaut de `docs/produit/QUESTIONS.md`.
-- Avant les outils : une ligne listant les fichiers à ouvrir.
-- Une PART / une étape = ce fichier + la section ciblée + les fichiers listés seulement. Max 8 fichiers. Pas d’exploration large du dépôt.
-- Ne jamais lire `packages/engine/data/**`, `pnpm-lock.yaml`, `node_modules`, builds, sauf chemin exact donné par l’utilisateur.
-
----
-
 ## Produit
 
 - **Double couche** : (1) particuliers — note(s), priorités, français simple ; (2) dévs / freelances / entreprises — détail domaines, Comment corriger, brief IA selon droits.
@@ -78,21 +67,20 @@ Design v6 : `docs/design/01-REGLES-STRICTES.md`, `docs/design/v6/INTEGRATION-v6.
 
 ## Plugins / outils (réels du dépôt)
 
-Ne pas inventer de plugins Cursor inexistants. Ce qui est en place :
+Ne pas inventer d'outils inexistants. Ce qui est en place :
 
 | Outil | Rôle |
 |---|---|
-| **pnpm** 10 (`packageManager` racine) | Monorepo, filtres `@audigy/*` *(noms packages/lab historiques ; UI = **Audixio**)* |
+| **pnpm** 10 (`packageManager` racine) | Monorepo, filtres `@audixio/*` *(noms packages/lab historiques ; UI = **Audixio**)* |
 | **Node** 22 (`engines`: `>=22 <23`) | Runtime |
 | **Vitest** | Tests unitaires / intégration |
-| **Playwright** | UI + runner navigateur (`@audigy/browser-runner`) |
+| **Playwright** | UI + runner navigateur (`@audixio/browser-runner`) |
 | **Biome** | Lint / format (`pnpm lint`, `pnpm format`) |
 | **Supabase CLI** | `supabase start` en local (Docker) |
 | **Netlify CLI** | **dev only** (`netlify dev --offline`) — jamais deploy |
 | **TypeScript** | `pnpm typecheck` |
-| **Cursor rules** | `.cursor/rules/` : `00-core`, `design`, `security`, `stack` |
 
-Scripts utiles : `pnpm i`, `pnpm check`, `pnpm test`, `pnpm build`. Audit bout-en-bout : `docs/dev/DEV-LOCAL.md` (lab `*.audigy.test` — historique technique ; marque UI = **Audixio**).
+Scripts utiles : `pnpm i`, `pnpm check`, `pnpm test`, `pnpm build`. Audit bout-en-bout : `docs/dev/DEV-LOCAL.md` (lab `*.audixio.test` — historique technique ; marque UI = **Audixio**).
 
 ---
 
@@ -109,5 +97,5 @@ Scripts utiles : `pnpm i`, `pnpm check`, `pnpm test`, `pnpm build`. Audit bout-e
 - **Bêta / local** : afficher **tout** ce qu’on peut trouver **sans** Tracker Radar DuckDuckGo et **sans** navigateur d’audit = tests partiels HTTP/HTML (Set-Cookie 1er load, scripts évidents, CMP OneTrust/Cookiebot/Didomi, liens politique cookies), libellés **« partiel / automatique »**.
 - Domaine Vie privée = **Verrouillé** en soft-gate tant que non vérifié (inchangé).
 - **Ensuite seulement** (owner) : serveur navigateur d’audit en **location VPS mensuelle** (~5–12 €/mois), pas un achat one-shot. Pas B (CLI) en voie principale publique.
-- **Cœur Cursor d’abord** : capabilities serveur + filtrage, hub, soft-gate Verrouillé, connexion e-mail + mot de passe / Google / GitHub. Pro / chrome fancy / EN / VPS navigateur = après.
+- **Cœur d’abord** : capabilities serveur + filtrage, hub, soft-gate Verrouillé, connexion e-mail + mot de passe / Google / GitHub. Pro / chrome fancy / EN / VPS navigateur = après.
 - **Ops** : maximum en local ; juriste / testeurs / go bêta publique = **owner seul**.

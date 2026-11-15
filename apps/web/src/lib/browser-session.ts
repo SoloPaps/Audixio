@@ -1,4 +1,4 @@
-import type { Database } from '@audigy/db';
+import type { Database } from '@audixio/db';
 import {
   createClient,
   type Session,

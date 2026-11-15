@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import type { RunContext } from '@audigy/engine';
+import type { RunContext } from '@audixio/engine';
 import {
   createSafeFetch,
   createTlsProbe,
@@ -10,13 +10,13 @@ import {
   NetError,
   type RequestBudget,
   type Resolve,
-} from '@audigy/net';
+} from '@audixio/net';
 import { z } from 'zod';
 import { LAB_SUFFIX } from './target.js';
 
 /**
  * Labo local : sites de `fixtures/sites` servis sur 127.0.0.1 sous des noms
- * `<site>.audigy.test`. Le réseau reste celui de `@audigy/net` (anti-SSRF, IP épinglée) :
+ * `<site>.audixio.test`. Le réseau reste celui de `@audixio/net` (anti-SSRF, IP épinglée) :
  * seule la connexion finale est redirigée, comme dans les tests. Tout autre nom,
  * le DNS public et les API tierces sont refusés : le labo ne sort jamais.
  */
@@ -35,7 +35,7 @@ export const labConfigSchema = z.strictObject({
 export type LabConfig = z.infer<typeof labConfigSchema>;
 
 /** Variable de dev (hors §9) : chemin du fichier écrit par `pnpm lab`. */
-export const LAB_ENV_NAME = 'AUDIGY_LAB';
+export const LAB_ENV_NAME = 'AUDIXIO_LAB';
 
 /**
  * Lit la config du labo. Fonctions : seulement sous `netlify dev` (`NETLIFY_DEV=true`).

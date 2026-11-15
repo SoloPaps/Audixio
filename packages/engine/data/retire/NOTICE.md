@@ -15,4 +15,4 @@ limitations under the License.
 ---
 
 signatures.json est dérivé de repository/jsrepository-master.json
-(RetireJS/retire.js, commit e5e228659bbcaea7ba85536a2ef8d4fb97b366e9). Audigy n’en garde que les extracteurs.
+(RetireJS/retire.js, commit e5e228659bbcaea7ba85536a2ef8d4fb97b366e9). Audixio n’en garde que les extracteurs.
