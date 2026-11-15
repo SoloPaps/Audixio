@@ -262,15 +262,28 @@ jobs:
         if: steps.gate.outputs.run == 'true'
         run: pnpm format
 
+      # Le checkout n'enregistre aucun identifiant (persist-credentials: false) :
+      # le jeton du workflow sert seulement au push, par un en-tête éphémère masqué.
       - name: Commit des corrections
         id: autofix
         if: steps.gate.outputs.run == 'true'
-        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7
-        with:
-          commit_message: "chore: corrections automatiques (knip, Biome)"
-          branch: ${{ github.head_ref || github.ref_name }}
-          file_pattern: ". :!.github/workflows"
-          token: ${{ github.token }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          git add -A -- . ':!.github/workflows'
+          if git diff --cached --quiet; then
+            echo "changes_detected=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: corrections automatiques (knip, Biome)"
+          basic="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::$basic"
+          git -c "http.extraheader=AUTHORIZATION: basic $basic" \
+            push origin "HEAD:refs/heads/${BRANCH}"
+          echo "changes_detected=true" >> "$GITHUB_OUTPUT"
 
       # Ce push ne déclenche ni push ni pull_request. Sans cet échec, HEAD
       # n'a pas le check requis « check » et la PR reste bloquée.

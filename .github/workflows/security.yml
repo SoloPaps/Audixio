@@ -88,6 +88,15 @@ jobs:
         run: |
           pnpm audit --audit-level=high | tee audit.txt
           exit "${PIPESTATUS[0]}"
+      - name: Audit du CLI Netlify figé (échec à partir de "high")
+        if: ${{ !cancelled() }}
+        run: |
+          {
+            echo
+            echo '--- .github/netlify-cli (npm) ---'
+          } >> audit.txt
+          npm audit --prefix .github/netlify-cli --package-lock-only --audit-level=high | tee -a audit.txt
+          exit "${PIPESTATUS[0]}"
       - name: Résumé dans l'interface du lancement
         if: always()
         run: |

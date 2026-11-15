@@ -72,7 +72,7 @@ Ne pas inventer d'outils inexistants. Ce qui est en place :
 | Outil | Rôle |
 |---|---|
 | **pnpm** 10 (`packageManager` racine) | Monorepo, filtres `@audixio/*` *(noms packages/lab historiques ; UI = **Audixio**)* |
-| **Node** 22 (`engines`: `>=22 <23`) | Runtime |
+| **Node** 22 (`.nvmrc` = 22.23.4 ; `engines` : `>=22 <25`) | Runtime |
 | **Vitest** | Tests unitaires / intégration |
 | **Playwright** | UI + runner navigateur (`@audixio/browser-runner`) |
 | **Biome** | Lint / format (`pnpm lint`, `pnpm format`) |
